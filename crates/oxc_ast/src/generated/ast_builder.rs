@@ -9,12 +9,14 @@
     clippy::fn_params_excessive_bools
 )]
 
-use std::cell::Cell;
+use std::{cell::Cell, sync::atomic::AtomicU32};
 
 use oxc_allocator::{Allocator, Box, IntoIn, Vec};
 use oxc_syntax::{reference::ReferenceId, scope::ScopeId, symbol::SymbolId};
 
 use crate::ast::*;
+
+static COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// AST builder for creating AST nodes
 #[derive(Clone, Copy)]
@@ -255,6 +257,7 @@ impl<'a> AstBuilder<'a> {
             directives,
             body,
             scope_id: Default::default(),
+            id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
         }
     }
 
@@ -327,6 +330,7 @@ impl<'a> AstBuilder<'a> {
             directives,
             body,
             scope_id: Cell::new(Some(scope_id)),
+            id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
         }
     }
 

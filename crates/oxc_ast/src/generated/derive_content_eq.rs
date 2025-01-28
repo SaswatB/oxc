@@ -42,6 +42,7 @@ impl ContentEq for Program<'_> {
             && ContentEq::content_eq(&self.hashbang, &other.hashbang)
             && ContentEq::content_eq(&self.directives, &other.directives)
             && ContentEq::content_eq(&self.body, &other.body)
+            && ContentEq::content_eq(&self.id, &other.id)
     }
 }
 

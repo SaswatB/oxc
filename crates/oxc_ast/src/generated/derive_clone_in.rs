@@ -110,6 +110,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for Program<'_> {
             directives: CloneIn::clone_in(&self.directives, allocator),
             body: CloneIn::clone_in(&self.body, allocator),
             scope_id: Default::default(),
+            id: CloneIn::clone_in(&self.id, allocator),
         }
     }
 }

@@ -61,6 +61,7 @@ const _: () = {
     assert!(offset_of!(Program, directives) == 88usize);
     assert!(offset_of!(Program, body) == 120usize);
     assert!(offset_of!(Program, scope_id) == 152usize);
+    assert!(offset_of!(Program, id) == 156usize);
 
     assert!(size_of::<Expression>() == 16usize);
     assert!(align_of::<Expression>() == 8usize);
@@ -1614,7 +1615,7 @@ const _: () = {
     assert!(size_of::<RegExpPattern>() == 12usize);
     assert!(align_of::<RegExpPattern>() == 4usize);
 
-    assert!(size_of::<Program>() == 88usize);
+    assert!(size_of::<Program>() == 92usize);
     assert!(align_of::<Program>() == 4usize);
     assert!(offset_of!(Program, span) == 0usize);
     assert!(offset_of!(Program, source_type) == 8usize);
@@ -1624,6 +1625,7 @@ const _: () = {
     assert!(offset_of!(Program, directives) == 52usize);
     assert!(offset_of!(Program, body) == 68usize);
     assert!(offset_of!(Program, scope_id) == 84usize);
+    assert!(offset_of!(Program, id) == 88usize);
 
     assert!(size_of::<Expression>() == 8usize);
     assert!(align_of::<Expression>() == 4usize);

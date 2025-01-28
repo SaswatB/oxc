@@ -43,6 +43,8 @@ pub struct Program<'a> {
     #[estree(skip)]
     #[clone_in(default)]
     pub scope_id: Cell<Option<ScopeId>>,
+    #[atomic()]
+    pub id: u32,
 }
 
 inherit_variants! {

@@ -49,7 +49,7 @@ impl Generator for AstBuilderGenerator {
                 )]
 
                 ///@@line_break
-                use std::cell::Cell;
+                use std::{cell::Cell, sync::atomic::AtomicU32};
 
                 ///@@line_break
                 use oxc_allocator::{Allocator, Box, IntoIn, Vec};
@@ -57,6 +57,9 @@ impl Generator for AstBuilderGenerator {
 
                 ///@@line_break
                 use crate::ast::*;
+
+                ///@@line_break
+                static COUNTER: AtomicU32 = AtomicU32::new(1);
 
                 ///@@line_break
                 /// AST builder for creating AST nodes
@@ -237,6 +240,11 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
 
             default_field_names.push(field_name);
             default_field_type_names.push(field_type_name);
+        } else if param.atomic {
+            let field_ident = &param.ident;
+            field =
+                quote!(#field_ident: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed));
+            fields_incl_defaults.push(field.clone());
         } else {
             params.push(param.clone());
             args.push(param.ident.clone());
@@ -247,7 +255,7 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
             }
         }
 
-        if has_default_fields {
+        if has_default_fields && !param.atomic {
             args_incl_defaults.push(param.ident.clone());
         }
 
@@ -290,8 +298,9 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
         let alloc_fn_name = format_ident!("alloc_{fn_name}");
 
         let with = format!(" with `{}`", default_field_type_names.iter().join("` and `"));
-        let (fn_docs, alloc_docs) =
-            create_docs(&fn_name, &alloc_fn_name, &params_incl_defaults, &with);
+        let filtered_params =
+            params_incl_defaults.iter().filter(|it| !it.atomic).cloned().collect::<Vec<_>>();
+        let (fn_docs, alloc_docs) = create_docs(&fn_name, &alloc_fn_name, &filtered_params, &with);
 
         output = quote! {
             #output
@@ -326,6 +335,7 @@ struct Param {
     generic: Option<(/* predicate */ TokenStream, /* param name */ TokenStream)>,
     into_in: bool,
     docs: Vec<String>,
+    atomic: bool,
 }
 
 impl Param {
@@ -563,6 +573,7 @@ fn get_struct_params(struct_: &StructDef, schema: &Schema) -> Vec<Param> {
             into_in: generic_typ.is_some(),
             generic: generic_typ,
             docs: field.docs.clone(),
+            atomic: field.markers.atomic,
         });
         acc
     })

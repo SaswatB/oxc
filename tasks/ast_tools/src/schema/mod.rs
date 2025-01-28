@@ -133,6 +133,7 @@ fn parse_inner_markers(attrs: &Vec<Attribute>) -> Result<InnerMarkers> {
         visit: get_visit_markers(attrs)?,
         scope: get_scope_markers(attrs)?,
         derive_attributes: get_derive_attributes(attrs)?,
+        atomic: attrs.iter().any(|a| a.path().is_ident("atomic")),
     })
 }
 

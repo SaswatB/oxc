@@ -2500,6 +2500,7 @@ pub(crate) const OFFSET_PROGRAM_HASHBANG: usize = offset_of!(Program, hashbang);
 pub(crate) const OFFSET_PROGRAM_DIRECTIVES: usize = offset_of!(Program, directives);
 pub(crate) const OFFSET_PROGRAM_BODY: usize = offset_of!(Program, body);
 pub(crate) const OFFSET_PROGRAM_SCOPE_ID: usize = offset_of!(Program, scope_id);
+pub(crate) const OFFSET_PROGRAM_ID: usize = offset_of!(Program, id);
 
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug)]
@@ -2549,6 +2550,11 @@ impl<'a, 't> ProgramWithoutHashbang<'a, 't> {
         unsafe {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
+    }
+
+    #[inline]
+    pub fn id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
     }
 }
 
@@ -2607,6 +2613,11 @@ impl<'a, 't> ProgramWithoutDirectives<'a, 't> {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
     }
+
+    #[inline]
+    pub fn id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
+    }
 }
 
 impl<'a, 't> GetAddress for ProgramWithoutDirectives<'a, 't> {
@@ -2664,6 +2675,11 @@ impl<'a, 't> ProgramWithoutBody<'a, 't> {
         unsafe {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
+    }
+
+    #[inline]
+    pub fn id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
     }
 }
 

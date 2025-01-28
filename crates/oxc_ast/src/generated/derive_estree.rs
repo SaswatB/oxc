@@ -77,6 +77,7 @@ impl Serialize for Program<'_> {
         map.serialize_entry("hashbang", &self.hashbang)?;
         map.serialize_entry("directives", &self.directives)?;
         map.serialize_entry("body", &self.body)?;
+        map.serialize_entry("id", &self.id)?;
         map.end()
     }
 }

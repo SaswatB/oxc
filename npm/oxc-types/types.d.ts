@@ -52,6 +52,7 @@ export interface Program extends Span {
   hashbang: Hashbang | null;
   directives: Array<Directive>;
   body: Array<Statement>;
+  id: number;
 }
 
 export type Expression =

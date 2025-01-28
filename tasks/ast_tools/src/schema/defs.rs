@@ -261,4 +261,5 @@ pub struct InnerMarkers {
     pub visit: VisitMarkers,
     #[serde(skip)]
     pub scope: ScopeMarkers,
+    pub atomic: bool,
 }
