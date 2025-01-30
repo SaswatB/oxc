@@ -13,6 +13,7 @@ use std::{cell::Cell, marker::PhantomData, mem::offset_of};
 
 use oxc_allocator::{Address, Box, GetAddress, Vec};
 use oxc_ast::ast::*;
+use oxc_ast::AstKind;
 use oxc_syntax::scope::ScopeId;
 
 /// Type of [`Ancestor`].

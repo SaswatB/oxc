@@ -127,19 +127,17 @@ mod test {
             ast.vec(),
             ast.vec(),
         );
-        let parent = Some(unsafe { AstKind::Program(&*(&program as *const _)) });
         program.body = ast.vec_from_array([
-            ast.statement_empty(parent, Span::new(0, 1)),
+            ast.statement_empty(Span::new(0, 1)),
             ast.statement_expression(
-                parent,
                 Span::new(1, 7),
-                ast.expression_string_literal(parent, Span::new(1, 7), "🤨", None), // temp wrong parent
+                ast.expression_string_literal(Span::new(1, 7), "🤨", None),
             ),
         ]);
         if let Statement::ExpressionStatement(expr_stmt) = &mut program.body[1] {
             let parent =
                 AstKind::ExpressionStatement(unsafe { &*(expr_stmt.as_ref() as *const _) });
-            expr_stmt.expression.set_parent(parent); // set correct parent
+            expr_stmt.expression.set_parent(parent);
         }
 
         Utf8ToUtf16::new().convert(&mut program);

@@ -15,7 +15,6 @@ use oxc_allocator::{Allocator, Box, IntoIn, Vec};
 use oxc_syntax::{reference::ReferenceId, scope::ScopeId, symbol::SymbolId};
 
 use crate::ast::*;
-use crate::AstKind;
 
 static COUNTER: AtomicU32 = AtomicU32::new(1);
 
@@ -32,17 +31,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_boolean_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn boolean_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: bool,
-    ) -> BooleanLiteral<'a> {
-        BooleanLiteral { parent, span, value }
+    pub fn boolean_literal(self, span: Span, value: bool) -> BooleanLiteral<'a> {
+        BooleanLiteral { parent: None, span, value }
     }
 
     /// Build a [`BooleanLiteral`], and store it in the memory arena.
@@ -50,17 +43,11 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::boolean_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn alloc_boolean_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: bool,
-    ) -> Box<'a, BooleanLiteral<'a>> {
-        Box::new_in(self.boolean_literal(parent, span, value), self.allocator)
+    pub fn alloc_boolean_literal(self, span: Span, value: bool) -> Box<'a, BooleanLiteral<'a>> {
+        Box::new_in(self.boolean_literal(span, value), self.allocator)
     }
 
     /// Build a [`NullLiteral`].
@@ -68,11 +55,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_null_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn null_literal(self, parent: Option<AstKind<'a>>, span: Span) -> NullLiteral<'a> {
-        NullLiteral { parent, span }
+    pub fn null_literal(self, span: Span) -> NullLiteral<'a> {
+        NullLiteral { parent: None, span }
     }
 
     /// Build a [`NullLiteral`], and store it in the memory arena.
@@ -80,15 +66,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::null_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn alloc_null_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, NullLiteral<'a>> {
-        Box::new_in(self.null_literal(parent, span), self.allocator)
+    pub fn alloc_null_literal(self, span: Span) -> Box<'a, NullLiteral<'a>> {
+        Box::new_in(self.null_literal(span), self.allocator)
     }
 
     /// Build a [`NumericLiteral`].
@@ -96,7 +77,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_numeric_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the number, converted into base 10
     /// - raw: The number as it appears in source code
@@ -104,13 +84,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn numeric_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: f64,
         raw: Option<Atom<'a>>,
         base: NumberBase,
     ) -> NumericLiteral<'a> {
-        NumericLiteral { parent, span, value, raw, base }
+        NumericLiteral { parent: None, span, value, raw, base }
     }
 
     /// Build a [`NumericLiteral`], and store it in the memory arena.
@@ -118,7 +97,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::numeric_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the number, converted into base 10
     /// - raw: The number as it appears in source code
@@ -126,13 +104,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_numeric_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: f64,
         raw: Option<Atom<'a>>,
         base: NumberBase,
     ) -> Box<'a, NumericLiteral<'a>> {
-        Box::new_in(self.numeric_literal(parent, span, value, raw, base), self.allocator)
+        Box::new_in(self.numeric_literal(span, value, raw, base), self.allocator)
     }
 
     /// Build a [`StringLiteral`].
@@ -140,22 +117,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_string_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
-    pub fn string_literal<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: A,
-        raw: Option<Atom<'a>>,
-    ) -> StringLiteral<'a>
+    pub fn string_literal<A>(self, span: Span, value: A, raw: Option<Atom<'a>>) -> StringLiteral<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        StringLiteral { parent, span, value: value.into_in(self.allocator), raw }
+        StringLiteral { parent: None, span, value: value.into_in(self.allocator), raw }
     }
 
     /// Build a [`StringLiteral`], and store it in the memory arena.
@@ -163,14 +133,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::string_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn alloc_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -178,7 +146,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.string_literal(parent, span, value, raw), self.allocator)
+        Box::new_in(self.string_literal(span, value, raw), self.allocator)
     }
 
     /// Build a [`BigIntLiteral`].
@@ -186,22 +154,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_big_int_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - raw: The bigint as it appears in source code
     /// - base: The base representation used by the literal in source code
     #[inline]
-    pub fn big_int_literal<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        raw: A,
-        base: BigintBase,
-    ) -> BigIntLiteral<'a>
+    pub fn big_int_literal<A>(self, span: Span, raw: A, base: BigintBase) -> BigIntLiteral<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        BigIntLiteral { parent, span, raw: raw.into_in(self.allocator), base }
+        BigIntLiteral { parent: None, span, raw: raw.into_in(self.allocator), base }
     }
 
     /// Build a [`BigIntLiteral`], and store it in the memory arena.
@@ -209,14 +170,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::big_int_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - raw: The bigint as it appears in source code
     /// - base: The base representation used by the literal in source code
     #[inline]
     pub fn alloc_big_int_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         raw: A,
         base: BigintBase,
@@ -224,7 +183,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.big_int_literal(parent, span, raw, base), self.allocator)
+        Box::new_in(self.big_int_literal(span, raw, base), self.allocator)
     }
 
     /// Build a [`RegExpLiteral`].
@@ -232,19 +191,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_reg_exp_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - regex: The parsed regular expression. See [`oxc_regular_expression`] for more
     /// - raw: The regular expression as it appears in source code
     #[inline]
     pub fn reg_exp_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         regex: RegExp<'a>,
         raw: Option<Atom<'a>>,
     ) -> RegExpLiteral<'a> {
-        RegExpLiteral { parent, span, regex, raw }
+        RegExpLiteral { parent: None, span, regex, raw }
     }
 
     /// Build a [`RegExpLiteral`], and store it in the memory arena.
@@ -252,19 +209,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::reg_exp_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - regex: The parsed regular expression. See [`oxc_regular_expression`] for more
     /// - raw: The regular expression as it appears in source code
     #[inline]
     pub fn alloc_reg_exp_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         regex: RegExp<'a>,
         raw: Option<Atom<'a>>,
     ) -> Box<'a, RegExpLiteral<'a>> {
-        Box::new_in(self.reg_exp_literal(parent, span, regex, raw), self.allocator)
+        Box::new_in(self.reg_exp_literal(span, regex, raw), self.allocator)
     }
 
     /// Build a [`Program`].
@@ -427,17 +382,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BooleanLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn expression_boolean_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: bool,
-    ) -> Expression<'a> {
-        Expression::BooleanLiteral(self.alloc_boolean_literal(parent, span, value))
+    pub fn expression_boolean_literal(self, span: Span, value: bool) -> Expression<'a> {
+        Expression::BooleanLiteral(self.alloc_boolean_literal(span, value))
     }
 
     /// Build an [`Expression::NullLiteral`]
@@ -445,15 +394,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`NullLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn expression_null_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Expression<'a> {
-        Expression::NullLiteral(self.alloc_null_literal(parent, span))
+    pub fn expression_null_literal(self, span: Span) -> Expression<'a> {
+        Expression::NullLiteral(self.alloc_null_literal(span))
     }
 
     /// Build an [`Expression::NumericLiteral`]
@@ -461,7 +405,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`NumericLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the number, converted into base 10
     /// - raw: The number as it appears in source code
@@ -469,13 +412,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_numeric_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: f64,
         raw: Option<Atom<'a>>,
         base: NumberBase,
     ) -> Expression<'a> {
-        Expression::NumericLiteral(self.alloc_numeric_literal(parent, span, value, raw, base))
+        Expression::NumericLiteral(self.alloc_numeric_literal(span, value, raw, base))
     }
 
     /// Build an [`Expression::BigIntLiteral`]
@@ -483,14 +425,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BigIntLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - raw: The bigint as it appears in source code
     /// - base: The base representation used by the literal in source code
     #[inline]
     pub fn expression_big_int_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         raw: A,
         base: BigintBase,
@@ -498,7 +438,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Expression::BigIntLiteral(self.alloc_big_int_literal(parent, span, raw, base))
+        Expression::BigIntLiteral(self.alloc_big_int_literal(span, raw, base))
     }
 
     /// Build an [`Expression::RegExpLiteral`]
@@ -506,19 +446,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`RegExpLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - regex: The parsed regular expression. See [`oxc_regular_expression`] for more
     /// - raw: The regular expression as it appears in source code
     #[inline]
     pub fn expression_reg_exp_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         regex: RegExp<'a>,
         raw: Option<Atom<'a>>,
     ) -> Expression<'a> {
-        Expression::RegExpLiteral(self.alloc_reg_exp_literal(parent, span, regex, raw))
+        Expression::RegExpLiteral(self.alloc_reg_exp_literal(span, regex, raw))
     }
 
     /// Build an [`Expression::StringLiteral`]
@@ -526,14 +464,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StringLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn expression_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -541,7 +477,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Expression::StringLiteral(self.alloc_string_literal(parent, span, value, raw))
+        Expression::StringLiteral(self.alloc_string_literal(span, value, raw))
     }
 
     /// Build an [`Expression::TemplateLiteral`]
@@ -549,19 +485,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TemplateLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
     #[inline]
     pub fn expression_template_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
     ) -> Expression<'a> {
-        Expression::TemplateLiteral(self.alloc_template_literal(parent, span, quasis, expressions))
+        Expression::TemplateLiteral(self.alloc_template_literal(span, quasis, expressions))
     }
 
     /// Build an [`Expression::Identifier`]
@@ -569,20 +503,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
-    pub fn expression_identifier_reference<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Expression<'a>
+    pub fn expression_identifier_reference<A>(self, span: Span, name: A) -> Expression<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Expression::Identifier(self.alloc_identifier_reference(parent, span, name))
+        Expression::Identifier(self.alloc_identifier_reference(span, name))
     }
 
     /// Build an [`Expression::MetaProperty`]
@@ -590,19 +518,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`MetaProperty`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - meta
     /// - property
     #[inline]
     pub fn expression_meta_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         meta: IdentifierName<'a>,
         property: IdentifierName<'a>,
     ) -> Expression<'a> {
-        Expression::MetaProperty(self.alloc_meta_property(parent, span, meta, property))
+        Expression::MetaProperty(self.alloc_meta_property(span, meta, property))
     }
 
     /// Build an [`Expression::Super`]
@@ -610,11 +536,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Super`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn expression_super(self, parent: Option<AstKind<'a>>, span: Span) -> Expression<'a> {
-        Expression::Super(self.alloc_super(parent, span))
+    pub fn expression_super(self, span: Span) -> Expression<'a> {
+        Expression::Super(self.alloc_super(span))
     }
 
     /// Build an [`Expression::ArrayExpression`]
@@ -622,24 +547,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ArrayExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - trailing_comma: Array trailing comma
     #[inline]
     pub fn expression_array(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, ArrayExpressionElement<'a>>,
         trailing_comma: Option<Span>,
     ) -> Expression<'a> {
-        Expression::ArrayExpression(self.alloc_array_expression(
-            parent,
-            span,
-            elements,
-            trailing_comma,
-        ))
+        Expression::ArrayExpression(self.alloc_array_expression(span, elements, trailing_comma))
     }
 
     /// Build an [`Expression::ArrowFunctionExpression`]
@@ -647,7 +565,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ArrowFunctionExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Is the function body an arrow expression? i.e. `() => expr` instead of `() => {}`
     /// - r#async
@@ -658,7 +575,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_arrow_function<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: bool,
         r#async: bool,
@@ -674,7 +590,6 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
     {
         Expression::ArrowFunctionExpression(self.alloc_arrow_function_expression(
-            parent,
             span,
             expression,
             r#async,
@@ -690,7 +605,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AssignmentExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - left
@@ -698,14 +612,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_assignment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: AssignmentOperator,
         left: AssignmentTarget<'a>,
         right: Expression<'a>,
     ) -> Expression<'a> {
         Expression::AssignmentExpression(
-            self.alloc_assignment_expression(parent, span, operator, left, right),
+            self.alloc_assignment_expression(span, operator, left, right),
         )
     }
 
@@ -714,17 +627,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AwaitExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
-    pub fn expression_await(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> Expression<'a> {
-        Expression::AwaitExpression(self.alloc_await_expression(parent, span, argument))
+    pub fn expression_await(self, span: Span, argument: Expression<'a>) -> Expression<'a> {
+        Expression::AwaitExpression(self.alloc_await_expression(span, argument))
     }
 
     /// Build an [`Expression::BinaryExpression`]
@@ -732,7 +639,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BinaryExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -740,15 +646,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_binary(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> Expression<'a> {
-        Expression::BinaryExpression(
-            self.alloc_binary_expression(parent, span, left, operator, right),
-        )
+        Expression::BinaryExpression(self.alloc_binary_expression(span, left, operator, right))
     }
 
     /// Build an [`Expression::CallExpression`]
@@ -756,7 +659,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`CallExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - type_parameters
@@ -765,7 +667,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_call<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         type_parameters: T1,
@@ -776,7 +677,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Expression::CallExpression(self.alloc_call_expression(
-            parent,
             span,
             callee,
             type_parameters,
@@ -790,17 +690,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ChainExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn expression_chain(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: ChainElement<'a>,
-    ) -> Expression<'a> {
-        Expression::ChainExpression(self.alloc_chain_expression(parent, span, expression))
+    pub fn expression_chain(self, span: Span, expression: ChainElement<'a>) -> Expression<'a> {
+        Expression::ChainExpression(self.alloc_chain_expression(span, expression))
     }
 
     /// Build an [`Expression::ClassExpression`]
@@ -808,7 +702,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Class`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -823,7 +716,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_class<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -842,7 +734,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Expression::ClassExpression(self.alloc_class(
-            parent,
             span,
             r#type,
             decorators,
@@ -862,7 +753,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ConditionalExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -870,14 +760,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_conditional(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Expression<'a>,
         alternate: Expression<'a>,
     ) -> Expression<'a> {
         Expression::ConditionalExpression(
-            self.alloc_conditional_expression(parent, span, test, consequent, alternate),
+            self.alloc_conditional_expression(span, test, consequent, alternate),
         )
     }
 
@@ -886,7 +775,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Function`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -901,7 +789,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_function<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -922,7 +809,6 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Expression::FunctionExpression(self.alloc_function(
-            parent,
             span,
             r#type,
             id,
@@ -942,7 +828,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ImportExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - source
     /// - arguments
@@ -950,15 +835,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_import(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         source: Expression<'a>,
         arguments: Vec<'a, Expression<'a>>,
         phase: Option<ImportPhase>,
     ) -> Expression<'a> {
-        Expression::ImportExpression(
-            self.alloc_import_expression(parent, span, source, arguments, phase),
-        )
+        Expression::ImportExpression(self.alloc_import_expression(span, source, arguments, phase))
     }
 
     /// Build an [`Expression::LogicalExpression`]
@@ -966,7 +848,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`LogicalExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -974,15 +855,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_logical(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: LogicalOperator,
         right: Expression<'a>,
     ) -> Expression<'a> {
-        Expression::LogicalExpression(
-            self.alloc_logical_expression(parent, span, left, operator, right),
-        )
+        Expression::LogicalExpression(self.alloc_logical_expression(span, left, operator, right))
     }
 
     /// Build an [`Expression::NewExpression`]
@@ -990,7 +868,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`NewExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - arguments
@@ -998,7 +875,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_new<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         arguments: Vec<'a, Argument<'a>>,
@@ -1008,7 +884,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Expression::NewExpression(self.alloc_new_expression(
-            parent,
             span,
             callee,
             arguments,
@@ -1021,24 +896,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ObjectExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties: Properties declared in the object
     /// - trailing_comma
     #[inline]
     pub fn expression_object(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, ObjectPropertyKind<'a>>,
         trailing_comma: Option<Span>,
     ) -> Expression<'a> {
-        Expression::ObjectExpression(self.alloc_object_expression(
-            parent,
-            span,
-            properties,
-            trailing_comma,
-        ))
+        Expression::ObjectExpression(self.alloc_object_expression(span, properties, trailing_comma))
     }
 
     /// Build an [`Expression::ParenthesizedExpression`]
@@ -1046,19 +914,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ParenthesizedExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn expression_parenthesized(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Expression<'a> {
-        Expression::ParenthesizedExpression(
-            self.alloc_parenthesized_expression(parent, span, expression),
-        )
+        Expression::ParenthesizedExpression(self.alloc_parenthesized_expression(span, expression))
     }
 
     /// Build an [`Expression::SequenceExpression`]
@@ -1066,17 +930,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`SequenceExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expressions
     #[inline]
     pub fn expression_sequence(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expressions: Vec<'a, Expression<'a>>,
     ) -> Expression<'a> {
-        Expression::SequenceExpression(self.alloc_sequence_expression(parent, span, expressions))
+        Expression::SequenceExpression(self.alloc_sequence_expression(span, expressions))
     }
 
     /// Build an [`Expression::TaggedTemplateExpression`]
@@ -1084,7 +946,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TaggedTemplateExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - tag
     /// - quasi
@@ -1092,7 +953,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_tagged_template<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         tag: Expression<'a>,
         quasi: TemplateLiteral<'a>,
@@ -1102,7 +962,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Expression::TaggedTemplateExpression(self.alloc_tagged_template_expression(
-            parent,
             span,
             tag,
             quasi,
@@ -1115,11 +974,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ThisExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn expression_this(self, parent: Option<AstKind<'a>>, span: Span) -> Expression<'a> {
-        Expression::ThisExpression(self.alloc_this_expression(parent, span))
+    pub fn expression_this(self, span: Span) -> Expression<'a> {
+        Expression::ThisExpression(self.alloc_this_expression(span))
     }
 
     /// Build an [`Expression::UnaryExpression`]
@@ -1127,19 +985,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`UnaryExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - argument
     #[inline]
     pub fn expression_unary(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UnaryOperator,
         argument: Expression<'a>,
     ) -> Expression<'a> {
-        Expression::UnaryExpression(self.alloc_unary_expression(parent, span, operator, argument))
+        Expression::UnaryExpression(self.alloc_unary_expression(span, operator, argument))
     }
 
     /// Build an [`Expression::UpdateExpression`]
@@ -1147,7 +1003,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`UpdateExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - prefix
@@ -1155,15 +1010,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_update(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UpdateOperator,
         prefix: bool,
         argument: SimpleAssignmentTarget<'a>,
     ) -> Expression<'a> {
-        Expression::UpdateExpression(
-            self.alloc_update_expression(parent, span, operator, prefix, argument),
-        )
+        Expression::UpdateExpression(self.alloc_update_expression(span, operator, prefix, argument))
     }
 
     /// Build an [`Expression::YieldExpression`]
@@ -1171,19 +1023,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`YieldExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - delegate
     /// - argument
     #[inline]
     pub fn expression_yield(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         delegate: bool,
         argument: Option<Expression<'a>>,
     ) -> Expression<'a> {
-        Expression::YieldExpression(self.alloc_yield_expression(parent, span, delegate, argument))
+        Expression::YieldExpression(self.alloc_yield_expression(span, delegate, argument))
     }
 
     /// Build an [`Expression::PrivateInExpression`]
@@ -1191,7 +1041,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`PrivateInExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -1199,14 +1048,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_private_in(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: PrivateIdentifier<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> Expression<'a> {
         Expression::PrivateInExpression(
-            self.alloc_private_in_expression(parent, span, left, operator, right),
+            self.alloc_private_in_expression(span, left, operator, right),
         )
     }
 
@@ -1215,7 +1063,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_element: Opening tag of the element.
     /// - closing_element: Closing tag of the element. Will be [`None`] for self-closing tags.
@@ -1223,7 +1070,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_jsx_element<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_element: T1,
         closing_element: T2,
@@ -1234,7 +1080,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
         Expression::JSXElement(self.alloc_jsx_element(
-            parent,
             span,
             opening_element,
             closing_element,
@@ -1247,7 +1092,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXFragment`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_fragment: `<>`
     /// - closing_fragment: `</>`
@@ -1255,14 +1099,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn expression_jsx_fragment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_fragment: JSXOpeningFragment<'a>,
         closing_fragment: JSXClosingFragment<'a>,
         children: Vec<'a, JSXChild<'a>>,
     ) -> Expression<'a> {
         Expression::JSXFragment(self.alloc_jsx_fragment(
-            parent,
             span,
             opening_fragment,
             closing_fragment,
@@ -1275,24 +1117,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSAsExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn expression_ts_as(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Expression<'a> {
-        Expression::TSAsExpression(self.alloc_ts_as_expression(
-            parent,
-            span,
-            expression,
-            type_annotation,
-        ))
+        Expression::TSAsExpression(self.alloc_ts_as_expression(span, expression, type_annotation))
     }
 
     /// Build an [`Expression::TSSatisfiesExpression`]
@@ -1300,20 +1135,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSSatisfiesExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: The value expression being constrained.
     /// - type_annotation: The type `expression` must satisfy.
     #[inline]
     pub fn expression_ts_satisfies(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Expression<'a> {
         Expression::TSSatisfiesExpression(self.alloc_ts_satisfies_expression(
-            parent,
             span,
             expression,
             type_annotation,
@@ -1325,24 +1157,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeAssertion`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn expression_ts_type_assertion(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Expression<'a> {
-        Expression::TSTypeAssertion(self.alloc_ts_type_assertion(
-            parent,
-            span,
-            expression,
-            type_annotation,
-        ))
+        Expression::TSTypeAssertion(self.alloc_ts_type_assertion(span, expression, type_annotation))
     }
 
     /// Build an [`Expression::TSNonNullExpression`]
@@ -1350,17 +1175,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNonNullExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn expression_ts_non_null(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: Expression<'a>,
-    ) -> Expression<'a> {
-        Expression::TSNonNullExpression(self.alloc_ts_non_null_expression(parent, span, expression))
+    pub fn expression_ts_non_null(self, span: Span, expression: Expression<'a>) -> Expression<'a> {
+        Expression::TSNonNullExpression(self.alloc_ts_non_null_expression(span, expression))
     }
 
     /// Build an [`Expression::TSInstantiationExpression`]
@@ -1368,14 +1187,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSInstantiationExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn expression_ts_instantiation<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -1384,7 +1201,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameterInstantiation<'a>>>,
     {
         Expression::TSInstantiationExpression(self.alloc_ts_instantiation_expression(
-            parent,
             span,
             expression,
             type_parameters,
@@ -1396,20 +1212,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_identifier_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn identifier_name<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> IdentifierName<'a>
+    pub fn identifier_name<A>(self, span: Span, name: A) -> IdentifierName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        IdentifierName { parent, span, name: name.into_in(self.allocator) }
+        IdentifierName { parent: None, span, name: name.into_in(self.allocator) }
     }
 
     /// Build an [`IdentifierName`], and store it in the memory arena.
@@ -1417,20 +1227,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::identifier_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn alloc_identifier_name<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Box<'a, IdentifierName<'a>>
+    pub fn alloc_identifier_name<A>(self, span: Span, name: A) -> Box<'a, IdentifierName<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.identifier_name(parent, span, name), self.allocator)
+        Box::new_in(self.identifier_name(span, name), self.allocator)
     }
 
     /// Build an [`IdentifierReference`].
@@ -1438,21 +1242,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_identifier_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
-    pub fn identifier_reference<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> IdentifierReference<'a>
+    pub fn identifier_reference<A>(self, span: Span, name: A) -> IdentifierReference<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
         IdentifierReference {
-            parent,
+            parent: None,
             span,
             name: name.into_in(self.allocator),
             reference_id: Default::default(),
@@ -1464,20 +1262,18 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::identifier_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
     pub fn alloc_identifier_reference<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> Box<'a, IdentifierReference<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.identifier_reference(parent, span, name), self.allocator)
+        Box::new_in(self.identifier_reference(span, name), self.allocator)
     }
 
     /// Build an [`IdentifierReference`] with `ReferenceId`.
@@ -1485,14 +1281,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_identifier_reference_with_reference_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     /// - reference_id: Reference ID
     #[inline]
     pub fn identifier_reference_with_reference_id<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         reference_id: ReferenceId,
@@ -1501,7 +1295,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         IdentifierReference {
-            parent,
+            parent: None,
             span,
             name: name.into_in(self.allocator),
             reference_id: Cell::new(Some(reference_id)),
@@ -1513,14 +1307,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::identifier_reference_with_reference_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     /// - reference_id: Reference ID
     #[inline]
     pub fn alloc_identifier_reference_with_reference_id<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         reference_id: ReferenceId,
@@ -1529,7 +1321,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         Box::new_in(
-            self.identifier_reference_with_reference_id(parent, span, name, reference_id),
+            self.identifier_reference_with_reference_id(span, name, reference_id),
             self.allocator,
         )
     }
@@ -1539,21 +1331,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binding_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     #[inline]
-    pub fn binding_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> BindingIdentifier<'a>
+    pub fn binding_identifier<A>(self, span: Span, name: A) -> BindingIdentifier<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
         BindingIdentifier {
-            parent,
+            parent: None,
             span,
             name: name.into_in(self.allocator),
             symbol_id: Default::default(),
@@ -1565,20 +1351,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binding_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     #[inline]
-    pub fn alloc_binding_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Box<'a, BindingIdentifier<'a>>
+    pub fn alloc_binding_identifier<A>(self, span: Span, name: A) -> Box<'a, BindingIdentifier<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.binding_identifier(parent, span, name), self.allocator)
+        Box::new_in(self.binding_identifier(span, name), self.allocator)
     }
 
     /// Build a [`BindingIdentifier`] with `SymbolId`.
@@ -1586,14 +1366,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binding_identifier_with_symbol_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     /// - symbol_id: Unique identifier for this binding.
     #[inline]
     pub fn binding_identifier_with_symbol_id<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         symbol_id: SymbolId,
@@ -1602,7 +1380,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         BindingIdentifier {
-            parent,
+            parent: None,
             span,
             name: name.into_in(self.allocator),
             symbol_id: Cell::new(Some(symbol_id)),
@@ -1614,14 +1392,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binding_identifier_with_symbol_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     /// - symbol_id: Unique identifier for this binding.
     #[inline]
     pub fn alloc_binding_identifier_with_symbol_id<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         symbol_id: SymbolId,
@@ -1629,10 +1405,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(
-            self.binding_identifier_with_symbol_id(parent, span, name, symbol_id),
-            self.allocator,
-        )
+        Box::new_in(self.binding_identifier_with_symbol_id(span, name, symbol_id), self.allocator)
     }
 
     /// Build a [`LabelIdentifier`].
@@ -1640,20 +1413,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_label_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn label_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> LabelIdentifier<'a>
+    pub fn label_identifier<A>(self, span: Span, name: A) -> LabelIdentifier<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        LabelIdentifier { parent, span, name: name.into_in(self.allocator) }
+        LabelIdentifier { parent: None, span, name: name.into_in(self.allocator) }
     }
 
     /// Build a [`LabelIdentifier`], and store it in the memory arena.
@@ -1661,20 +1428,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::label_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn alloc_label_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Box<'a, LabelIdentifier<'a>>
+    pub fn alloc_label_identifier<A>(self, span: Span, name: A) -> Box<'a, LabelIdentifier<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.label_identifier(parent, span, name), self.allocator)
+        Box::new_in(self.label_identifier(span, name), self.allocator)
     }
 
     /// Build a [`ThisExpression`].
@@ -1682,11 +1443,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_this_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn this_expression(self, parent: Option<AstKind<'a>>, span: Span) -> ThisExpression<'a> {
-        ThisExpression { parent, span }
+    pub fn this_expression(self, span: Span) -> ThisExpression<'a> {
+        ThisExpression { parent: None, span }
     }
 
     /// Build a [`ThisExpression`], and store it in the memory arena.
@@ -1694,15 +1454,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::this_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_this_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, ThisExpression<'a>> {
-        Box::new_in(self.this_expression(parent, span), self.allocator)
+    pub fn alloc_this_expression(self, span: Span) -> Box<'a, ThisExpression<'a>> {
+        Box::new_in(self.this_expression(span), self.allocator)
     }
 
     /// Build an [`ArrayExpression`].
@@ -1710,19 +1465,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_array_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - trailing_comma: Array trailing comma
     #[inline]
     pub fn array_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, ArrayExpressionElement<'a>>,
         trailing_comma: Option<Span>,
     ) -> ArrayExpression<'a> {
-        ArrayExpression { parent, span, elements, trailing_comma }
+        ArrayExpression { parent: None, span, elements, trailing_comma }
     }
 
     /// Build an [`ArrayExpression`], and store it in the memory arena.
@@ -1730,19 +1483,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::array_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - trailing_comma: Array trailing comma
     #[inline]
     pub fn alloc_array_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, ArrayExpressionElement<'a>>,
         trailing_comma: Option<Span>,
     ) -> Box<'a, ArrayExpression<'a>> {
-        Box::new_in(self.array_expression(parent, span, elements, trailing_comma), self.allocator)
+        Box::new_in(self.array_expression(span, elements, trailing_comma), self.allocator)
     }
 
     /// Build an [`ArrayExpressionElement::SpreadElement`]
@@ -1750,31 +1501,24 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`SpreadElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being spread.
     #[inline]
     pub fn array_expression_element_spread_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> ArrayExpressionElement<'a> {
-        ArrayExpressionElement::SpreadElement(self.alloc_spread_element(parent, span, argument))
+        ArrayExpressionElement::SpreadElement(self.alloc_spread_element(span, argument))
     }
 
     /// Build an [`ArrayExpressionElement::Elision`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn array_expression_element_elision(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> ArrayExpressionElement<'a> {
-        ArrayExpressionElement::Elision(self.elision(parent, span))
+    pub fn array_expression_element_elision(self, span: Span) -> ArrayExpressionElement<'a> {
+        ArrayExpressionElement::Elision(self.elision(span))
     }
 
     /// Build an [`Elision`].
@@ -1782,11 +1526,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_elision`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn elision(self, parent: Option<AstKind<'a>>, span: Span) -> Elision<'a> {
-        Elision { parent, span }
+    pub fn elision(self, span: Span) -> Elision<'a> {
+        Elision { parent: None, span }
     }
 
     /// Build an [`Elision`], and store it in the memory arena.
@@ -1794,11 +1537,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::elision`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_elision(self, parent: Option<AstKind<'a>>, span: Span) -> Box<'a, Elision<'a>> {
-        Box::new_in(self.elision(parent, span), self.allocator)
+    pub fn alloc_elision(self, span: Span) -> Box<'a, Elision<'a>> {
+        Box::new_in(self.elision(span), self.allocator)
     }
 
     /// Build an [`ObjectExpression`].
@@ -1806,19 +1548,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_object_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties: Properties declared in the object
     /// - trailing_comma
     #[inline]
     pub fn object_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, ObjectPropertyKind<'a>>,
         trailing_comma: Option<Span>,
     ) -> ObjectExpression<'a> {
-        ObjectExpression { parent, span, properties, trailing_comma }
+        ObjectExpression { parent: None, span, properties, trailing_comma }
     }
 
     /// Build an [`ObjectExpression`], and store it in the memory arena.
@@ -1826,22 +1566,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::object_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties: Properties declared in the object
     /// - trailing_comma
     #[inline]
     pub fn alloc_object_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, ObjectPropertyKind<'a>>,
         trailing_comma: Option<Span>,
     ) -> Box<'a, ObjectExpression<'a>> {
-        Box::new_in(
-            self.object_expression(parent, span, properties, trailing_comma),
-            self.allocator,
-        )
+        Box::new_in(self.object_expression(span, properties, trailing_comma), self.allocator)
     }
 
     /// Build an [`ObjectPropertyKind::ObjectProperty`]
@@ -1849,7 +1584,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ObjectProperty`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - key
@@ -1860,7 +1594,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn object_property_kind_object_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: PropertyKind,
         key: PropertyKey<'a>,
@@ -1870,7 +1603,7 @@ impl<'a> AstBuilder<'a> {
         computed: bool,
     ) -> ObjectPropertyKind<'a> {
         ObjectPropertyKind::ObjectProperty(
-            self.alloc_object_property(parent, span, kind, key, value, method, shorthand, computed),
+            self.alloc_object_property(span, kind, key, value, method, shorthand, computed),
         )
     }
 
@@ -1879,17 +1612,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`SpreadElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being spread.
     #[inline]
     pub fn object_property_kind_spread_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> ObjectPropertyKind<'a> {
-        ObjectPropertyKind::SpreadProperty(self.alloc_spread_element(parent, span, argument))
+        ObjectPropertyKind::SpreadProperty(self.alloc_spread_element(span, argument))
     }
 
     /// Build an [`ObjectProperty`].
@@ -1897,7 +1628,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_object_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - key
@@ -1908,7 +1638,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn object_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: PropertyKind,
         key: PropertyKey<'a>,
@@ -1917,7 +1646,7 @@ impl<'a> AstBuilder<'a> {
         shorthand: bool,
         computed: bool,
     ) -> ObjectProperty<'a> {
-        ObjectProperty { parent, span, kind, key, value, method, shorthand, computed }
+        ObjectProperty { parent: None, span, kind, key, value, method, shorthand, computed }
     }
 
     /// Build an [`ObjectProperty`], and store it in the memory arena.
@@ -1925,7 +1654,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::object_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - key
@@ -1936,7 +1664,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_object_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: PropertyKind,
         key: PropertyKey<'a>,
@@ -1946,7 +1673,7 @@ impl<'a> AstBuilder<'a> {
         computed: bool,
     ) -> Box<'a, ObjectProperty<'a>> {
         Box::new_in(
-            self.object_property(parent, span, kind, key, value, method, shorthand, computed),
+            self.object_property(span, kind, key, value, method, shorthand, computed),
             self.allocator,
         )
     }
@@ -1956,20 +1683,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn property_key_identifier_name<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> PropertyKey<'a>
+    pub fn property_key_identifier_name<A>(self, span: Span, name: A) -> PropertyKey<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        PropertyKey::StaticIdentifier(self.alloc_identifier_name(parent, span, name))
+        PropertyKey::StaticIdentifier(self.alloc_identifier_name(span, name))
     }
 
     /// Build a [`PropertyKey::PrivateIdentifier`]
@@ -1977,20 +1698,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`PrivateIdentifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn property_key_private_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> PropertyKey<'a>
+    pub fn property_key_private_identifier<A>(self, span: Span, name: A) -> PropertyKey<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        PropertyKey::PrivateIdentifier(self.alloc_private_identifier(parent, span, name))
+        PropertyKey::PrivateIdentifier(self.alloc_private_identifier(span, name))
     }
 
     /// Build a [`TemplateLiteral`].
@@ -1998,19 +1713,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_template_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
     #[inline]
     pub fn template_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
     ) -> TemplateLiteral<'a> {
-        TemplateLiteral { parent, span, quasis, expressions }
+        TemplateLiteral { parent: None, span, quasis, expressions }
     }
 
     /// Build a [`TemplateLiteral`], and store it in the memory arena.
@@ -2018,19 +1731,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::template_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
     #[inline]
     pub fn alloc_template_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
     ) -> Box<'a, TemplateLiteral<'a>> {
-        Box::new_in(self.template_literal(parent, span, quasis, expressions), self.allocator)
+        Box::new_in(self.template_literal(span, quasis, expressions), self.allocator)
     }
 
     /// Build a [`TaggedTemplateExpression`].
@@ -2038,7 +1749,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_tagged_template_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - tag
     /// - quasi
@@ -2046,7 +1756,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn tagged_template_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         tag: Expression<'a>,
         quasi: TemplateLiteral<'a>,
@@ -2056,7 +1765,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TaggedTemplateExpression {
-            parent,
+            parent: None,
             span,
             tag,
             quasi,
@@ -2069,7 +1778,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::tagged_template_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - tag
     /// - quasi
@@ -2077,7 +1785,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_tagged_template_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         tag: Expression<'a>,
         quasi: TemplateLiteral<'a>,
@@ -2087,7 +1794,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Box::new_in(
-            self.tagged_template_expression(parent, span, tag, quasi, type_parameters),
+            self.tagged_template_expression(span, tag, quasi, type_parameters),
             self.allocator,
         )
     }
@@ -2097,19 +1804,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_template_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - tail
     /// - value
     #[inline]
     pub fn template_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         tail: bool,
         value: TemplateElementValue<'a>,
     ) -> TemplateElement<'a> {
-        TemplateElement { parent, span, tail, value }
+        TemplateElement { parent: None, span, tail, value }
     }
 
     /// Build a [`TemplateElement`], and store it in the memory arena.
@@ -2117,19 +1822,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::template_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - tail
     /// - value
     #[inline]
     pub fn alloc_template_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         tail: bool,
         value: TemplateElementValue<'a>,
     ) -> Box<'a, TemplateElement<'a>> {
-        Box::new_in(self.template_element(parent, span, tail, value), self.allocator)
+        Box::new_in(self.template_element(span, tail, value), self.allocator)
     }
 
     /// Build a [`MemberExpression::ComputedMemberExpression`]
@@ -2137,7 +1840,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ComputedMemberExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - expression
@@ -2145,14 +1847,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn member_expression_computed(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
         MemberExpression::ComputedMemberExpression(
-            self.alloc_computed_member_expression(parent, span, object, expression, optional),
+            self.alloc_computed_member_expression(span, object, expression, optional),
         )
     }
 
@@ -2161,7 +1862,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StaticMemberExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - property
@@ -2169,14 +1869,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn member_expression_static(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
         MemberExpression::StaticMemberExpression(
-            self.alloc_static_member_expression(parent, span, object, property, optional),
+            self.alloc_static_member_expression(span, object, property, optional),
         )
     }
 
@@ -2185,7 +1884,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`PrivateFieldExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - field
@@ -2193,14 +1891,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn member_expression_private_field_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         field: PrivateIdentifier<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
         MemberExpression::PrivateFieldExpression(
-            self.alloc_private_field_expression(parent, span, object, field, optional),
+            self.alloc_private_field_expression(span, object, field, optional),
         )
     }
 
@@ -2209,7 +1906,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_computed_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - expression
@@ -2217,13 +1913,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn computed_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
     ) -> ComputedMemberExpression<'a> {
-        ComputedMemberExpression { parent, span, object, expression, optional }
+        ComputedMemberExpression { parent: None, span, object, expression, optional }
     }
 
     /// Build a [`ComputedMemberExpression`], and store it in the memory arena.
@@ -2231,7 +1926,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::computed_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - expression
@@ -2239,14 +1933,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_computed_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
     ) -> Box<'a, ComputedMemberExpression<'a>> {
         Box::new_in(
-            self.computed_member_expression(parent, span, object, expression, optional),
+            self.computed_member_expression(span, object, expression, optional),
             self.allocator,
         )
     }
@@ -2256,7 +1949,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_static_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - property
@@ -2264,13 +1956,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn static_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
     ) -> StaticMemberExpression<'a> {
-        StaticMemberExpression { parent, span, object, property, optional }
+        StaticMemberExpression { parent: None, span, object, property, optional }
     }
 
     /// Build a [`StaticMemberExpression`], and store it in the memory arena.
@@ -2278,7 +1969,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::static_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - property
@@ -2286,16 +1976,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_static_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
     ) -> Box<'a, StaticMemberExpression<'a>> {
-        Box::new_in(
-            self.static_member_expression(parent, span, object, property, optional),
-            self.allocator,
-        )
+        Box::new_in(self.static_member_expression(span, object, property, optional), self.allocator)
     }
 
     /// Build a [`PrivateFieldExpression`].
@@ -2303,7 +1989,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_private_field_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - field
@@ -2311,13 +1996,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn private_field_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         field: PrivateIdentifier<'a>,
         optional: bool,
     ) -> PrivateFieldExpression<'a> {
-        PrivateFieldExpression { parent, span, object, field, optional }
+        PrivateFieldExpression { parent: None, span, object, field, optional }
     }
 
     /// Build a [`PrivateFieldExpression`], and store it in the memory arena.
@@ -2325,7 +2009,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::private_field_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - field
@@ -2333,16 +2016,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_private_field_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         field: PrivateIdentifier<'a>,
         optional: bool,
     ) -> Box<'a, PrivateFieldExpression<'a>> {
-        Box::new_in(
-            self.private_field_expression(parent, span, object, field, optional),
-            self.allocator,
-        )
+        Box::new_in(self.private_field_expression(span, object, field, optional), self.allocator)
     }
 
     /// Build a [`CallExpression`].
@@ -2350,7 +2029,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_call_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - type_parameters
@@ -2359,7 +2037,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn call_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         type_parameters: T1,
@@ -2370,7 +2047,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         CallExpression {
-            parent,
+            parent: None,
             span,
             callee,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -2384,7 +2061,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::call_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - type_parameters
@@ -2393,7 +2069,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_call_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         type_parameters: T1,
@@ -2404,7 +2079,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Box::new_in(
-            self.call_expression(parent, span, callee, type_parameters, arguments, optional),
+            self.call_expression(span, callee, type_parameters, arguments, optional),
             self.allocator,
         )
     }
@@ -2414,7 +2089,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_new_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - arguments
@@ -2422,7 +2096,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn new_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         arguments: Vec<'a, Argument<'a>>,
@@ -2432,7 +2105,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         NewExpression {
-            parent,
+            parent: None,
             span,
             callee,
             arguments,
@@ -2445,7 +2118,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::new_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - arguments
@@ -2453,7 +2125,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_new_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         arguments: Vec<'a, Argument<'a>>,
@@ -2462,10 +2133,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        Box::new_in(
-            self.new_expression(parent, span, callee, arguments, type_parameters),
-            self.allocator,
-        )
+        Box::new_in(self.new_expression(span, callee, arguments, type_parameters), self.allocator)
     }
 
     /// Build a [`MetaProperty`].
@@ -2473,19 +2141,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_meta_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - meta
     /// - property
     #[inline]
     pub fn meta_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         meta: IdentifierName<'a>,
         property: IdentifierName<'a>,
     ) -> MetaProperty<'a> {
-        MetaProperty { parent, span, meta, property }
+        MetaProperty { parent: None, span, meta, property }
     }
 
     /// Build a [`MetaProperty`], and store it in the memory arena.
@@ -2493,19 +2159,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::meta_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - meta
     /// - property
     #[inline]
     pub fn alloc_meta_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         meta: IdentifierName<'a>,
         property: IdentifierName<'a>,
     ) -> Box<'a, MetaProperty<'a>> {
-        Box::new_in(self.meta_property(parent, span, meta, property), self.allocator)
+        Box::new_in(self.meta_property(span, meta, property), self.allocator)
     }
 
     /// Build a [`SpreadElement`].
@@ -2513,17 +2177,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_spread_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being spread.
     #[inline]
-    pub fn spread_element(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> SpreadElement<'a> {
-        SpreadElement { parent, span, argument }
+    pub fn spread_element(self, span: Span, argument: Expression<'a>) -> SpreadElement<'a> {
+        SpreadElement { parent: None, span, argument }
     }
 
     /// Build a [`SpreadElement`], and store it in the memory arena.
@@ -2531,17 +2189,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::spread_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being spread.
     #[inline]
     pub fn alloc_spread_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> Box<'a, SpreadElement<'a>> {
-        Box::new_in(self.spread_element(parent, span, argument), self.allocator)
+        Box::new_in(self.spread_element(span, argument), self.allocator)
     }
 
     /// Build an [`Argument::SpreadElement`]
@@ -2549,17 +2205,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`SpreadElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being spread.
     #[inline]
-    pub fn argument_spread_element(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> Argument<'a> {
-        Argument::SpreadElement(self.alloc_spread_element(parent, span, argument))
+    pub fn argument_spread_element(self, span: Span, argument: Expression<'a>) -> Argument<'a> {
+        Argument::SpreadElement(self.alloc_spread_element(span, argument))
     }
 
     /// Build an [`UpdateExpression`].
@@ -2567,7 +2217,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_update_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - prefix
@@ -2575,13 +2224,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn update_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UpdateOperator,
         prefix: bool,
         argument: SimpleAssignmentTarget<'a>,
     ) -> UpdateExpression<'a> {
-        UpdateExpression { parent, span, operator, prefix, argument }
+        UpdateExpression { parent: None, span, operator, prefix, argument }
     }
 
     /// Build an [`UpdateExpression`], and store it in the memory arena.
@@ -2589,7 +2237,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::update_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - prefix
@@ -2597,16 +2244,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_update_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UpdateOperator,
         prefix: bool,
         argument: SimpleAssignmentTarget<'a>,
     ) -> Box<'a, UpdateExpression<'a>> {
-        Box::new_in(
-            self.update_expression(parent, span, operator, prefix, argument),
-            self.allocator,
-        )
+        Box::new_in(self.update_expression(span, operator, prefix, argument), self.allocator)
     }
 
     /// Build an [`UnaryExpression`].
@@ -2614,19 +2257,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_unary_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - argument
     #[inline]
     pub fn unary_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UnaryOperator,
         argument: Expression<'a>,
     ) -> UnaryExpression<'a> {
-        UnaryExpression { parent, span, operator, argument }
+        UnaryExpression { parent: None, span, operator, argument }
     }
 
     /// Build an [`UnaryExpression`], and store it in the memory arena.
@@ -2634,19 +2275,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::unary_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - argument
     #[inline]
     pub fn alloc_unary_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UnaryOperator,
         argument: Expression<'a>,
     ) -> Box<'a, UnaryExpression<'a>> {
-        Box::new_in(self.unary_expression(parent, span, operator, argument), self.allocator)
+        Box::new_in(self.unary_expression(span, operator, argument), self.allocator)
     }
 
     /// Build a [`BinaryExpression`].
@@ -2654,7 +2293,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binary_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2662,13 +2300,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn binary_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> BinaryExpression<'a> {
-        BinaryExpression { parent, span, left, operator, right }
+        BinaryExpression { parent: None, span, left, operator, right }
     }
 
     /// Build a [`BinaryExpression`], and store it in the memory arena.
@@ -2676,7 +2313,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binary_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2684,13 +2320,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_binary_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> Box<'a, BinaryExpression<'a>> {
-        Box::new_in(self.binary_expression(parent, span, left, operator, right), self.allocator)
+        Box::new_in(self.binary_expression(span, left, operator, right), self.allocator)
     }
 
     /// Build a [`PrivateInExpression`].
@@ -2698,7 +2333,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_private_in_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2706,13 +2340,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn private_in_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: PrivateIdentifier<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> PrivateInExpression<'a> {
-        PrivateInExpression { parent, span, left, operator, right }
+        PrivateInExpression { parent: None, span, left, operator, right }
     }
 
     /// Build a [`PrivateInExpression`], and store it in the memory arena.
@@ -2720,7 +2353,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::private_in_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2728,13 +2360,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_private_in_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: PrivateIdentifier<'a>,
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> Box<'a, PrivateInExpression<'a>> {
-        Box::new_in(self.private_in_expression(parent, span, left, operator, right), self.allocator)
+        Box::new_in(self.private_in_expression(span, left, operator, right), self.allocator)
     }
 
     /// Build a [`LogicalExpression`].
@@ -2742,7 +2373,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_logical_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2750,13 +2380,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn logical_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: LogicalOperator,
         right: Expression<'a>,
     ) -> LogicalExpression<'a> {
-        LogicalExpression { parent, span, left, operator, right }
+        LogicalExpression { parent: None, span, left, operator, right }
     }
 
     /// Build a [`LogicalExpression`], and store it in the memory arena.
@@ -2764,7 +2393,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::logical_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - operator
@@ -2772,13 +2400,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_logical_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: Expression<'a>,
         operator: LogicalOperator,
         right: Expression<'a>,
     ) -> Box<'a, LogicalExpression<'a>> {
-        Box::new_in(self.logical_expression(parent, span, left, operator, right), self.allocator)
+        Box::new_in(self.logical_expression(span, left, operator, right), self.allocator)
     }
 
     /// Build a [`ConditionalExpression`].
@@ -2786,7 +2413,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_conditional_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -2794,13 +2420,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn conditional_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Expression<'a>,
         alternate: Expression<'a>,
     ) -> ConditionalExpression<'a> {
-        ConditionalExpression { parent, span, test, consequent, alternate }
+        ConditionalExpression { parent: None, span, test, consequent, alternate }
     }
 
     /// Build a [`ConditionalExpression`], and store it in the memory arena.
@@ -2808,7 +2433,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::conditional_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -2816,16 +2440,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_conditional_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Expression<'a>,
         alternate: Expression<'a>,
     ) -> Box<'a, ConditionalExpression<'a>> {
-        Box::new_in(
-            self.conditional_expression(parent, span, test, consequent, alternate),
-            self.allocator,
-        )
+        Box::new_in(self.conditional_expression(span, test, consequent, alternate), self.allocator)
     }
 
     /// Build an [`AssignmentExpression`].
@@ -2833,7 +2453,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - left
@@ -2841,13 +2460,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn assignment_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: AssignmentOperator,
         left: AssignmentTarget<'a>,
         right: Expression<'a>,
     ) -> AssignmentExpression<'a> {
-        AssignmentExpression { parent, span, operator, left, right }
+        AssignmentExpression { parent: None, span, operator, left, right }
     }
 
     /// Build an [`AssignmentExpression`], and store it in the memory arena.
@@ -2855,7 +2473,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - left
@@ -2863,13 +2480,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_assignment_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: AssignmentOperator,
         left: AssignmentTarget<'a>,
         right: Expression<'a>,
     ) -> Box<'a, AssignmentExpression<'a>> {
-        Box::new_in(self.assignment_expression(parent, span, operator, left, right), self.allocator)
+        Box::new_in(self.assignment_expression(span, operator, left, right), self.allocator)
     }
 
     /// Build a [`SimpleAssignmentTarget::AssignmentTargetIdentifier`]
@@ -2877,13 +2493,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
     pub fn simple_assignment_target_identifier_reference<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> SimpleAssignmentTarget<'a>
@@ -2891,7 +2505,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         SimpleAssignmentTarget::AssignmentTargetIdentifier(
-            self.alloc_identifier_reference(parent, span, name),
+            self.alloc_identifier_reference(span, name),
         )
     }
 
@@ -2900,20 +2514,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSAsExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn simple_assignment_target_ts_as_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> SimpleAssignmentTarget<'a> {
         SimpleAssignmentTarget::TSAsExpression(self.alloc_ts_as_expression(
-            parent,
             span,
             expression,
             type_annotation,
@@ -2925,20 +2536,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSSatisfiesExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: The value expression being constrained.
     /// - type_annotation: The type `expression` must satisfy.
     #[inline]
     pub fn simple_assignment_target_ts_satisfies_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> SimpleAssignmentTarget<'a> {
         SimpleAssignmentTarget::TSSatisfiesExpression(self.alloc_ts_satisfies_expression(
-            parent,
             span,
             expression,
             type_annotation,
@@ -2950,18 +2558,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNonNullExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn simple_assignment_target_ts_non_null_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> SimpleAssignmentTarget<'a> {
         SimpleAssignmentTarget::TSNonNullExpression(
-            self.alloc_ts_non_null_expression(parent, span, expression),
+            self.alloc_ts_non_null_expression(span, expression),
         )
     }
 
@@ -2970,20 +2576,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeAssertion`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn simple_assignment_target_ts_type_assertion(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> SimpleAssignmentTarget<'a> {
         SimpleAssignmentTarget::TSTypeAssertion(self.alloc_ts_type_assertion(
-            parent,
             span,
             expression,
             type_annotation,
@@ -2995,14 +2598,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSInstantiationExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn simple_assignment_target_ts_instantiation_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -3011,7 +2612,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameterInstantiation<'a>>>,
     {
         SimpleAssignmentTarget::TSInstantiationExpression(self.alloc_ts_instantiation_expression(
-            parent,
             span,
             expression,
             type_parameters,
@@ -3023,7 +2623,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ArrayAssignmentTarget`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
@@ -3031,14 +2630,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn assignment_target_pattern_array_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<AssignmentTargetMaybeDefault<'a>>>,
         rest: Option<AssignmentTargetRest<'a>>,
         trailing_comma: Option<Span>,
     ) -> AssignmentTargetPattern<'a> {
         AssignmentTargetPattern::ArrayAssignmentTarget(self.alloc_array_assignment_target(
-            parent,
             span,
             elements,
             rest,
@@ -3051,20 +2648,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ObjectAssignmentTarget`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn assignment_target_pattern_object_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, AssignmentTargetProperty<'a>>,
         rest: Option<AssignmentTargetRest<'a>>,
     ) -> AssignmentTargetPattern<'a> {
         AssignmentTargetPattern::ObjectAssignmentTarget(
-            self.alloc_object_assignment_target(parent, span, properties, rest),
+            self.alloc_object_assignment_target(span, properties, rest),
         )
     }
 
@@ -3073,7 +2668,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_array_assignment_target`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
@@ -3081,13 +2675,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn array_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<AssignmentTargetMaybeDefault<'a>>>,
         rest: Option<AssignmentTargetRest<'a>>,
         trailing_comma: Option<Span>,
     ) -> ArrayAssignmentTarget<'a> {
-        ArrayAssignmentTarget { parent, span, elements, rest, trailing_comma }
+        ArrayAssignmentTarget { parent: None, span, elements, rest, trailing_comma }
     }
 
     /// Build an [`ArrayAssignmentTarget`], and store it in the memory arena.
@@ -3095,7 +2688,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::array_assignment_target`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
@@ -3103,14 +2695,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_array_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<AssignmentTargetMaybeDefault<'a>>>,
         rest: Option<AssignmentTargetRest<'a>>,
         trailing_comma: Option<Span>,
     ) -> Box<'a, ArrayAssignmentTarget<'a>> {
         Box::new_in(
-            self.array_assignment_target(parent, span, elements, rest, trailing_comma),
+            self.array_assignment_target(span, elements, rest, trailing_comma),
             self.allocator,
         )
     }
@@ -3120,19 +2711,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_object_assignment_target`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn object_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, AssignmentTargetProperty<'a>>,
         rest: Option<AssignmentTargetRest<'a>>,
     ) -> ObjectAssignmentTarget<'a> {
-        ObjectAssignmentTarget { parent, span, properties, rest }
+        ObjectAssignmentTarget { parent: None, span, properties, rest }
     }
 
     /// Build an [`ObjectAssignmentTarget`], and store it in the memory arena.
@@ -3140,19 +2729,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::object_assignment_target`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn alloc_object_assignment_target(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, AssignmentTargetProperty<'a>>,
         rest: Option<AssignmentTargetRest<'a>>,
     ) -> Box<'a, ObjectAssignmentTarget<'a>> {
-        Box::new_in(self.object_assignment_target(parent, span, properties, rest), self.allocator)
+        Box::new_in(self.object_assignment_target(span, properties, rest), self.allocator)
     }
 
     /// Build an [`AssignmentTargetRest`].
@@ -3160,17 +2747,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_target_rest`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - target
     #[inline]
     pub fn assignment_target_rest(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         target: AssignmentTarget<'a>,
     ) -> AssignmentTargetRest<'a> {
-        AssignmentTargetRest { parent, span, target }
+        AssignmentTargetRest { parent: None, span, target }
     }
 
     /// Build an [`AssignmentTargetRest`], and store it in the memory arena.
@@ -3178,17 +2763,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_target_rest`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - target
     #[inline]
     pub fn alloc_assignment_target_rest(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         target: AssignmentTarget<'a>,
     ) -> Box<'a, AssignmentTargetRest<'a>> {
-        Box::new_in(self.assignment_target_rest(parent, span, target), self.allocator)
+        Box::new_in(self.assignment_target_rest(span, target), self.allocator)
     }
 
     /// Build an [`AssignmentTargetMaybeDefault::AssignmentTargetWithDefault`]
@@ -3196,20 +2779,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AssignmentTargetWithDefault`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn assignment_target_maybe_default_assignment_target_with_default(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: AssignmentTarget<'a>,
         init: Expression<'a>,
     ) -> AssignmentTargetMaybeDefault<'a> {
         AssignmentTargetMaybeDefault::AssignmentTargetWithDefault(
-            self.alloc_assignment_target_with_default(parent, span, binding, init),
+            self.alloc_assignment_target_with_default(span, binding, init),
         )
     }
 
@@ -3218,19 +2799,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_target_with_default`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn assignment_target_with_default(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: AssignmentTarget<'a>,
         init: Expression<'a>,
     ) -> AssignmentTargetWithDefault<'a> {
-        AssignmentTargetWithDefault { parent, span, binding, init }
+        AssignmentTargetWithDefault { parent: None, span, binding, init }
     }
 
     /// Build an [`AssignmentTargetWithDefault`], and store it in the memory arena.
@@ -3238,22 +2817,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_target_with_default`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn alloc_assignment_target_with_default(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: AssignmentTarget<'a>,
         init: Expression<'a>,
     ) -> Box<'a, AssignmentTargetWithDefault<'a>> {
-        Box::new_in(
-            self.assignment_target_with_default(parent, span, binding, init),
-            self.allocator,
-        )
+        Box::new_in(self.assignment_target_with_default(span, binding, init), self.allocator)
     }
 
     /// Build an [`AssignmentTargetProperty::AssignmentTargetPropertyIdentifier`]
@@ -3261,20 +2835,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AssignmentTargetPropertyIdentifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn assignment_target_property_assignment_target_property_identifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: IdentifierReference<'a>,
         init: Option<Expression<'a>>,
     ) -> AssignmentTargetProperty<'a> {
         AssignmentTargetProperty::AssignmentTargetPropertyIdentifier(
-            self.alloc_assignment_target_property_identifier(parent, span, binding, init),
+            self.alloc_assignment_target_property_identifier(span, binding, init),
         )
     }
 
@@ -3283,7 +2855,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AssignmentTargetPropertyProperty`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - binding
@@ -3291,14 +2862,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn assignment_target_property_assignment_target_property_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: PropertyKey<'a>,
         binding: AssignmentTargetMaybeDefault<'a>,
         computed: bool,
     ) -> AssignmentTargetProperty<'a> {
         AssignmentTargetProperty::AssignmentTargetPropertyProperty(
-            self.alloc_assignment_target_property_property(parent, span, name, binding, computed),
+            self.alloc_assignment_target_property_property(span, name, binding, computed),
         )
     }
 
@@ -3307,19 +2877,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_target_property_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn assignment_target_property_identifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: IdentifierReference<'a>,
         init: Option<Expression<'a>>,
     ) -> AssignmentTargetPropertyIdentifier<'a> {
-        AssignmentTargetPropertyIdentifier { parent, span, binding, init }
+        AssignmentTargetPropertyIdentifier { parent: None, span, binding, init }
     }
 
     /// Build an [`AssignmentTargetPropertyIdentifier`], and store it in the memory arena.
@@ -3327,22 +2895,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_target_property_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - binding
     /// - init
     #[inline]
     pub fn alloc_assignment_target_property_identifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         binding: IdentifierReference<'a>,
         init: Option<Expression<'a>>,
     ) -> Box<'a, AssignmentTargetPropertyIdentifier<'a>> {
-        Box::new_in(
-            self.assignment_target_property_identifier(parent, span, binding, init),
-            self.allocator,
-        )
+        Box::new_in(self.assignment_target_property_identifier(span, binding, init), self.allocator)
     }
 
     /// Build an [`AssignmentTargetPropertyProperty`].
@@ -3350,7 +2913,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_target_property_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - binding
@@ -3358,13 +2920,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn assignment_target_property_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: PropertyKey<'a>,
         binding: AssignmentTargetMaybeDefault<'a>,
         computed: bool,
     ) -> AssignmentTargetPropertyProperty<'a> {
-        AssignmentTargetPropertyProperty { parent, span, name, binding, computed }
+        AssignmentTargetPropertyProperty { parent: None, span, name, binding, computed }
     }
 
     /// Build an [`AssignmentTargetPropertyProperty`], and store it in the memory arena.
@@ -3372,7 +2933,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_target_property_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - binding
@@ -3380,14 +2940,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_assignment_target_property_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: PropertyKey<'a>,
         binding: AssignmentTargetMaybeDefault<'a>,
         computed: bool,
     ) -> Box<'a, AssignmentTargetPropertyProperty<'a>> {
         Box::new_in(
-            self.assignment_target_property_property(parent, span, name, binding, computed),
+            self.assignment_target_property_property(span, name, binding, computed),
             self.allocator,
         )
     }
@@ -3397,17 +2956,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_sequence_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expressions
     #[inline]
     pub fn sequence_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expressions: Vec<'a, Expression<'a>>,
     ) -> SequenceExpression<'a> {
-        SequenceExpression { parent, span, expressions }
+        SequenceExpression { parent: None, span, expressions }
     }
 
     /// Build a [`SequenceExpression`], and store it in the memory arena.
@@ -3415,17 +2972,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::sequence_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expressions
     #[inline]
     pub fn alloc_sequence_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expressions: Vec<'a, Expression<'a>>,
     ) -> Box<'a, SequenceExpression<'a>> {
-        Box::new_in(self.sequence_expression(parent, span, expressions), self.allocator)
+        Box::new_in(self.sequence_expression(span, expressions), self.allocator)
     }
 
     /// Build a [`Super`].
@@ -3433,11 +2988,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_super`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn super_(self, parent: Option<AstKind<'a>>, span: Span) -> Super<'a> {
-        Super { parent, span }
+    pub fn super_(self, span: Span) -> Super<'a> {
+        Super { parent: None, span }
     }
 
     /// Build a [`Super`], and store it in the memory arena.
@@ -3445,11 +2999,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::super_`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_super(self, parent: Option<AstKind<'a>>, span: Span) -> Box<'a, Super<'a>> {
-        Box::new_in(self.super_(parent, span), self.allocator)
+    pub fn alloc_super(self, span: Span) -> Box<'a, Super<'a>> {
+        Box::new_in(self.super_(span), self.allocator)
     }
 
     /// Build an [`AwaitExpression`].
@@ -3457,17 +3010,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_await_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
-    pub fn await_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> AwaitExpression<'a> {
-        AwaitExpression { parent, span, argument }
+    pub fn await_expression(self, span: Span, argument: Expression<'a>) -> AwaitExpression<'a> {
+        AwaitExpression { parent: None, span, argument }
     }
 
     /// Build an [`AwaitExpression`], and store it in the memory arena.
@@ -3475,17 +3022,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::await_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
     pub fn alloc_await_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> Box<'a, AwaitExpression<'a>> {
-        Box::new_in(self.await_expression(parent, span, argument), self.allocator)
+        Box::new_in(self.await_expression(span, argument), self.allocator)
     }
 
     /// Build a [`ChainExpression`].
@@ -3493,17 +3038,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_chain_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn chain_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: ChainElement<'a>,
-    ) -> ChainExpression<'a> {
-        ChainExpression { parent, span, expression }
+    pub fn chain_expression(self, span: Span, expression: ChainElement<'a>) -> ChainExpression<'a> {
+        ChainExpression { parent: None, span, expression }
     }
 
     /// Build a [`ChainExpression`], and store it in the memory arena.
@@ -3511,17 +3050,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::chain_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_chain_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: ChainElement<'a>,
     ) -> Box<'a, ChainExpression<'a>> {
-        Box::new_in(self.chain_expression(parent, span, expression), self.allocator)
+        Box::new_in(self.chain_expression(span, expression), self.allocator)
     }
 
     /// Build a [`ChainElement::CallExpression`]
@@ -3529,7 +3066,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`CallExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - callee
     /// - type_parameters
@@ -3538,7 +3074,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn chain_element_call_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         callee: Expression<'a>,
         type_parameters: T1,
@@ -3549,7 +3084,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         ChainElement::CallExpression(self.alloc_call_expression(
-            parent,
             span,
             callee,
             type_parameters,
@@ -3563,19 +3097,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNonNullExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn chain_element_ts_non_null_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> ChainElement<'a> {
-        ChainElement::TSNonNullExpression(
-            self.alloc_ts_non_null_expression(parent, span, expression),
-        )
+        ChainElement::TSNonNullExpression(self.alloc_ts_non_null_expression(span, expression))
     }
 
     /// Build a [`ParenthesizedExpression`].
@@ -3583,17 +3113,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_parenthesized_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn parenthesized_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> ParenthesizedExpression<'a> {
-        ParenthesizedExpression { parent, span, expression }
+        ParenthesizedExpression { parent: None, span, expression }
     }
 
     /// Build a [`ParenthesizedExpression`], and store it in the memory arena.
@@ -3601,17 +3129,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::parenthesized_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_parenthesized_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Box<'a, ParenthesizedExpression<'a>> {
-        Box::new_in(self.parenthesized_expression(parent, span, expression), self.allocator)
+        Box::new_in(self.parenthesized_expression(span, expression), self.allocator)
     }
 
     /// Build a [`Statement::BlockStatement`]
@@ -3619,17 +3145,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BlockStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
-    pub fn statement_block(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        body: Vec<'a, Statement<'a>>,
-    ) -> Statement<'a> {
-        Statement::BlockStatement(self.alloc_block_statement(parent, span, body))
+    pub fn statement_block(self, span: Span, body: Vec<'a, Statement<'a>>) -> Statement<'a> {
+        Statement::BlockStatement(self.alloc_block_statement(span, body))
     }
 
     /// Build a [`Statement::BreakStatement`]
@@ -3637,17 +3157,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BreakStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
-    pub fn statement_break(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        label: Option<LabelIdentifier<'a>>,
-    ) -> Statement<'a> {
-        Statement::BreakStatement(self.alloc_break_statement(parent, span, label))
+    pub fn statement_break(self, span: Span, label: Option<LabelIdentifier<'a>>) -> Statement<'a> {
+        Statement::BreakStatement(self.alloc_break_statement(span, label))
     }
 
     /// Build a [`Statement::ContinueStatement`]
@@ -3655,17 +3169,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ContinueStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
     pub fn statement_continue(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> Statement<'a> {
-        Statement::ContinueStatement(self.alloc_continue_statement(parent, span, label))
+        Statement::ContinueStatement(self.alloc_continue_statement(span, label))
     }
 
     /// Build a [`Statement::DebuggerStatement`]
@@ -3673,11 +3185,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`DebuggerStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn statement_debugger(self, parent: Option<AstKind<'a>>, span: Span) -> Statement<'a> {
-        Statement::DebuggerStatement(self.alloc_debugger_statement(parent, span))
+    pub fn statement_debugger(self, span: Span) -> Statement<'a> {
+        Statement::DebuggerStatement(self.alloc_debugger_statement(span))
     }
 
     /// Build a [`Statement::DoWhileStatement`]
@@ -3685,19 +3196,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`DoWhileStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - test
     #[inline]
     pub fn statement_do_while(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Statement<'a>,
         test: Expression<'a>,
     ) -> Statement<'a> {
-        Statement::DoWhileStatement(self.alloc_do_while_statement(parent, span, body, test))
+        Statement::DoWhileStatement(self.alloc_do_while_statement(span, body, test))
     }
 
     /// Build a [`Statement::EmptyStatement`]
@@ -3705,11 +3214,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`EmptyStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn statement_empty(self, parent: Option<AstKind<'a>>, span: Span) -> Statement<'a> {
-        Statement::EmptyStatement(self.alloc_empty_statement(parent, span))
+    pub fn statement_empty(self, span: Span) -> Statement<'a> {
+        Statement::EmptyStatement(self.alloc_empty_statement(span))
     }
 
     /// Build a [`Statement::ExpressionStatement`]
@@ -3717,17 +3225,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ExpressionStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn statement_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: Expression<'a>,
-    ) -> Statement<'a> {
-        Statement::ExpressionStatement(self.alloc_expression_statement(parent, span, expression))
+    pub fn statement_expression(self, span: Span, expression: Expression<'a>) -> Statement<'a> {
+        Statement::ExpressionStatement(self.alloc_expression_statement(span, expression))
     }
 
     /// Build a [`Statement::ForInStatement`]
@@ -3735,7 +3237,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ForInStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
@@ -3743,13 +3244,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn statement_for_in(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::ForInStatement(self.alloc_for_in_statement(parent, span, left, right, body))
+        Statement::ForInStatement(self.alloc_for_in_statement(span, left, right, body))
     }
 
     /// Build a [`Statement::ForOfStatement`]
@@ -3757,7 +3257,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ForOfStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#await
     /// - left
@@ -3766,16 +3265,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn statement_for_of(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#await: bool,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::ForOfStatement(
-            self.alloc_for_of_statement(parent, span, r#await, left, right, body),
-        )
+        Statement::ForOfStatement(self.alloc_for_of_statement(span, r#await, left, right, body))
     }
 
     /// Build a [`Statement::ForStatement`]
@@ -3783,7 +3279,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ForStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - init
     /// - test
@@ -3792,14 +3287,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn statement_for(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         init: Option<ForStatementInit<'a>>,
         test: Option<Expression<'a>>,
         update: Option<Expression<'a>>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::ForStatement(self.alloc_for_statement(parent, span, init, test, update, body))
+        Statement::ForStatement(self.alloc_for_statement(span, init, test, update, body))
     }
 
     /// Build a [`Statement::IfStatement`]
@@ -3807,7 +3301,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IfStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -3815,13 +3308,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn statement_if(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Statement<'a>,
         alternate: Option<Statement<'a>>,
     ) -> Statement<'a> {
-        Statement::IfStatement(self.alloc_if_statement(parent, span, test, consequent, alternate))
+        Statement::IfStatement(self.alloc_if_statement(span, test, consequent, alternate))
     }
 
     /// Build a [`Statement::LabeledStatement`]
@@ -3829,19 +3321,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`LabeledStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     /// - body
     #[inline]
     pub fn statement_labeled(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: LabelIdentifier<'a>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::LabeledStatement(self.alloc_labeled_statement(parent, span, label, body))
+        Statement::LabeledStatement(self.alloc_labeled_statement(span, label, body))
     }
 
     /// Build a [`Statement::ReturnStatement`]
@@ -3849,17 +3339,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ReturnStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
-    pub fn statement_return(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Option<Expression<'a>>,
-    ) -> Statement<'a> {
-        Statement::ReturnStatement(self.alloc_return_statement(parent, span, argument))
+    pub fn statement_return(self, span: Span, argument: Option<Expression<'a>>) -> Statement<'a> {
+        Statement::ReturnStatement(self.alloc_return_statement(span, argument))
     }
 
     /// Build a [`Statement::SwitchStatement`]
@@ -3867,19 +3351,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`SwitchStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - discriminant
     /// - cases
     #[inline]
     pub fn statement_switch(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
     ) -> Statement<'a> {
-        Statement::SwitchStatement(self.alloc_switch_statement(parent, span, discriminant, cases))
+        Statement::SwitchStatement(self.alloc_switch_statement(span, discriminant, cases))
     }
 
     /// Build a [`Statement::ThrowStatement`]
@@ -3887,17 +3369,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ThrowStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being thrown, e.g. `err` in `throw err;`
     #[inline]
-    pub fn statement_throw(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> Statement<'a> {
-        Statement::ThrowStatement(self.alloc_throw_statement(parent, span, argument))
+    pub fn statement_throw(self, span: Span, argument: Expression<'a>) -> Statement<'a> {
+        Statement::ThrowStatement(self.alloc_throw_statement(span, argument))
     }
 
     /// Build a [`Statement::TryStatement`]
@@ -3905,7 +3381,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TryStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - block: Statements in the `try` block
     /// - handler: The `catch` clause, including the parameter and the block statement
@@ -3913,7 +3388,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn statement_try<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         block: T1,
         handler: T2,
@@ -3924,7 +3398,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, CatchClause<'a>>>>,
         T3: IntoIn<'a, Option<Box<'a, BlockStatement<'a>>>>,
     {
-        Statement::TryStatement(self.alloc_try_statement(parent, span, block, handler, finalizer))
+        Statement::TryStatement(self.alloc_try_statement(span, block, handler, finalizer))
     }
 
     /// Build a [`Statement::WhileStatement`]
@@ -3932,19 +3406,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`WhileStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - body
     #[inline]
     pub fn statement_while(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::WhileStatement(self.alloc_while_statement(parent, span, test, body))
+        Statement::WhileStatement(self.alloc_while_statement(span, test, body))
     }
 
     /// Build a [`Statement::WithStatement`]
@@ -3952,19 +3424,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`WithStatement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - body
     #[inline]
     pub fn statement_with(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         body: Statement<'a>,
     ) -> Statement<'a> {
-        Statement::WithStatement(self.alloc_with_statement(parent, span, object, body))
+        Statement::WithStatement(self.alloc_with_statement(span, object, body))
     }
 
     /// Build a [`Directive`].
@@ -3972,14 +3442,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_directive`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Directive with any escapes unescaped
     /// - directive: Raw content of directive as it appears in source, any escapes left as is
     #[inline]
     pub fn directive<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: StringLiteral<'a>,
         directive: A,
@@ -3987,7 +3455,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Directive { parent, span, expression, directive: directive.into_in(self.allocator) }
+        Directive { parent: None, span, expression, directive: directive.into_in(self.allocator) }
     }
 
     /// Build a [`Directive`], and store it in the memory arena.
@@ -3995,14 +3463,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::directive`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Directive with any escapes unescaped
     /// - directive: Raw content of directive as it appears in source, any escapes left as is
     #[inline]
     pub fn alloc_directive<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: StringLiteral<'a>,
         directive: A,
@@ -4010,7 +3476,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.directive(parent, span, expression, directive), self.allocator)
+        Box::new_in(self.directive(span, expression, directive), self.allocator)
     }
 
     /// Build a [`Hashbang`].
@@ -4018,15 +3484,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_hashbang`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - value
     #[inline]
-    pub fn hashbang<A>(self, parent: Option<AstKind<'a>>, span: Span, value: A) -> Hashbang<'a>
+    pub fn hashbang<A>(self, span: Span, value: A) -> Hashbang<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Hashbang { parent, span, value: value.into_in(self.allocator) }
+        Hashbang { parent: None, span, value: value.into_in(self.allocator) }
     }
 
     /// Build a [`Hashbang`], and store it in the memory arena.
@@ -4034,20 +3499,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::hashbang`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - value
     #[inline]
-    pub fn alloc_hashbang<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: A,
-    ) -> Box<'a, Hashbang<'a>>
+    pub fn alloc_hashbang<A>(self, span: Span, value: A) -> Box<'a, Hashbang<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.hashbang(parent, span, value), self.allocator)
+        Box::new_in(self.hashbang(span, value), self.allocator)
     }
 
     /// Build a [`BlockStatement`].
@@ -4055,17 +3514,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_block_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
-    pub fn block_statement(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        body: Vec<'a, Statement<'a>>,
-    ) -> BlockStatement<'a> {
-        BlockStatement { parent, span, body, scope_id: Default::default() }
+    pub fn block_statement(self, span: Span, body: Vec<'a, Statement<'a>>) -> BlockStatement<'a> {
+        BlockStatement { parent: None, span, body, scope_id: Default::default() }
     }
 
     /// Build a [`BlockStatement`], and store it in the memory arena.
@@ -4073,17 +3526,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::block_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn alloc_block_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
     ) -> Box<'a, BlockStatement<'a>> {
-        Box::new_in(self.block_statement(parent, span, body), self.allocator)
+        Box::new_in(self.block_statement(span, body), self.allocator)
     }
 
     /// Build a [`BlockStatement`] with `ScopeId`.
@@ -4091,19 +3542,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_block_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - scope_id
     #[inline]
     pub fn block_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> BlockStatement<'a> {
-        BlockStatement { parent, span, body, scope_id: Cell::new(Some(scope_id)) }
+        BlockStatement { parent: None, span, body, scope_id: Cell::new(Some(scope_id)) }
     }
 
     /// Build a [`BlockStatement`] with `ScopeId`, and store it in the memory arena.
@@ -4111,22 +3560,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::block_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - scope_id
     #[inline]
     pub fn alloc_block_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> Box<'a, BlockStatement<'a>> {
-        Box::new_in(
-            self.block_statement_with_scope_id(parent, span, body, scope_id),
-            self.allocator,
-        )
+        Box::new_in(self.block_statement_with_scope_id(span, body, scope_id), self.allocator)
     }
 
     /// Build a [`Declaration::VariableDeclaration`]
@@ -4134,7 +3578,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - declarations
@@ -4142,14 +3585,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_variable(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> Declaration<'a> {
         Declaration::VariableDeclaration(self.alloc_variable_declaration(
-            parent,
             span,
             kind,
             declarations,
@@ -4162,7 +3603,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Function`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -4177,7 +3617,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_function<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -4198,7 +3637,6 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Declaration::FunctionDeclaration(self.alloc_function(
-            parent,
             span,
             r#type,
             id,
@@ -4218,7 +3656,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Class`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -4233,7 +3670,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_class<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -4252,7 +3688,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Declaration::ClassDeclaration(self.alloc_class(
-            parent,
             span,
             r#type,
             decorators,
@@ -4272,7 +3707,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeAliasDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     /// - type_parameters
@@ -4281,7 +3715,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_ts_type_alias<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         type_parameters: T1,
@@ -4292,7 +3725,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         Declaration::TSTypeAliasDeclaration(self.alloc_ts_type_alias_declaration(
-            parent,
             span,
             id,
             type_parameters,
@@ -4306,7 +3738,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSInterfaceDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -4316,7 +3747,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_ts_interface<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -4329,7 +3759,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         Declaration::TSInterfaceDeclaration(self.alloc_ts_interface_declaration(
-            parent,
             span,
             id,
             extends,
@@ -4344,7 +3773,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSEnumDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - members
@@ -4353,7 +3781,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_ts_enum(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         members: Vec<'a, TSEnumMember<'a>>,
@@ -4361,7 +3788,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Declaration<'a> {
         Declaration::TSEnumDeclaration(
-            self.alloc_ts_enum_declaration(parent, span, id, members, r#const, declare),
+            self.alloc_ts_enum_declaration(span, id, members, r#const, declare),
         )
     }
 
@@ -4370,7 +3797,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSModuleDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -4379,7 +3805,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_ts_module(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
@@ -4387,7 +3812,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Declaration<'a> {
         Declaration::TSModuleDeclaration(
-            self.alloc_ts_module_declaration(parent, span, id, body, kind, declare),
+            self.alloc_ts_module_declaration(span, id, body, kind, declare),
         )
     }
 
@@ -4396,7 +3821,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSImportEqualsDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - module_reference
@@ -4404,14 +3828,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn declaration_ts_import_equals(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         module_reference: TSModuleReference<'a>,
         import_kind: ImportOrExportKind,
     ) -> Declaration<'a> {
         Declaration::TSImportEqualsDeclaration(self.alloc_ts_import_equals_declaration(
-            parent,
             span,
             id,
             module_reference,
@@ -4424,7 +3846,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_variable_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - declarations
@@ -4432,13 +3853,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn variable_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> VariableDeclaration<'a> {
-        VariableDeclaration { parent, span, kind, declarations, declare }
+        VariableDeclaration { parent: None, span, kind, declarations, declare }
     }
 
     /// Build a [`VariableDeclaration`], and store it in the memory arena.
@@ -4446,7 +3866,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::variable_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - declarations
@@ -4454,16 +3873,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_variable_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> Box<'a, VariableDeclaration<'a>> {
-        Box::new_in(
-            self.variable_declaration(parent, span, kind, declarations, declare),
-            self.allocator,
-        )
+        Box::new_in(self.variable_declaration(span, kind, declarations, declare), self.allocator)
     }
 
     /// Build a [`VariableDeclarator`].
@@ -4471,7 +3886,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_variable_declarator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - id
@@ -4480,14 +3894,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn variable_declarator(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         id: BindingPattern<'a>,
         init: Option<Expression<'a>>,
         definite: bool,
     ) -> VariableDeclarator<'a> {
-        VariableDeclarator { parent, span, kind, id, init, definite }
+        VariableDeclarator { parent: None, span, kind, id, init, definite }
     }
 
     /// Build a [`VariableDeclarator`], and store it in the memory arena.
@@ -4495,7 +3908,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::variable_declarator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - id
@@ -4504,17 +3916,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_variable_declarator(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         id: BindingPattern<'a>,
         init: Option<Expression<'a>>,
         definite: bool,
     ) -> Box<'a, VariableDeclarator<'a>> {
-        Box::new_in(
-            self.variable_declarator(parent, span, kind, id, init, definite),
-            self.allocator,
-        )
+        Box::new_in(self.variable_declarator(span, kind, id, init, definite), self.allocator)
     }
 
     /// Build an [`EmptyStatement`].
@@ -4522,11 +3930,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_empty_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn empty_statement(self, parent: Option<AstKind<'a>>, span: Span) -> EmptyStatement<'a> {
-        EmptyStatement { parent, span }
+    pub fn empty_statement(self, span: Span) -> EmptyStatement<'a> {
+        EmptyStatement { parent: None, span }
     }
 
     /// Build an [`EmptyStatement`], and store it in the memory arena.
@@ -4534,15 +3941,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::empty_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_empty_statement(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, EmptyStatement<'a>> {
-        Box::new_in(self.empty_statement(parent, span), self.allocator)
+    pub fn alloc_empty_statement(self, span: Span) -> Box<'a, EmptyStatement<'a>> {
+        Box::new_in(self.empty_statement(span), self.allocator)
     }
 
     /// Build an [`ExpressionStatement`].
@@ -4550,17 +3952,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_expression_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn expression_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> ExpressionStatement<'a> {
-        ExpressionStatement { parent, span, expression }
+        ExpressionStatement { parent: None, span, expression }
     }
 
     /// Build an [`ExpressionStatement`], and store it in the memory arena.
@@ -4568,17 +3968,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::expression_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_expression_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Box<'a, ExpressionStatement<'a>> {
-        Box::new_in(self.expression_statement(parent, span, expression), self.allocator)
+        Box::new_in(self.expression_statement(span, expression), self.allocator)
     }
 
     /// Build an [`IfStatement`].
@@ -4586,7 +3984,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_if_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -4594,13 +3991,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn if_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Statement<'a>,
         alternate: Option<Statement<'a>>,
     ) -> IfStatement<'a> {
-        IfStatement { parent, span, test, consequent, alternate }
+        IfStatement { parent: None, span, test, consequent, alternate }
     }
 
     /// Build an [`IfStatement`], and store it in the memory arena.
@@ -4608,7 +4004,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::if_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
@@ -4616,13 +4011,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_if_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         consequent: Statement<'a>,
         alternate: Option<Statement<'a>>,
     ) -> Box<'a, IfStatement<'a>> {
-        Box::new_in(self.if_statement(parent, span, test, consequent, alternate), self.allocator)
+        Box::new_in(self.if_statement(span, test, consequent, alternate), self.allocator)
     }
 
     /// Build a [`DoWhileStatement`].
@@ -4630,19 +4024,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_do_while_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - test
     #[inline]
     pub fn do_while_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Statement<'a>,
         test: Expression<'a>,
     ) -> DoWhileStatement<'a> {
-        DoWhileStatement { parent, span, body, test }
+        DoWhileStatement { parent: None, span, body, test }
     }
 
     /// Build a [`DoWhileStatement`], and store it in the memory arena.
@@ -4650,19 +4042,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::do_while_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - test
     #[inline]
     pub fn alloc_do_while_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Statement<'a>,
         test: Expression<'a>,
     ) -> Box<'a, DoWhileStatement<'a>> {
-        Box::new_in(self.do_while_statement(parent, span, body, test), self.allocator)
+        Box::new_in(self.do_while_statement(span, body, test), self.allocator)
     }
 
     /// Build a [`WhileStatement`].
@@ -4670,19 +4060,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_while_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - body
     #[inline]
     pub fn while_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         body: Statement<'a>,
     ) -> WhileStatement<'a> {
-        WhileStatement { parent, span, test, body }
+        WhileStatement { parent: None, span, test, body }
     }
 
     /// Build a [`WhileStatement`], and store it in the memory arena.
@@ -4690,19 +4078,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::while_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - body
     #[inline]
     pub fn alloc_while_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Expression<'a>,
         body: Statement<'a>,
     ) -> Box<'a, WhileStatement<'a>> {
-        Box::new_in(self.while_statement(parent, span, test, body), self.allocator)
+        Box::new_in(self.while_statement(span, test, body), self.allocator)
     }
 
     /// Build a [`ForStatement`].
@@ -4710,7 +4096,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - init
     /// - test
@@ -4719,14 +4104,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         init: Option<ForStatementInit<'a>>,
         test: Option<Expression<'a>>,
         update: Option<Expression<'a>>,
         body: Statement<'a>,
     ) -> ForStatement<'a> {
-        ForStatement { parent, span, init, test, update, body, scope_id: Default::default() }
+        ForStatement { parent: None, span, init, test, update, body, scope_id: Default::default() }
     }
 
     /// Build a [`ForStatement`], and store it in the memory arena.
@@ -4734,7 +4118,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - init
     /// - test
@@ -4743,14 +4126,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         init: Option<ForStatementInit<'a>>,
         test: Option<Expression<'a>>,
         update: Option<Expression<'a>>,
         body: Statement<'a>,
     ) -> Box<'a, ForStatement<'a>> {
-        Box::new_in(self.for_statement(parent, span, init, test, update, body), self.allocator)
+        Box::new_in(self.for_statement(span, init, test, update, body), self.allocator)
     }
 
     /// Build a [`ForStatement`] with `ScopeId`.
@@ -4758,7 +4140,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - init
     /// - test
@@ -4768,7 +4149,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         init: Option<ForStatementInit<'a>>,
         test: Option<Expression<'a>>,
@@ -4776,7 +4156,15 @@ impl<'a> AstBuilder<'a> {
         body: Statement<'a>,
         scope_id: ScopeId,
     ) -> ForStatement<'a> {
-        ForStatement { parent, span, init, test, update, body, scope_id: Cell::new(Some(scope_id)) }
+        ForStatement {
+            parent: None,
+            span,
+            init,
+            test,
+            update,
+            body,
+            scope_id: Cell::new(Some(scope_id)),
+        }
     }
 
     /// Build a [`ForStatement`] with `ScopeId`, and store it in the memory arena.
@@ -4784,7 +4172,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - init
     /// - test
@@ -4794,7 +4181,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         init: Option<ForStatementInit<'a>>,
         test: Option<Expression<'a>>,
@@ -4803,7 +4189,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, ForStatement<'a>> {
         Box::new_in(
-            self.for_statement_with_scope_id(parent, span, init, test, update, body, scope_id),
+            self.for_statement_with_scope_id(span, init, test, update, body, scope_id),
             self.allocator,
         )
     }
@@ -4813,7 +4199,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - declarations
@@ -4821,14 +4206,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_statement_init_variable_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> ForStatementInit<'a> {
         ForStatementInit::VariableDeclaration(self.alloc_variable_declaration(
-            parent,
             span,
             kind,
             declarations,
@@ -4841,7 +4224,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_in_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
@@ -4849,13 +4231,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_in_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> ForInStatement<'a> {
-        ForInStatement { parent, span, left, right, body, scope_id: Default::default() }
+        ForInStatement { parent: None, span, left, right, body, scope_id: Default::default() }
     }
 
     /// Build a [`ForInStatement`], and store it in the memory arena.
@@ -4863,7 +4244,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_in_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
@@ -4871,13 +4251,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_in_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> Box<'a, ForInStatement<'a>> {
-        Box::new_in(self.for_in_statement(parent, span, left, right, body), self.allocator)
+        Box::new_in(self.for_in_statement(span, left, right, body), self.allocator)
     }
 
     /// Build a [`ForInStatement`] with `ScopeId`.
@@ -4885,7 +4264,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_in_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
@@ -4894,14 +4272,20 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_in_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
         scope_id: ScopeId,
     ) -> ForInStatement<'a> {
-        ForInStatement { parent, span, left, right, body, scope_id: Cell::new(Some(scope_id)) }
+        ForInStatement {
+            parent: None,
+            span,
+            left,
+            right,
+            body,
+            scope_id: Cell::new(Some(scope_id)),
+        }
     }
 
     /// Build a [`ForInStatement`] with `ScopeId`, and store it in the memory arena.
@@ -4909,7 +4293,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_in_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
@@ -4918,7 +4301,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_in_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
@@ -4926,7 +4308,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, ForInStatement<'a>> {
         Box::new_in(
-            self.for_in_statement_with_scope_id(parent, span, left, right, body, scope_id),
+            self.for_in_statement_with_scope_id(span, left, right, body, scope_id),
             self.allocator,
         )
     }
@@ -4936,7 +4318,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - declarations
@@ -4944,14 +4325,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_statement_left_variable_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> ForStatementLeft<'a> {
         ForStatementLeft::VariableDeclaration(self.alloc_variable_declaration(
-            parent,
             span,
             kind,
             declarations,
@@ -4964,7 +4343,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_of_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#await
     /// - left
@@ -4973,14 +4351,21 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_of_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#await: bool,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> ForOfStatement<'a> {
-        ForOfStatement { parent, span, r#await, left, right, body, scope_id: Default::default() }
+        ForOfStatement {
+            parent: None,
+            span,
+            r#await,
+            left,
+            right,
+            body,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`ForOfStatement`], and store it in the memory arena.
@@ -4988,7 +4373,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_of_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#await
     /// - left
@@ -4997,14 +4381,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_of_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#await: bool,
         left: ForStatementLeft<'a>,
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> Box<'a, ForOfStatement<'a>> {
-        Box::new_in(self.for_of_statement(parent, span, r#await, left, right, body), self.allocator)
+        Box::new_in(self.for_of_statement(span, r#await, left, right, body), self.allocator)
     }
 
     /// Build a [`ForOfStatement`] with `ScopeId`.
@@ -5012,7 +4395,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_for_of_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#await
     /// - left
@@ -5022,7 +4404,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn for_of_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#await: bool,
         left: ForStatementLeft<'a>,
@@ -5031,7 +4412,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> ForOfStatement<'a> {
         ForOfStatement {
-            parent,
+            parent: None,
             span,
             r#await,
             left,
@@ -5046,7 +4427,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::for_of_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#await
     /// - left
@@ -5056,7 +4436,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_for_of_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#await: bool,
         left: ForStatementLeft<'a>,
@@ -5065,7 +4444,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, ForOfStatement<'a>> {
         Box::new_in(
-            self.for_of_statement_with_scope_id(parent, span, r#await, left, right, body, scope_id),
+            self.for_of_statement_with_scope_id(span, r#await, left, right, body, scope_id),
             self.allocator,
         )
     }
@@ -5075,17 +4454,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_continue_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
     pub fn continue_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> ContinueStatement<'a> {
-        ContinueStatement { parent, span, label }
+        ContinueStatement { parent: None, span, label }
     }
 
     /// Build a [`ContinueStatement`], and store it in the memory arena.
@@ -5093,17 +4470,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::continue_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
     pub fn alloc_continue_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> Box<'a, ContinueStatement<'a>> {
-        Box::new_in(self.continue_statement(parent, span, label), self.allocator)
+        Box::new_in(self.continue_statement(span, label), self.allocator)
     }
 
     /// Build a [`BreakStatement`].
@@ -5111,17 +4486,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_break_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
     pub fn break_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> BreakStatement<'a> {
-        BreakStatement { parent, span, label }
+        BreakStatement { parent: None, span, label }
     }
 
     /// Build a [`BreakStatement`], and store it in the memory arena.
@@ -5129,17 +4502,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::break_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     #[inline]
     pub fn alloc_break_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> Box<'a, BreakStatement<'a>> {
-        Box::new_in(self.break_statement(parent, span, label), self.allocator)
+        Box::new_in(self.break_statement(span, label), self.allocator)
     }
 
     /// Build a [`ReturnStatement`].
@@ -5147,17 +4518,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_return_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
     pub fn return_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Option<Expression<'a>>,
     ) -> ReturnStatement<'a> {
-        ReturnStatement { parent, span, argument }
+        ReturnStatement { parent: None, span, argument }
     }
 
     /// Build a [`ReturnStatement`], and store it in the memory arena.
@@ -5165,17 +4534,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::return_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
     pub fn alloc_return_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Option<Expression<'a>>,
     ) -> Box<'a, ReturnStatement<'a>> {
-        Box::new_in(self.return_statement(parent, span, argument), self.allocator)
+        Box::new_in(self.return_statement(span, argument), self.allocator)
     }
 
     /// Build a [`WithStatement`].
@@ -5183,19 +4550,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_with_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - body
     #[inline]
     pub fn with_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         body: Statement<'a>,
     ) -> WithStatement<'a> {
-        WithStatement { parent, span, object, body }
+        WithStatement { parent: None, span, object, body }
     }
 
     /// Build a [`WithStatement`], and store it in the memory arena.
@@ -5203,19 +4568,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::with_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object
     /// - body
     #[inline]
     pub fn alloc_with_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: Expression<'a>,
         body: Statement<'a>,
     ) -> Box<'a, WithStatement<'a>> {
-        Box::new_in(self.with_statement(parent, span, object, body), self.allocator)
+        Box::new_in(self.with_statement(span, object, body), self.allocator)
     }
 
     /// Build a [`SwitchStatement`].
@@ -5223,19 +4586,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_switch_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - discriminant
     /// - cases
     #[inline]
     pub fn switch_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
     ) -> SwitchStatement<'a> {
-        SwitchStatement { parent, span, discriminant, cases, scope_id: Default::default() }
+        SwitchStatement { parent: None, span, discriminant, cases, scope_id: Default::default() }
     }
 
     /// Build a [`SwitchStatement`], and store it in the memory arena.
@@ -5243,19 +4604,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::switch_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - discriminant
     /// - cases
     #[inline]
     pub fn alloc_switch_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
     ) -> Box<'a, SwitchStatement<'a>> {
-        Box::new_in(self.switch_statement(parent, span, discriminant, cases), self.allocator)
+        Box::new_in(self.switch_statement(span, discriminant, cases), self.allocator)
     }
 
     /// Build a [`SwitchStatement`] with `ScopeId`.
@@ -5263,7 +4622,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_switch_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - discriminant
     /// - cases
@@ -5271,13 +4629,18 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn switch_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
         scope_id: ScopeId,
     ) -> SwitchStatement<'a> {
-        SwitchStatement { parent, span, discriminant, cases, scope_id: Cell::new(Some(scope_id)) }
+        SwitchStatement {
+            parent: None,
+            span,
+            discriminant,
+            cases,
+            scope_id: Cell::new(Some(scope_id)),
+        }
     }
 
     /// Build a [`SwitchStatement`] with `ScopeId`, and store it in the memory arena.
@@ -5285,7 +4648,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::switch_statement_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - discriminant
     /// - cases
@@ -5293,14 +4655,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_switch_statement_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
         scope_id: ScopeId,
     ) -> Box<'a, SwitchStatement<'a>> {
         Box::new_in(
-            self.switch_statement_with_scope_id(parent, span, discriminant, cases, scope_id),
+            self.switch_statement_with_scope_id(span, discriminant, cases, scope_id),
             self.allocator,
         )
     }
@@ -5310,19 +4671,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_switch_case`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
     #[inline]
     pub fn switch_case(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Option<Expression<'a>>,
         consequent: Vec<'a, Statement<'a>>,
     ) -> SwitchCase<'a> {
-        SwitchCase { parent, span, test, consequent }
+        SwitchCase { parent: None, span, test, consequent }
     }
 
     /// Build a [`SwitchCase`], and store it in the memory arena.
@@ -5330,19 +4689,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::switch_case`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - test
     /// - consequent
     #[inline]
     pub fn alloc_switch_case(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         test: Option<Expression<'a>>,
         consequent: Vec<'a, Statement<'a>>,
     ) -> Box<'a, SwitchCase<'a>> {
-        Box::new_in(self.switch_case(parent, span, test, consequent), self.allocator)
+        Box::new_in(self.switch_case(span, test, consequent), self.allocator)
     }
 
     /// Build a [`LabeledStatement`].
@@ -5350,19 +4707,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_labeled_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     /// - body
     #[inline]
     pub fn labeled_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: LabelIdentifier<'a>,
         body: Statement<'a>,
     ) -> LabeledStatement<'a> {
-        LabeledStatement { parent, span, label, body }
+        LabeledStatement { parent: None, span, label, body }
     }
 
     /// Build a [`LabeledStatement`], and store it in the memory arena.
@@ -5370,19 +4725,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::labeled_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - label
     /// - body
     #[inline]
     pub fn alloc_labeled_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         label: LabelIdentifier<'a>,
         body: Statement<'a>,
     ) -> Box<'a, LabeledStatement<'a>> {
-        Box::new_in(self.labeled_statement(parent, span, label, body), self.allocator)
+        Box::new_in(self.labeled_statement(span, label, body), self.allocator)
     }
 
     /// Build a [`ThrowStatement`].
@@ -5390,17 +4743,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_throw_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being thrown, e.g. `err` in `throw err;`
     #[inline]
-    pub fn throw_statement(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        argument: Expression<'a>,
-    ) -> ThrowStatement<'a> {
-        ThrowStatement { parent, span, argument }
+    pub fn throw_statement(self, span: Span, argument: Expression<'a>) -> ThrowStatement<'a> {
+        ThrowStatement { parent: None, span, argument }
     }
 
     /// Build a [`ThrowStatement`], and store it in the memory arena.
@@ -5408,17 +4755,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::throw_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument: The expression being thrown, e.g. `err` in `throw err;`
     #[inline]
     pub fn alloc_throw_statement(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> Box<'a, ThrowStatement<'a>> {
-        Box::new_in(self.throw_statement(parent, span, argument), self.allocator)
+        Box::new_in(self.throw_statement(span, argument), self.allocator)
     }
 
     /// Build a [`TryStatement`].
@@ -5426,7 +4771,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_try_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - block: Statements in the `try` block
     /// - handler: The `catch` clause, including the parameter and the block statement
@@ -5434,7 +4778,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn try_statement<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         block: T1,
         handler: T2,
@@ -5446,7 +4789,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, BlockStatement<'a>>>>,
     {
         TryStatement {
-            parent,
+            parent: None,
             span,
             block: block.into_in(self.allocator),
             handler: handler.into_in(self.allocator),
@@ -5459,7 +4802,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::try_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - block: Statements in the `try` block
     /// - handler: The `catch` clause, including the parameter and the block statement
@@ -5467,7 +4809,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_try_statement<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         block: T1,
         handler: T2,
@@ -5478,7 +4819,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, CatchClause<'a>>>>,
         T3: IntoIn<'a, Option<Box<'a, BlockStatement<'a>>>>,
     {
-        Box::new_in(self.try_statement(parent, span, block, handler, finalizer), self.allocator)
+        Box::new_in(self.try_statement(span, block, handler, finalizer), self.allocator)
     }
 
     /// Build a [`CatchClause`].
@@ -5486,14 +4827,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_catch_clause`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - param: The caught error parameter, e.g. `e` in `catch (e) {}`
     /// - body: The statements run when an error is caught
     #[inline]
     pub fn catch_clause<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         param: Option<CatchParameter<'a>>,
         body: T1,
@@ -5502,7 +4841,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
         CatchClause {
-            parent,
+            parent: None,
             span,
             param,
             body: body.into_in(self.allocator),
@@ -5515,14 +4854,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::catch_clause`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - param: The caught error parameter, e.g. `e` in `catch (e) {}`
     /// - body: The statements run when an error is caught
     #[inline]
     pub fn alloc_catch_clause<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         param: Option<CatchParameter<'a>>,
         body: T1,
@@ -5530,7 +4867,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
-        Box::new_in(self.catch_clause(parent, span, param, body), self.allocator)
+        Box::new_in(self.catch_clause(span, param, body), self.allocator)
     }
 
     /// Build a [`CatchClause`] with `ScopeId`.
@@ -5538,7 +4875,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_catch_clause_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - param: The caught error parameter, e.g. `e` in `catch (e) {}`
     /// - body: The statements run when an error is caught
@@ -5546,7 +4882,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn catch_clause_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         param: Option<CatchParameter<'a>>,
         body: T1,
@@ -5556,7 +4891,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
         CatchClause {
-            parent,
+            parent: None,
             span,
             param,
             body: body.into_in(self.allocator),
@@ -5569,7 +4904,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::catch_clause_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - param: The caught error parameter, e.g. `e` in `catch (e) {}`
     /// - body: The statements run when an error is caught
@@ -5577,7 +4911,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_catch_clause_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         param: Option<CatchParameter<'a>>,
         body: T1,
@@ -5586,10 +4919,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
-        Box::new_in(
-            self.catch_clause_with_scope_id(parent, span, param, body, scope_id),
-            self.allocator,
-        )
+        Box::new_in(self.catch_clause_with_scope_id(span, param, body, scope_id), self.allocator)
     }
 
     /// Build a [`CatchParameter`].
@@ -5597,17 +4927,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_catch_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - pattern: The bound error
     #[inline]
-    pub fn catch_parameter(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        pattern: BindingPattern<'a>,
-    ) -> CatchParameter<'a> {
-        CatchParameter { parent, span, pattern }
+    pub fn catch_parameter(self, span: Span, pattern: BindingPattern<'a>) -> CatchParameter<'a> {
+        CatchParameter { parent: None, span, pattern }
     }
 
     /// Build a [`CatchParameter`], and store it in the memory arena.
@@ -5615,17 +4939,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::catch_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - pattern: The bound error
     #[inline]
     pub fn alloc_catch_parameter(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         pattern: BindingPattern<'a>,
     ) -> Box<'a, CatchParameter<'a>> {
-        Box::new_in(self.catch_parameter(parent, span, pattern), self.allocator)
+        Box::new_in(self.catch_parameter(span, pattern), self.allocator)
     }
 
     /// Build a [`DebuggerStatement`].
@@ -5633,15 +4955,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_debugger_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn debugger_statement(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> DebuggerStatement<'a> {
-        DebuggerStatement { parent, span }
+    pub fn debugger_statement(self, span: Span) -> DebuggerStatement<'a> {
+        DebuggerStatement { parent: None, span }
     }
 
     /// Build a [`DebuggerStatement`], and store it in the memory arena.
@@ -5649,15 +4966,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::debugger_statement`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_debugger_statement(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, DebuggerStatement<'a>> {
-        Box::new_in(self.debugger_statement(parent, span), self.allocator)
+    pub fn alloc_debugger_statement(self, span: Span) -> Box<'a, DebuggerStatement<'a>> {
+        Box::new_in(self.debugger_statement(span), self.allocator)
     }
 
     /// Build a [`BindingPattern`].
@@ -5707,20 +5019,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BindingIdentifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     #[inline]
     pub fn binding_pattern_kind_binding_identifier<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> BindingPatternKind<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        BindingPatternKind::BindingIdentifier(self.alloc_binding_identifier(parent, span, name))
+        BindingPatternKind::BindingIdentifier(self.alloc_binding_identifier(span, name))
     }
 
     /// Build a [`BindingPatternKind::ObjectPattern`]
@@ -5728,14 +5038,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ObjectPattern`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn binding_pattern_kind_object_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, BindingProperty<'a>>,
         rest: T1,
@@ -5743,7 +5051,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        BindingPatternKind::ObjectPattern(self.alloc_object_pattern(parent, span, properties, rest))
+        BindingPatternKind::ObjectPattern(self.alloc_object_pattern(span, properties, rest))
     }
 
     /// Build a [`BindingPatternKind::ArrayPattern`]
@@ -5751,14 +5059,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ArrayPattern`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
     #[inline]
     pub fn binding_pattern_kind_array_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<BindingPattern<'a>>>,
         rest: T1,
@@ -5766,7 +5072,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        BindingPatternKind::ArrayPattern(self.alloc_array_pattern(parent, span, elements, rest))
+        BindingPatternKind::ArrayPattern(self.alloc_array_pattern(span, elements, rest))
     }
 
     /// Build a [`BindingPatternKind::AssignmentPattern`]
@@ -5774,21 +5080,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AssignmentPattern`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn binding_pattern_kind_assignment_pattern(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: BindingPattern<'a>,
         right: Expression<'a>,
     ) -> BindingPatternKind<'a> {
-        BindingPatternKind::AssignmentPattern(
-            self.alloc_assignment_pattern(parent, span, left, right),
-        )
+        BindingPatternKind::AssignmentPattern(self.alloc_assignment_pattern(span, left, right))
     }
 
     /// Build an [`AssignmentPattern`].
@@ -5796,19 +5098,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_assignment_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn assignment_pattern(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: BindingPattern<'a>,
         right: Expression<'a>,
     ) -> AssignmentPattern<'a> {
-        AssignmentPattern { parent, span, left, right }
+        AssignmentPattern { parent: None, span, left, right }
     }
 
     /// Build an [`AssignmentPattern`], and store it in the memory arena.
@@ -5816,19 +5116,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::assignment_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn alloc_assignment_pattern(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: BindingPattern<'a>,
         right: Expression<'a>,
     ) -> Box<'a, AssignmentPattern<'a>> {
-        Box::new_in(self.assignment_pattern(parent, span, left, right), self.allocator)
+        Box::new_in(self.assignment_pattern(span, left, right), self.allocator)
     }
 
     /// Build an [`ObjectPattern`].
@@ -5836,14 +5134,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_object_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn object_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, BindingProperty<'a>>,
         rest: T1,
@@ -5851,7 +5147,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        ObjectPattern { parent, span, properties, rest: rest.into_in(self.allocator) }
+        ObjectPattern { parent: None, span, properties, rest: rest.into_in(self.allocator) }
     }
 
     /// Build an [`ObjectPattern`], and store it in the memory arena.
@@ -5859,14 +5155,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::object_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - properties
     /// - rest
     #[inline]
     pub fn alloc_object_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         properties: Vec<'a, BindingProperty<'a>>,
         rest: T1,
@@ -5874,7 +5168,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        Box::new_in(self.object_pattern(parent, span, properties, rest), self.allocator)
+        Box::new_in(self.object_pattern(span, properties, rest), self.allocator)
     }
 
     /// Build a [`BindingProperty`].
@@ -5882,7 +5176,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binding_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - value
@@ -5891,14 +5184,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn binding_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         value: BindingPattern<'a>,
         shorthand: bool,
         computed: bool,
     ) -> BindingProperty<'a> {
-        BindingProperty { parent, span, key, value, shorthand, computed }
+        BindingProperty { parent: None, span, key, value, shorthand, computed }
     }
 
     /// Build a [`BindingProperty`], and store it in the memory arena.
@@ -5906,7 +5198,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binding_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - value
@@ -5915,17 +5206,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_binding_property(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         value: BindingPattern<'a>,
         shorthand: bool,
         computed: bool,
     ) -> Box<'a, BindingProperty<'a>> {
-        Box::new_in(
-            self.binding_property(parent, span, key, value, shorthand, computed),
-            self.allocator,
-        )
+        Box::new_in(self.binding_property(span, key, value, shorthand, computed), self.allocator)
     }
 
     /// Build an [`ArrayPattern`].
@@ -5933,14 +5220,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_array_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
     #[inline]
     pub fn array_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<BindingPattern<'a>>>,
         rest: T1,
@@ -5948,7 +5233,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        ArrayPattern { parent, span, elements, rest: rest.into_in(self.allocator) }
+        ArrayPattern { parent: None, span, elements, rest: rest.into_in(self.allocator) }
     }
 
     /// Build an [`ArrayPattern`], and store it in the memory arena.
@@ -5956,14 +5241,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::array_pattern`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - elements
     /// - rest
     #[inline]
     pub fn alloc_array_pattern<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         elements: Vec<'a, Option<BindingPattern<'a>>>,
         rest: T1,
@@ -5971,7 +5254,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        Box::new_in(self.array_pattern(parent, span, elements, rest), self.allocator)
+        Box::new_in(self.array_pattern(span, elements, rest), self.allocator)
     }
 
     /// Build a [`BindingRestElement`].
@@ -5979,17 +5262,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binding_rest_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
     pub fn binding_rest_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: BindingPattern<'a>,
     ) -> BindingRestElement<'a> {
-        BindingRestElement { parent, span, argument }
+        BindingRestElement { parent: None, span, argument }
     }
 
     /// Build a [`BindingRestElement`], and store it in the memory arena.
@@ -5997,17 +5278,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binding_rest_element`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - argument
     #[inline]
     pub fn alloc_binding_rest_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: BindingPattern<'a>,
     ) -> Box<'a, BindingRestElement<'a>> {
-        Box::new_in(self.binding_rest_element(parent, span, argument), self.allocator)
+        Box::new_in(self.binding_rest_element(span, argument), self.allocator)
     }
 
     /// Build a [`Function`].
@@ -6015,7 +5294,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_function`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -6030,7 +5308,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn function<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -6051,7 +5328,7 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Function {
-            parent,
+            parent: None,
             span,
             r#type,
             id,
@@ -6072,7 +5349,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::function`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -6087,7 +5363,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_function<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -6109,7 +5384,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.function(
-                parent,
                 span,
                 r#type,
                 id,
@@ -6131,7 +5405,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_function_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -6147,7 +5420,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn function_with_scope_id<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -6169,7 +5441,7 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Function {
-            parent,
+            parent: None,
             span,
             r#type,
             id,
@@ -6190,7 +5462,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::function_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -6206,7 +5477,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_function_with_scope_id<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -6229,7 +5499,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.function_with_scope_id(
-                parent,
                 span,
                 r#type,
                 id,
@@ -6252,7 +5521,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_formal_parameters`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - items
@@ -6260,7 +5528,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn formal_parameters<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: FormalParameterKind,
         items: Vec<'a, FormalParameter<'a>>,
@@ -6269,7 +5536,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        FormalParameters { parent, span, kind, items, rest: rest.into_in(self.allocator) }
+        FormalParameters { parent: None, span, kind, items, rest: rest.into_in(self.allocator) }
     }
 
     /// Build a [`FormalParameters`], and store it in the memory arena.
@@ -6277,7 +5544,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::formal_parameters`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - kind
     /// - items
@@ -6285,7 +5551,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_formal_parameters<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         kind: FormalParameterKind,
         items: Vec<'a, FormalParameter<'a>>,
@@ -6294,7 +5559,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        Box::new_in(self.formal_parameters(parent, span, kind, items, rest), self.allocator)
+        Box::new_in(self.formal_parameters(span, kind, items, rest), self.allocator)
     }
 
     /// Build a [`FormalParameter`].
@@ -6302,7 +5567,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_formal_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - decorators
     /// - pattern
@@ -6312,7 +5576,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn formal_parameter(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         decorators: Vec<'a, Decorator<'a>>,
         pattern: BindingPattern<'a>,
@@ -6320,7 +5583,15 @@ impl<'a> AstBuilder<'a> {
         readonly: bool,
         r#override: bool,
     ) -> FormalParameter<'a> {
-        FormalParameter { parent, span, decorators, pattern, accessibility, readonly, r#override }
+        FormalParameter {
+            parent: None,
+            span,
+            decorators,
+            pattern,
+            accessibility,
+            readonly,
+            r#override,
+        }
     }
 
     /// Build a [`FormalParameter`], and store it in the memory arena.
@@ -6328,7 +5599,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::formal_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - decorators
     /// - pattern
@@ -6338,7 +5608,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_formal_parameter(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         decorators: Vec<'a, Decorator<'a>>,
         pattern: BindingPattern<'a>,
@@ -6347,15 +5616,7 @@ impl<'a> AstBuilder<'a> {
         r#override: bool,
     ) -> Box<'a, FormalParameter<'a>> {
         Box::new_in(
-            self.formal_parameter(
-                parent,
-                span,
-                decorators,
-                pattern,
-                accessibility,
-                readonly,
-                r#override,
-            ),
+            self.formal_parameter(span, decorators, pattern, accessibility, readonly, r#override),
             self.allocator,
         )
     }
@@ -6365,19 +5626,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_function_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - directives
     /// - statements
     #[inline]
     pub fn function_body(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         directives: Vec<'a, Directive<'a>>,
         statements: Vec<'a, Statement<'a>>,
     ) -> FunctionBody<'a> {
-        FunctionBody { parent, span, directives, statements }
+        FunctionBody { parent: None, span, directives, statements }
     }
 
     /// Build a [`FunctionBody`], and store it in the memory arena.
@@ -6385,19 +5644,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::function_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - directives
     /// - statements
     #[inline]
     pub fn alloc_function_body(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         directives: Vec<'a, Directive<'a>>,
         statements: Vec<'a, Statement<'a>>,
     ) -> Box<'a, FunctionBody<'a>> {
-        Box::new_in(self.function_body(parent, span, directives, statements), self.allocator)
+        Box::new_in(self.function_body(span, directives, statements), self.allocator)
     }
 
     /// Build an [`ArrowFunctionExpression`].
@@ -6405,7 +5662,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_arrow_function_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Is the function body an arrow expression? i.e. `() => expr` instead of `() => {}`
     /// - r#async
@@ -6416,7 +5672,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn arrow_function_expression<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: bool,
         r#async: bool,
@@ -6432,7 +5687,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
     {
         ArrowFunctionExpression {
-            parent,
+            parent: None,
             span,
             expression,
             r#async,
@@ -6449,7 +5704,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::arrow_function_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Is the function body an arrow expression? i.e. `() => expr` instead of `() => {}`
     /// - r#async
@@ -6460,7 +5714,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_arrow_function_expression<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: bool,
         r#async: bool,
@@ -6477,7 +5730,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.arrow_function_expression(
-                parent,
                 span,
                 expression,
                 r#async,
@@ -6495,7 +5747,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_arrow_function_expression_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Is the function body an arrow expression? i.e. `() => expr` instead of `() => {}`
     /// - r#async
@@ -6507,7 +5758,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn arrow_function_expression_with_scope_id<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: bool,
         r#async: bool,
@@ -6524,7 +5774,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
     {
         ArrowFunctionExpression {
-            parent,
+            parent: None,
             span,
             expression,
             r#async,
@@ -6541,7 +5791,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::arrow_function_expression_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: Is the function body an arrow expression? i.e. `() => expr` instead of `() => {}`
     /// - r#async
@@ -6553,7 +5802,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_arrow_function_expression_with_scope_id<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: bool,
         r#async: bool,
@@ -6571,7 +5819,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.arrow_function_expression_with_scope_id(
-                parent,
                 span,
                 expression,
                 r#async,
@@ -6590,19 +5837,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_yield_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - delegate
     /// - argument
     #[inline]
     pub fn yield_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         delegate: bool,
         argument: Option<Expression<'a>>,
     ) -> YieldExpression<'a> {
-        YieldExpression { parent, span, delegate, argument }
+        YieldExpression { parent: None, span, delegate, argument }
     }
 
     /// Build a [`YieldExpression`], and store it in the memory arena.
@@ -6610,19 +5855,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::yield_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - delegate
     /// - argument
     #[inline]
     pub fn alloc_yield_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         delegate: bool,
         argument: Option<Expression<'a>>,
     ) -> Box<'a, YieldExpression<'a>> {
-        Box::new_in(self.yield_expression(parent, span, delegate, argument), self.allocator)
+        Box::new_in(self.yield_expression(span, delegate, argument), self.allocator)
     }
 
     /// Build a [`Class`].
@@ -6630,7 +5873,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -6645,7 +5887,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -6664,7 +5905,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
-            parent,
+            parent: None,
             span,
             r#type,
             decorators,
@@ -6685,7 +5926,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::class`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -6700,7 +5940,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_class<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -6720,7 +5959,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.class(
-                parent,
                 span,
                 r#type,
                 decorators,
@@ -6742,7 +5980,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -6758,7 +5995,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class_with_scope_id<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -6778,7 +6014,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
-            parent,
+            parent: None,
             span,
             r#type,
             decorators,
@@ -6799,7 +6035,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::class_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -6815,7 +6050,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_class_with_scope_id<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -6836,7 +6070,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.class_with_scope_id(
-                parent,
                 span,
                 r#type,
                 decorators,
@@ -6859,17 +6092,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
-    pub fn class_body(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        body: Vec<'a, ClassElement<'a>>,
-    ) -> ClassBody<'a> {
-        ClassBody { parent, span, body }
+    pub fn class_body(self, span: Span, body: Vec<'a, ClassElement<'a>>) -> ClassBody<'a> {
+        ClassBody { parent: None, span, body }
     }
 
     /// Build a [`ClassBody`], and store it in the memory arena.
@@ -6877,17 +6104,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::class_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn alloc_class_body(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, ClassElement<'a>>,
     ) -> Box<'a, ClassBody<'a>> {
-        Box::new_in(self.class_body(parent, span, body), self.allocator)
+        Box::new_in(self.class_body(span, body), self.allocator)
     }
 
     /// Build a [`ClassElement::StaticBlock`]
@@ -6895,17 +6120,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StaticBlock`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn class_element_static_block(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
     ) -> ClassElement<'a> {
-        ClassElement::StaticBlock(self.alloc_static_block(parent, span, body))
+        ClassElement::StaticBlock(self.alloc_static_block(span, body))
     }
 
     /// Build a [`ClassElement::MethodDefinition`]
@@ -6913,7 +6136,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`MethodDefinition`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type: Method definition type
     /// - decorators
@@ -6928,7 +6150,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class_element_method_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: MethodDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -6945,7 +6166,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, Function<'a>>>,
     {
         ClassElement::MethodDefinition(self.alloc_method_definition(
-            parent,
             span,
             r#type,
             decorators,
@@ -6965,7 +6185,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`PropertyDefinition`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the property.
@@ -6983,7 +6202,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class_element_property_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: PropertyDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7003,7 +6221,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         ClassElement::PropertyDefinition(self.alloc_property_definition(
-            parent,
             span,
             r#type,
             decorators,
@@ -7026,7 +6243,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`AccessorProperty`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the accessor property.
@@ -7040,7 +6256,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class_element_accessor_property<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: AccessorPropertyType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7056,7 +6271,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         ClassElement::AccessorProperty(self.alloc_accessor_property(
-            parent,
             span,
             r#type,
             decorators,
@@ -7075,7 +6289,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSIndexSignature`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameters
     /// - type_annotation
@@ -7084,7 +6297,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn class_element_ts_index_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameters: Vec<'a, TSIndexSignatureName<'a>>,
         type_annotation: T1,
@@ -7095,7 +6307,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         ClassElement::TSIndexSignature(self.alloc_ts_index_signature(
-            parent,
             span,
             parameters,
             type_annotation,
@@ -7109,7 +6320,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_method_definition`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type: Method definition type
     /// - decorators
@@ -7124,7 +6334,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn method_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: MethodDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7141,7 +6350,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, Function<'a>>>,
     {
         MethodDefinition {
-            parent,
+            parent: None,
             span,
             r#type,
             decorators,
@@ -7161,7 +6370,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::method_definition`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type: Method definition type
     /// - decorators
@@ -7176,7 +6384,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_method_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: MethodDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7194,7 +6401,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.method_definition(
-                parent,
                 span,
                 r#type,
                 decorators,
@@ -7216,7 +6422,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_property_definition`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the property.
@@ -7234,7 +6439,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn property_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: PropertyDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7254,7 +6458,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         PropertyDefinition {
-            parent,
+            parent: None,
             span,
             r#type,
             decorators,
@@ -7277,7 +6481,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::property_definition`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the property.
@@ -7295,7 +6498,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_property_definition<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: PropertyDefinitionType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7316,7 +6518,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.property_definition(
-                parent,
                 span,
                 r#type,
                 decorators,
@@ -7341,20 +6542,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_private_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn private_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> PrivateIdentifier<'a>
+    pub fn private_identifier<A>(self, span: Span, name: A) -> PrivateIdentifier<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        PrivateIdentifier { parent, span, name: name.into_in(self.allocator) }
+        PrivateIdentifier { parent: None, span, name: name.into_in(self.allocator) }
     }
 
     /// Build a [`PrivateIdentifier`], and store it in the memory arena.
@@ -7362,20 +6557,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::private_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn alloc_private_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Box<'a, PrivateIdentifier<'a>>
+    pub fn alloc_private_identifier<A>(self, span: Span, name: A) -> Box<'a, PrivateIdentifier<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.private_identifier(parent, span, name), self.allocator)
+        Box::new_in(self.private_identifier(span, name), self.allocator)
     }
 
     /// Build a [`StaticBlock`].
@@ -7383,17 +6572,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_static_block`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
-    pub fn static_block(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        body: Vec<'a, Statement<'a>>,
-    ) -> StaticBlock<'a> {
-        StaticBlock { parent, span, body, scope_id: Default::default() }
+    pub fn static_block(self, span: Span, body: Vec<'a, Statement<'a>>) -> StaticBlock<'a> {
+        StaticBlock { parent: None, span, body, scope_id: Default::default() }
     }
 
     /// Build a [`StaticBlock`], and store it in the memory arena.
@@ -7401,17 +6584,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::static_block`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn alloc_static_block(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
     ) -> Box<'a, StaticBlock<'a>> {
-        Box::new_in(self.static_block(parent, span, body), self.allocator)
+        Box::new_in(self.static_block(span, body), self.allocator)
     }
 
     /// Build a [`StaticBlock`] with `ScopeId`.
@@ -7419,19 +6600,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_static_block_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - scope_id
     #[inline]
     pub fn static_block_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> StaticBlock<'a> {
-        StaticBlock { parent, span, body, scope_id: Cell::new(Some(scope_id)) }
+        StaticBlock { parent: None, span, body, scope_id: Cell::new(Some(scope_id)) }
     }
 
     /// Build a [`StaticBlock`] with `ScopeId`, and store it in the memory arena.
@@ -7439,19 +6618,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::static_block_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     /// - scope_id
     #[inline]
     pub fn alloc_static_block_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> Box<'a, StaticBlock<'a>> {
-        Box::new_in(self.static_block_with_scope_id(parent, span, body, scope_id), self.allocator)
+        Box::new_in(self.static_block_with_scope_id(span, body, scope_id), self.allocator)
     }
 
     /// Build a [`ModuleDeclaration::ImportDeclaration`]
@@ -7459,7 +6636,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ImportDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - specifiers: `None` for `import 'foo'`, `Some([])` for `import {} from 'foo'`
     /// - source
@@ -7469,7 +6645,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn module_declaration_import_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         specifiers: Option<Vec<'a, ImportDeclarationSpecifier<'a>>>,
         source: StringLiteral<'a>,
@@ -7481,7 +6656,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ModuleDeclaration::ImportDeclaration(self.alloc_import_declaration(
-            parent,
             span,
             specifiers,
             source,
@@ -7496,7 +6670,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ExportAllDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - exported: If this declaration is re-named
     /// - source
@@ -7505,7 +6678,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn module_declaration_export_all_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         exported: Option<ModuleExportName<'a>>,
         source: StringLiteral<'a>,
@@ -7516,7 +6688,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ModuleDeclaration::ExportAllDeclaration(self.alloc_export_all_declaration(
-            parent,
             span,
             exported,
             source,
@@ -7530,20 +6701,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ExportDefaultDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - exported
     #[inline]
     pub fn module_declaration_export_default_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: ExportDefaultDeclarationKind<'a>,
         exported: ModuleExportName<'a>,
     ) -> ModuleDeclaration<'a> {
         ModuleDeclaration::ExportDefaultDeclaration(self.alloc_export_default_declaration(
-            parent,
             span,
             declaration,
             exported,
@@ -7555,7 +6723,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ExportNamedDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - specifiers
@@ -7565,7 +6732,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn module_declaration_export_named_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: Option<Declaration<'a>>,
         specifiers: Vec<'a, ExportSpecifier<'a>>,
@@ -7577,7 +6743,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ModuleDeclaration::ExportNamedDeclaration(self.alloc_export_named_declaration(
-            parent,
             span,
             declaration,
             specifiers,
@@ -7592,19 +6757,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSExportAssignment`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn module_declaration_ts_export_assignment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> ModuleDeclaration<'a> {
-        ModuleDeclaration::TSExportAssignment(
-            self.alloc_ts_export_assignment(parent, span, expression),
-        )
+        ModuleDeclaration::TSExportAssignment(self.alloc_ts_export_assignment(span, expression))
     }
 
     /// Build a [`ModuleDeclaration::TSNamespaceExportDeclaration`]
@@ -7612,18 +6773,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNamespaceExportDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     #[inline]
     pub fn module_declaration_ts_namespace_export_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: IdentifierName<'a>,
     ) -> ModuleDeclaration<'a> {
         ModuleDeclaration::TSNamespaceExportDeclaration(
-            self.alloc_ts_namespace_export_declaration(parent, span, id),
+            self.alloc_ts_namespace_export_declaration(span, id),
         )
     }
 
@@ -7632,7 +6791,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_accessor_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the accessor property.
@@ -7646,7 +6804,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn accessor_property<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: AccessorPropertyType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7662,7 +6819,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         AccessorProperty {
-            parent,
+            parent: None,
             span,
             r#type,
             decorators,
@@ -7681,7 +6838,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::accessor_property`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the accessor property.
@@ -7695,7 +6851,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_accessor_property<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: AccessorPropertyType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -7712,7 +6867,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.accessor_property(
-                parent,
                 span,
                 r#type,
                 decorators,
@@ -7733,7 +6887,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - source
     /// - arguments
@@ -7741,13 +6894,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn import_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         source: Expression<'a>,
         arguments: Vec<'a, Expression<'a>>,
         phase: Option<ImportPhase>,
     ) -> ImportExpression<'a> {
-        ImportExpression { parent, span, source, arguments, phase }
+        ImportExpression { parent: None, span, source, arguments, phase }
     }
 
     /// Build an [`ImportExpression`], and store it in the memory arena.
@@ -7755,7 +6907,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - source
     /// - arguments
@@ -7763,13 +6914,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_import_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         source: Expression<'a>,
         arguments: Vec<'a, Expression<'a>>,
         phase: Option<ImportPhase>,
     ) -> Box<'a, ImportExpression<'a>> {
-        Box::new_in(self.import_expression(parent, span, source, arguments, phase), self.allocator)
+        Box::new_in(self.import_expression(span, source, arguments, phase), self.allocator)
     }
 
     /// Build an [`ImportDeclaration`].
@@ -7777,7 +6927,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - specifiers: `None` for `import 'foo'`, `Some([])` for `import {} from 'foo'`
     /// - source
@@ -7787,7 +6936,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn import_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         specifiers: Option<Vec<'a, ImportDeclarationSpecifier<'a>>>,
         source: StringLiteral<'a>,
@@ -7799,7 +6947,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ImportDeclaration {
-            parent,
+            parent: None,
             span,
             specifiers,
             source,
@@ -7814,7 +6962,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - specifiers: `None` for `import 'foo'`, `Some([])` for `import {} from 'foo'`
     /// - source
@@ -7824,7 +6971,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_import_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         specifiers: Option<Vec<'a, ImportDeclarationSpecifier<'a>>>,
         source: StringLiteral<'a>,
@@ -7836,15 +6982,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         Box::new_in(
-            self.import_declaration(
-                parent,
-                span,
-                specifiers,
-                source,
-                phase,
-                with_clause,
-                import_kind,
-            ),
+            self.import_declaration(span, specifiers, source, phase, with_clause, import_kind),
             self.allocator,
         )
     }
@@ -7854,7 +6992,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ImportSpecifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - imported
     /// - local: The name of the imported symbol.
@@ -7862,14 +6999,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn import_declaration_specifier_import_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         imported: ModuleExportName<'a>,
         local: BindingIdentifier<'a>,
         import_kind: ImportOrExportKind,
     ) -> ImportDeclarationSpecifier<'a> {
         ImportDeclarationSpecifier::ImportSpecifier(self.alloc_import_specifier(
-            parent,
             span,
             imported,
             local,
@@ -7882,18 +7017,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ImportDefaultSpecifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local: The name of the imported symbol.
     #[inline]
     pub fn import_declaration_specifier_import_default_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportDeclarationSpecifier<'a> {
         ImportDeclarationSpecifier::ImportDefaultSpecifier(
-            self.alloc_import_default_specifier(parent, span, local),
+            self.alloc_import_default_specifier(span, local),
         )
     }
 
@@ -7902,18 +7035,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`ImportNamespaceSpecifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local
     #[inline]
     pub fn import_declaration_specifier_import_namespace_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportDeclarationSpecifier<'a> {
         ImportDeclarationSpecifier::ImportNamespaceSpecifier(
-            self.alloc_import_namespace_specifier(parent, span, local),
+            self.alloc_import_namespace_specifier(span, local),
         )
     }
 
@@ -7922,7 +7053,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - imported
     /// - local: The name of the imported symbol.
@@ -7930,13 +7060,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn import_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         imported: ModuleExportName<'a>,
         local: BindingIdentifier<'a>,
         import_kind: ImportOrExportKind,
     ) -> ImportSpecifier<'a> {
-        ImportSpecifier { parent, span, imported, local, import_kind }
+        ImportSpecifier { parent: None, span, imported, local, import_kind }
     }
 
     /// Build an [`ImportSpecifier`], and store it in the memory arena.
@@ -7944,7 +7073,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - imported
     /// - local: The name of the imported symbol.
@@ -7952,16 +7080,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_import_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         imported: ModuleExportName<'a>,
         local: BindingIdentifier<'a>,
         import_kind: ImportOrExportKind,
     ) -> Box<'a, ImportSpecifier<'a>> {
-        Box::new_in(
-            self.import_specifier(parent, span, imported, local, import_kind),
-            self.allocator,
-        )
+        Box::new_in(self.import_specifier(span, imported, local, import_kind), self.allocator)
     }
 
     /// Build an [`ImportDefaultSpecifier`].
@@ -7969,17 +7093,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_default_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local: The name of the imported symbol.
     #[inline]
     pub fn import_default_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportDefaultSpecifier<'a> {
-        ImportDefaultSpecifier { parent, span, local }
+        ImportDefaultSpecifier { parent: None, span, local }
     }
 
     /// Build an [`ImportDefaultSpecifier`], and store it in the memory arena.
@@ -7987,17 +7109,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_default_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local: The name of the imported symbol.
     #[inline]
     pub fn alloc_import_default_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> Box<'a, ImportDefaultSpecifier<'a>> {
-        Box::new_in(self.import_default_specifier(parent, span, local), self.allocator)
+        Box::new_in(self.import_default_specifier(span, local), self.allocator)
     }
 
     /// Build an [`ImportNamespaceSpecifier`].
@@ -8005,17 +7125,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_namespace_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local
     #[inline]
     pub fn import_namespace_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportNamespaceSpecifier<'a> {
-        ImportNamespaceSpecifier { parent, span, local }
+        ImportNamespaceSpecifier { parent: None, span, local }
     }
 
     /// Build an [`ImportNamespaceSpecifier`], and store it in the memory arena.
@@ -8023,17 +7141,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_namespace_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local
     #[inline]
     pub fn alloc_import_namespace_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> Box<'a, ImportNamespaceSpecifier<'a>> {
-        Box::new_in(self.import_namespace_specifier(parent, span, local), self.allocator)
+        Box::new_in(self.import_namespace_specifier(span, local), self.allocator)
     }
 
     /// Build a [`WithClause`].
@@ -8041,19 +7157,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_with_clause`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - attributes_keyword
     /// - with_entries
     #[inline]
     pub fn with_clause(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         attributes_keyword: IdentifierName<'a>,
         with_entries: Vec<'a, ImportAttribute<'a>>,
     ) -> WithClause<'a> {
-        WithClause { parent, span, attributes_keyword, with_entries }
+        WithClause { parent: None, span, attributes_keyword, with_entries }
     }
 
     /// Build a [`WithClause`], and store it in the memory arena.
@@ -8061,22 +7175,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::with_clause`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - attributes_keyword
     /// - with_entries
     #[inline]
     pub fn alloc_with_clause(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         attributes_keyword: IdentifierName<'a>,
         with_entries: Vec<'a, ImportAttribute<'a>>,
     ) -> Box<'a, WithClause<'a>> {
-        Box::new_in(
-            self.with_clause(parent, span, attributes_keyword, with_entries),
-            self.allocator,
-        )
+        Box::new_in(self.with_clause(span, attributes_keyword, with_entries), self.allocator)
     }
 
     /// Build an [`ImportAttribute`].
@@ -8084,19 +7193,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_import_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - value
     #[inline]
     pub fn import_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: ImportAttributeKey<'a>,
         value: StringLiteral<'a>,
     ) -> ImportAttribute<'a> {
-        ImportAttribute { parent, span, key, value }
+        ImportAttribute { parent: None, span, key, value }
     }
 
     /// Build an [`ImportAttribute`], and store it in the memory arena.
@@ -8104,51 +7211,45 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::import_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - value
     #[inline]
     pub fn alloc_import_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: ImportAttributeKey<'a>,
         value: StringLiteral<'a>,
     ) -> Box<'a, ImportAttribute<'a>> {
-        Box::new_in(self.import_attribute(parent, span, key, value), self.allocator)
+        Box::new_in(self.import_attribute(span, key, value), self.allocator)
     }
 
     /// Build an [`ImportAttributeKey::Identifier`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
     pub fn import_attribute_key_identifier_name<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> ImportAttributeKey<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        ImportAttributeKey::Identifier(self.identifier_name(parent, span, name))
+        ImportAttributeKey::Identifier(self.identifier_name(span, name))
     }
 
     /// Build an [`ImportAttributeKey::StringLiteral`]
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn import_attribute_key_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -8156,7 +7257,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        ImportAttributeKey::StringLiteral(self.string_literal(parent, span, value, raw))
+        ImportAttributeKey::StringLiteral(self.string_literal(span, value, raw))
     }
 
     /// Build an [`ExportNamedDeclaration`].
@@ -8164,7 +7265,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_export_named_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - specifiers
@@ -8174,7 +7274,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_named_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: Option<Declaration<'a>>,
         specifiers: Vec<'a, ExportSpecifier<'a>>,
@@ -8186,7 +7285,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ExportNamedDeclaration {
-            parent,
+            parent: None,
             span,
             declaration,
             specifiers,
@@ -8201,7 +7300,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::export_named_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - specifiers
@@ -8211,7 +7309,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_export_named_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: Option<Declaration<'a>>,
         specifiers: Vec<'a, ExportSpecifier<'a>>,
@@ -8224,7 +7321,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.export_named_declaration(
-                parent,
                 span,
                 declaration,
                 specifiers,
@@ -8241,19 +7337,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_export_default_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - exported
     #[inline]
     pub fn export_default_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: ExportDefaultDeclarationKind<'a>,
         exported: ModuleExportName<'a>,
     ) -> ExportDefaultDeclaration<'a> {
-        ExportDefaultDeclaration { parent, span, declaration, exported }
+        ExportDefaultDeclaration { parent: None, span, declaration, exported }
     }
 
     /// Build an [`ExportDefaultDeclaration`], and store it in the memory arena.
@@ -8261,22 +7355,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::export_default_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - declaration
     /// - exported
     #[inline]
     pub fn alloc_export_default_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         declaration: ExportDefaultDeclarationKind<'a>,
         exported: ModuleExportName<'a>,
     ) -> Box<'a, ExportDefaultDeclaration<'a>> {
-        Box::new_in(
-            self.export_default_declaration(parent, span, declaration, exported),
-            self.allocator,
-        )
+        Box::new_in(self.export_default_declaration(span, declaration, exported), self.allocator)
     }
 
     /// Build an [`ExportAllDeclaration`].
@@ -8284,7 +7373,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_export_all_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - exported: If this declaration is re-named
     /// - source
@@ -8293,7 +7381,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_all_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         exported: Option<ModuleExportName<'a>>,
         source: StringLiteral<'a>,
@@ -8304,7 +7391,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ExportAllDeclaration {
-            parent,
+            parent: None,
             span,
             exported,
             source,
@@ -8318,7 +7405,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::export_all_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - exported: If this declaration is re-named
     /// - source
@@ -8327,7 +7413,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_export_all_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         exported: Option<ModuleExportName<'a>>,
         source: StringLiteral<'a>,
@@ -8338,7 +7423,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         Box::new_in(
-            self.export_all_declaration(parent, span, exported, source, with_clause, export_kind),
+            self.export_all_declaration(span, exported, source, with_clause, export_kind),
             self.allocator,
         )
     }
@@ -8348,7 +7433,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_export_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local
     /// - exported
@@ -8356,13 +7440,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: ModuleExportName<'a>,
         exported: ModuleExportName<'a>,
         export_kind: ImportOrExportKind,
     ) -> ExportSpecifier<'a> {
-        ExportSpecifier { parent, span, local, exported, export_kind }
+        ExportSpecifier { parent: None, span, local, exported, export_kind }
     }
 
     /// Build an [`ExportSpecifier`], and store it in the memory arena.
@@ -8370,7 +7453,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::export_specifier`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - local
     /// - exported
@@ -8378,16 +7460,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_export_specifier(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         local: ModuleExportName<'a>,
         exported: ModuleExportName<'a>,
         export_kind: ImportOrExportKind,
     ) -> Box<'a, ExportSpecifier<'a>> {
-        Box::new_in(
-            self.export_specifier(parent, span, local, exported, export_kind),
-            self.allocator,
-        )
+        Box::new_in(self.export_specifier(span, local, exported, export_kind), self.allocator)
     }
 
     /// Build an [`ExportDefaultDeclarationKind::FunctionDeclaration`]
@@ -8395,7 +7473,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Function`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - id: The function identifier. [`None`] for anonymous function expressions.
@@ -8410,7 +7487,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_default_declaration_kind_function<T1, T2, T3, T4, T5>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: FunctionType,
         id: Option<BindingIdentifier<'a>>,
@@ -8431,7 +7507,6 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         ExportDefaultDeclarationKind::FunctionDeclaration(self.alloc_function(
-            parent,
             span,
             r#type,
             id,
@@ -8451,7 +7526,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`Class`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#type
     /// - decorators: Decorators applied to the class.
@@ -8466,7 +7540,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_default_declaration_kind_class<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
@@ -8485,7 +7558,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         ExportDefaultDeclarationKind::ClassDeclaration(self.alloc_class(
-            parent,
             span,
             r#type,
             decorators,
@@ -8505,7 +7577,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSInterfaceDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -8515,7 +7586,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn export_default_declaration_kind_ts_interface_declaration<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -8528,7 +7598,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         ExportDefaultDeclarationKind::TSInterfaceDeclaration(self.alloc_ts_interface_declaration(
-            parent,
             span,
             id,
             extends,
@@ -8541,52 +7610,42 @@ impl<'a> AstBuilder<'a> {
     /// Build a [`ModuleExportName::IdentifierName`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn module_export_name_identifier_name<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> ModuleExportName<'a>
+    pub fn module_export_name_identifier_name<A>(self, span: Span, name: A) -> ModuleExportName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        ModuleExportName::IdentifierName(self.identifier_name(parent, span, name))
+        ModuleExportName::IdentifierName(self.identifier_name(span, name))
     }
 
     /// Build a [`ModuleExportName::IdentifierReference`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
     pub fn module_export_name_identifier_reference<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> ModuleExportName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        ModuleExportName::IdentifierReference(self.identifier_reference(parent, span, name))
+        ModuleExportName::IdentifierReference(self.identifier_reference(span, name))
     }
 
     /// Build a [`ModuleExportName::StringLiteral`]
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn module_export_name_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -8594,7 +7653,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        ModuleExportName::StringLiteral(self.string_literal(parent, span, value, raw))
+        ModuleExportName::StringLiteral(self.string_literal(span, value, raw))
     }
 
     /// Build a [`TSThisParameter`].
@@ -8602,14 +7661,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_this_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - this_span
     /// - type_annotation: Type type the `this` keyword will have in the function
     #[inline]
     pub fn ts_this_parameter<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         this_span: Span,
         type_annotation: T1,
@@ -8618,7 +7675,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSThisParameter {
-            parent,
+            parent: None,
             span,
             this_span,
             type_annotation: type_annotation.into_in(self.allocator),
@@ -8630,14 +7687,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_this_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - this_span
     /// - type_annotation: Type type the `this` keyword will have in the function
     #[inline]
     pub fn alloc_ts_this_parameter<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         this_span: Span,
         type_annotation: T1,
@@ -8645,10 +7700,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
-        Box::new_in(
-            self.ts_this_parameter(parent, span, this_span, type_annotation),
-            self.allocator,
-        )
+        Box::new_in(self.ts_this_parameter(span, this_span, type_annotation), self.allocator)
     }
 
     /// Build a [`TSEnumDeclaration`].
@@ -8656,7 +7708,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_enum_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - members
@@ -8665,7 +7716,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_enum_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         members: Vec<'a, TSEnumMember<'a>>,
@@ -8673,7 +7723,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSEnumDeclaration<'a> {
         TSEnumDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             members,
@@ -8688,7 +7738,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_enum_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - members
@@ -8697,17 +7746,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_enum_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         members: Vec<'a, TSEnumMember<'a>>,
         r#const: bool,
         declare: bool,
     ) -> Box<'a, TSEnumDeclaration<'a>> {
-        Box::new_in(
-            self.ts_enum_declaration(parent, span, id, members, r#const, declare),
-            self.allocator,
-        )
+        Box::new_in(self.ts_enum_declaration(span, id, members, r#const, declare), self.allocator)
     }
 
     /// Build a [`TSEnumDeclaration`] with `ScopeId`.
@@ -8715,7 +7760,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_enum_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - members
@@ -8725,7 +7769,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_enum_declaration_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         members: Vec<'a, TSEnumMember<'a>>,
@@ -8734,7 +7777,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSEnumDeclaration<'a> {
         TSEnumDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             members,
@@ -8749,7 +7792,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_enum_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - members
@@ -8759,7 +7801,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_enum_declaration_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         members: Vec<'a, TSEnumMember<'a>>,
@@ -8768,9 +7809,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSEnumDeclaration<'a>> {
         Box::new_in(
-            self.ts_enum_declaration_with_scope_id(
-                parent, span, id, members, r#const, declare, scope_id,
-            ),
+            self.ts_enum_declaration_with_scope_id(span, id, members, r#const, declare, scope_id),
             self.allocator,
         )
     }
@@ -8780,19 +7819,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_enum_member`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - initializer
     #[inline]
     pub fn ts_enum_member(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSEnumMemberName<'a>,
         initializer: Option<Expression<'a>>,
     ) -> TSEnumMember<'a> {
-        TSEnumMember { parent, span, id, initializer }
+        TSEnumMember { parent: None, span, id, initializer }
     }
 
     /// Build a [`TSEnumMember`], and store it in the memory arena.
@@ -8800,19 +7837,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_enum_member`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - initializer
     #[inline]
     pub fn alloc_ts_enum_member(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSEnumMemberName<'a>,
         initializer: Option<Expression<'a>>,
     ) -> Box<'a, TSEnumMember<'a>> {
-        Box::new_in(self.ts_enum_member(parent, span, id, initializer), self.allocator)
+        Box::new_in(self.ts_enum_member(span, id, initializer), self.allocator)
     }
 
     /// Build a [`TSEnumMemberName::Identifier`]
@@ -8820,20 +7855,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
-    pub fn ts_enum_member_name_identifier_name<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> TSEnumMemberName<'a>
+    pub fn ts_enum_member_name_identifier_name<A>(self, span: Span, name: A) -> TSEnumMemberName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSEnumMemberName::Identifier(self.alloc_identifier_name(parent, span, name))
+        TSEnumMemberName::Identifier(self.alloc_identifier_name(span, name))
     }
 
     /// Build a [`TSEnumMemberName::String`]
@@ -8841,14 +7870,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StringLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn ts_enum_member_name_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -8856,7 +7883,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSEnumMemberName::String(self.alloc_string_literal(parent, span, value, raw))
+        TSEnumMemberName::String(self.alloc_string_literal(span, value, raw))
     }
 
     /// Build a [`TSTypeAnnotation`].
@@ -8864,17 +7891,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_annotation`] instead.
     ///
     /// ## Parameters
-    /// - parent: starts at the `:` token and ends at the end of the type annotation
     /// - span: The [`Span`] covering this node
     /// - type_annotation: The actual type in the annotation
     #[inline]
     pub fn ts_type_annotation(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSTypeAnnotation<'a> {
-        TSTypeAnnotation { parent, span, type_annotation }
+        TSTypeAnnotation { parent: None, span, type_annotation }
     }
 
     /// Build a [`TSTypeAnnotation`], and store it in the memory arena.
@@ -8882,17 +7907,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_annotation`] instead.
     ///
     /// ## Parameters
-    /// - parent: starts at the `:` token and ends at the end of the type annotation
     /// - span: The [`Span`] covering this node
     /// - type_annotation: The actual type in the annotation
     #[inline]
     pub fn alloc_ts_type_annotation(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSTypeAnnotation<'a>> {
-        Box::new_in(self.ts_type_annotation(parent, span, type_annotation), self.allocator)
+        Box::new_in(self.ts_type_annotation(span, type_annotation), self.allocator)
     }
 
     /// Build a [`TSLiteralType`].
@@ -8900,17 +7923,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_literal_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - literal
     #[inline]
-    pub fn ts_literal_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        literal: TSLiteral<'a>,
-    ) -> TSLiteralType<'a> {
-        TSLiteralType { parent, span, literal }
+    pub fn ts_literal_type(self, span: Span, literal: TSLiteral<'a>) -> TSLiteralType<'a> {
+        TSLiteralType { parent: None, span, literal }
     }
 
     /// Build a [`TSLiteralType`], and store it in the memory arena.
@@ -8918,17 +7935,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_literal_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - literal
     #[inline]
     pub fn alloc_ts_literal_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         literal: TSLiteral<'a>,
     ) -> Box<'a, TSLiteralType<'a>> {
-        Box::new_in(self.ts_literal_type(parent, span, literal), self.allocator)
+        Box::new_in(self.ts_literal_type(span, literal), self.allocator)
     }
 
     /// Build a [`TSLiteral::BooleanLiteral`]
@@ -8936,17 +7951,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BooleanLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn ts_literal_boolean_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: bool,
-    ) -> TSLiteral<'a> {
-        TSLiteral::BooleanLiteral(self.alloc_boolean_literal(parent, span, value))
+    pub fn ts_literal_boolean_literal(self, span: Span, value: bool) -> TSLiteral<'a> {
+        TSLiteral::BooleanLiteral(self.alloc_boolean_literal(span, value))
     }
 
     /// Build a [`TSLiteral::NullLiteral`]
@@ -8954,11 +7963,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`NullLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn ts_literal_null_literal(self, parent: Option<AstKind<'a>>, span: Span) -> TSLiteral<'a> {
-        TSLiteral::NullLiteral(self.alloc_null_literal(parent, span))
+    pub fn ts_literal_null_literal(self, span: Span) -> TSLiteral<'a> {
+        TSLiteral::NullLiteral(self.alloc_null_literal(span))
     }
 
     /// Build a [`TSLiteral::NumericLiteral`]
@@ -8966,7 +7974,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`NumericLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the number, converted into base 10
     /// - raw: The number as it appears in source code
@@ -8974,13 +7981,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_literal_numeric_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: f64,
         raw: Option<Atom<'a>>,
         base: NumberBase,
     ) -> TSLiteral<'a> {
-        TSLiteral::NumericLiteral(self.alloc_numeric_literal(parent, span, value, raw, base))
+        TSLiteral::NumericLiteral(self.alloc_numeric_literal(span, value, raw, base))
     }
 
     /// Build a [`TSLiteral::BigIntLiteral`]
@@ -8988,14 +7994,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`BigIntLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - raw: The bigint as it appears in source code
     /// - base: The base representation used by the literal in source code
     #[inline]
     pub fn ts_literal_big_int_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         raw: A,
         base: BigintBase,
@@ -9003,7 +8007,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSLiteral::BigIntLiteral(self.alloc_big_int_literal(parent, span, raw, base))
+        TSLiteral::BigIntLiteral(self.alloc_big_int_literal(span, raw, base))
     }
 
     /// Build a [`TSLiteral::RegExpLiteral`]
@@ -9011,19 +8015,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`RegExpLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - regex: The parsed regular expression. See [`oxc_regular_expression`] for more
     /// - raw: The regular expression as it appears in source code
     #[inline]
     pub fn ts_literal_reg_exp_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         regex: RegExp<'a>,
         raw: Option<Atom<'a>>,
     ) -> TSLiteral<'a> {
-        TSLiteral::RegExpLiteral(self.alloc_reg_exp_literal(parent, span, regex, raw))
+        TSLiteral::RegExpLiteral(self.alloc_reg_exp_literal(span, regex, raw))
     }
 
     /// Build a [`TSLiteral::StringLiteral`]
@@ -9031,14 +8033,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StringLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn ts_literal_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -9046,7 +8046,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSLiteral::StringLiteral(self.alloc_string_literal(parent, span, value, raw))
+        TSLiteral::StringLiteral(self.alloc_string_literal(span, value, raw))
     }
 
     /// Build a [`TSLiteral::TemplateLiteral`]
@@ -9054,19 +8054,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TemplateLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
     #[inline]
     pub fn ts_literal_template_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
     ) -> TSLiteral<'a> {
-        TSLiteral::TemplateLiteral(self.alloc_template_literal(parent, span, quasis, expressions))
+        TSLiteral::TemplateLiteral(self.alloc_template_literal(span, quasis, expressions))
     }
 
     /// Build a [`TSLiteral::UnaryExpression`]
@@ -9074,19 +8072,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`UnaryExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - argument
     #[inline]
     pub fn ts_literal_unary_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: UnaryOperator,
         argument: Expression<'a>,
     ) -> TSLiteral<'a> {
-        TSLiteral::UnaryExpression(self.alloc_unary_expression(parent, span, operator, argument))
+        TSLiteral::UnaryExpression(self.alloc_unary_expression(span, operator, argument))
     }
 
     /// Build a [`TSType::TSAnyKeyword`]
@@ -9094,11 +8090,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSAnyKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_any_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSAnyKeyword(self.alloc_ts_any_keyword(parent, span))
+    pub fn ts_type_any_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSAnyKeyword(self.alloc_ts_any_keyword(span))
     }
 
     /// Build a [`TSType::TSBigIntKeyword`]
@@ -9106,11 +8101,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSBigIntKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_big_int_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSBigIntKeyword(self.alloc_ts_big_int_keyword(parent, span))
+    pub fn ts_type_big_int_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSBigIntKeyword(self.alloc_ts_big_int_keyword(span))
     }
 
     /// Build a [`TSType::TSBooleanKeyword`]
@@ -9118,11 +8112,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSBooleanKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_boolean_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSBooleanKeyword(self.alloc_ts_boolean_keyword(parent, span))
+    pub fn ts_type_boolean_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSBooleanKeyword(self.alloc_ts_boolean_keyword(span))
     }
 
     /// Build a [`TSType::TSIntrinsicKeyword`]
@@ -9130,11 +8123,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSIntrinsicKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_intrinsic_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSIntrinsicKeyword(self.alloc_ts_intrinsic_keyword(parent, span))
+    pub fn ts_type_intrinsic_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSIntrinsicKeyword(self.alloc_ts_intrinsic_keyword(span))
     }
 
     /// Build a [`TSType::TSNeverKeyword`]
@@ -9142,11 +8134,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNeverKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_never_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSNeverKeyword(self.alloc_ts_never_keyword(parent, span))
+    pub fn ts_type_never_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSNeverKeyword(self.alloc_ts_never_keyword(span))
     }
 
     /// Build a [`TSType::TSNullKeyword`]
@@ -9154,11 +8145,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNullKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_null_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSNullKeyword(self.alloc_ts_null_keyword(parent, span))
+    pub fn ts_type_null_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSNullKeyword(self.alloc_ts_null_keyword(span))
     }
 
     /// Build a [`TSType::TSNumberKeyword`]
@@ -9166,11 +8156,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNumberKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_number_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSNumberKeyword(self.alloc_ts_number_keyword(parent, span))
+    pub fn ts_type_number_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSNumberKeyword(self.alloc_ts_number_keyword(span))
     }
 
     /// Build a [`TSType::TSObjectKeyword`]
@@ -9178,11 +8167,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSObjectKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_object_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSObjectKeyword(self.alloc_ts_object_keyword(parent, span))
+    pub fn ts_type_object_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSObjectKeyword(self.alloc_ts_object_keyword(span))
     }
 
     /// Build a [`TSType::TSStringKeyword`]
@@ -9190,11 +8178,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSStringKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_string_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSStringKeyword(self.alloc_ts_string_keyword(parent, span))
+    pub fn ts_type_string_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSStringKeyword(self.alloc_ts_string_keyword(span))
     }
 
     /// Build a [`TSType::TSSymbolKeyword`]
@@ -9202,11 +8189,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSSymbolKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_symbol_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSSymbolKeyword(self.alloc_ts_symbol_keyword(parent, span))
+    pub fn ts_type_symbol_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSSymbolKeyword(self.alloc_ts_symbol_keyword(span))
     }
 
     /// Build a [`TSType::TSUndefinedKeyword`]
@@ -9214,11 +8200,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSUndefinedKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_undefined_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSUndefinedKeyword(self.alloc_ts_undefined_keyword(parent, span))
+    pub fn ts_type_undefined_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSUndefinedKeyword(self.alloc_ts_undefined_keyword(span))
     }
 
     /// Build a [`TSType::TSUnknownKeyword`]
@@ -9226,11 +8211,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSUnknownKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_unknown_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSUnknownKeyword(self.alloc_ts_unknown_keyword(parent, span))
+    pub fn ts_type_unknown_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSUnknownKeyword(self.alloc_ts_unknown_keyword(span))
     }
 
     /// Build a [`TSType::TSVoidKeyword`]
@@ -9238,11 +8222,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSVoidKeyword`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_void_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSVoidKeyword(self.alloc_ts_void_keyword(parent, span))
+    pub fn ts_type_void_keyword(self, span: Span) -> TSType<'a> {
+        TSType::TSVoidKeyword(self.alloc_ts_void_keyword(span))
     }
 
     /// Build a [`TSType::TSArrayType`]
@@ -9250,17 +8233,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSArrayType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     #[inline]
-    pub fn ts_type_array_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        element_type: TSType<'a>,
-    ) -> TSType<'a> {
-        TSType::TSArrayType(self.alloc_ts_array_type(parent, span, element_type))
+    pub fn ts_type_array_type(self, span: Span, element_type: TSType<'a>) -> TSType<'a> {
+        TSType::TSArrayType(self.alloc_ts_array_type(span, element_type))
     }
 
     /// Build a [`TSType::TSConditionalType`]
@@ -9268,7 +8245,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSConditionalType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - check_type: The type before `extends` in the test expression.
     /// - extends_type: The type `check_type` is being tested against.
@@ -9277,7 +8253,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_conditional_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         check_type: TSType<'a>,
         extends_type: TSType<'a>,
@@ -9285,7 +8260,6 @@ impl<'a> AstBuilder<'a> {
         false_type: TSType<'a>,
     ) -> TSType<'a> {
         TSType::TSConditionalType(self.alloc_ts_conditional_type(
-            parent,
             span,
             check_type,
             extends_type,
@@ -9299,7 +8273,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSConstructorType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#abstract
     /// - type_parameters
@@ -9308,7 +8281,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_constructor_type<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#abstract: bool,
         type_parameters: T1,
@@ -9321,7 +8293,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSType::TSConstructorType(self.alloc_ts_constructor_type(
-            parent,
             span,
             r#abstract,
             type_parameters,
@@ -9335,7 +8306,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSFunctionType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters: Generic type parameters
     /// - this_param: `this` parameter
@@ -9344,7 +8314,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_function_type<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: T2,
@@ -9358,7 +8327,6 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSType::TSFunctionType(self.alloc_ts_function_type(
-            parent,
             span,
             type_parameters,
             this_param,
@@ -9372,7 +8340,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSImportType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - is_type_of: `true` for `typeof import("foo")`
     /// - parameter
@@ -9382,7 +8349,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_import_type<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         is_type_of: bool,
         parameter: TSType<'a>,
@@ -9395,7 +8361,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSType::TSImportType(self.alloc_ts_import_type(
-            parent,
             span,
             is_type_of,
             parameter,
@@ -9410,20 +8375,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSIndexedAccessType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object_type
     /// - index_type
     #[inline]
     pub fn ts_type_indexed_access_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object_type: TSType<'a>,
         index_type: TSType<'a>,
     ) -> TSType<'a> {
         TSType::TSIndexedAccessType(self.alloc_ts_indexed_access_type(
-            parent,
             span,
             object_type,
             index_type,
@@ -9435,20 +8397,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSInferType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: The type bound when the
     #[inline]
-    pub fn ts_type_infer_type<T1>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_parameter: T1,
-    ) -> TSType<'a>
+    pub fn ts_type_infer_type<T1>(self, span: Span, type_parameter: T1) -> TSType<'a>
     where
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
-        TSType::TSInferType(self.alloc_ts_infer_type(parent, span, type_parameter))
+        TSType::TSInferType(self.alloc_ts_infer_type(span, type_parameter))
     }
 
     /// Build a [`TSType::TSIntersectionType`]
@@ -9456,17 +8412,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSIntersectionType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types
     #[inline]
-    pub fn ts_type_intersection_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        types: Vec<'a, TSType<'a>>,
-    ) -> TSType<'a> {
-        TSType::TSIntersectionType(self.alloc_ts_intersection_type(parent, span, types))
+    pub fn ts_type_intersection_type(self, span: Span, types: Vec<'a, TSType<'a>>) -> TSType<'a> {
+        TSType::TSIntersectionType(self.alloc_ts_intersection_type(span, types))
     }
 
     /// Build a [`TSType::TSLiteralType`]
@@ -9474,17 +8424,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSLiteralType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - literal
     #[inline]
-    pub fn ts_type_literal_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        literal: TSLiteral<'a>,
-    ) -> TSType<'a> {
-        TSType::TSLiteralType(self.alloc_ts_literal_type(parent, span, literal))
+    pub fn ts_type_literal_type(self, span: Span, literal: TSLiteral<'a>) -> TSType<'a> {
+        TSType::TSLiteralType(self.alloc_ts_literal_type(span, literal))
     }
 
     /// Build a [`TSType::TSMappedType`]
@@ -9492,7 +8436,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSMappedType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: Key type parameter, e.g. `P` in `[P in keyof T]`.
     /// - name_type
@@ -9502,7 +8445,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_mapped_type<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameter: T1,
         name_type: Option<TSType<'a>>,
@@ -9514,7 +8456,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
         TSType::TSMappedType(self.alloc_ts_mapped_type(
-            parent,
             span,
             type_parameter,
             name_type,
@@ -9529,7 +8470,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSNamedTupleMember`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     /// - label
@@ -9537,14 +8477,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_named_tuple_member(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_type: TSTupleElement<'a>,
         label: IdentifierName<'a>,
         optional: bool,
     ) -> TSType<'a> {
         TSType::TSNamedTupleMember(self.alloc_ts_named_tuple_member(
-            parent,
             span,
             element_type,
             label,
@@ -9557,19 +8495,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSQualifiedName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn ts_type_qualified_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: TSTypeName<'a>,
         right: IdentifierName<'a>,
     ) -> TSType<'a> {
-        TSType::TSQualifiedName(self.alloc_ts_qualified_name(parent, span, left, right))
+        TSType::TSQualifiedName(self.alloc_ts_qualified_name(span, left, right))
     }
 
     /// Build a [`TSType::TSTemplateLiteralType`]
@@ -9577,21 +8513,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTemplateLiteralType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis: The string parts of the template literal.
     /// - types: The interpolated expressions in the template literal.
     #[inline]
     pub fn ts_type_template_literal_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         types: Vec<'a, TSType<'a>>,
     ) -> TSType<'a> {
-        TSType::TSTemplateLiteralType(
-            self.alloc_ts_template_literal_type(parent, span, quasis, types),
-        )
+        TSType::TSTemplateLiteralType(self.alloc_ts_template_literal_type(span, quasis, types))
     }
 
     /// Build a [`TSType::TSThisType`]
@@ -9599,11 +8531,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSThisType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_this_type(self, parent: Option<AstKind<'a>>, span: Span) -> TSType<'a> {
-        TSType::TSThisType(self.alloc_ts_this_type(parent, span))
+    pub fn ts_type_this_type(self, span: Span) -> TSType<'a> {
+        TSType::TSThisType(self.alloc_ts_this_type(span))
     }
 
     /// Build a [`TSType::TSTupleType`]
@@ -9611,17 +8542,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTupleType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_types
     #[inline]
     pub fn ts_type_tuple_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_types: Vec<'a, TSTupleElement<'a>>,
     ) -> TSType<'a> {
-        TSType::TSTupleType(self.alloc_ts_tuple_type(parent, span, element_types))
+        TSType::TSTupleType(self.alloc_ts_tuple_type(span, element_types))
     }
 
     /// Build a [`TSType::TSTypeLiteral`]
@@ -9629,17 +8558,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - members
     #[inline]
-    pub fn ts_type_type_literal(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        members: Vec<'a, TSSignature<'a>>,
-    ) -> TSType<'a> {
-        TSType::TSTypeLiteral(self.alloc_ts_type_literal(parent, span, members))
+    pub fn ts_type_type_literal(self, span: Span, members: Vec<'a, TSSignature<'a>>) -> TSType<'a> {
+        TSType::TSTypeLiteral(self.alloc_ts_type_literal(span, members))
     }
 
     /// Build a [`TSType::TSTypeOperatorType`]
@@ -9647,24 +8570,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeOperator`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - type_annotation: The type being operated on
     #[inline]
     pub fn ts_type_type_operator(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: TSTypeOperatorOperator,
         type_annotation: TSType<'a>,
     ) -> TSType<'a> {
-        TSType::TSTypeOperatorType(self.alloc_ts_type_operator(
-            parent,
-            span,
-            operator,
-            type_annotation,
-        ))
+        TSType::TSTypeOperatorType(self.alloc_ts_type_operator(span, operator, type_annotation))
     }
 
     /// Build a [`TSType::TSTypePredicate`]
@@ -9672,7 +8588,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypePredicate`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameter_name: The identifier the predicate operates on
     /// - asserts: Does this predicate include an `asserts` modifier?
@@ -9680,7 +8595,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_type_predicate<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameter_name: TSTypePredicateName<'a>,
         asserts: bool,
@@ -9690,7 +8604,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSType::TSTypePredicate(self.alloc_ts_type_predicate(
-            parent,
             span,
             parameter_name,
             asserts,
@@ -9703,14 +8616,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeQuery`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expr_name
     /// - type_parameters
     #[inline]
     pub fn ts_type_type_query<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expr_name: TSTypeQueryExprName<'a>,
         type_parameters: T1,
@@ -9718,7 +8629,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        TSType::TSTypeQuery(self.alloc_ts_type_query(parent, span, expr_name, type_parameters))
+        TSType::TSTypeQuery(self.alloc_ts_type_query(span, expr_name, type_parameters))
     }
 
     /// Build a [`TSType::TSTypeReference`]
@@ -9726,14 +8637,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSTypeReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_name
     /// - type_parameters
     #[inline]
     pub fn ts_type_type_reference<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_name: TSTypeName<'a>,
         type_parameters: T1,
@@ -9741,12 +8650,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        TSType::TSTypeReference(self.alloc_ts_type_reference(
-            parent,
-            span,
-            type_name,
-            type_parameters,
-        ))
+        TSType::TSTypeReference(self.alloc_ts_type_reference(span, type_name, type_parameters))
     }
 
     /// Build a [`TSType::TSUnionType`]
@@ -9754,17 +8658,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSUnionType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types: The types in the union.
     #[inline]
-    pub fn ts_type_union_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        types: Vec<'a, TSType<'a>>,
-    ) -> TSType<'a> {
-        TSType::TSUnionType(self.alloc_ts_union_type(parent, span, types))
+    pub fn ts_type_union_type(self, span: Span, types: Vec<'a, TSType<'a>>) -> TSType<'a> {
+        TSType::TSUnionType(self.alloc_ts_union_type(span, types))
     }
 
     /// Build a [`TSType::TSParenthesizedType`]
@@ -9772,17 +8670,11 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSParenthesizedType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
-    pub fn ts_type_parenthesized_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_annotation: TSType<'a>,
-    ) -> TSType<'a> {
-        TSType::TSParenthesizedType(self.alloc_ts_parenthesized_type(parent, span, type_annotation))
+    pub fn ts_type_parenthesized_type(self, span: Span, type_annotation: TSType<'a>) -> TSType<'a> {
+        TSType::TSParenthesizedType(self.alloc_ts_parenthesized_type(span, type_annotation))
     }
 
     /// Build a [`TSType::JSDocNullableType`]
@@ -9790,24 +8682,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSDocNullableType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix: Was `?` after the type annotation?
     #[inline]
     pub fn ts_type_js_doc_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> TSType<'a> {
-        TSType::JSDocNullableType(self.alloc_js_doc_nullable_type(
-            parent,
-            span,
-            type_annotation,
-            postfix,
-        ))
+        TSType::JSDocNullableType(self.alloc_js_doc_nullable_type(span, type_annotation, postfix))
     }
 
     /// Build a [`TSType::JSDocNonNullableType`]
@@ -9815,20 +8700,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSDocNonNullableType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix
     #[inline]
     pub fn ts_type_js_doc_non_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> TSType<'a> {
         TSType::JSDocNonNullableType(self.alloc_js_doc_non_nullable_type(
-            parent,
             span,
             type_annotation,
             postfix,
@@ -9840,15 +8722,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSDocUnknownType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_js_doc_unknown_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSType<'a> {
-        TSType::JSDocUnknownType(self.alloc_js_doc_unknown_type(parent, span))
+    pub fn ts_type_js_doc_unknown_type(self, span: Span) -> TSType<'a> {
+        TSType::JSDocUnknownType(self.alloc_js_doc_unknown_type(span))
     }
 
     /// Build a [`TSConditionalType`].
@@ -9856,7 +8733,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_conditional_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - check_type: The type before `extends` in the test expression.
     /// - extends_type: The type `check_type` is being tested against.
@@ -9865,7 +8741,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_conditional_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         check_type: TSType<'a>,
         extends_type: TSType<'a>,
@@ -9873,7 +8748,7 @@ impl<'a> AstBuilder<'a> {
         false_type: TSType<'a>,
     ) -> TSConditionalType<'a> {
         TSConditionalType {
-            parent,
+            parent: None,
             span,
             check_type,
             extends_type,
@@ -9888,7 +8763,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_conditional_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - check_type: The type before `extends` in the test expression.
     /// - extends_type: The type `check_type` is being tested against.
@@ -9897,7 +8771,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_conditional_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         check_type: TSType<'a>,
         extends_type: TSType<'a>,
@@ -9905,7 +8778,7 @@ impl<'a> AstBuilder<'a> {
         false_type: TSType<'a>,
     ) -> Box<'a, TSConditionalType<'a>> {
         Box::new_in(
-            self.ts_conditional_type(parent, span, check_type, extends_type, true_type, false_type),
+            self.ts_conditional_type(span, check_type, extends_type, true_type, false_type),
             self.allocator,
         )
     }
@@ -9915,7 +8788,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_conditional_type_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - check_type: The type before `extends` in the test expression.
     /// - extends_type: The type `check_type` is being tested against.
@@ -9925,7 +8797,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_conditional_type_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         check_type: TSType<'a>,
         extends_type: TSType<'a>,
@@ -9934,7 +8805,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSConditionalType<'a> {
         TSConditionalType {
-            parent,
+            parent: None,
             span,
             check_type,
             extends_type,
@@ -9949,7 +8820,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_conditional_type_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - check_type: The type before `extends` in the test expression.
     /// - extends_type: The type `check_type` is being tested against.
@@ -9959,7 +8829,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_conditional_type_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         check_type: TSType<'a>,
         extends_type: TSType<'a>,
@@ -9969,7 +8838,6 @@ impl<'a> AstBuilder<'a> {
     ) -> Box<'a, TSConditionalType<'a>> {
         Box::new_in(
             self.ts_conditional_type_with_scope_id(
-                parent,
                 span,
                 check_type,
                 extends_type,
@@ -9986,17 +8854,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_union_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types: The types in the union.
     #[inline]
-    pub fn ts_union_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        types: Vec<'a, TSType<'a>>,
-    ) -> TSUnionType<'a> {
-        TSUnionType { parent, span, types }
+    pub fn ts_union_type(self, span: Span, types: Vec<'a, TSType<'a>>) -> TSUnionType<'a> {
+        TSUnionType { parent: None, span, types }
     }
 
     /// Build a [`TSUnionType`], and store it in the memory arena.
@@ -10004,17 +8866,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_union_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types: The types in the union.
     #[inline]
     pub fn alloc_ts_union_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         types: Vec<'a, TSType<'a>>,
     ) -> Box<'a, TSUnionType<'a>> {
-        Box::new_in(self.ts_union_type(parent, span, types), self.allocator)
+        Box::new_in(self.ts_union_type(span, types), self.allocator)
     }
 
     /// Build a [`TSIntersectionType`].
@@ -10022,17 +8882,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_intersection_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types
     #[inline]
     pub fn ts_intersection_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         types: Vec<'a, TSType<'a>>,
     ) -> TSIntersectionType<'a> {
-        TSIntersectionType { parent, span, types }
+        TSIntersectionType { parent: None, span, types }
     }
 
     /// Build a [`TSIntersectionType`], and store it in the memory arena.
@@ -10040,17 +8898,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_intersection_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - types
     #[inline]
     pub fn alloc_ts_intersection_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         types: Vec<'a, TSType<'a>>,
     ) -> Box<'a, TSIntersectionType<'a>> {
-        Box::new_in(self.ts_intersection_type(parent, span, types), self.allocator)
+        Box::new_in(self.ts_intersection_type(span, types), self.allocator)
     }
 
     /// Build a [`TSParenthesizedType`].
@@ -10058,17 +8914,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_parenthesized_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn ts_parenthesized_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSParenthesizedType<'a> {
-        TSParenthesizedType { parent, span, type_annotation }
+        TSParenthesizedType { parent: None, span, type_annotation }
     }
 
     /// Build a [`TSParenthesizedType`], and store it in the memory arena.
@@ -10076,17 +8930,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_parenthesized_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_parenthesized_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSParenthesizedType<'a>> {
-        Box::new_in(self.ts_parenthesized_type(parent, span, type_annotation), self.allocator)
+        Box::new_in(self.ts_parenthesized_type(span, type_annotation), self.allocator)
     }
 
     /// Build a [`TSTypeOperator`].
@@ -10094,19 +8946,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_operator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - type_annotation: The type being operated on
     #[inline]
     pub fn ts_type_operator(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: TSTypeOperatorOperator,
         type_annotation: TSType<'a>,
     ) -> TSTypeOperator<'a> {
-        TSTypeOperator { parent, span, operator, type_annotation }
+        TSTypeOperator { parent: None, span, operator, type_annotation }
     }
 
     /// Build a [`TSTypeOperator`], and store it in the memory arena.
@@ -10114,19 +8964,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_operator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - operator
     /// - type_annotation: The type being operated on
     #[inline]
     pub fn alloc_ts_type_operator(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         operator: TSTypeOperatorOperator,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSTypeOperator<'a>> {
-        Box::new_in(self.ts_type_operator(parent, span, operator, type_annotation), self.allocator)
+        Box::new_in(self.ts_type_operator(span, operator, type_annotation), self.allocator)
     }
 
     /// Build a [`TSArrayType`].
@@ -10134,17 +8982,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_array_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     #[inline]
-    pub fn ts_array_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        element_type: TSType<'a>,
-    ) -> TSArrayType<'a> {
-        TSArrayType { parent, span, element_type }
+    pub fn ts_array_type(self, span: Span, element_type: TSType<'a>) -> TSArrayType<'a> {
+        TSArrayType { parent: None, span, element_type }
     }
 
     /// Build a [`TSArrayType`], and store it in the memory arena.
@@ -10152,17 +8994,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_array_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     #[inline]
     pub fn alloc_ts_array_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_type: TSType<'a>,
     ) -> Box<'a, TSArrayType<'a>> {
-        Box::new_in(self.ts_array_type(parent, span, element_type), self.allocator)
+        Box::new_in(self.ts_array_type(span, element_type), self.allocator)
     }
 
     /// Build a [`TSIndexedAccessType`].
@@ -10170,19 +9010,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_indexed_access_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object_type
     /// - index_type
     #[inline]
     pub fn ts_indexed_access_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object_type: TSType<'a>,
         index_type: TSType<'a>,
     ) -> TSIndexedAccessType<'a> {
-        TSIndexedAccessType { parent, span, object_type, index_type }
+        TSIndexedAccessType { parent: None, span, object_type, index_type }
     }
 
     /// Build a [`TSIndexedAccessType`], and store it in the memory arena.
@@ -10190,22 +9028,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_indexed_access_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - object_type
     /// - index_type
     #[inline]
     pub fn alloc_ts_indexed_access_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object_type: TSType<'a>,
         index_type: TSType<'a>,
     ) -> Box<'a, TSIndexedAccessType<'a>> {
-        Box::new_in(
-            self.ts_indexed_access_type(parent, span, object_type, index_type),
-            self.allocator,
-        )
+        Box::new_in(self.ts_indexed_access_type(span, object_type, index_type), self.allocator)
     }
 
     /// Build a [`TSTupleType`].
@@ -10213,17 +9046,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_tuple_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_types
     #[inline]
     pub fn ts_tuple_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_types: Vec<'a, TSTupleElement<'a>>,
     ) -> TSTupleType<'a> {
-        TSTupleType { parent, span, element_types }
+        TSTupleType { parent: None, span, element_types }
     }
 
     /// Build a [`TSTupleType`], and store it in the memory arena.
@@ -10231,17 +9062,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_tuple_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_types
     #[inline]
     pub fn alloc_ts_tuple_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_types: Vec<'a, TSTupleElement<'a>>,
     ) -> Box<'a, TSTupleType<'a>> {
-        Box::new_in(self.ts_tuple_type(parent, span, element_types), self.allocator)
+        Box::new_in(self.ts_tuple_type(span, element_types), self.allocator)
     }
 
     /// Build a [`TSNamedTupleMember`].
@@ -10249,7 +9078,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_named_tuple_member`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     /// - label
@@ -10257,13 +9085,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_named_tuple_member(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_type: TSTupleElement<'a>,
         label: IdentifierName<'a>,
         optional: bool,
     ) -> TSNamedTupleMember<'a> {
-        TSNamedTupleMember { parent, span, element_type, label, optional }
+        TSNamedTupleMember { parent: None, span, element_type, label, optional }
     }
 
     /// Build a [`TSNamedTupleMember`], and store it in the memory arena.
@@ -10271,7 +9098,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_named_tuple_member`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - element_type
     /// - label
@@ -10279,16 +9105,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_named_tuple_member(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         element_type: TSTupleElement<'a>,
         label: IdentifierName<'a>,
         optional: bool,
     ) -> Box<'a, TSNamedTupleMember<'a>> {
-        Box::new_in(
-            self.ts_named_tuple_member(parent, span, element_type, label, optional),
-            self.allocator,
-        )
+        Box::new_in(self.ts_named_tuple_member(span, element_type, label, optional), self.allocator)
     }
 
     /// Build a [`TSOptionalType`].
@@ -10296,17 +9118,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_optional_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
-    pub fn ts_optional_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_annotation: TSType<'a>,
-    ) -> TSOptionalType<'a> {
-        TSOptionalType { parent, span, type_annotation }
+    pub fn ts_optional_type(self, span: Span, type_annotation: TSType<'a>) -> TSOptionalType<'a> {
+        TSOptionalType { parent: None, span, type_annotation }
     }
 
     /// Build a [`TSOptionalType`], and store it in the memory arena.
@@ -10314,17 +9130,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_optional_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_optional_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSOptionalType<'a>> {
-        Box::new_in(self.ts_optional_type(parent, span, type_annotation), self.allocator)
+        Box::new_in(self.ts_optional_type(span, type_annotation), self.allocator)
     }
 
     /// Build a [`TSRestType`].
@@ -10332,17 +9146,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_rest_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
-    pub fn ts_rest_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_annotation: TSType<'a>,
-    ) -> TSRestType<'a> {
-        TSRestType { parent, span, type_annotation }
+    pub fn ts_rest_type(self, span: Span, type_annotation: TSType<'a>) -> TSRestType<'a> {
+        TSRestType { parent: None, span, type_annotation }
     }
 
     /// Build a [`TSRestType`], and store it in the memory arena.
@@ -10350,17 +9158,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_rest_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_rest_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSRestType<'a>> {
-        Box::new_in(self.ts_rest_type(parent, span, type_annotation), self.allocator)
+        Box::new_in(self.ts_rest_type(span, type_annotation), self.allocator)
     }
 
     /// Build a [`TSTupleElement::TSOptionalType`]
@@ -10368,17 +9174,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSOptionalType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn ts_tuple_element_optional_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSTupleElement<'a> {
-        TSTupleElement::TSOptionalType(self.alloc_ts_optional_type(parent, span, type_annotation))
+        TSTupleElement::TSOptionalType(self.alloc_ts_optional_type(span, type_annotation))
     }
 
     /// Build a [`TSTupleElement::TSRestType`]
@@ -10386,17 +9190,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSRestType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     #[inline]
     pub fn ts_tuple_element_rest_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSTupleElement<'a> {
-        TSTupleElement::TSRestType(self.alloc_ts_rest_type(parent, span, type_annotation))
+        TSTupleElement::TSRestType(self.alloc_ts_rest_type(span, type_annotation))
     }
 
     /// Build a [`TSAnyKeyword`].
@@ -10404,11 +9206,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_any_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_any_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSAnyKeyword<'a> {
-        TSAnyKeyword { parent, span }
+    pub fn ts_any_keyword(self, span: Span) -> TSAnyKeyword<'a> {
+        TSAnyKeyword { parent: None, span }
     }
 
     /// Build a [`TSAnyKeyword`], and store it in the memory arena.
@@ -10416,15 +9217,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_any_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_any_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSAnyKeyword<'a>> {
-        Box::new_in(self.ts_any_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_any_keyword(self, span: Span) -> Box<'a, TSAnyKeyword<'a>> {
+        Box::new_in(self.ts_any_keyword(span), self.allocator)
     }
 
     /// Build a [`TSStringKeyword`].
@@ -10432,11 +9228,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_string_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_string_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSStringKeyword<'a> {
-        TSStringKeyword { parent, span }
+    pub fn ts_string_keyword(self, span: Span) -> TSStringKeyword<'a> {
+        TSStringKeyword { parent: None, span }
     }
 
     /// Build a [`TSStringKeyword`], and store it in the memory arena.
@@ -10444,15 +9239,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_string_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_string_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSStringKeyword<'a>> {
-        Box::new_in(self.ts_string_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_string_keyword(self, span: Span) -> Box<'a, TSStringKeyword<'a>> {
+        Box::new_in(self.ts_string_keyword(span), self.allocator)
     }
 
     /// Build a [`TSBooleanKeyword`].
@@ -10460,15 +9250,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_boolean_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_boolean_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSBooleanKeyword<'a> {
-        TSBooleanKeyword { parent, span }
+    pub fn ts_boolean_keyword(self, span: Span) -> TSBooleanKeyword<'a> {
+        TSBooleanKeyword { parent: None, span }
     }
 
     /// Build a [`TSBooleanKeyword`], and store it in the memory arena.
@@ -10476,15 +9261,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_boolean_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_boolean_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSBooleanKeyword<'a>> {
-        Box::new_in(self.ts_boolean_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_boolean_keyword(self, span: Span) -> Box<'a, TSBooleanKeyword<'a>> {
+        Box::new_in(self.ts_boolean_keyword(span), self.allocator)
     }
 
     /// Build a [`TSNumberKeyword`].
@@ -10492,11 +9272,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_number_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_number_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSNumberKeyword<'a> {
-        TSNumberKeyword { parent, span }
+    pub fn ts_number_keyword(self, span: Span) -> TSNumberKeyword<'a> {
+        TSNumberKeyword { parent: None, span }
     }
 
     /// Build a [`TSNumberKeyword`], and store it in the memory arena.
@@ -10504,15 +9283,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_number_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_number_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSNumberKeyword<'a>> {
-        Box::new_in(self.ts_number_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_number_keyword(self, span: Span) -> Box<'a, TSNumberKeyword<'a>> {
+        Box::new_in(self.ts_number_keyword(span), self.allocator)
     }
 
     /// Build a [`TSNeverKeyword`].
@@ -10520,11 +9294,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_never_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_never_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSNeverKeyword<'a> {
-        TSNeverKeyword { parent, span }
+    pub fn ts_never_keyword(self, span: Span) -> TSNeverKeyword<'a> {
+        TSNeverKeyword { parent: None, span }
     }
 
     /// Build a [`TSNeverKeyword`], and store it in the memory arena.
@@ -10532,15 +9305,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_never_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_never_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSNeverKeyword<'a>> {
-        Box::new_in(self.ts_never_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_never_keyword(self, span: Span) -> Box<'a, TSNeverKeyword<'a>> {
+        Box::new_in(self.ts_never_keyword(span), self.allocator)
     }
 
     /// Build a [`TSIntrinsicKeyword`].
@@ -10548,15 +9316,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_intrinsic_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_intrinsic_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSIntrinsicKeyword<'a> {
-        TSIntrinsicKeyword { parent, span }
+    pub fn ts_intrinsic_keyword(self, span: Span) -> TSIntrinsicKeyword<'a> {
+        TSIntrinsicKeyword { parent: None, span }
     }
 
     /// Build a [`TSIntrinsicKeyword`], and store it in the memory arena.
@@ -10564,15 +9327,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_intrinsic_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_intrinsic_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSIntrinsicKeyword<'a>> {
-        Box::new_in(self.ts_intrinsic_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_intrinsic_keyword(self, span: Span) -> Box<'a, TSIntrinsicKeyword<'a>> {
+        Box::new_in(self.ts_intrinsic_keyword(span), self.allocator)
     }
 
     /// Build a [`TSUnknownKeyword`].
@@ -10580,15 +9338,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_unknown_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_unknown_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSUnknownKeyword<'a> {
-        TSUnknownKeyword { parent, span }
+    pub fn ts_unknown_keyword(self, span: Span) -> TSUnknownKeyword<'a> {
+        TSUnknownKeyword { parent: None, span }
     }
 
     /// Build a [`TSUnknownKeyword`], and store it in the memory arena.
@@ -10596,15 +9349,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_unknown_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_unknown_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSUnknownKeyword<'a>> {
-        Box::new_in(self.ts_unknown_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_unknown_keyword(self, span: Span) -> Box<'a, TSUnknownKeyword<'a>> {
+        Box::new_in(self.ts_unknown_keyword(span), self.allocator)
     }
 
     /// Build a [`TSNullKeyword`].
@@ -10612,11 +9360,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_null_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_null_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSNullKeyword<'a> {
-        TSNullKeyword { parent, span }
+    pub fn ts_null_keyword(self, span: Span) -> TSNullKeyword<'a> {
+        TSNullKeyword { parent: None, span }
     }
 
     /// Build a [`TSNullKeyword`], and store it in the memory arena.
@@ -10624,15 +9371,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_null_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_null_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSNullKeyword<'a>> {
-        Box::new_in(self.ts_null_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_null_keyword(self, span: Span) -> Box<'a, TSNullKeyword<'a>> {
+        Box::new_in(self.ts_null_keyword(span), self.allocator)
     }
 
     /// Build a [`TSUndefinedKeyword`].
@@ -10640,15 +9382,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_undefined_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_undefined_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSUndefinedKeyword<'a> {
-        TSUndefinedKeyword { parent, span }
+    pub fn ts_undefined_keyword(self, span: Span) -> TSUndefinedKeyword<'a> {
+        TSUndefinedKeyword { parent: None, span }
     }
 
     /// Build a [`TSUndefinedKeyword`], and store it in the memory arena.
@@ -10656,15 +9393,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_undefined_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_undefined_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSUndefinedKeyword<'a>> {
-        Box::new_in(self.ts_undefined_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_undefined_keyword(self, span: Span) -> Box<'a, TSUndefinedKeyword<'a>> {
+        Box::new_in(self.ts_undefined_keyword(span), self.allocator)
     }
 
     /// Build a [`TSVoidKeyword`].
@@ -10672,11 +9404,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_void_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_void_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSVoidKeyword<'a> {
-        TSVoidKeyword { parent, span }
+    pub fn ts_void_keyword(self, span: Span) -> TSVoidKeyword<'a> {
+        TSVoidKeyword { parent: None, span }
     }
 
     /// Build a [`TSVoidKeyword`], and store it in the memory arena.
@@ -10684,15 +9415,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_void_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_void_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSVoidKeyword<'a>> {
-        Box::new_in(self.ts_void_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_void_keyword(self, span: Span) -> Box<'a, TSVoidKeyword<'a>> {
+        Box::new_in(self.ts_void_keyword(span), self.allocator)
     }
 
     /// Build a [`TSSymbolKeyword`].
@@ -10700,11 +9426,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_symbol_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_symbol_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSSymbolKeyword<'a> {
-        TSSymbolKeyword { parent, span }
+    pub fn ts_symbol_keyword(self, span: Span) -> TSSymbolKeyword<'a> {
+        TSSymbolKeyword { parent: None, span }
     }
 
     /// Build a [`TSSymbolKeyword`], and store it in the memory arena.
@@ -10712,15 +9437,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_symbol_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_symbol_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSSymbolKeyword<'a>> {
-        Box::new_in(self.ts_symbol_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_symbol_keyword(self, span: Span) -> Box<'a, TSSymbolKeyword<'a>> {
+        Box::new_in(self.ts_symbol_keyword(span), self.allocator)
     }
 
     /// Build a [`TSThisType`].
@@ -10728,11 +9448,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_this_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_this_type(self, parent: Option<AstKind<'a>>, span: Span) -> TSThisType<'a> {
-        TSThisType { parent, span }
+    pub fn ts_this_type(self, span: Span) -> TSThisType<'a> {
+        TSThisType { parent: None, span }
     }
 
     /// Build a [`TSThisType`], and store it in the memory arena.
@@ -10740,15 +9459,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_this_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_this_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSThisType<'a>> {
-        Box::new_in(self.ts_this_type(parent, span), self.allocator)
+    pub fn alloc_ts_this_type(self, span: Span) -> Box<'a, TSThisType<'a>> {
+        Box::new_in(self.ts_this_type(span), self.allocator)
     }
 
     /// Build a [`TSObjectKeyword`].
@@ -10756,11 +9470,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_object_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_object_keyword(self, parent: Option<AstKind<'a>>, span: Span) -> TSObjectKeyword<'a> {
-        TSObjectKeyword { parent, span }
+    pub fn ts_object_keyword(self, span: Span) -> TSObjectKeyword<'a> {
+        TSObjectKeyword { parent: None, span }
     }
 
     /// Build a [`TSObjectKeyword`], and store it in the memory arena.
@@ -10768,15 +9481,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_object_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_object_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSObjectKeyword<'a>> {
-        Box::new_in(self.ts_object_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_object_keyword(self, span: Span) -> Box<'a, TSObjectKeyword<'a>> {
+        Box::new_in(self.ts_object_keyword(span), self.allocator)
     }
 
     /// Build a [`TSBigIntKeyword`].
@@ -10784,15 +9492,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_big_int_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_big_int_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSBigIntKeyword<'a> {
-        TSBigIntKeyword { parent, span }
+    pub fn ts_big_int_keyword(self, span: Span) -> TSBigIntKeyword<'a> {
+        TSBigIntKeyword { parent: None, span }
     }
 
     /// Build a [`TSBigIntKeyword`], and store it in the memory arena.
@@ -10800,15 +9503,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_big_int_keyword`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_big_int_keyword(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, TSBigIntKeyword<'a>> {
-        Box::new_in(self.ts_big_int_keyword(parent, span), self.allocator)
+    pub fn alloc_ts_big_int_keyword(self, span: Span) -> Box<'a, TSBigIntKeyword<'a>> {
+        Box::new_in(self.ts_big_int_keyword(span), self.allocator)
     }
 
     /// Build a [`TSTypeReference`].
@@ -10816,14 +9514,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_name
     /// - type_parameters
     #[inline]
     pub fn ts_type_reference<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_name: TSTypeName<'a>,
         type_parameters: T1,
@@ -10832,7 +9528,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSTypeReference {
-            parent,
+            parent: None,
             span,
             type_name,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -10844,14 +9540,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_name
     /// - type_parameters
     #[inline]
     pub fn alloc_ts_type_reference<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_name: TSTypeName<'a>,
         type_parameters: T1,
@@ -10859,10 +9553,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        Box::new_in(
-            self.ts_type_reference(parent, span, type_name, type_parameters),
-            self.allocator,
-        )
+        Box::new_in(self.ts_type_reference(span, type_name, type_parameters), self.allocator)
     }
 
     /// Build a [`TSTypeName::IdentifierReference`]
@@ -10870,20 +9561,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
-    pub fn ts_type_name_identifier_reference<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> TSTypeName<'a>
+    pub fn ts_type_name_identifier_reference<A>(self, span: Span, name: A) -> TSTypeName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSTypeName::IdentifierReference(self.alloc_identifier_reference(parent, span, name))
+        TSTypeName::IdentifierReference(self.alloc_identifier_reference(span, name))
     }
 
     /// Build a [`TSTypeName::QualifiedName`]
@@ -10891,19 +9576,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSQualifiedName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn ts_type_name_qualified_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: TSTypeName<'a>,
         right: IdentifierName<'a>,
     ) -> TSTypeName<'a> {
-        TSTypeName::QualifiedName(self.alloc_ts_qualified_name(parent, span, left, right))
+        TSTypeName::QualifiedName(self.alloc_ts_qualified_name(span, left, right))
     }
 
     /// Build a [`TSQualifiedName`].
@@ -10911,19 +9594,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_qualified_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn ts_qualified_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: TSTypeName<'a>,
         right: IdentifierName<'a>,
     ) -> TSQualifiedName<'a> {
-        TSQualifiedName { parent, span, left, right }
+        TSQualifiedName { parent: None, span, left, right }
     }
 
     /// Build a [`TSQualifiedName`], and store it in the memory arena.
@@ -10931,19 +9612,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_qualified_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - left
     /// - right
     #[inline]
     pub fn alloc_ts_qualified_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         left: TSTypeName<'a>,
         right: IdentifierName<'a>,
     ) -> Box<'a, TSQualifiedName<'a>> {
-        Box::new_in(self.ts_qualified_name(parent, span, left, right), self.allocator)
+        Box::new_in(self.ts_qualified_name(span, left, right), self.allocator)
     }
 
     /// Build a [`TSTypeParameterInstantiation`].
@@ -10951,17 +9630,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_parameter_instantiation`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
     pub fn ts_type_parameter_instantiation(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         params: Vec<'a, TSType<'a>>,
     ) -> TSTypeParameterInstantiation<'a> {
-        TSTypeParameterInstantiation { parent, span, params }
+        TSTypeParameterInstantiation { parent: None, span, params }
     }
 
     /// Build a [`TSTypeParameterInstantiation`], and store it in the memory arena.
@@ -10969,17 +9646,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_parameter_instantiation`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
     pub fn alloc_ts_type_parameter_instantiation(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         params: Vec<'a, TSType<'a>>,
     ) -> Box<'a, TSTypeParameterInstantiation<'a>> {
-        Box::new_in(self.ts_type_parameter_instantiation(parent, span, params), self.allocator)
+        Box::new_in(self.ts_type_parameter_instantiation(span, params), self.allocator)
     }
 
     /// Build a [`TSTypeParameter`].
@@ -10987,7 +9662,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the parameter, e.g. `T` in `type Foo<T> = ...`.
     /// - constraint: Constrains what types can be passed to the type parameter.
@@ -10998,7 +9672,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_parameter(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: BindingIdentifier<'a>,
         constraint: Option<TSType<'a>>,
@@ -11007,7 +9680,7 @@ impl<'a> AstBuilder<'a> {
         out: bool,
         r#const: bool,
     ) -> TSTypeParameter<'a> {
-        TSTypeParameter { parent, span, name, constraint, default, r#in, out, r#const }
+        TSTypeParameter { parent: None, span, name, constraint, default, r#in, out, r#const }
     }
 
     /// Build a [`TSTypeParameter`], and store it in the memory arena.
@@ -11015,7 +9688,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_parameter`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the parameter, e.g. `T` in `type Foo<T> = ...`.
     /// - constraint: Constrains what types can be passed to the type parameter.
@@ -11026,7 +9698,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_type_parameter(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: BindingIdentifier<'a>,
         constraint: Option<TSType<'a>>,
@@ -11036,7 +9707,7 @@ impl<'a> AstBuilder<'a> {
         r#const: bool,
     ) -> Box<'a, TSTypeParameter<'a>> {
         Box::new_in(
-            self.ts_type_parameter(parent, span, name, constraint, default, r#in, out, r#const),
+            self.ts_type_parameter(span, name, constraint, default, r#in, out, r#const),
             self.allocator,
         )
     }
@@ -11046,17 +9717,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_parameter_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
     pub fn ts_type_parameter_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         params: Vec<'a, TSTypeParameter<'a>>,
     ) -> TSTypeParameterDeclaration<'a> {
-        TSTypeParameterDeclaration { parent, span, params }
+        TSTypeParameterDeclaration { parent: None, span, params }
     }
 
     /// Build a [`TSTypeParameterDeclaration`], and store it in the memory arena.
@@ -11064,17 +9733,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_parameter_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
     pub fn alloc_ts_type_parameter_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         params: Vec<'a, TSTypeParameter<'a>>,
     ) -> Box<'a, TSTypeParameterDeclaration<'a>> {
-        Box::new_in(self.ts_type_parameter_declaration(parent, span, params), self.allocator)
+        Box::new_in(self.ts_type_parameter_declaration(span, params), self.allocator)
     }
 
     /// Build a [`TSTypeAliasDeclaration`].
@@ -11082,7 +9749,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_alias_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     /// - type_parameters
@@ -11091,7 +9757,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_alias_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         type_parameters: T1,
@@ -11102,7 +9767,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         TSTypeAliasDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -11117,7 +9782,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_alias_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     /// - type_parameters
@@ -11126,7 +9790,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_type_alias_declaration<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         type_parameters: T1,
@@ -11137,14 +9800,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         Box::new_in(
-            self.ts_type_alias_declaration(
-                parent,
-                span,
-                id,
-                type_parameters,
-                type_annotation,
-                declare,
-            ),
+            self.ts_type_alias_declaration(span, id, type_parameters, type_annotation, declare),
             self.allocator,
         )
     }
@@ -11154,7 +9810,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_alias_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     /// - type_parameters
@@ -11164,7 +9819,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_alias_declaration_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         type_parameters: T1,
@@ -11176,7 +9830,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         TSTypeAliasDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -11191,7 +9845,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_alias_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     /// - type_parameters
@@ -11201,7 +9854,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_type_alias_declaration_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         type_parameters: T1,
@@ -11214,7 +9866,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_type_alias_declaration_with_scope_id(
-                parent,
                 span,
                 id,
                 type_parameters,
@@ -11231,14 +9882,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_class_implements`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn ts_class_implements<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: TSTypeName<'a>,
         type_parameters: T1,
@@ -11247,7 +9896,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSClassImplements {
-            parent,
+            parent: None,
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -11259,14 +9908,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_class_implements`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn alloc_ts_class_implements<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: TSTypeName<'a>,
         type_parameters: T1,
@@ -11274,10 +9921,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        Box::new_in(
-            self.ts_class_implements(parent, span, expression, type_parameters),
-            self.allocator,
-        )
+        Box::new_in(self.ts_class_implements(span, expression, type_parameters), self.allocator)
     }
 
     /// Build a [`TSInterfaceDeclaration`].
@@ -11285,7 +9929,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_interface_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -11295,7 +9938,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_interface_declaration<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -11308,7 +9950,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             extends,
@@ -11324,7 +9966,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_interface_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -11334,7 +9975,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_interface_declaration<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -11347,15 +9987,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         Box::new_in(
-            self.ts_interface_declaration(
-                parent,
-                span,
-                id,
-                extends,
-                type_parameters,
-                body,
-                declare,
-            ),
+            self.ts_interface_declaration(span, id, extends, type_parameters, body, declare),
             self.allocator,
         )
     }
@@ -11365,7 +9997,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_interface_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -11376,7 +10007,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_interface_declaration_with_scope_id<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -11390,7 +10020,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             extends,
@@ -11406,7 +10036,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_interface_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The identifier (name) of the interface.
     /// - extends: Other interfaces/types this interface extends.
@@ -11417,7 +10046,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_interface_declaration_with_scope_id<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
@@ -11432,7 +10060,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_interface_declaration_with_scope_id(
-                parent,
                 span,
                 id,
                 extends,
@@ -11450,17 +10077,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_interface_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn ts_interface_body(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, TSSignature<'a>>,
     ) -> TSInterfaceBody<'a> {
-        TSInterfaceBody { parent, span, body }
+        TSInterfaceBody { parent: None, span, body }
     }
 
     /// Build a [`TSInterfaceBody`], and store it in the memory arena.
@@ -11468,17 +10093,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_interface_body`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - body
     #[inline]
     pub fn alloc_ts_interface_body(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         body: Vec<'a, TSSignature<'a>>,
     ) -> Box<'a, TSInterfaceBody<'a>> {
-        Box::new_in(self.ts_interface_body(parent, span, body), self.allocator)
+        Box::new_in(self.ts_interface_body(span, body), self.allocator)
     }
 
     /// Build a [`TSPropertySignature`].
@@ -11486,7 +10109,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_property_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - computed
     /// - optional
@@ -11496,7 +10118,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_property_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         computed: bool,
         optional: bool,
@@ -11508,7 +10129,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSPropertySignature {
-            parent,
+            parent: None,
             span,
             computed,
             optional,
@@ -11523,7 +10144,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_property_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - computed
     /// - optional
@@ -11533,7 +10153,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_property_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         computed: bool,
         optional: bool,
@@ -11545,15 +10164,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         Box::new_in(
-            self.ts_property_signature(
-                parent,
-                span,
-                computed,
-                optional,
-                readonly,
-                key,
-                type_annotation,
-            ),
+            self.ts_property_signature(span, computed, optional, readonly, key, type_annotation),
             self.allocator,
         )
     }
@@ -11563,7 +10174,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSIndexSignature`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameters
     /// - type_annotation
@@ -11572,7 +10182,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_signature_index_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameters: Vec<'a, TSIndexSignatureName<'a>>,
         type_annotation: T1,
@@ -11583,7 +10192,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSSignature::TSIndexSignature(self.alloc_ts_index_signature(
-            parent,
             span,
             parameters,
             type_annotation,
@@ -11597,7 +10205,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSPropertySignature`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - computed
     /// - optional
@@ -11607,7 +10214,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_signature_property_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         computed: bool,
         optional: bool,
@@ -11619,7 +10225,6 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSSignature::TSPropertySignature(self.alloc_ts_property_signature(
-            parent,
             span,
             computed,
             optional,
@@ -11634,7 +10239,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSCallSignatureDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - this_param
@@ -11643,7 +10247,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_signature_call_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: Option<TSThisParameter<'a>>,
@@ -11656,7 +10259,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSSignature::TSCallSignatureDeclaration(self.alloc_ts_call_signature_declaration(
-            parent,
             span,
             type_parameters,
             this_param,
@@ -11670,7 +10272,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSConstructSignatureDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - params
@@ -11678,7 +10279,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_signature_construct_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         params: T2,
@@ -11690,7 +10290,6 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSSignature::TSConstructSignatureDeclaration(self.alloc_ts_construct_signature_declaration(
-            parent,
             span,
             type_parameters,
             params,
@@ -11703,7 +10302,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSMethodSignature`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - computed
@@ -11716,7 +10314,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_signature_method_signature<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         computed: bool,
@@ -11734,7 +10331,6 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSSignature::TSMethodSignature(self.alloc_ts_method_signature(
-            parent,
             span,
             key,
             computed,
@@ -11752,7 +10348,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_index_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameters
     /// - type_annotation
@@ -11761,7 +10356,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_index_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameters: Vec<'a, TSIndexSignatureName<'a>>,
         type_annotation: T1,
@@ -11772,7 +10366,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSIndexSignature {
-            parent,
+            parent: None,
             span,
             parameters,
             type_annotation: type_annotation.into_in(self.allocator),
@@ -11786,7 +10380,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_index_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameters
     /// - type_annotation
@@ -11795,7 +10388,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_index_signature<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameters: Vec<'a, TSIndexSignatureName<'a>>,
         type_annotation: T1,
@@ -11806,7 +10398,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         Box::new_in(
-            self.ts_index_signature(parent, span, parameters, type_annotation, readonly, r#static),
+            self.ts_index_signature(span, parameters, type_annotation, readonly, r#static),
             self.allocator,
         )
     }
@@ -11816,7 +10408,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_call_signature_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - this_param
@@ -11825,7 +10416,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_call_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: Option<TSThisParameter<'a>>,
@@ -11838,7 +10428,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSCallSignatureDeclaration {
-            parent,
+            parent: None,
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             this_param,
@@ -11852,7 +10442,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_call_signature_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - this_param
@@ -11861,7 +10450,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_call_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: Option<TSThisParameter<'a>>,
@@ -11875,7 +10463,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_call_signature_declaration(
-                parent,
                 span,
                 type_parameters,
                 this_param,
@@ -11891,7 +10478,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_method_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - computed
@@ -11904,7 +10490,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_method_signature<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         computed: bool,
@@ -11922,7 +10507,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSMethodSignature {
-            parent,
+            parent: None,
             span,
             key,
             computed,
@@ -11941,7 +10526,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_method_signature`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - computed
@@ -11954,7 +10538,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_method_signature<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         computed: bool,
@@ -11973,7 +10556,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_method_signature(
-                parent,
                 span,
                 key,
                 computed,
@@ -11993,7 +10575,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_method_signature_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - computed
@@ -12007,7 +10588,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_method_signature_with_scope_id<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         computed: bool,
@@ -12026,7 +10606,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSMethodSignature {
-            parent,
+            parent: None,
             span,
             key,
             computed,
@@ -12045,7 +10625,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_method_signature_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - key
     /// - computed
@@ -12059,7 +10638,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_method_signature_with_scope_id<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         key: PropertyKey<'a>,
         computed: bool,
@@ -12079,7 +10657,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_method_signature_with_scope_id(
-                parent,
                 span,
                 key,
                 computed,
@@ -12100,7 +10677,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_construct_signature_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - params
@@ -12108,7 +10684,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_construct_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         params: T2,
@@ -12120,7 +10695,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSConstructSignatureDeclaration {
-            parent,
+            parent: None,
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             params: params.into_in(self.allocator),
@@ -12134,7 +10709,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_construct_signature_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - params
@@ -12142,7 +10716,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_construct_signature_declaration<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         params: T2,
@@ -12154,13 +10727,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         Box::new_in(
-            self.ts_construct_signature_declaration(
-                parent,
-                span,
-                type_parameters,
-                params,
-                return_type,
-            ),
+            self.ts_construct_signature_declaration(span, type_parameters, params, return_type),
             self.allocator,
         )
     }
@@ -12170,7 +10737,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_construct_signature_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - params
@@ -12179,7 +10745,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_construct_signature_declaration_with_scope_id<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         params: T2,
@@ -12192,7 +10757,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSConstructSignatureDeclaration {
-            parent,
+            parent: None,
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             params: params.into_in(self.allocator),
@@ -12206,7 +10771,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_construct_signature_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters
     /// - params
@@ -12215,7 +10779,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_construct_signature_declaration_with_scope_id<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         params: T2,
@@ -12229,7 +10792,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_construct_signature_declaration_with_scope_id(
-                parent,
                 span,
                 type_parameters,
                 params,
@@ -12245,14 +10807,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_index_signature_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - type_annotation
     #[inline]
     pub fn ts_index_signature_name<A, T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         type_annotation: T1,
@@ -12262,7 +10822,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSIndexSignatureName {
-            parent,
+            parent: None,
             span,
             name: name.into_in(self.allocator),
             type_annotation: type_annotation.into_in(self.allocator),
@@ -12274,14 +10834,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_index_signature_name`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_index_signature_name<A, T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
         type_annotation: T1,
@@ -12290,10 +10848,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
-        Box::new_in(
-            self.ts_index_signature_name(parent, span, name, type_annotation),
-            self.allocator,
-        )
+        Box::new_in(self.ts_index_signature_name(span, name, type_annotation), self.allocator)
     }
 
     /// Build a [`TSInterfaceHeritage`].
@@ -12301,14 +10856,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_interface_heritage`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn ts_interface_heritage<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -12317,7 +10870,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSInterfaceHeritage {
-            parent,
+            parent: None,
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -12329,14 +10882,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_interface_heritage`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn alloc_ts_interface_heritage<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -12344,10 +10895,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        Box::new_in(
-            self.ts_interface_heritage(parent, span, expression, type_parameters),
-            self.allocator,
-        )
+        Box::new_in(self.ts_interface_heritage(span, expression, type_parameters), self.allocator)
     }
 
     /// Build a [`TSTypePredicate`].
@@ -12355,7 +10903,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_predicate`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameter_name: The identifier the predicate operates on
     /// - asserts: Does this predicate include an `asserts` modifier?
@@ -12363,7 +10910,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_predicate<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameter_name: TSTypePredicateName<'a>,
         asserts: bool,
@@ -12373,7 +10919,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSTypePredicate {
-            parent,
+            parent: None,
             span,
             parameter_name,
             asserts,
@@ -12386,7 +10932,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_predicate`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - parameter_name: The identifier the predicate operates on
     /// - asserts: Does this predicate include an `asserts` modifier?
@@ -12394,7 +10939,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_type_predicate<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         parameter_name: TSTypePredicateName<'a>,
         asserts: bool,
@@ -12404,7 +10948,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         Box::new_in(
-            self.ts_type_predicate(parent, span, parameter_name, asserts, type_annotation),
+            self.ts_type_predicate(span, parameter_name, asserts, type_annotation),
             self.allocator,
         )
     }
@@ -12414,34 +10958,27 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
     pub fn ts_type_predicate_name_identifier_name<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> TSTypePredicateName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSTypePredicateName::Identifier(self.alloc_identifier_name(parent, span, name))
+        TSTypePredicateName::Identifier(self.alloc_identifier_name(span, name))
     }
 
     /// Build a [`TSTypePredicateName::This`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_type_predicate_name_this_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> TSTypePredicateName<'a> {
-        TSTypePredicateName::This(self.ts_this_type(parent, span))
+    pub fn ts_type_predicate_name_this_type(self, span: Span) -> TSTypePredicateName<'a> {
+        TSTypePredicateName::This(self.ts_this_type(span))
     }
 
     /// Build a [`TSModuleDeclaration`].
@@ -12449,7 +10986,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_module_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -12458,14 +10994,21 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_module_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
         kind: TSModuleDeclarationKind,
         declare: bool,
     ) -> TSModuleDeclaration<'a> {
-        TSModuleDeclaration { parent, span, id, body, kind, declare, scope_id: Default::default() }
+        TSModuleDeclaration {
+            parent: None,
+            span,
+            id,
+            body,
+            kind,
+            declare,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`TSModuleDeclaration`], and store it in the memory arena.
@@ -12473,7 +11016,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_module_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -12482,17 +11024,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_module_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
         kind: TSModuleDeclarationKind,
         declare: bool,
     ) -> Box<'a, TSModuleDeclaration<'a>> {
-        Box::new_in(
-            self.ts_module_declaration(parent, span, id, body, kind, declare),
-            self.allocator,
-        )
+        Box::new_in(self.ts_module_declaration(span, id, body, kind, declare), self.allocator)
     }
 
     /// Build a [`TSModuleDeclaration`] with `ScopeId`.
@@ -12500,7 +11038,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_module_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -12510,7 +11047,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_module_declaration_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
@@ -12519,7 +11055,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSModuleDeclaration<'a> {
         TSModuleDeclaration {
-            parent,
+            parent: None,
             span,
             id,
             body,
@@ -12534,7 +11070,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_module_declaration_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -12544,7 +11079,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_module_declaration_with_scope_id(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
@@ -12553,9 +11087,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSModuleDeclaration<'a>> {
         Box::new_in(
-            self.ts_module_declaration_with_scope_id(
-                parent, span, id, body, kind, declare, scope_id,
-            ),
+            self.ts_module_declaration_with_scope_id(span, id, body, kind, declare, scope_id),
             self.allocator,
         )
     }
@@ -12563,33 +11095,29 @@ impl<'a> AstBuilder<'a> {
     /// Build a [`TSModuleDeclarationName::Identifier`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     #[inline]
     pub fn ts_module_declaration_name_binding_identifier<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> TSModuleDeclarationName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSModuleDeclarationName::Identifier(self.binding_identifier(parent, span, name))
+        TSModuleDeclarationName::Identifier(self.binding_identifier(span, name))
     }
 
     /// Build a [`TSModuleDeclarationName::StringLiteral`]
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn ts_module_declaration_name_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -12597,7 +11125,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSModuleDeclarationName::StringLiteral(self.string_literal(parent, span, value, raw))
+        TSModuleDeclarationName::StringLiteral(self.string_literal(span, value, raw))
     }
 
     /// Build a [`TSModuleDeclarationBody::TSModuleDeclaration`]
@@ -12605,7 +11133,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSModuleDeclaration`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id: The name of the module/namespace being declared.
     /// - body
@@ -12614,7 +11141,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_module_declaration_body_module_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: TSModuleDeclarationName<'a>,
         body: Option<TSModuleDeclarationBody<'a>>,
@@ -12622,7 +11148,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSModuleDeclarationBody<'a> {
         TSModuleDeclarationBody::TSModuleDeclaration(
-            self.alloc_ts_module_declaration(parent, span, id, body, kind, declare),
+            self.alloc_ts_module_declaration(span, id, body, kind, declare),
         )
     }
 
@@ -12631,21 +11157,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSModuleBlock`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - directives
     /// - body
     #[inline]
     pub fn ts_module_declaration_body_module_block(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
     ) -> TSModuleDeclarationBody<'a> {
-        TSModuleDeclarationBody::TSModuleBlock(
-            self.alloc_ts_module_block(parent, span, directives, body),
-        )
+        TSModuleDeclarationBody::TSModuleBlock(self.alloc_ts_module_block(span, directives, body))
     }
 
     /// Build a [`TSModuleBlock`].
@@ -12653,19 +11175,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_module_block`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - directives
     /// - body
     #[inline]
     pub fn ts_module_block(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
     ) -> TSModuleBlock<'a> {
-        TSModuleBlock { parent, span, directives, body }
+        TSModuleBlock { parent: None, span, directives, body }
     }
 
     /// Build a [`TSModuleBlock`], and store it in the memory arena.
@@ -12673,19 +11193,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_module_block`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - directives
     /// - body
     #[inline]
     pub fn alloc_ts_module_block(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
     ) -> Box<'a, TSModuleBlock<'a>> {
-        Box::new_in(self.ts_module_block(parent, span, directives, body), self.allocator)
+        Box::new_in(self.ts_module_block(span, directives, body), self.allocator)
     }
 
     /// Build a [`TSTypeLiteral`].
@@ -12693,17 +11211,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - members
     #[inline]
     pub fn ts_type_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         members: Vec<'a, TSSignature<'a>>,
     ) -> TSTypeLiteral<'a> {
-        TSTypeLiteral { parent, span, members }
+        TSTypeLiteral { parent: None, span, members }
     }
 
     /// Build a [`TSTypeLiteral`], and store it in the memory arena.
@@ -12711,17 +11227,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_literal`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - members
     #[inline]
     pub fn alloc_ts_type_literal(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         members: Vec<'a, TSSignature<'a>>,
     ) -> Box<'a, TSTypeLiteral<'a>> {
-        Box::new_in(self.ts_type_literal(parent, span, members), self.allocator)
+        Box::new_in(self.ts_type_literal(span, members), self.allocator)
     }
 
     /// Build a [`TSInferType`].
@@ -12729,20 +11243,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_infer_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: The type bound when the
     #[inline]
-    pub fn ts_infer_type<T1>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_parameter: T1,
-    ) -> TSInferType<'a>
+    pub fn ts_infer_type<T1>(self, span: Span, type_parameter: T1) -> TSInferType<'a>
     where
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
-        TSInferType { parent, span, type_parameter: type_parameter.into_in(self.allocator) }
+        TSInferType { parent: None, span, type_parameter: type_parameter.into_in(self.allocator) }
     }
 
     /// Build a [`TSInferType`], and store it in the memory arena.
@@ -12750,20 +11258,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_infer_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: The type bound when the
     #[inline]
-    pub fn alloc_ts_infer_type<T1>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        type_parameter: T1,
-    ) -> Box<'a, TSInferType<'a>>
+    pub fn alloc_ts_infer_type<T1>(self, span: Span, type_parameter: T1) -> Box<'a, TSInferType<'a>>
     where
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
-        Box::new_in(self.ts_infer_type(parent, span, type_parameter), self.allocator)
+        Box::new_in(self.ts_infer_type(span, type_parameter), self.allocator)
     }
 
     /// Build a [`TSTypeQuery`].
@@ -12771,14 +11273,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_query`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expr_name
     /// - type_parameters
     #[inline]
     pub fn ts_type_query<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expr_name: TSTypeQueryExprName<'a>,
         type_parameters: T1,
@@ -12787,7 +11287,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSTypeQuery {
-            parent,
+            parent: None,
             span,
             expr_name,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -12799,14 +11299,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_query`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expr_name
     /// - type_parameters
     #[inline]
     pub fn alloc_ts_type_query<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expr_name: TSTypeQueryExprName<'a>,
         type_parameters: T1,
@@ -12814,7 +11312,7 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        Box::new_in(self.ts_type_query(parent, span, expr_name, type_parameters), self.allocator)
+        Box::new_in(self.ts_type_query(span, expr_name, type_parameters), self.allocator)
     }
 
     /// Build a [`TSTypeQueryExprName::TSImportType`]
@@ -12822,7 +11320,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSImportType`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - is_type_of: `true` for `typeof import("foo")`
     /// - parameter
@@ -12832,7 +11329,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_type_query_expr_name_import_type<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         is_type_of: bool,
         parameter: TSType<'a>,
@@ -12845,7 +11341,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSTypeQueryExprName::TSImportType(self.alloc_ts_import_type(
-            parent,
             span,
             is_type_of,
             parameter,
@@ -12860,7 +11355,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_import_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - is_type_of: `true` for `typeof import("foo")`
     /// - parameter
@@ -12870,7 +11364,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_import_type<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         is_type_of: bool,
         parameter: TSType<'a>,
@@ -12883,7 +11376,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSImportType {
-            parent,
+            parent: None,
             span,
             is_type_of,
             parameter,
@@ -12898,7 +11391,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_import_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - is_type_of: `true` for `typeof import("foo")`
     /// - parameter
@@ -12908,7 +11400,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_import_type<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         is_type_of: bool,
         parameter: TSType<'a>,
@@ -12922,7 +11413,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_import_type(
-                parent,
                 span,
                 is_type_of,
                 parameter,
@@ -12939,19 +11429,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_import_attributes`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - attributes_keyword
     /// - elements
     #[inline]
     pub fn ts_import_attributes(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         attributes_keyword: IdentifierName<'a>,
         elements: Vec<'a, TSImportAttribute<'a>>,
     ) -> TSImportAttributes<'a> {
-        TSImportAttributes { parent, span, attributes_keyword, elements }
+        TSImportAttributes { parent: None, span, attributes_keyword, elements }
     }
 
     /// Build a [`TSImportAttributes`], and store it in the memory arena.
@@ -12959,22 +11447,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_import_attributes`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - attributes_keyword
     /// - elements
     #[inline]
     pub fn alloc_ts_import_attributes(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         attributes_keyword: IdentifierName<'a>,
         elements: Vec<'a, TSImportAttribute<'a>>,
     ) -> Box<'a, TSImportAttributes<'a>> {
-        Box::new_in(
-            self.ts_import_attributes(parent, span, attributes_keyword, elements),
-            self.allocator,
-        )
+        Box::new_in(self.ts_import_attributes(span, attributes_keyword, elements), self.allocator)
     }
 
     /// Build a [`TSImportAttribute`].
@@ -12982,19 +11465,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_import_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - value
     #[inline]
     pub fn ts_import_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: TSImportAttributeName<'a>,
         value: Expression<'a>,
     ) -> TSImportAttribute<'a> {
-        TSImportAttribute { parent, span, name, value }
+        TSImportAttribute { parent: None, span, name, value }
     }
 
     /// Build a [`TSImportAttribute`], and store it in the memory arena.
@@ -13002,51 +11483,45 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_import_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     /// - value
     #[inline]
     pub fn alloc_ts_import_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: TSImportAttributeName<'a>,
         value: Expression<'a>,
     ) -> Box<'a, TSImportAttribute<'a>> {
-        Box::new_in(self.ts_import_attribute(parent, span, name, value), self.allocator)
+        Box::new_in(self.ts_import_attribute(span, name, value), self.allocator)
     }
 
     /// Build a [`TSImportAttributeName::Identifier`]
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name
     #[inline]
     pub fn ts_import_attribute_name_identifier_name<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> TSImportAttributeName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSImportAttributeName::Identifier(self.identifier_name(parent, span, name))
+        TSImportAttributeName::Identifier(self.identifier_name(span, name))
     }
 
     /// Build a [`TSImportAttributeName::StringLiteral`]
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn ts_import_attribute_name_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -13054,7 +11529,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        TSImportAttributeName::StringLiteral(self.string_literal(parent, span, value, raw))
+        TSImportAttributeName::StringLiteral(self.string_literal(span, value, raw))
     }
 
     /// Build a [`TSFunctionType`].
@@ -13062,7 +11537,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_function_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters: Generic type parameters
     /// - this_param: `this` parameter
@@ -13071,7 +11545,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_function_type<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: T2,
@@ -13085,7 +11558,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSFunctionType {
-            parent,
+            parent: None,
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             this_param: this_param.into_in(self.allocator),
@@ -13099,7 +11572,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_function_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameters: Generic type parameters
     /// - this_param: `this` parameter
@@ -13108,7 +11580,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_function_type<T1, T2, T3, T4>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameters: T1,
         this_param: T2,
@@ -13122,7 +11593,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         Box::new_in(
-            self.ts_function_type(parent, span, type_parameters, this_param, params, return_type),
+            self.ts_function_type(span, type_parameters, this_param, params, return_type),
             self.allocator,
         )
     }
@@ -13132,7 +11603,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_constructor_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#abstract
     /// - type_parameters
@@ -13141,7 +11611,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_constructor_type<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#abstract: bool,
         type_parameters: T1,
@@ -13154,7 +11623,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSConstructorType {
-            parent,
+            parent: None,
             span,
             r#abstract,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -13168,7 +11637,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_constructor_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - r#abstract
     /// - type_parameters
@@ -13177,7 +11645,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_constructor_type<T1, T2, T3>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         r#abstract: bool,
         type_parameters: T1,
@@ -13190,14 +11657,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         Box::new_in(
-            self.ts_constructor_type(
-                parent,
-                span,
-                r#abstract,
-                type_parameters,
-                params,
-                return_type,
-            ),
+            self.ts_constructor_type(span, r#abstract, type_parameters, params, return_type),
             self.allocator,
         )
     }
@@ -13207,7 +11667,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_mapped_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: Key type parameter, e.g. `P` in `[P in keyof T]`.
     /// - name_type
@@ -13217,7 +11676,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_mapped_type<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameter: T1,
         name_type: Option<TSType<'a>>,
@@ -13229,7 +11687,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
         TSMappedType {
-            parent,
+            parent: None,
             span,
             type_parameter: type_parameter.into_in(self.allocator),
             name_type,
@@ -13245,7 +11703,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_mapped_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: Key type parameter, e.g. `P` in `[P in keyof T]`.
     /// - name_type
@@ -13255,7 +11712,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_mapped_type<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameter: T1,
         name_type: Option<TSType<'a>>,
@@ -13268,7 +11724,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_mapped_type(
-                parent,
                 span,
                 type_parameter,
                 name_type,
@@ -13285,7 +11740,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_mapped_type_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: Key type parameter, e.g. `P` in `[P in keyof T]`.
     /// - name_type
@@ -13296,7 +11750,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_mapped_type_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameter: T1,
         name_type: Option<TSType<'a>>,
@@ -13309,7 +11762,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
         TSMappedType {
-            parent,
+            parent: None,
             span,
             type_parameter: type_parameter.into_in(self.allocator),
             name_type,
@@ -13325,7 +11778,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_mapped_type_with_scope_id`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_parameter: Key type parameter, e.g. `P` in `[P in keyof T]`.
     /// - name_type
@@ -13336,7 +11788,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_mapped_type_with_scope_id<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_parameter: T1,
         name_type: Option<TSType<'a>>,
@@ -13350,7 +11801,6 @@ impl<'a> AstBuilder<'a> {
     {
         Box::new_in(
             self.ts_mapped_type_with_scope_id(
-                parent,
                 span,
                 type_parameter,
                 name_type,
@@ -13368,19 +11818,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_template_literal_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis: The string parts of the template literal.
     /// - types: The interpolated expressions in the template literal.
     #[inline]
     pub fn ts_template_literal_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         types: Vec<'a, TSType<'a>>,
     ) -> TSTemplateLiteralType<'a> {
-        TSTemplateLiteralType { parent, span, quasis, types }
+        TSTemplateLiteralType { parent: None, span, quasis, types }
     }
 
     /// Build a [`TSTemplateLiteralType`], and store it in the memory arena.
@@ -13388,19 +11836,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_template_literal_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - quasis: The string parts of the template literal.
     /// - types: The interpolated expressions in the template literal.
     #[inline]
     pub fn alloc_ts_template_literal_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         types: Vec<'a, TSType<'a>>,
     ) -> Box<'a, TSTemplateLiteralType<'a>> {
-        Box::new_in(self.ts_template_literal_type(parent, span, quasis, types), self.allocator)
+        Box::new_in(self.ts_template_literal_type(span, quasis, types), self.allocator)
     }
 
     /// Build a [`TSAsExpression`].
@@ -13408,19 +11854,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_as_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn ts_as_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSAsExpression<'a> {
-        TSAsExpression { parent, span, expression, type_annotation }
+        TSAsExpression { parent: None, span, expression, type_annotation }
     }
 
     /// Build a [`TSAsExpression`], and store it in the memory arena.
@@ -13428,22 +11872,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_as_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_as_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSAsExpression<'a>> {
-        Box::new_in(
-            self.ts_as_expression(parent, span, expression, type_annotation),
-            self.allocator,
-        )
+        Box::new_in(self.ts_as_expression(span, expression, type_annotation), self.allocator)
     }
 
     /// Build a [`TSSatisfiesExpression`].
@@ -13451,19 +11890,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_satisfies_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: The value expression being constrained.
     /// - type_annotation: The type `expression` must satisfy.
     #[inline]
     pub fn ts_satisfies_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSSatisfiesExpression<'a> {
-        TSSatisfiesExpression { parent, span, expression, type_annotation }
+        TSSatisfiesExpression { parent: None, span, expression, type_annotation }
     }
 
     /// Build a [`TSSatisfiesExpression`], and store it in the memory arena.
@@ -13471,22 +11908,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_satisfies_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression: The value expression being constrained.
     /// - type_annotation: The type `expression` must satisfy.
     #[inline]
     pub fn alloc_ts_satisfies_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSSatisfiesExpression<'a>> {
-        Box::new_in(
-            self.ts_satisfies_expression(parent, span, expression, type_annotation),
-            self.allocator,
-        )
+        Box::new_in(self.ts_satisfies_expression(span, expression, type_annotation), self.allocator)
     }
 
     /// Build a [`TSTypeAssertion`].
@@ -13494,19 +11926,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_assertion`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn ts_type_assertion(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSTypeAssertion<'a> {
-        TSTypeAssertion { parent, span, expression, type_annotation }
+        TSTypeAssertion { parent: None, span, expression, type_annotation }
     }
 
     /// Build a [`TSTypeAssertion`], and store it in the memory arena.
@@ -13514,22 +11944,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_assertion`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_annotation
     #[inline]
     pub fn alloc_ts_type_assertion(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> Box<'a, TSTypeAssertion<'a>> {
-        Box::new_in(
-            self.ts_type_assertion(parent, span, expression, type_annotation),
-            self.allocator,
-        )
+        Box::new_in(self.ts_type_assertion(span, expression, type_annotation), self.allocator)
     }
 
     /// Build a [`TSImportEqualsDeclaration`].
@@ -13537,7 +11962,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_import_equals_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - module_reference
@@ -13545,13 +11969,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_import_equals_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         module_reference: TSModuleReference<'a>,
         import_kind: ImportOrExportKind,
     ) -> TSImportEqualsDeclaration<'a> {
-        TSImportEqualsDeclaration { parent, span, id, module_reference, import_kind }
+        TSImportEqualsDeclaration { parent: None, span, id, module_reference, import_kind }
     }
 
     /// Build a [`TSImportEqualsDeclaration`], and store it in the memory arena.
@@ -13559,7 +11982,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_import_equals_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     /// - module_reference
@@ -13567,14 +11989,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_ts_import_equals_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: BindingIdentifier<'a>,
         module_reference: TSModuleReference<'a>,
         import_kind: ImportOrExportKind,
     ) -> Box<'a, TSImportEqualsDeclaration<'a>> {
         Box::new_in(
-            self.ts_import_equals_declaration(parent, span, id, module_reference, import_kind),
+            self.ts_import_equals_declaration(span, id, module_reference, import_kind),
             self.allocator,
         )
     }
@@ -13584,18 +12005,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`TSExternalModuleReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn ts_module_reference_external_module_reference(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: StringLiteral<'a>,
     ) -> TSModuleReference<'a> {
         TSModuleReference::ExternalModuleReference(
-            self.alloc_ts_external_module_reference(parent, span, expression),
+            self.alloc_ts_external_module_reference(span, expression),
         )
     }
 
@@ -13604,17 +12023,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_external_module_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn ts_external_module_reference(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: StringLiteral<'a>,
     ) -> TSExternalModuleReference<'a> {
-        TSExternalModuleReference { parent, span, expression }
+        TSExternalModuleReference { parent: None, span, expression }
     }
 
     /// Build a [`TSExternalModuleReference`], and store it in the memory arena.
@@ -13622,17 +12039,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_external_module_reference`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_ts_external_module_reference(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: StringLiteral<'a>,
     ) -> Box<'a, TSExternalModuleReference<'a>> {
-        Box::new_in(self.ts_external_module_reference(parent, span, expression), self.allocator)
+        Box::new_in(self.ts_external_module_reference(span, expression), self.allocator)
     }
 
     /// Build a [`TSNonNullExpression`].
@@ -13640,17 +12055,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_non_null_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn ts_non_null_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> TSNonNullExpression<'a> {
-        TSNonNullExpression { parent, span, expression }
+        TSNonNullExpression { parent: None, span, expression }
     }
 
     /// Build a [`TSNonNullExpression`], and store it in the memory arena.
@@ -13658,17 +12071,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_non_null_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_ts_non_null_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Box<'a, TSNonNullExpression<'a>> {
-        Box::new_in(self.ts_non_null_expression(parent, span, expression), self.allocator)
+        Box::new_in(self.ts_non_null_expression(span, expression), self.allocator)
     }
 
     /// Build a [`Decorator`].
@@ -13676,17 +12087,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_decorator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn decorator(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: Expression<'a>,
-    ) -> Decorator<'a> {
-        Decorator { parent, span, expression }
+    pub fn decorator(self, span: Span, expression: Expression<'a>) -> Decorator<'a> {
+        Decorator { parent: None, span, expression }
     }
 
     /// Build a [`Decorator`], and store it in the memory arena.
@@ -13694,17 +12099,11 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::decorator`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
-    pub fn alloc_decorator(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: Expression<'a>,
-    ) -> Box<'a, Decorator<'a>> {
-        Box::new_in(self.decorator(parent, span, expression), self.allocator)
+    pub fn alloc_decorator(self, span: Span, expression: Expression<'a>) -> Box<'a, Decorator<'a>> {
+        Box::new_in(self.decorator(span, expression), self.allocator)
     }
 
     /// Build a [`TSExportAssignment`].
@@ -13712,17 +12111,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_export_assignment`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn ts_export_assignment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> TSExportAssignment<'a> {
-        TSExportAssignment { parent, span, expression }
+        TSExportAssignment { parent: None, span, expression }
     }
 
     /// Build a [`TSExportAssignment`], and store it in the memory arena.
@@ -13730,17 +12127,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_export_assignment`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     #[inline]
     pub fn alloc_ts_export_assignment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Box<'a, TSExportAssignment<'a>> {
-        Box::new_in(self.ts_export_assignment(parent, span, expression), self.allocator)
+        Box::new_in(self.ts_export_assignment(span, expression), self.allocator)
     }
 
     /// Build a [`TSNamespaceExportDeclaration`].
@@ -13748,17 +12143,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_namespace_export_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     #[inline]
     pub fn ts_namespace_export_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: IdentifierName<'a>,
     ) -> TSNamespaceExportDeclaration<'a> {
-        TSNamespaceExportDeclaration { parent, span, id }
+        TSNamespaceExportDeclaration { parent: None, span, id }
     }
 
     /// Build a [`TSNamespaceExportDeclaration`], and store it in the memory arena.
@@ -13766,17 +12159,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_namespace_export_declaration`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - id
     #[inline]
     pub fn alloc_ts_namespace_export_declaration(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         id: IdentifierName<'a>,
     ) -> Box<'a, TSNamespaceExportDeclaration<'a>> {
-        Box::new_in(self.ts_namespace_export_declaration(parent, span, id), self.allocator)
+        Box::new_in(self.ts_namespace_export_declaration(span, id), self.allocator)
     }
 
     /// Build a [`TSInstantiationExpression`].
@@ -13784,14 +12175,12 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_instantiation_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn ts_instantiation_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -13800,7 +12189,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameterInstantiation<'a>>>,
     {
         TSInstantiationExpression {
-            parent,
+            parent: None,
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -13812,14 +12201,12 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_instantiation_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
     pub fn alloc_ts_instantiation_expression<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
@@ -13828,7 +12215,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameterInstantiation<'a>>>,
     {
         Box::new_in(
-            self.ts_instantiation_expression(parent, span, expression, type_parameters),
+            self.ts_instantiation_expression(span, expression, type_parameters),
             self.allocator,
         )
     }
@@ -13838,19 +12225,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_js_doc_nullable_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix: Was `?` after the type annotation?
     #[inline]
     pub fn js_doc_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> JSDocNullableType<'a> {
-        JSDocNullableType { parent, span, type_annotation, postfix }
+        JSDocNullableType { parent: None, span, type_annotation, postfix }
     }
 
     /// Build a [`JSDocNullableType`], and store it in the memory arena.
@@ -13858,22 +12243,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::js_doc_nullable_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix: Was `?` after the type annotation?
     #[inline]
     pub fn alloc_js_doc_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> Box<'a, JSDocNullableType<'a>> {
-        Box::new_in(
-            self.js_doc_nullable_type(parent, span, type_annotation, postfix),
-            self.allocator,
-        )
+        Box::new_in(self.js_doc_nullable_type(span, type_annotation, postfix), self.allocator)
     }
 
     /// Build a [`JSDocNonNullableType`].
@@ -13881,19 +12261,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_js_doc_non_nullable_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix
     #[inline]
     pub fn js_doc_non_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> JSDocNonNullableType<'a> {
-        JSDocNonNullableType { parent, span, type_annotation, postfix }
+        JSDocNonNullableType { parent: None, span, type_annotation, postfix }
     }
 
     /// Build a [`JSDocNonNullableType`], and store it in the memory arena.
@@ -13901,22 +12279,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::js_doc_non_nullable_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - type_annotation
     /// - postfix
     #[inline]
     pub fn alloc_js_doc_non_nullable_type(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> Box<'a, JSDocNonNullableType<'a>> {
-        Box::new_in(
-            self.js_doc_non_nullable_type(parent, span, type_annotation, postfix),
-            self.allocator,
-        )
+        Box::new_in(self.js_doc_non_nullable_type(span, type_annotation, postfix), self.allocator)
     }
 
     /// Build a [`JSDocUnknownType`].
@@ -13924,15 +12297,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_js_doc_unknown_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn js_doc_unknown_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> JSDocUnknownType<'a> {
-        JSDocUnknownType { parent, span }
+    pub fn js_doc_unknown_type(self, span: Span) -> JSDocUnknownType<'a> {
+        JSDocUnknownType { parent: None, span }
     }
 
     /// Build a [`JSDocUnknownType`], and store it in the memory arena.
@@ -13940,15 +12308,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::js_doc_unknown_type`] instead.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_js_doc_unknown_type(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, JSDocUnknownType<'a>> {
-        Box::new_in(self.js_doc_unknown_type(parent, span), self.allocator)
+    pub fn alloc_js_doc_unknown_type(self, span: Span) -> Box<'a, JSDocUnknownType<'a>> {
+        Box::new_in(self.js_doc_unknown_type(span), self.allocator)
     }
 
     /// Build a [`JSXElement`].
@@ -13956,7 +12319,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_element: Opening tag of the element.
     /// - closing_element: Closing tag of the element. Will be [`None`] for self-closing tags.
@@ -13964,7 +12326,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_element<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_element: T1,
         closing_element: T2,
@@ -13975,7 +12336,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
         JSXElement {
-            parent,
+            parent: None,
             span,
             opening_element: opening_element.into_in(self.allocator),
             closing_element: closing_element.into_in(self.allocator),
@@ -13988,7 +12349,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_element: Opening tag of the element.
     /// - closing_element: Closing tag of the element. Will be [`None`] for self-closing tags.
@@ -13996,7 +12356,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_jsx_element<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_element: T1,
         closing_element: T2,
@@ -14007,7 +12366,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
         Box::new_in(
-            self.jsx_element(parent, span, opening_element, closing_element, children),
+            self.jsx_element(span, opening_element, closing_element, children),
             self.allocator,
         )
     }
@@ -14017,7 +12376,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_opening_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - self_closing: Is this tag self-closing?
     /// - name: The possibly-namespaced tag name, e.g. `Foo` in `<Foo />`.
@@ -14026,7 +12384,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_opening_element<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         self_closing: bool,
         name: JSXElementName<'a>,
@@ -14037,7 +12394,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         JSXOpeningElement {
-            parent,
+            parent: None,
             span,
             self_closing,
             name,
@@ -14051,7 +12408,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_opening_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - self_closing: Is this tag self-closing?
     /// - name: The possibly-namespaced tag name, e.g. `Foo` in `<Foo />`.
@@ -14060,7 +12416,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_jsx_opening_element<T1>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         self_closing: bool,
         name: JSXElementName<'a>,
@@ -14071,7 +12426,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         Box::new_in(
-            self.jsx_opening_element(parent, span, self_closing, name, attributes, type_parameters),
+            self.jsx_opening_element(span, self_closing, name, attributes, type_parameters),
             self.allocator,
         )
     }
@@ -14081,17 +12436,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_closing_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The tag name, e.g. `Foo` in `</Foo>`.
     #[inline]
     pub fn jsx_closing_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: JSXElementName<'a>,
     ) -> JSXClosingElement<'a> {
-        JSXClosingElement { parent, span, name }
+        JSXClosingElement { parent: None, span, name }
     }
 
     /// Build a [`JSXClosingElement`], and store it in the memory arena.
@@ -14099,17 +12452,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_closing_element`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The tag name, e.g. `Foo` in `</Foo>`.
     #[inline]
     pub fn alloc_jsx_closing_element(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: JSXElementName<'a>,
     ) -> Box<'a, JSXClosingElement<'a>> {
-        Box::new_in(self.jsx_closing_element(parent, span, name), self.allocator)
+        Box::new_in(self.jsx_closing_element(span, name), self.allocator)
     }
 
     /// Build a [`JSXFragment`].
@@ -14117,7 +12468,6 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_fragment`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_fragment: `<>`
     /// - closing_fragment: `</>`
@@ -14125,13 +12475,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_fragment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_fragment: JSXOpeningFragment<'a>,
         closing_fragment: JSXClosingFragment<'a>,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXFragment<'a> {
-        JSXFragment { parent, span, opening_fragment, closing_fragment, children }
+        JSXFragment { parent: None, span, opening_fragment, closing_fragment, children }
     }
 
     /// Build a [`JSXFragment`], and store it in the memory arena.
@@ -14139,7 +12488,6 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_fragment`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_fragment: `<>`
     /// - closing_fragment: `</>`
@@ -14147,14 +12495,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_jsx_fragment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_fragment: JSXOpeningFragment<'a>,
         closing_fragment: JSXClosingFragment<'a>,
         children: Vec<'a, JSXChild<'a>>,
     ) -> Box<'a, JSXFragment<'a>> {
         Box::new_in(
-            self.jsx_fragment(parent, span, opening_fragment, closing_fragment, children),
+            self.jsx_fragment(span, opening_fragment, closing_fragment, children),
             self.allocator,
         )
     }
@@ -14164,20 +12511,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXIdentifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the identifier.
     #[inline]
-    pub fn jsx_element_name_jsx_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> JSXElementName<'a>
+    pub fn jsx_element_name_jsx_identifier<A>(self, span: Span, name: A) -> JSXElementName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXElementName::Identifier(self.alloc_jsx_identifier(parent, span, name))
+        JSXElementName::Identifier(self.alloc_jsx_identifier(span, name))
     }
 
     /// Build a [`JSXElementName::IdentifierReference`]
@@ -14185,20 +12526,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
-    pub fn jsx_element_name_identifier_reference<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> JSXElementName<'a>
+    pub fn jsx_element_name_identifier_reference<A>(self, span: Span, name: A) -> JSXElementName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXElementName::IdentifierReference(self.alloc_identifier_reference(parent, span, name))
+        JSXElementName::IdentifierReference(self.alloc_identifier_reference(span, name))
     }
 
     /// Build a [`JSXElementName::NamespacedName`]
@@ -14206,21 +12541,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXNamespacedName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - namespace: Namespace portion of the name, e.g. `Apple` in `<Apple:Orange />`
     /// - property: Name portion of the name, e.g. `Orange` in `<Apple:Orange />`
     #[inline]
     pub fn jsx_element_name_jsx_namespaced_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         namespace: JSXIdentifier<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXElementName<'a> {
-        JSXElementName::NamespacedName(
-            self.alloc_jsx_namespaced_name(parent, span, namespace, property),
-        )
+        JSXElementName::NamespacedName(self.alloc_jsx_namespaced_name(span, namespace, property))
     }
 
     /// Build a [`JSXElementName::MemberExpression`]
@@ -14228,21 +12559,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXMemberExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - object: The object being accessed. This is everything before the last `.`.
     /// - property: The property being accessed. This is everything after the last `.`.
     #[inline]
     pub fn jsx_element_name_jsx_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: JSXMemberExpressionObject<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXElementName<'a> {
-        JSXElementName::MemberExpression(
-            self.alloc_jsx_member_expression(parent, span, object, property),
-        )
+        JSXElementName::MemberExpression(self.alloc_jsx_member_expression(span, object, property))
     }
 
     /// Build a [`JSXElementName::ThisExpression`]
@@ -14250,15 +12577,10 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ThisExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn jsx_element_name_this_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> JSXElementName<'a> {
-        JSXElementName::ThisExpression(self.alloc_this_expression(parent, span))
+    pub fn jsx_element_name_this_expression(self, span: Span) -> JSXElementName<'a> {
+        JSXElementName::ThisExpression(self.alloc_this_expression(span))
     }
 
     /// Build a [`JSXNamespacedName`].
@@ -14266,19 +12588,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_namespaced_name`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - namespace: Namespace portion of the name, e.g. `Apple` in `<Apple:Orange />`
     /// - property: Name portion of the name, e.g. `Orange` in `<Apple:Orange />`
     #[inline]
     pub fn jsx_namespaced_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         namespace: JSXIdentifier<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXNamespacedName<'a> {
-        JSXNamespacedName { parent, span, namespace, property }
+        JSXNamespacedName { parent: None, span, namespace, property }
     }
 
     /// Build a [`JSXNamespacedName`], and store it in the memory arena.
@@ -14286,19 +12606,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_namespaced_name`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - namespace: Namespace portion of the name, e.g. `Apple` in `<Apple:Orange />`
     /// - property: Name portion of the name, e.g. `Orange` in `<Apple:Orange />`
     #[inline]
     pub fn alloc_jsx_namespaced_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         namespace: JSXIdentifier<'a>,
         property: JSXIdentifier<'a>,
     ) -> Box<'a, JSXNamespacedName<'a>> {
-        Box::new_in(self.jsx_namespaced_name(parent, span, namespace, property), self.allocator)
+        Box::new_in(self.jsx_namespaced_name(span, namespace, property), self.allocator)
     }
 
     /// Build a [`JSXMemberExpression`].
@@ -14306,19 +12624,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - object: The object being accessed. This is everything before the last `.`.
     /// - property: The property being accessed. This is everything after the last `.`.
     #[inline]
     pub fn jsx_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: JSXMemberExpressionObject<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXMemberExpression<'a> {
-        JSXMemberExpression { parent, span, object, property }
+        JSXMemberExpression { parent: None, span, object, property }
     }
 
     /// Build a [`JSXMemberExpression`], and store it in the memory arena.
@@ -14326,19 +12642,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_member_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - object: The object being accessed. This is everything before the last `.`.
     /// - property: The property being accessed. This is everything after the last `.`.
     #[inline]
     pub fn alloc_jsx_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: JSXMemberExpressionObject<'a>,
         property: JSXIdentifier<'a>,
     ) -> Box<'a, JSXMemberExpression<'a>> {
-        Box::new_in(self.jsx_member_expression(parent, span, object, property), self.allocator)
+        Box::new_in(self.jsx_member_expression(span, object, property), self.allocator)
     }
 
     /// Build a [`JSXMemberExpressionObject::IdentifierReference`]
@@ -14346,22 +12660,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains an [`IdentifierReference`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     /// - name: The name of the identifier being referenced.
     #[inline]
     pub fn jsx_member_expression_object_identifier_reference<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: A,
     ) -> JSXMemberExpressionObject<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXMemberExpressionObject::IdentifierReference(
-            self.alloc_identifier_reference(parent, span, name),
-        )
+        JSXMemberExpressionObject::IdentifierReference(self.alloc_identifier_reference(span, name))
     }
 
     /// Build a [`JSXMemberExpressionObject::MemberExpression`]
@@ -14369,20 +12679,18 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXMemberExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - object: The object being accessed. This is everything before the last `.`.
     /// - property: The property being accessed. This is everything after the last `.`.
     #[inline]
     pub fn jsx_member_expression_object_jsx_member_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         object: JSXMemberExpressionObject<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXMemberExpressionObject<'a> {
         JSXMemberExpressionObject::MemberExpression(
-            self.alloc_jsx_member_expression(parent, span, object, property),
+            self.alloc_jsx_member_expression(span, object, property),
         )
     }
 
@@ -14391,15 +12699,13 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`ThisExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent
     /// - span: The [`Span`] covering this node
     #[inline]
     pub fn jsx_member_expression_object_this_expression(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
     ) -> JSXMemberExpressionObject<'a> {
-        JSXMemberExpressionObject::ThisExpression(self.alloc_this_expression(parent, span))
+        JSXMemberExpressionObject::ThisExpression(self.alloc_this_expression(span))
     }
 
     /// Build a [`JSXExpressionContainer`].
@@ -14407,17 +12713,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_expression_container`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression inside the container.
     #[inline]
     pub fn jsx_expression_container(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: JSXExpression<'a>,
     ) -> JSXExpressionContainer<'a> {
-        JSXExpressionContainer { parent, span, expression }
+        JSXExpressionContainer { parent: None, span, expression }
     }
 
     /// Build a [`JSXExpressionContainer`], and store it in the memory arena.
@@ -14425,31 +12729,24 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_expression_container`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression inside the container.
     #[inline]
     pub fn alloc_jsx_expression_container(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: JSXExpression<'a>,
     ) -> Box<'a, JSXExpressionContainer<'a>> {
-        Box::new_in(self.jsx_expression_container(parent, span, expression), self.allocator)
+        Box::new_in(self.jsx_expression_container(span, expression), self.allocator)
     }
 
     /// Build a [`JSXExpression::EmptyExpression`]
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn jsx_expression_jsx_empty_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> JSXExpression<'a> {
-        JSXExpression::EmptyExpression(self.jsx_empty_expression(parent, span))
+    pub fn jsx_expression_jsx_empty_expression(self, span: Span) -> JSXExpression<'a> {
+        JSXExpression::EmptyExpression(self.jsx_empty_expression(span))
     }
 
     /// Build a [`JSXEmptyExpression`].
@@ -14457,15 +12754,10 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_empty_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn jsx_empty_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> JSXEmptyExpression<'a> {
-        JSXEmptyExpression { parent, span }
+    pub fn jsx_empty_expression(self, span: Span) -> JSXEmptyExpression<'a> {
+        JSXEmptyExpression { parent: None, span }
     }
 
     /// Build a [`JSXEmptyExpression`], and store it in the memory arena.
@@ -14473,15 +12765,10 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_empty_expression`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     #[inline]
-    pub fn alloc_jsx_empty_expression(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-    ) -> Box<'a, JSXEmptyExpression<'a>> {
-        Box::new_in(self.jsx_empty_expression(parent, span), self.allocator)
+    pub fn alloc_jsx_empty_expression(self, span: Span) -> Box<'a, JSXEmptyExpression<'a>> {
+        Box::new_in(self.jsx_empty_expression(span), self.allocator)
     }
 
     /// Build a [`JSXAttributeItem::Attribute`]
@@ -14489,19 +12776,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXAttribute`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the attribute. This is a prop in React-like applications.
     /// - value: The value of the attribute. This can be a string literal, an expression,
     #[inline]
     pub fn jsx_attribute_item_jsx_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: JSXAttributeName<'a>,
         value: Option<JSXAttributeValue<'a>>,
     ) -> JSXAttributeItem<'a> {
-        JSXAttributeItem::Attribute(self.alloc_jsx_attribute(parent, span, name, value))
+        JSXAttributeItem::Attribute(self.alloc_jsx_attribute(span, name, value))
     }
 
     /// Build a [`JSXAttributeItem::SpreadAttribute`]
@@ -14509,17 +12794,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXSpreadAttribute`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - argument: The expression being spread.
     #[inline]
     pub fn jsx_attribute_item_jsx_spread_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> JSXAttributeItem<'a> {
-        JSXAttributeItem::SpreadAttribute(self.alloc_jsx_spread_attribute(parent, span, argument))
+        JSXAttributeItem::SpreadAttribute(self.alloc_jsx_spread_attribute(span, argument))
     }
 
     /// Build a [`JSXAttribute`].
@@ -14527,19 +12810,17 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the attribute. This is a prop in React-like applications.
     /// - value: The value of the attribute. This can be a string literal, an expression,
     #[inline]
     pub fn jsx_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: JSXAttributeName<'a>,
         value: Option<JSXAttributeValue<'a>>,
     ) -> JSXAttribute<'a> {
-        JSXAttribute { parent, span, name, value }
+        JSXAttribute { parent: None, span, name, value }
     }
 
     /// Build a [`JSXAttribute`], and store it in the memory arena.
@@ -14547,19 +12828,17 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the attribute. This is a prop in React-like applications.
     /// - value: The value of the attribute. This can be a string literal, an expression,
     #[inline]
     pub fn alloc_jsx_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         name: JSXAttributeName<'a>,
         value: Option<JSXAttributeValue<'a>>,
     ) -> Box<'a, JSXAttribute<'a>> {
-        Box::new_in(self.jsx_attribute(parent, span, name, value), self.allocator)
+        Box::new_in(self.jsx_attribute(span, name, value), self.allocator)
     }
 
     /// Build a [`JSXSpreadAttribute`].
@@ -14567,17 +12846,15 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_spread_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - argument: The expression being spread.
     #[inline]
     pub fn jsx_spread_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> JSXSpreadAttribute<'a> {
-        JSXSpreadAttribute { parent, span, argument }
+        JSXSpreadAttribute { parent: None, span, argument }
     }
 
     /// Build a [`JSXSpreadAttribute`], and store it in the memory arena.
@@ -14585,17 +12862,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_spread_attribute`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - argument: The expression being spread.
     #[inline]
     pub fn alloc_jsx_spread_attribute(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         argument: Expression<'a>,
     ) -> Box<'a, JSXSpreadAttribute<'a>> {
-        Box::new_in(self.jsx_spread_attribute(parent, span, argument), self.allocator)
+        Box::new_in(self.jsx_spread_attribute(span, argument), self.allocator)
     }
 
     /// Build a [`JSXAttributeName::Identifier`]
@@ -14603,20 +12878,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXIdentifier`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the identifier.
     #[inline]
-    pub fn jsx_attribute_name_jsx_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> JSXAttributeName<'a>
+    pub fn jsx_attribute_name_jsx_identifier<A>(self, span: Span, name: A) -> JSXAttributeName<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXAttributeName::Identifier(self.alloc_jsx_identifier(parent, span, name))
+        JSXAttributeName::Identifier(self.alloc_jsx_identifier(span, name))
     }
 
     /// Build a [`JSXAttributeName::NamespacedName`]
@@ -14624,21 +12893,17 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXNamespacedName`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - namespace: Namespace portion of the name, e.g. `Apple` in `<Apple:Orange />`
     /// - property: Name portion of the name, e.g. `Orange` in `<Apple:Orange />`
     #[inline]
     pub fn jsx_attribute_name_jsx_namespaced_name(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         namespace: JSXIdentifier<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXAttributeName<'a> {
-        JSXAttributeName::NamespacedName(
-            self.alloc_jsx_namespaced_name(parent, span, namespace, property),
-        )
+        JSXAttributeName::NamespacedName(self.alloc_jsx_namespaced_name(span, namespace, property))
     }
 
     /// Build a [`JSXAttributeValue::StringLiteral`]
@@ -14646,14 +12911,12 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`StringLiteral`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The value of the string.
     /// - raw: The raw string as it appears in source code.
     #[inline]
     pub fn jsx_attribute_value_string_literal<A>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         value: A,
         raw: Option<Atom<'a>>,
@@ -14661,7 +12924,7 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXAttributeValue::StringLiteral(self.alloc_string_literal(parent, span, value, raw))
+        JSXAttributeValue::StringLiteral(self.alloc_string_literal(span, value, raw))
     }
 
     /// Build a [`JSXAttributeValue::ExpressionContainer`]
@@ -14669,18 +12932,16 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXExpressionContainer`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression inside the container.
     #[inline]
     pub fn jsx_attribute_value_jsx_expression_container(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: JSXExpression<'a>,
     ) -> JSXAttributeValue<'a> {
         JSXAttributeValue::ExpressionContainer(
-            self.alloc_jsx_expression_container(parent, span, expression),
+            self.alloc_jsx_expression_container(span, expression),
         )
     }
 
@@ -14689,7 +12950,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_element: Opening tag of the element.
     /// - closing_element: Closing tag of the element. Will be [`None`] for self-closing tags.
@@ -14697,7 +12957,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_attribute_value_jsx_element<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_element: T1,
         closing_element: T2,
@@ -14708,7 +12967,6 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
         JSXAttributeValue::Element(self.alloc_jsx_element(
-            parent,
             span,
             opening_element,
             closing_element,
@@ -14721,7 +12979,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXFragment`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_fragment: `<>`
     /// - closing_fragment: `</>`
@@ -14729,14 +12986,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_attribute_value_jsx_fragment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_fragment: JSXOpeningFragment<'a>,
         closing_fragment: JSXClosingFragment<'a>,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXAttributeValue<'a> {
         JSXAttributeValue::Fragment(self.alloc_jsx_fragment(
-            parent,
             span,
             opening_fragment,
             closing_fragment,
@@ -14749,20 +13004,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the identifier.
     #[inline]
-    pub fn jsx_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> JSXIdentifier<'a>
+    pub fn jsx_identifier<A>(self, span: Span, name: A) -> JSXIdentifier<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXIdentifier { parent, span, name: name.into_in(self.allocator) }
+        JSXIdentifier { parent: None, span, name: name.into_in(self.allocator) }
     }
 
     /// Build a [`JSXIdentifier`], and store it in the memory arena.
@@ -14770,20 +13019,14 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_identifier`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - name: The name of the identifier.
     #[inline]
-    pub fn alloc_jsx_identifier<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        name: A,
-    ) -> Box<'a, JSXIdentifier<'a>>
+    pub fn alloc_jsx_identifier<A>(self, span: Span, name: A) -> Box<'a, JSXIdentifier<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.jsx_identifier(parent, span, name), self.allocator)
+        Box::new_in(self.jsx_identifier(span, name), self.allocator)
     }
 
     /// Build a [`JSXChild::Text`]
@@ -14791,20 +13034,14 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXText`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The text content.
     #[inline]
-    pub fn jsx_child_jsx_text<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: A,
-    ) -> JSXChild<'a>
+    pub fn jsx_child_jsx_text<A>(self, span: Span, value: A) -> JSXChild<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXChild::Text(self.alloc_jsx_text(parent, span, value))
+        JSXChild::Text(self.alloc_jsx_text(span, value))
     }
 
     /// Build a [`JSXChild::Element`]
@@ -14812,7 +13049,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXElement`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_element: Opening tag of the element.
     /// - closing_element: Closing tag of the element. Will be [`None`] for self-closing tags.
@@ -14820,7 +13056,6 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_child_jsx_element<T1, T2>(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_element: T1,
         closing_element: T2,
@@ -14830,13 +13065,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, JSXOpeningElement<'a>>>,
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
-        JSXChild::Element(self.alloc_jsx_element(
-            parent,
-            span,
-            opening_element,
-            closing_element,
-            children,
-        ))
+        JSXChild::Element(self.alloc_jsx_element(span, opening_element, closing_element, children))
     }
 
     /// Build a [`JSXChild::Fragment`]
@@ -14844,7 +13073,6 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXFragment`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - opening_fragment: `<>`
     /// - closing_fragment: `</>`
@@ -14852,14 +13080,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn jsx_child_jsx_fragment(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         opening_fragment: JSXOpeningFragment<'a>,
         closing_fragment: JSXClosingFragment<'a>,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXChild<'a> {
         JSXChild::Fragment(self.alloc_jsx_fragment(
-            parent,
             span,
             opening_fragment,
             closing_fragment,
@@ -14872,17 +13098,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXExpressionContainer`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression inside the container.
     #[inline]
     pub fn jsx_child_jsx_expression_container(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: JSXExpression<'a>,
     ) -> JSXChild<'a> {
-        JSXChild::ExpressionContainer(self.alloc_jsx_expression_container(parent, span, expression))
+        JSXChild::ExpressionContainer(self.alloc_jsx_expression_container(span, expression))
     }
 
     /// Build a [`JSXChild::Spread`]
@@ -14890,17 +13114,15 @@ impl<'a> AstBuilder<'a> {
     /// This node contains a [`JSXSpreadChild`] that will be stored in the memory arena.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression being spread.
     #[inline]
     pub fn jsx_child_jsx_spread_child(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> JSXChild<'a> {
-        JSXChild::Spread(self.alloc_jsx_spread_child(parent, span, expression))
+        JSXChild::Spread(self.alloc_jsx_spread_child(span, expression))
     }
 
     /// Build a [`JSXSpreadChild`].
@@ -14908,17 +13130,11 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_spread_child`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression being spread.
     #[inline]
-    pub fn jsx_spread_child(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        expression: Expression<'a>,
-    ) -> JSXSpreadChild<'a> {
-        JSXSpreadChild { parent, span, expression }
+    pub fn jsx_spread_child(self, span: Span, expression: Expression<'a>) -> JSXSpreadChild<'a> {
+        JSXSpreadChild { parent: None, span, expression }
     }
 
     /// Build a [`JSXSpreadChild`], and store it in the memory arena.
@@ -14926,17 +13142,15 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_spread_child`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - expression: The expression being spread.
     #[inline]
     pub fn alloc_jsx_spread_child(
         self,
-        parent: Option<AstKind<'a>>,
         span: Span,
         expression: Expression<'a>,
     ) -> Box<'a, JSXSpreadChild<'a>> {
-        Box::new_in(self.jsx_spread_child(parent, span, expression), self.allocator)
+        Box::new_in(self.jsx_spread_child(span, expression), self.allocator)
     }
 
     /// Build a [`JSXText`].
@@ -14944,15 +13158,14 @@ impl<'a> AstBuilder<'a> {
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_jsx_text`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The text content.
     #[inline]
-    pub fn jsx_text<A>(self, parent: Option<AstKind<'a>>, span: Span, value: A) -> JSXText<'a>
+    pub fn jsx_text<A>(self, span: Span, value: A) -> JSXText<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXText { parent, span, value: value.into_in(self.allocator) }
+        JSXText { parent: None, span, value: value.into_in(self.allocator) }
     }
 
     /// Build a [`JSXText`], and store it in the memory arena.
@@ -14960,19 +13173,13 @@ impl<'a> AstBuilder<'a> {
     /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::jsx_text`] instead.
     ///
     /// ## Parameters
-    /// - parent: Parent node within the AST tree
     /// - span: Node location in source code
     /// - value: The text content.
     #[inline]
-    pub fn alloc_jsx_text<A>(
-        self,
-        parent: Option<AstKind<'a>>,
-        span: Span,
-        value: A,
-    ) -> Box<'a, JSXText<'a>>
+    pub fn alloc_jsx_text<A>(self, span: Span, value: A) -> Box<'a, JSXText<'a>>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Box::new_in(self.jsx_text(parent, span, value), self.allocator)
+        Box::new_in(self.jsx_text(span, value), self.allocator)
     }
 }

@@ -37,7 +37,6 @@ impl Derive for DeriveGetParent {
         let set_expr = quote!(self.parent = Some(new_parent));
         let unbox = |it| quote!(#it.as_ref());
         let unbox_mut = |it| quote!(#it.as_mut());
-        let reference = |it| quote!(&#it);
 
         derive(
             Self::trait_name(),
@@ -52,13 +51,12 @@ impl Derive for DeriveGetParent {
             def,
             unbox,
             unbox_mut,
-            reference,
         )
     }
 }
 
 #[expect(clippy::too_many_arguments)]
-fn derive<U, U2, R>(
+fn derive<U, U2>(
     trait_name: &str,
     get_method_name: &str,
     set_method_name: &str,
@@ -71,12 +69,10 @@ fn derive<U, U2, R>(
     def: &TypeDef,
     unbox: U,
     unbox_mut: U2,
-    reference: R,
 ) -> TokenStream
 where
     U: Fn(TokenStream) -> TokenStream,
     U2: Fn(TokenStream) -> TokenStream,
-    R: Fn(TokenStream) -> TokenStream,
 {
     let trait_ident = trait_name.to_ident();
     let get_method_ident = get_method_name.to_ident();
@@ -105,7 +101,6 @@ where
             result_expr,
             set_new_type,
             set_expr,
-            reference,
         ),
     }
 }
@@ -167,7 +162,7 @@ where
     }
 }
 
-fn derive_struct<R>(
+fn derive_struct(
     def: &StructDef,
     trait_name: &Ident,
     get_method_name: &Ident,
@@ -178,27 +173,11 @@ fn derive_struct<R>(
     result_expr: &TokenStream,
     set_new_type: &TokenStream,
     set_expr: &TokenStream,
-    reference: R,
-) -> TokenStream
-where
-    R: Fn(TokenStream) -> TokenStream,
-{
+) -> TokenStream {
     let target_type = if def.has_lifetime() {
         def.to_type_with_explicit_generics(parse_quote! {<'a>})
     } else {
         def.to_type_elide()
-    };
-
-    let parent_field = def.fields.iter().find(|field| field.markers.parent);
-    let (result_expr, set_expr) = if let Some(parent_field) = parent_field {
-        let ident = parent_field.name.as_ref().map(ToIdent::to_ident).unwrap();
-        let reference = reference(quote!(self.#ident));
-        (
-            quote!(#trait_name :: #get_method_name (#reference)),
-            quote!(#trait_name :: #set_method_name (#reference, new_parent)),
-        )
-    } else {
-        (result_expr.clone(), set_expr.clone())
     };
 
     quote! {

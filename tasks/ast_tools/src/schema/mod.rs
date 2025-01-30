@@ -130,7 +130,6 @@ fn parse_enum_outer_markers(attrs: &Vec<Attribute>) -> Result<EnumOuterMarkers> 
 fn parse_inner_markers(attrs: &Vec<Attribute>) -> Result<InnerMarkers> {
     Ok(InnerMarkers {
         span: attrs.iter().any(|a| a.path().is_ident("span")),
-        parent: attrs.iter().any(|a| a.path().is_ident("parent")),
         visit: get_visit_markers(attrs)?,
         scope: get_scope_markers(attrs)?,
         derive_attributes: get_derive_attributes(attrs)?,

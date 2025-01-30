@@ -57,7 +57,6 @@ impl Generator for AstBuilderGenerator {
 
                 ///@@line_break
                 use crate::ast::*;
-                use crate::AstKind;
 
                 ///@@line_break
                 static COUNTER: AtomicU32 = AtomicU32::new(1);
@@ -140,7 +139,8 @@ fn generate_enum_variant_builder_fn(
     let TypeDef::Struct(field_def) = ty else { panic!("Unsupported!") };
 
     let params = get_struct_params(field_def, schema);
-    let params = params.into_iter().filter(Param::not_default).collect_vec();
+    let params =
+        params.into_iter().filter(Param::not_default).filter(|it| !it.parent).collect_vec();
     let fields = params.iter().map(|it| it.ident.clone());
     let (generic_params, where_clause) = get_generic_params(&params);
 
@@ -246,6 +246,10 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
             field =
                 quote!(#field_ident: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed));
             fields_incl_defaults.push(field.clone());
+        } else if param.parent {
+            let field_ident = &param.ident;
+            field = quote!(#field_ident: None);
+            fields_incl_defaults.push(field.clone());
         } else {
             params.push(param.clone());
             args.push(param.ident.clone());
@@ -256,7 +260,7 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
             }
         }
 
-        if has_default_fields && !param.atomic {
+        if has_default_fields && !param.atomic && !param.parent {
             args_incl_defaults.push(param.ident.clone());
         }
 
@@ -299,8 +303,11 @@ fn generate_struct_builder_fn(ty: &StructDef, schema: &Schema) -> TokenStream {
         let alloc_fn_name = format_ident!("alloc_{fn_name}");
 
         let with = format!(" with `{}`", default_field_type_names.iter().join("` and `"));
-        let filtered_params =
-            params_incl_defaults.iter().filter(|it| !it.atomic).cloned().collect::<Vec<_>>();
+        let filtered_params = params_incl_defaults
+            .iter()
+            .filter(|it| !it.atomic && !it.parent)
+            .cloned()
+            .collect::<Vec<_>>();
         let (fn_docs, alloc_docs) = create_docs(&fn_name, &alloc_fn_name, &filtered_params, &with);
 
         output = quote! {
@@ -337,6 +344,7 @@ struct Param {
     into_in: bool,
     docs: Vec<String>,
     atomic: bool,
+    parent: bool,
 }
 
 impl Param {
@@ -575,6 +583,7 @@ fn get_struct_params(struct_: &StructDef, schema: &Schema) -> Vec<Param> {
             generic: generic_typ,
             docs: field.docs.clone(),
             atomic: field.markers.atomic,
+            parent: field.ident().unwrap().to_string() == "parent",
         });
         acc
     })
