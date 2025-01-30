@@ -96,13 +96,13 @@ impl<'a> ToJsString<'a> for BigIntLiteral<'a> {
     }
 }
 
-impl<'a> ToJsString<'a> for BooleanLiteral {
+impl<'a> ToJsString<'a> for BooleanLiteral<'a> {
     fn to_js_string(&self) -> Option<Cow<'a, str>> {
         Some(Cow::Borrowed(if self.value { "true" } else { "false" }))
     }
 }
 
-impl<'a> ToJsString<'a> for NullLiteral {
+impl<'a> ToJsString<'a> for NullLiteral<'a> {
     fn to_js_string(&self) -> Option<Cow<'a, str>> {
         Some(Cow::Borrowed("null"))
     }
