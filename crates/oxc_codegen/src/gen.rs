@@ -501,7 +501,7 @@ impl Gen for DoWhileStatement<'_> {
     }
 }
 
-impl Gen for EmptyStatement {
+impl Gen for EmptyStatement<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_indent();
@@ -671,7 +671,7 @@ impl Gen for WithStatement<'_> {
     }
 }
 
-impl Gen for DebuggerStatement {
+impl Gen for DebuggerStatement<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_indent();
@@ -1266,7 +1266,7 @@ impl Gen for LabelIdentifier<'_> {
     }
 }
 
-impl Gen for BooleanLiteral {
+impl Gen for BooleanLiteral<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_space_before_identifier();
@@ -1274,7 +1274,7 @@ impl Gen for BooleanLiteral {
     }
 }
 
-impl Gen for NullLiteral {
+impl Gen for NullLiteral<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.print_space_before_identifier();
         p.add_source_mapping(self.span);
@@ -1366,7 +1366,7 @@ impl Gen for StringLiteral<'_> {
     }
 }
 
-impl Gen for ThisExpression {
+impl Gen for ThisExpression<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.print_space_before_identifier();
         p.add_source_mapping(self.span);
@@ -2160,7 +2160,7 @@ impl Gen for TaggedTemplateExpression<'_> {
     }
 }
 
-impl Gen for Super {
+impl Gen for Super<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.print_space_before_identifier();
         p.add_source_mapping(self.span);
@@ -2449,7 +2449,7 @@ impl Gen for JSXAttribute<'_> {
     }
 }
 
-impl Gen for JSXEmptyExpression {
+impl Gen for JSXEmptyExpression<'_> {
     fn gen(&self, _: &mut Codegen, _ctx: Context) {}
 }
 
@@ -2548,14 +2548,14 @@ impl Gen for JSXElement<'_> {
     }
 }
 
-impl Gen for JSXOpeningFragment {
+impl Gen for JSXOpeningFragment<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_str("<>");
     }
 }
 
-impl Gen for JSXClosingFragment {
+impl Gen for JSXClosingFragment<'_> {
     fn gen(&self, p: &mut Codegen, _ctx: Context) {
         p.add_source_mapping(self.span);
         p.print_str("</>");

@@ -326,12 +326,11 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_interface_heritages(
         self,
-        parent: AstKind<'a>,
         extends: Vec<'a, (Expression<'a>, Option<Box<'a, TSTypeParameterInstantiation<'a>>>, Span)>,
     ) -> Vec<'a, TSInterfaceHeritage<'a>> {
         Vec::from_iter_in(
             extends.into_iter().map(|(expression, type_parameters, span)| TSInterfaceHeritage {
-                parent: Some(parent),
+                parent: None,
                 span,
                 expression,
                 type_parameters,
@@ -342,13 +341,13 @@ impl<'a> AstBuilder<'a> {
 
     /// Create an [`JSXOpeningElement`].
     #[inline]
-    pub fn jsx_opening_fragment(self, parent: AstKind<'a>, span: Span) -> JSXOpeningFragment<'a> {
-        JSXOpeningFragment { parent: Some(parent), span }
+    pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment<'a> {
+        JSXOpeningFragment { parent: None, span }
     }
 
     /// Create an [`JSXClosingElement`].
     #[inline]
-    pub fn jsx_closing_fragment(self, parent: AstKind<'a>, span: Span) -> JSXClosingFragment<'a> {
-        JSXClosingFragment { parent: Some(parent), span }
+    pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment<'a> {
+        JSXClosingFragment { parent: None, span }
     }
 }

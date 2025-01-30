@@ -271,13 +271,13 @@ impl<'a> GatherNodeParts<'a> for ObjectExpression<'a> {
     }
 }
 
-impl GatherNodeParts<'_> for ThisExpression {
+impl<'a> GatherNodeParts<'a> for ThisExpression<'a> {
     fn gather<F: FnMut(&str)>(&self, f: &mut F) {
         f("this");
     }
 }
 
-impl GatherNodeParts<'_> for Super {
+impl<'a> GatherNodeParts<'a> for Super<'a> {
     fn gather<F: FnMut(&str)>(&self, f: &mut F) {
         f("super");
     }
@@ -470,7 +470,7 @@ impl<'a> GatherNodeParts<'a> for NumericLiteral<'a> {
     }
 }
 
-impl GatherNodeParts<'_> for BooleanLiteral {
+impl<'a> GatherNodeParts<'a> for BooleanLiteral<'a> {
     fn gather<F: FnMut(&str)>(&self, f: &mut F) {
         if self.value {
             f("true");
@@ -506,7 +506,7 @@ impl<'a> GatherNodeParts<'a> for JSXOpeningElement<'a> {
     }
 }
 
-impl GatherNodeParts<'_> for JSXOpeningFragment {
+impl<'a> GatherNodeParts<'a> for JSXOpeningFragment<'a> {
     fn gather<F: FnMut(&str)>(&self, f: &mut F) {
         f("Fragment");
     }

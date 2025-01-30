@@ -34,7 +34,7 @@ oxc_regular_expression = { workspace = true }
 oxc_cfg = { workspace = true, optional = true }
 oxc_codegen = { workspace = true, optional = true }
 oxc_diagnostics = { workspace = true }
-# oxc_isolated_declarations = { workspace = true, optional = true }
+oxc_isolated_declarations = { workspace = true, optional = true }
 oxc_mangler = { workspace = true, optional = true }
 oxc_minifier = { workspace = true, optional = true }
 oxc_semantic = { workspace = true, optional = true }
@@ -49,7 +49,7 @@ full = [
   "minifier",
   "semantic",
   "transformer",
-#   "isolated_declarations",
+  "isolated_declarations",
   "cfg",
 ]
 
@@ -59,7 +59,7 @@ minifier = ["oxc_mangler", "oxc_minifier"]
 codegen = ["oxc_codegen"]
 mangler = ["oxc_mangler"]
 cfg = ["oxc_cfg"]
-# isolated_declarations = ["oxc_isolated_declarations"]
+isolated_declarations = ["oxc_isolated_declarations"]
 
 serialize = [
   "oxc_ast/serialize",

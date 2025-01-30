@@ -12,7 +12,6 @@ exclude = [
     "crates/oxc_wasm",
     "crates/oxc_linter",
     "crates/oxc_prettier",
-    "crates/oxc_isolated_declarations",
 ]
 
 [workspace.package]

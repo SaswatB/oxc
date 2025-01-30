@@ -34,14 +34,14 @@ impl<'a> ParserImpl<'a> {
     }
 
     /// <>
-    fn parse_jsx_opening_fragment(&mut self, span: Span) -> Result<JSXOpeningFragment> {
+    fn parse_jsx_opening_fragment(&mut self, span: Span) -> Result<JSXOpeningFragment<'a>> {
         self.expect(Kind::LAngle)?;
         self.expect_jsx_child(Kind::RAngle)?;
         Ok(self.ast.jsx_opening_fragment(self.end_span(span)))
     }
 
     /// </>
-    fn parse_jsx_closing_fragment(&mut self, in_jsx_child: bool) -> Result<JSXClosingFragment> {
+    fn parse_jsx_closing_fragment(&mut self, in_jsx_child: bool) -> Result<JSXClosingFragment<'a>> {
         let span = self.start_span();
         self.expect(Kind::LAngle)?;
         self.expect(Kind::Slash)?;

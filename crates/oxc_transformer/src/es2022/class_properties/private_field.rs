@@ -755,7 +755,7 @@ impl<'a> ClassProperties<'a, '_> {
             Expression::AssignmentExpression(assign_expr) => assign_expr.unbox(),
             _ => unreachable!(),
         };
-        let AssignmentExpression { span, operator, right: value, left } = assign_expr;
+        let AssignmentExpression { parent: _, span, operator, right: value, left } = assign_expr;
         let AssignmentTarget::PrivateFieldExpression(field_expr) = left else { unreachable!() };
         let PrivateFieldExpression { field, object, .. } = field_expr.unbox();
 
