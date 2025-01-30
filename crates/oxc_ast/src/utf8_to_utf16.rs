@@ -108,7 +108,7 @@ mod test {
 
     use crate::{
         ast::{Expression, Statement},
-        AstBuilder, Comment, CommentKind,
+        AstBuilder, AstKind, Comment, CommentKind, GetParent,
     };
 
     use super::Utf8ToUtf16;
@@ -125,14 +125,22 @@ mod test {
             ast.vec1(Comment::new(8, 15, CommentKind::Line)),
             None,
             ast.vec(),
-            ast.vec_from_array([
-                ast.statement_empty(Span::new(0, 1)),
-                ast.statement_expression(
-                    Span::new(1, 7),
-                    ast.expression_string_literal(Span::new(1, 7), "🤨", None),
-                ),
-            ]),
+            ast.vec(),
         );
+        let parent = Some(unsafe { AstKind::Program(&*(&program as *const _)) });
+        program.body = ast.vec_from_array([
+            ast.statement_empty(parent, Span::new(0, 1)),
+            ast.statement_expression(
+                parent,
+                Span::new(1, 7),
+                ast.expression_string_literal(parent, Span::new(1, 7), "🤨", None), // temp wrong parent
+            ),
+        ]);
+        if let Statement::ExpressionStatement(expr_stmt) = &mut program.body[1] {
+            let parent =
+                AstKind::ExpressionStatement(unsafe { &*(expr_stmt.as_ref() as *const _) });
+            expr_stmt.expression.set_parent(parent); // set correct parent
+        }
 
         Utf8ToUtf16::new().convert(&mut program);
         assert_eq!(program.span, Span::new(0, 11));

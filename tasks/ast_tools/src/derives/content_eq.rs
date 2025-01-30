@@ -9,7 +9,8 @@ use crate::{
 
 use super::{define_derive, Derive};
 
-const IGNORE_FIELD_TYPES: [/* type name */ &str; 4] = [
+const IGNORE_FIELD_TYPES: [/* type name */ &str; 5] = [
+    "AstKind",
     "Span",
     "ScopeId",
     "SymbolId",

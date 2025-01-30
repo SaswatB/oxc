@@ -256,6 +256,8 @@ pub struct EnumOuterMarkers {
 pub struct InnerMarkers {
     /// marker that hints to fold span in here
     pub span: bool,
+    /// marker that hints to fold parent in here
+    pub parent: bool,
     pub derive_attributes: DeriveAttributes,
     #[serde(skip)]
     pub visit: VisitMarkers,

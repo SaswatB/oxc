@@ -13,13 +13,13 @@ use crate::ast::literal::*;
 
 use crate::ast::ts::*;
 
-impl Serialize for BooleanLiteral {
+impl Serialize for BooleanLiteral<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         crate::serialize::ESTreeLiteral::from(self).serialize(serializer)
     }
 }
 
-impl Serialize for NullLiteral {
+impl Serialize for NullLiteral<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         crate::serialize::ESTreeLiteral::from(self).serialize(serializer)
     }
@@ -171,7 +171,7 @@ impl Serialize for LabelIdentifier<'_> {
     }
 }
 
-impl Serialize for ThisExpression {
+impl Serialize for ThisExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "ThisExpression")?;
@@ -807,7 +807,7 @@ impl Serialize for SequenceExpression<'_> {
     }
 }
 
-impl Serialize for Super {
+impl Serialize for Super<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "Super")?;
@@ -989,7 +989,7 @@ impl Serialize for VariableDeclarator<'_> {
     }
 }
 
-impl Serialize for EmptyStatement {
+impl Serialize for EmptyStatement<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "EmptyStatement")?;
@@ -1266,7 +1266,7 @@ impl Serialize for CatchParameter<'_> {
     }
 }
 
-impl Serialize for DebuggerStatement {
+impl Serialize for DebuggerStatement<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "DebuggerStatement")?;
@@ -2251,7 +2251,7 @@ impl Serialize for TSTupleElement<'_> {
     }
 }
 
-impl Serialize for TSAnyKeyword {
+impl Serialize for TSAnyKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSAnyKeyword")?;
@@ -2260,7 +2260,7 @@ impl Serialize for TSAnyKeyword {
     }
 }
 
-impl Serialize for TSStringKeyword {
+impl Serialize for TSStringKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSStringKeyword")?;
@@ -2269,7 +2269,7 @@ impl Serialize for TSStringKeyword {
     }
 }
 
-impl Serialize for TSBooleanKeyword {
+impl Serialize for TSBooleanKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSBooleanKeyword")?;
@@ -2278,7 +2278,7 @@ impl Serialize for TSBooleanKeyword {
     }
 }
 
-impl Serialize for TSNumberKeyword {
+impl Serialize for TSNumberKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSNumberKeyword")?;
@@ -2287,7 +2287,7 @@ impl Serialize for TSNumberKeyword {
     }
 }
 
-impl Serialize for TSNeverKeyword {
+impl Serialize for TSNeverKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSNeverKeyword")?;
@@ -2296,7 +2296,7 @@ impl Serialize for TSNeverKeyword {
     }
 }
 
-impl Serialize for TSIntrinsicKeyword {
+impl Serialize for TSIntrinsicKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSIntrinsicKeyword")?;
@@ -2305,7 +2305,7 @@ impl Serialize for TSIntrinsicKeyword {
     }
 }
 
-impl Serialize for TSUnknownKeyword {
+impl Serialize for TSUnknownKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSUnknownKeyword")?;
@@ -2314,7 +2314,7 @@ impl Serialize for TSUnknownKeyword {
     }
 }
 
-impl Serialize for TSNullKeyword {
+impl Serialize for TSNullKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSNullKeyword")?;
@@ -2323,7 +2323,7 @@ impl Serialize for TSNullKeyword {
     }
 }
 
-impl Serialize for TSUndefinedKeyword {
+impl Serialize for TSUndefinedKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSUndefinedKeyword")?;
@@ -2332,7 +2332,7 @@ impl Serialize for TSUndefinedKeyword {
     }
 }
 
-impl Serialize for TSVoidKeyword {
+impl Serialize for TSVoidKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSVoidKeyword")?;
@@ -2341,7 +2341,7 @@ impl Serialize for TSVoidKeyword {
     }
 }
 
-impl Serialize for TSSymbolKeyword {
+impl Serialize for TSSymbolKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSSymbolKeyword")?;
@@ -2350,7 +2350,7 @@ impl Serialize for TSSymbolKeyword {
     }
 }
 
-impl Serialize for TSThisType {
+impl Serialize for TSThisType<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSThisType")?;
@@ -2359,7 +2359,7 @@ impl Serialize for TSThisType {
     }
 }
 
-impl Serialize for TSObjectKeyword {
+impl Serialize for TSObjectKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSObjectKeyword")?;
@@ -2368,7 +2368,7 @@ impl Serialize for TSObjectKeyword {
     }
 }
 
-impl Serialize for TSBigIntKeyword {
+impl Serialize for TSBigIntKeyword<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "TSBigIntKeyword")?;
@@ -3001,7 +3001,7 @@ impl Serialize for JSDocNonNullableType<'_> {
     }
 }
 
-impl Serialize for JSDocUnknownType {
+impl Serialize for JSDocUnknownType<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "JSDocUnknownType")?;
@@ -3057,7 +3057,7 @@ impl Serialize for JSXFragment<'_> {
     }
 }
 
-impl Serialize for JSXOpeningFragment {
+impl Serialize for JSXOpeningFragment<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "JSXOpeningFragment")?;
@@ -3066,7 +3066,7 @@ impl Serialize for JSXOpeningFragment {
     }
 }
 
-impl Serialize for JSXClosingFragment {
+impl Serialize for JSXClosingFragment<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "JSXClosingFragment")?;
@@ -3157,7 +3157,7 @@ impl Serialize for JSXExpression<'_> {
     }
 }
 
-impl Serialize for JSXEmptyExpression {
+impl Serialize for JSXEmptyExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "JSXEmptyExpression")?;

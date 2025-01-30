@@ -89,9 +89,9 @@ macro_rules! inherit_variants {
                 // `Expression`'s own variants
 
                 /// Inherited from [`Expression`]
-                BooleanLiteral(Box<'a, BooleanLiteral>) = 0,
+                BooleanLiteral(Box<'a, BooleanLiteral<'a>>) = 0,
                 /// Inherited from [`Expression`]
-                NullLiteral(Box<'a, NullLiteral>) = 1,
+                NullLiteral(Box<'a, NullLiteral<'a>>) = 1,
                 /// Inherited from [`Expression`]
                 NumericLiteral(Box<'a, NumericLiteral<'a>>) = 2,
                 /// Inherited from [`Expression`]
@@ -109,7 +109,7 @@ macro_rules! inherit_variants {
                 /// Inherited from [`Expression`]
                 MetaProperty(Box<'a, MetaProperty<'a>>) = 8,
                 /// Inherited from [`Expression`]
-                Super(Box<'a, Super>) = 9,
+                Super(Box<'a, Super<'a>>) = 9,
 
                 /// Inherited from [`Expression`]
                 ArrayExpression(Box<'a, ArrayExpression<'a>>) = 10,
@@ -146,7 +146,7 @@ macro_rules! inherit_variants {
                 /// Inherited from [`Expression`]
                 TaggedTemplateExpression(Box<'a, TaggedTemplateExpression<'a>>) = 26,
                 /// Inherited from [`Expression`]
-                ThisExpression(Box<'a, ThisExpression>) = 27,
+                ThisExpression(Box<'a, ThisExpression<'a>>) = 27,
                 /// Inherited from [`Expression`]
                 UnaryExpression(Box<'a, UnaryExpression<'a>>) = 28,
                 /// Inherited from [`Expression`]
@@ -553,33 +553,33 @@ macro_rules! inherit_variants {
 
                 // Keyword
                 /// Inherited from [`TSType`]
-                TSAnyKeyword(Box<'a, TSAnyKeyword>) = 0,
+                TSAnyKeyword(Box<'a, TSAnyKeyword<'a>>) = 0,
                 /// Inherited from [`TSType`]
-                TSBigIntKeyword(Box<'a, TSBigIntKeyword>) = 1,
+                TSBigIntKeyword(Box<'a, TSBigIntKeyword<'a>>) = 1,
                 /// Inherited from [`TSType`]
-                TSBooleanKeyword(Box<'a, TSBooleanKeyword>) = 2,
+                TSBooleanKeyword(Box<'a, TSBooleanKeyword<'a>>) = 2,
                 /// Inherited from [`TSType`]
-                TSIntrinsicKeyword(Box<'a, TSIntrinsicKeyword>) = 3,
+                TSIntrinsicKeyword(Box<'a, TSIntrinsicKeyword<'a>>) = 3,
                 /// Inherited from [`TSType`]
-                TSNeverKeyword(Box<'a, TSNeverKeyword>) = 4,
+                TSNeverKeyword(Box<'a, TSNeverKeyword<'a>>) = 4,
                 /// Inherited from [`TSType`]
-                TSNullKeyword(Box<'a, TSNullKeyword>) = 5,
+                TSNullKeyword(Box<'a, TSNullKeyword<'a>>) = 5,
                 /// Inherited from [`TSType`]
-                TSNumberKeyword(Box<'a, TSNumberKeyword>) = 6,
+                TSNumberKeyword(Box<'a, TSNumberKeyword<'a>>) = 6,
                 /// Inherited from [`TSType`]
-                TSObjectKeyword(Box<'a, TSObjectKeyword>) = 7,
+                TSObjectKeyword(Box<'a, TSObjectKeyword<'a>>) = 7,
                 /// Inherited from [`TSType`]
-                TSStringKeyword(Box<'a, TSStringKeyword>) = 8,
+                TSStringKeyword(Box<'a, TSStringKeyword<'a>>) = 8,
                 /// Inherited from [`TSType`]
-                TSSymbolKeyword(Box<'a, TSSymbolKeyword>) = 9,
+                TSSymbolKeyword(Box<'a, TSSymbolKeyword<'a>>) = 9,
                 /// Inherited from [`TSType`]
-                TSThisType(Box<'a, TSThisType>) = 10,
+                TSThisType(Box<'a, TSThisType<'a>>) = 10,
                 /// Inherited from [`TSType`]
-                TSUndefinedKeyword(Box<'a, TSUndefinedKeyword>) = 11,
+                TSUndefinedKeyword(Box<'a, TSUndefinedKeyword<'a>>) = 11,
                 /// Inherited from [`TSType`]
-                TSUnknownKeyword(Box<'a, TSUnknownKeyword>) = 12,
+                TSUnknownKeyword(Box<'a, TSUnknownKeyword<'a>>) = 12,
                 /// Inherited from [`TSType`]
-                TSVoidKeyword(Box<'a, TSVoidKeyword>) = 13,
+                TSVoidKeyword(Box<'a, TSVoidKeyword<'a>>) = 13,
 
                 // Compound
                 /// Inherited from [`TSType`]
@@ -631,7 +631,7 @@ macro_rules! inherit_variants {
                 /// Inherited from [`TSType`]
                 JSDocNonNullableType(Box<'a, JSDocNonNullableType<'a>>) = 36,
                 /// Inherited from [`TSType`]
-                JSDocUnknownType(Box<'a, JSDocUnknownType>) = 37,
+                JSDocUnknownType(Box<'a, JSDocUnknownType<'a>>) = 37,
 
                 $($rest)*
             }

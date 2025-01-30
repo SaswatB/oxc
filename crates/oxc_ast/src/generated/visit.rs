@@ -107,7 +107,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_debugger_statement(&mut self, it: &DebuggerStatement) {
+    fn visit_debugger_statement(&mut self, it: &DebuggerStatement<'a>) {
         walk_debugger_statement(self, it);
     }
 
@@ -122,12 +122,12 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_boolean_literal(&mut self, it: &BooleanLiteral) {
+    fn visit_boolean_literal(&mut self, it: &BooleanLiteral<'a>) {
         walk_boolean_literal(self, it);
     }
 
     #[inline]
-    fn visit_null_literal(&mut self, it: &NullLiteral) {
+    fn visit_null_literal(&mut self, it: &NullLiteral<'a>) {
         walk_null_literal(self, it);
     }
 
@@ -182,7 +182,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_super(&mut self, it: &Super) {
+    fn visit_super(&mut self, it: &Super<'a>) {
         walk_super(self, it);
     }
 
@@ -207,7 +207,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_elision(&mut self, it: &Elision) {
+    fn visit_elision(&mut self, it: &Elision<'a>) {
         walk_elision(self, it);
     }
 
@@ -242,67 +242,67 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_ts_any_keyword(&mut self, it: &TSAnyKeyword) {
+    fn visit_ts_any_keyword(&mut self, it: &TSAnyKeyword<'a>) {
         walk_ts_any_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_big_int_keyword(&mut self, it: &TSBigIntKeyword) {
+    fn visit_ts_big_int_keyword(&mut self, it: &TSBigIntKeyword<'a>) {
         walk_ts_big_int_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_boolean_keyword(&mut self, it: &TSBooleanKeyword) {
+    fn visit_ts_boolean_keyword(&mut self, it: &TSBooleanKeyword<'a>) {
         walk_ts_boolean_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_intrinsic_keyword(&mut self, it: &TSIntrinsicKeyword) {
+    fn visit_ts_intrinsic_keyword(&mut self, it: &TSIntrinsicKeyword<'a>) {
         walk_ts_intrinsic_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_never_keyword(&mut self, it: &TSNeverKeyword) {
+    fn visit_ts_never_keyword(&mut self, it: &TSNeverKeyword<'a>) {
         walk_ts_never_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_null_keyword(&mut self, it: &TSNullKeyword) {
+    fn visit_ts_null_keyword(&mut self, it: &TSNullKeyword<'a>) {
         walk_ts_null_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_number_keyword(&mut self, it: &TSNumberKeyword) {
+    fn visit_ts_number_keyword(&mut self, it: &TSNumberKeyword<'a>) {
         walk_ts_number_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_object_keyword(&mut self, it: &TSObjectKeyword) {
+    fn visit_ts_object_keyword(&mut self, it: &TSObjectKeyword<'a>) {
         walk_ts_object_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_string_keyword(&mut self, it: &TSStringKeyword) {
+    fn visit_ts_string_keyword(&mut self, it: &TSStringKeyword<'a>) {
         walk_ts_string_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_symbol_keyword(&mut self, it: &TSSymbolKeyword) {
+    fn visit_ts_symbol_keyword(&mut self, it: &TSSymbolKeyword<'a>) {
         walk_ts_symbol_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_undefined_keyword(&mut self, it: &TSUndefinedKeyword) {
+    fn visit_ts_undefined_keyword(&mut self, it: &TSUndefinedKeyword<'a>) {
         walk_ts_undefined_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_unknown_keyword(&mut self, it: &TSUnknownKeyword) {
+    fn visit_ts_unknown_keyword(&mut self, it: &TSUnknownKeyword<'a>) {
         walk_ts_unknown_keyword(self, it);
     }
 
     #[inline]
-    fn visit_ts_void_keyword(&mut self, it: &TSVoidKeyword) {
+    fn visit_ts_void_keyword(&mut self, it: &TSVoidKeyword<'a>) {
         walk_ts_void_keyword(self, it);
     }
 
@@ -517,7 +517,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_ts_this_type(&mut self, it: &TSThisType) {
+    fn visit_ts_this_type(&mut self, it: &TSThisType<'a>) {
         walk_ts_this_type(self, it);
     }
 
@@ -635,7 +635,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_js_doc_unknown_type(&mut self, it: &JSDocUnknownType) {
+    fn visit_js_doc_unknown_type(&mut self, it: &JSDocUnknownType<'a>) {
         walk_js_doc_unknown_type(self, it);
     }
 
@@ -906,7 +906,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_this_expression(&mut self, it: &ThisExpression) {
+    fn visit_this_expression(&mut self, it: &ThisExpression<'a>) {
         walk_this_expression(self, it);
     }
 
@@ -996,7 +996,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_jsx_empty_expression(&mut self, it: &JSXEmptyExpression) {
+    fn visit_jsx_empty_expression(&mut self, it: &JSXEmptyExpression<'a>) {
         walk_jsx_empty_expression(self, it);
     }
 
@@ -1036,7 +1036,7 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_empty_statement(&mut self, it: &EmptyStatement) {
+    fn visit_empty_statement(&mut self, it: &EmptyStatement<'a>) {
         walk_empty_statement(self, it);
     }
 
@@ -1474,7 +1474,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_debugger_statement<'a, V: Visit<'a>>(visitor: &mut V, it: &DebuggerStatement) {
+    pub fn walk_debugger_statement<'a, V: Visit<'a>>(visitor: &mut V, it: &DebuggerStatement<'a>) {
         let kind = AstKind::DebuggerStatement(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1546,7 +1546,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_boolean_literal<'a, V: Visit<'a>>(visitor: &mut V, it: &BooleanLiteral) {
+    pub fn walk_boolean_literal<'a, V: Visit<'a>>(visitor: &mut V, it: &BooleanLiteral<'a>) {
         let kind = AstKind::BooleanLiteral(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1554,7 +1554,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_null_literal<'a, V: Visit<'a>>(visitor: &mut V, it: &NullLiteral) {
+    pub fn walk_null_literal<'a, V: Visit<'a>>(visitor: &mut V, it: &NullLiteral<'a>) {
         let kind = AstKind::NullLiteral(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1648,7 +1648,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_super<'a, V: Visit<'a>>(visitor: &mut V, it: &Super) {
+    pub fn walk_super<'a, V: Visit<'a>>(visitor: &mut V, it: &Super<'a>) {
         let kind = AstKind::Super(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1704,7 +1704,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_elision<'a, V: Visit<'a>>(visitor: &mut V, it: &Elision) {
+    pub fn walk_elision<'a, V: Visit<'a>>(visitor: &mut V, it: &Elision<'a>) {
         let kind = AstKind::Elision(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1830,7 +1830,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_any_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSAnyKeyword) {
+    pub fn walk_ts_any_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSAnyKeyword<'a>) {
         let kind = AstKind::TSAnyKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1838,7 +1838,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_big_int_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSBigIntKeyword) {
+    pub fn walk_ts_big_int_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSBigIntKeyword<'a>) {
         let kind = AstKind::TSBigIntKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1846,7 +1846,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_boolean_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSBooleanKeyword) {
+    pub fn walk_ts_boolean_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSBooleanKeyword<'a>) {
         let kind = AstKind::TSBooleanKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1854,7 +1854,10 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_intrinsic_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSIntrinsicKeyword) {
+    pub fn walk_ts_intrinsic_keyword<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &TSIntrinsicKeyword<'a>,
+    ) {
         let kind = AstKind::TSIntrinsicKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1862,7 +1865,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_never_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNeverKeyword) {
+    pub fn walk_ts_never_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNeverKeyword<'a>) {
         let kind = AstKind::TSNeverKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1870,7 +1873,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_null_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNullKeyword) {
+    pub fn walk_ts_null_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNullKeyword<'a>) {
         let kind = AstKind::TSNullKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1878,7 +1881,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_number_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNumberKeyword) {
+    pub fn walk_ts_number_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSNumberKeyword<'a>) {
         let kind = AstKind::TSNumberKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1886,7 +1889,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_object_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSObjectKeyword) {
+    pub fn walk_ts_object_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSObjectKeyword<'a>) {
         let kind = AstKind::TSObjectKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1894,7 +1897,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_string_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSStringKeyword) {
+    pub fn walk_ts_string_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSStringKeyword<'a>) {
         let kind = AstKind::TSStringKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1902,7 +1905,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_symbol_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSSymbolKeyword) {
+    pub fn walk_ts_symbol_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSSymbolKeyword<'a>) {
         let kind = AstKind::TSSymbolKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1910,7 +1913,10 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_undefined_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSUndefinedKeyword) {
+    pub fn walk_ts_undefined_keyword<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &TSUndefinedKeyword<'a>,
+    ) {
         let kind = AstKind::TSUndefinedKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1918,7 +1924,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_unknown_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSUnknownKeyword) {
+    pub fn walk_ts_unknown_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSUnknownKeyword<'a>) {
         let kind = AstKind::TSUnknownKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -1926,7 +1932,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_void_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSVoidKeyword) {
+    pub fn walk_ts_void_keyword<'a, V: Visit<'a>>(visitor: &mut V, it: &TSVoidKeyword<'a>) {
         let kind = AstKind::TSVoidKeyword(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -2386,7 +2392,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_ts_this_type<'a, V: Visit<'a>>(visitor: &mut V, it: &TSThisType) {
+    pub fn walk_ts_this_type<'a, V: Visit<'a>>(visitor: &mut V, it: &TSThisType<'a>) {
         let kind = AstKind::TSThisType(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -2650,7 +2656,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_js_doc_unknown_type<'a, V: Visit<'a>>(visitor: &mut V, it: &JSDocUnknownType) {
+    pub fn walk_js_doc_unknown_type<'a, V: Visit<'a>>(visitor: &mut V, it: &JSDocUnknownType<'a>) {
         // NOTE: AstKind doesn't exists!
         visitor.visit_span(&it.span);
     }
@@ -3343,7 +3349,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_this_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &ThisExpression) {
+    pub fn walk_this_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &ThisExpression<'a>) {
         let kind = AstKind::ThisExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
@@ -3545,7 +3551,10 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_jsx_empty_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &JSXEmptyExpression) {
+    pub fn walk_jsx_empty_expression<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &JSXEmptyExpression<'a>,
+    ) {
         // NOTE: AstKind doesn't exists!
         visitor.visit_span(&it.span);
     }
@@ -3614,7 +3623,7 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_empty_statement<'a, V: Visit<'a>>(visitor: &mut V, it: &EmptyStatement) {
+    pub fn walk_empty_statement<'a, V: Visit<'a>>(visitor: &mut V, it: &EmptyStatement<'a>) {
         let kind = AstKind::EmptyStatement(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);

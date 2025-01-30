@@ -12,7 +12,7 @@ use oxc_allocator::{Allocator, Box, FromIn, Vec};
 use oxc_span::{Atom, Span, SPAN};
 use oxc_syntax::{number::NumberBase, operator::UnaryOperator, scope::ScopeId};
 
-use crate::{ast::*, AstBuilder};
+use crate::{ast::*, AstBuilder, AstKind, GetParent};
 
 /// Type that can be used in any AST builder method call which requires an `IntoIn<'a, Anything<'a>>`.
 /// Pass `NONE` instead of `None::<Anything<'a>>`.
@@ -115,14 +115,14 @@ impl<'a> AstBuilder<'a> {
     /// Moves the expression out by replacing it with an [`Expression::NullLiteral`].
     #[inline]
     pub fn move_expression(self, expr: &mut Expression<'a>) -> Expression<'a> {
-        let null_expr = self.expression_null_literal(SPAN);
+        let null_expr = self.expression_null_literal(expr.get_parent(), SPAN);
         mem::replace(expr, null_expr)
     }
 
     /// Moves the statement out by replacing it with a [`Statement::EmptyStatement`].
     #[inline]
     pub fn move_statement(self, stmt: &mut Statement<'a>) -> Statement<'a> {
-        let empty_stmt = self.empty_statement(SPAN);
+        let empty_stmt = self.empty_statement(stmt.get_parent(), SPAN);
         mem::replace(stmt, Statement::EmptyStatement(self.alloc(empty_stmt)))
     }
 
@@ -130,21 +130,30 @@ impl<'a> AstBuilder<'a> {
     /// [`AssignmentTarget::AssignmentTargetIdentifier`] with no name and an empty [`Span`].
     #[inline]
     pub fn move_assignment_target(self, target: &mut AssignmentTarget<'a>) -> AssignmentTarget<'a> {
-        let dummy = self.simple_assignment_target_identifier_reference(SPAN, Atom::from(""));
+        let dummy = self.simple_assignment_target_identifier_reference(
+            target.get_parent(),
+            SPAN,
+            Atom::from(""),
+        );
         mem::replace(target, dummy.into())
     }
 
     /// Moves the property key out by replacing it with a [`PropertyKey::NullLiteral`].
     pub fn move_property_key(self, key: &mut PropertyKey<'a>) -> PropertyKey<'a> {
-        let null_expr = PropertyKey::from(self.expression_null_literal(SPAN));
+        let null_expr = PropertyKey::from(self.expression_null_literal(key.get_parent(), SPAN));
         mem::replace(key, null_expr)
     }
 
     /// Move a declaration out by replacing it with an empty [`Declaration::VariableDeclaration`].
     #[inline]
     pub fn move_declaration(self, decl: &mut Declaration<'a>) -> Declaration<'a> {
-        let empty_decl =
-            self.declaration_variable(SPAN, VariableDeclarationKind::Var, self.vec(), false);
+        let empty_decl = self.declaration_variable(
+            decl.get_parent(),
+            SPAN,
+            VariableDeclarationKind::Var,
+            self.vec(),
+            false,
+        );
         mem::replace(decl, empty_decl)
     }
 
@@ -154,31 +163,43 @@ impl<'a> AstBuilder<'a> {
         self,
         decl: &mut VariableDeclaration<'a>,
     ) -> VariableDeclaration<'a> {
-        let empty_decl =
-            self.variable_declaration(SPAN, VariableDeclarationKind::Var, self.vec(), false);
+        let empty_decl = self.variable_declaration(
+            decl.get_parent(),
+            SPAN,
+            VariableDeclarationKind::Var,
+            self.vec(),
+            false,
+        );
         mem::replace(decl, empty_decl)
     }
 
     /// Move a formal parameters out by replacing it with an empty [`FormalParameters`].
     #[inline]
     pub fn move_formal_parameters(self, params: &mut FormalParameters<'a>) -> FormalParameters<'a> {
-        let empty_params = self.formal_parameters(SPAN, params.kind, self.vec(), NONE);
+        let empty_params =
+            self.formal_parameters(params.get_parent(), SPAN, params.kind, self.vec(), NONE);
         mem::replace(params, empty_params)
     }
 
     /// Move a function body out by replacing it with an empty [`FunctionBody`].
     #[inline]
     pub fn move_function_body(self, body: &mut FunctionBody<'a>) -> FunctionBody<'a> {
-        let empty_body = self.function_body(SPAN, self.vec(), self.vec());
+        let empty_body = self.function_body(body.get_parent(), SPAN, self.vec(), self.vec());
         mem::replace(body, empty_body)
     }
 
     /// Move a function out by replacing it with an empty [`Function`].
     #[inline]
     pub fn move_function(self, function: &mut Function<'a>) -> Function<'a> {
-        let params =
-            self.formal_parameters(SPAN, FormalParameterKind::FormalParameter, self.vec(), NONE);
+        let params = self.formal_parameters(
+            None,
+            SPAN,
+            FormalParameterKind::FormalParameter,
+            self.vec(),
+            NONE,
+        );
         let empty_function = self.function(
+            function.get_parent(),
             SPAN,
             FunctionType::FunctionDeclaration,
             None,
@@ -191,7 +212,10 @@ impl<'a> AstBuilder<'a> {
             NONE,
             NONE,
         );
-        mem::replace(function, empty_function)
+        let mut result = mem::replace(function, empty_function);
+        let parent = AstKind::Function(unsafe { &*(&result as *const _) });
+        result.params.set_parent(parent);
+        result
     }
 
     /// Move an array element out by replacing it with an [`ArrayExpressionElement::Elision`].
@@ -199,7 +223,7 @@ impl<'a> AstBuilder<'a> {
         self,
         element: &mut ArrayExpressionElement<'a>,
     ) -> ArrayExpressionElement<'a> {
-        let elision = self.array_expression_element_elision(SPAN);
+        let elision = self.array_expression_element_elision(element.get_parent(), SPAN);
         mem::replace(element, elision)
     }
 
@@ -214,26 +238,35 @@ impl<'a> AstBuilder<'a> {
 
     /// `0`
     #[inline]
-    pub fn number_0(self) -> Expression<'a> {
-        self.expression_numeric_literal(SPAN, 0.0, None, NumberBase::Decimal)
+    pub fn number_0(self, parent: AstKind<'a>) -> Expression<'a> {
+        self.expression_numeric_literal(Some(parent), SPAN, 0.0, None, NumberBase::Decimal)
     }
 
     /// `void 0`
     #[inline]
-    pub fn void_0(self, span: Span) -> Expression<'a> {
-        let num = self.number_0();
-        Expression::UnaryExpression(self.alloc(self.unary_expression(
+    pub fn void_0(self, parent: AstKind<'a>, span: Span) -> Expression<'a> {
+        let num = self.number_0(parent); // temporary set it to parent
+        let mut expr = Expression::UnaryExpression(self.alloc(self.unary_expression(
+            Some(parent),
             span,
             UnaryOperator::Void,
             num,
-        )))
+        )));
+        if let Expression::UnaryExpression(unary) = &mut expr {
+            let parent = AstKind::UnaryExpression(unsafe { &*(unary.as_ref() as *const _) });
+            unary.argument.set_parent(parent); // set the correct parent
+        }
+        expr
     }
 
     /// `"use strict"` directive
     #[inline]
-    pub fn use_strict_directive(self) -> Directive<'a> {
+    pub fn use_strict_directive(self, parent: AstKind<'a>) -> Directive<'a> {
         let use_strict = Atom::from("use strict");
-        self.directive(SPAN, self.string_literal(SPAN, use_strict, None), use_strict)
+        let str = self.string_literal(None, SPAN, use_strict, None);
+        let mut dir = self.directive(Some(parent), SPAN, str, use_strict);
+        dir.expression.set_parent(AstKind::Directive(unsafe { &*(&dir as *const _) }));
+        dir
     }
 
     /* ---------- Functions ---------- */
@@ -243,10 +276,11 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn plain_formal_parameter(
         self,
+        parent: AstKind<'a>,
         span: Span,
         pattern: BindingPattern<'a>,
     ) -> FormalParameter<'a> {
-        self.formal_parameter(span, self.vec(), pattern, None, false, false)
+        self.formal_parameter(Some(parent), span, self.vec(), pattern, None, false, false)
     }
 
     /// Create a [`Function`] with no "extras".
@@ -254,6 +288,7 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn alloc_plain_function_with_scope_id(
         self,
+        parent: AstKind<'a>,
         r#type: FunctionType,
         span: Span,
         id: Option<BindingIdentifier<'a>>,
@@ -262,6 +297,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, Function<'a>> {
         self.alloc_function_with_scope_id(
+            Some(parent),
             span,
             r#type,
             id,
@@ -283,10 +319,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn plain_export_named_declaration_declaration(
         self,
+        parent: AstKind<'a>,
         span: Span,
         declaration: Declaration<'a>,
     ) -> Box<'a, ExportNamedDeclaration<'a>> {
         self.alloc(self.export_named_declaration(
+            Some(parent),
             span,
             Some(declaration),
             self.vec(),
@@ -301,11 +339,13 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn plain_export_named_declaration(
         self,
+        parent: AstKind<'a>,
         span: Span,
         specifiers: Vec<'a, ExportSpecifier<'a>>,
         source: Option<StringLiteral<'a>>,
     ) -> Box<'a, ExportNamedDeclaration<'a>> {
         self.alloc(self.export_named_declaration(
+            Some(parent),
             span,
             None,
             specifiers,
@@ -322,10 +362,12 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn ts_interface_heritages(
         self,
+        parent: AstKind<'a>,
         extends: Vec<'a, (Expression<'a>, Option<Box<'a, TSTypeParameterInstantiation<'a>>>, Span)>,
     ) -> Vec<'a, TSInterfaceHeritage<'a>> {
         Vec::from_iter_in(
             extends.into_iter().map(|(expression, type_parameters, span)| TSInterfaceHeritage {
+                parent: Some(parent),
                 span,
                 expression,
                 type_parameters,
@@ -336,13 +378,13 @@ impl<'a> AstBuilder<'a> {
 
     /// Create an [`JSXOpeningElement`].
     #[inline]
-    pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment {
-        JSXOpeningFragment { span }
+    pub fn jsx_opening_fragment(self, parent: AstKind<'a>, span: Span) -> JSXOpeningFragment<'a> {
+        JSXOpeningFragment { parent: Some(parent), span }
     }
 
     /// Create an [`JSXClosingElement`].
     #[inline]
-    pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment {
-        JSXClosingFragment { span }
+    pub fn jsx_closing_fragment(self, parent: AstKind<'a>, span: Span) -> JSXClosingFragment<'a> {
+        JSXClosingFragment { parent: Some(parent), span }
     }
 }

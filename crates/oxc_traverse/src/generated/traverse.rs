@@ -66,9 +66,9 @@ pub trait Traverse<'a> {
     }
 
     #[inline]
-    fn enter_this_expression(&mut self, node: &mut ThisExpression, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_this_expression(&mut self, node: &mut ThisExpression<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_this_expression(&mut self, node: &mut ThisExpression, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_this_expression(&mut self, node: &mut ThisExpression<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_array_expression(
@@ -97,9 +97,9 @@ pub trait Traverse<'a> {
     }
 
     #[inline]
-    fn enter_elision(&mut self, node: &mut Elision, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_elision(&mut self, node: &mut Elision<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_elision(&mut self, node: &mut Elision, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_elision(&mut self, node: &mut Elision<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_object_expression(
@@ -545,9 +545,9 @@ pub trait Traverse<'a> {
     }
 
     #[inline]
-    fn enter_super(&mut self, node: &mut Super, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_super(&mut self, node: &mut Super<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_super(&mut self, node: &mut Super, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_super(&mut self, node: &mut Super<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_await_expression(
@@ -647,9 +647,9 @@ pub trait Traverse<'a> {
     }
 
     #[inline]
-    fn enter_empty_statement(&mut self, node: &mut EmptyStatement, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_empty_statement(&mut self, node: &mut EmptyStatement<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_empty_statement(&mut self, node: &mut EmptyStatement, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_empty_statement(&mut self, node: &mut EmptyStatement<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_expression_statement(
@@ -828,12 +828,16 @@ pub trait Traverse<'a> {
     #[inline]
     fn enter_debugger_statement(
         &mut self,
-        node: &mut DebuggerStatement,
+        node: &mut DebuggerStatement<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
     #[inline]
-    fn exit_debugger_statement(&mut self, node: &mut DebuggerStatement, ctx: &mut TraverseCtx<'a>) {
+    fn exit_debugger_statement(
+        &mut self,
+        node: &mut DebuggerStatement<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
     }
 
     #[inline]
@@ -1381,14 +1385,14 @@ pub trait Traverse<'a> {
     #[inline]
     fn enter_jsx_empty_expression(
         &mut self,
-        node: &mut JSXEmptyExpression,
+        node: &mut JSXEmptyExpression<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
     #[inline]
     fn exit_jsx_empty_expression(
         &mut self,
-        node: &mut JSXEmptyExpression,
+        node: &mut JSXEmptyExpression<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
@@ -1480,14 +1484,14 @@ pub trait Traverse<'a> {
     fn exit_jsx_text(&mut self, node: &mut JSXText<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_boolean_literal(&mut self, node: &mut BooleanLiteral, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_boolean_literal(&mut self, node: &mut BooleanLiteral<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_boolean_literal(&mut self, node: &mut BooleanLiteral, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_boolean_literal(&mut self, node: &mut BooleanLiteral<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_null_literal(&mut self, node: &mut NullLiteral, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_null_literal(&mut self, node: &mut NullLiteral<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_null_literal(&mut self, node: &mut NullLiteral, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_null_literal(&mut self, node: &mut NullLiteral<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_numeric_literal(&mut self, node: &mut NumericLiteral<'a>, ctx: &mut TraverseCtx<'a>) {}
@@ -1703,96 +1707,165 @@ pub trait Traverse<'a> {
     fn exit_ts_tuple_element(&mut self, node: &mut TSTupleElement<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_ts_any_keyword(&mut self, node: &mut TSAnyKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_any_keyword(&mut self, node: &mut TSAnyKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_ts_any_keyword(&mut self, node: &mut TSAnyKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_any_keyword(&mut self, node: &mut TSAnyKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_ts_string_keyword(&mut self, node: &mut TSStringKeyword, ctx: &mut TraverseCtx<'a>) {}
-    #[inline]
-    fn exit_ts_string_keyword(&mut self, node: &mut TSStringKeyword, ctx: &mut TraverseCtx<'a>) {}
-
-    #[inline]
-    fn enter_ts_boolean_keyword(&mut self, node: &mut TSBooleanKeyword, ctx: &mut TraverseCtx<'a>) {
+    fn enter_ts_string_keyword(
+        &mut self,
+        node: &mut TSStringKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
     }
     #[inline]
-    fn exit_ts_boolean_keyword(&mut self, node: &mut TSBooleanKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_string_keyword(
+        &mut self,
+        node: &mut TSStringKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
-    fn enter_ts_number_keyword(&mut self, node: &mut TSNumberKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_boolean_keyword(
+        &mut self,
+        node: &mut TSBooleanKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
     #[inline]
-    fn exit_ts_number_keyword(&mut self, node: &mut TSNumberKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_boolean_keyword(
+        &mut self,
+        node: &mut TSBooleanKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
-    fn enter_ts_never_keyword(&mut self, node: &mut TSNeverKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_number_keyword(
+        &mut self,
+        node: &mut TSNumberKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
     #[inline]
-    fn exit_ts_never_keyword(&mut self, node: &mut TSNeverKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_number_keyword(
+        &mut self,
+        node: &mut TSNumberKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
+
+    #[inline]
+    fn enter_ts_never_keyword(&mut self, node: &mut TSNeverKeyword<'a>, ctx: &mut TraverseCtx<'a>) {
+    }
+    #[inline]
+    fn exit_ts_never_keyword(&mut self, node: &mut TSNeverKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_ts_intrinsic_keyword(
         &mut self,
-        node: &mut TSIntrinsicKeyword,
+        node: &mut TSIntrinsicKeyword<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
     #[inline]
     fn exit_ts_intrinsic_keyword(
         &mut self,
-        node: &mut TSIntrinsicKeyword,
+        node: &mut TSIntrinsicKeyword<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
 
     #[inline]
-    fn enter_ts_unknown_keyword(&mut self, node: &mut TSUnknownKeyword, ctx: &mut TraverseCtx<'a>) {
+    fn enter_ts_unknown_keyword(
+        &mut self,
+        node: &mut TSUnknownKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
     }
     #[inline]
-    fn exit_ts_unknown_keyword(&mut self, node: &mut TSUnknownKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_unknown_keyword(
+        &mut self,
+        node: &mut TSUnknownKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
-    fn enter_ts_null_keyword(&mut self, node: &mut TSNullKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_null_keyword(&mut self, node: &mut TSNullKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_ts_null_keyword(&mut self, node: &mut TSNullKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_null_keyword(&mut self, node: &mut TSNullKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
     fn enter_ts_undefined_keyword(
         &mut self,
-        node: &mut TSUndefinedKeyword,
+        node: &mut TSUndefinedKeyword<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
     #[inline]
     fn exit_ts_undefined_keyword(
         &mut self,
-        node: &mut TSUndefinedKeyword,
+        node: &mut TSUndefinedKeyword<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
 
     #[inline]
-    fn enter_ts_void_keyword(&mut self, node: &mut TSVoidKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_void_keyword(&mut self, node: &mut TSVoidKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_ts_void_keyword(&mut self, node: &mut TSVoidKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_void_keyword(&mut self, node: &mut TSVoidKeyword<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_ts_symbol_keyword(&mut self, node: &mut TSSymbolKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_symbol_keyword(
+        &mut self,
+        node: &mut TSSymbolKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
     #[inline]
-    fn exit_ts_symbol_keyword(&mut self, node: &mut TSSymbolKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_symbol_keyword(
+        &mut self,
+        node: &mut TSSymbolKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
-    fn enter_ts_this_type(&mut self, node: &mut TSThisType, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_this_type(&mut self, node: &mut TSThisType<'a>, ctx: &mut TraverseCtx<'a>) {}
     #[inline]
-    fn exit_ts_this_type(&mut self, node: &mut TSThisType, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_this_type(&mut self, node: &mut TSThisType<'a>, ctx: &mut TraverseCtx<'a>) {}
 
     #[inline]
-    fn enter_ts_object_keyword(&mut self, node: &mut TSObjectKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_object_keyword(
+        &mut self,
+        node: &mut TSObjectKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
     #[inline]
-    fn exit_ts_object_keyword(&mut self, node: &mut TSObjectKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_object_keyword(
+        &mut self,
+        node: &mut TSObjectKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
-    fn enter_ts_big_int_keyword(&mut self, node: &mut TSBigIntKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn enter_ts_big_int_keyword(
+        &mut self,
+        node: &mut TSBigIntKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
     #[inline]
-    fn exit_ts_big_int_keyword(&mut self, node: &mut TSBigIntKeyword, ctx: &mut TraverseCtx<'a>) {}
+    fn exit_ts_big_int_keyword(
+        &mut self,
+        node: &mut TSBigIntKeyword<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
+    }
 
     #[inline]
     fn enter_ts_type_reference(
@@ -2424,12 +2497,16 @@ pub trait Traverse<'a> {
     #[inline]
     fn enter_js_doc_unknown_type(
         &mut self,
-        node: &mut JSDocUnknownType,
+        node: &mut JSDocUnknownType<'a>,
         ctx: &mut TraverseCtx<'a>,
     ) {
     }
     #[inline]
-    fn exit_js_doc_unknown_type(&mut self, node: &mut JSDocUnknownType, ctx: &mut TraverseCtx<'a>) {
+    fn exit_js_doc_unknown_type(
+        &mut self,
+        node: &mut JSDocUnknownType<'a>,
+        ctx: &mut TraverseCtx<'a>,
+    ) {
     }
 
     #[inline]

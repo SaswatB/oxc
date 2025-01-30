@@ -6,7 +6,7 @@ use oxc_allocator::{Box, Vec};
 use oxc_span::{Atom, Span};
 use oxc_syntax::{operator::UnaryOperator, scope::ScopeFlags, symbol::SymbolId};
 
-use crate::ast::*;
+use crate::{ast::*, AstKind};
 
 impl Program<'_> {
     /// Returns `true` if this program has no statements or directives.
@@ -715,20 +715,22 @@ impl<'a> SimpleAssignmentTarget<'a> {
 impl<'a> ArrayAssignmentTarget<'a> {
     #[allow(missing_docs)]
     pub fn new_with_elements(
+        parent: AstKind<'a>,
         span: Span,
         elements: Vec<'a, Option<AssignmentTargetMaybeDefault<'a>>>,
     ) -> Self {
-        Self { span, elements, rest: None, trailing_comma: None }
+        Self { parent: Some(parent), span, elements, rest: None, trailing_comma: None }
     }
 }
 
 impl<'a> ObjectAssignmentTarget<'a> {
     #[allow(missing_docs)]
     pub fn new_with_properties(
+        parent: AstKind<'a>,
         span: Span,
         properties: Vec<'a, AssignmentTargetProperty<'a>>,
     ) -> Self {
-        Self { span, properties, rest: None }
+        Self { parent: Some(parent), span, properties, rest: None }
     }
 
     #[allow(missing_docs)]

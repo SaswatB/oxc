@@ -15,13 +15,13 @@ use crate::ast::literal::*;
 
 use crate::ast::ts::*;
 
-impl ContentEq for BooleanLiteral {
+impl ContentEq for BooleanLiteral<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.value, &other.value)
     }
 }
 
-impl ContentEq for NullLiteral {
+impl ContentEq for NullLiteral<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -127,7 +127,7 @@ impl ContentEq for LabelIdentifier<'_> {
     }
 }
 
-impl ContentEq for ThisExpression {
+impl ContentEq for ThisExpression<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -198,7 +198,7 @@ impl ContentEq for ArrayExpressionElement<'_> {
     }
 }
 
-impl ContentEq for Elision {
+impl ContentEq for Elision<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -662,7 +662,7 @@ impl ContentEq for SequenceExpression<'_> {
     }
 }
 
-impl ContentEq for Super {
+impl ContentEq for Super<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -810,7 +810,7 @@ impl ContentEq for VariableDeclarator<'_> {
     }
 }
 
-impl ContentEq for EmptyStatement {
+impl ContentEq for EmptyStatement<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -1028,7 +1028,7 @@ impl ContentEq for CatchParameter<'_> {
     }
 }
 
-impl ContentEq for DebuggerStatement {
+impl ContentEq for DebuggerStatement<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -1730,85 +1730,85 @@ impl ContentEq for TSTupleElement<'_> {
     }
 }
 
-impl ContentEq for TSAnyKeyword {
+impl ContentEq for TSAnyKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSStringKeyword {
+impl ContentEq for TSStringKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSBooleanKeyword {
+impl ContentEq for TSBooleanKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSNumberKeyword {
+impl ContentEq for TSNumberKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSNeverKeyword {
+impl ContentEq for TSNeverKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSIntrinsicKeyword {
+impl ContentEq for TSIntrinsicKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSUnknownKeyword {
+impl ContentEq for TSUnknownKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSNullKeyword {
+impl ContentEq for TSNullKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSUndefinedKeyword {
+impl ContentEq for TSUndefinedKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSVoidKeyword {
+impl ContentEq for TSVoidKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSSymbolKeyword {
+impl ContentEq for TSSymbolKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSThisType {
+impl ContentEq for TSThisType<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSObjectKeyword {
+impl ContentEq for TSObjectKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for TSBigIntKeyword {
+impl ContentEq for TSBigIntKeyword<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -2256,7 +2256,7 @@ impl ContentEq for JSDocNonNullableType<'_> {
     }
 }
 
-impl ContentEq for JSDocUnknownType {
+impl ContentEq for JSDocUnknownType<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -2293,13 +2293,13 @@ impl ContentEq for JSXFragment<'_> {
     }
 }
 
-impl ContentEq for JSXOpeningFragment {
+impl ContentEq for JSXOpeningFragment<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
 }
 
-impl ContentEq for JSXClosingFragment {
+impl ContentEq for JSXClosingFragment<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }
@@ -2409,7 +2409,7 @@ impl ContentEq for JSXExpression<'_> {
     }
 }
 
-impl ContentEq for JSXEmptyExpression {
+impl ContentEq for JSXEmptyExpression<'_> {
     fn content_eq(&self, _: &Self) -> bool {
         true
     }

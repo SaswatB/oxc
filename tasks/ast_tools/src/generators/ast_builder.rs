@@ -57,6 +57,7 @@ impl Generator for AstBuilderGenerator {
 
                 ///@@line_break
                 use crate::ast::*;
+                use crate::AstKind;
 
                 ///@@line_break
                 static COUNTER: AtomicU32 = AtomicU32::new(1);

@@ -130,6 +130,7 @@ fn parse_enum_outer_markers(attrs: &Vec<Attribute>) -> Result<EnumOuterMarkers> 
 fn parse_inner_markers(attrs: &Vec<Attribute>) -> Result<InnerMarkers> {
     Ok(InnerMarkers {
         span: attrs.iter().any(|a| a.path().is_ident("span")),
+        parent: attrs.iter().any(|a| a.path().is_ident("parent")),
         visit: get_visit_markers(attrs)?,
         scope: get_scope_markers(attrs)?,
         derive_attributes: get_derive_attributes(attrs)?,
@@ -196,18 +197,18 @@ fn lower_ast_enum(it @ rust::Enum { item, meta }: &rust::Enum, ctx: &EarlyCtx) -
 }
 
 fn lower_ast_struct(it @ rust::Struct { item, meta }: &rust::Struct, ctx: &EarlyCtx) -> StructDef {
-    // If the struct contains a `span` field, it must be the first field for consistency, and also
+    // If the struct contains a `span` field, it must be the second field for consistency, and also
     // small performance improvement from byte ordering.
-    if item
-        .fields
-        .iter()
-        .map(|field| field.ident.as_ref().unwrap().to_string())
-        .position(|ident| ident == "span")
-        .filter(|i| *i != 0)
-        .is_some()
-    {
-        panic!("First field of `{}` must be `span`.", it.item.ident);
-    }
+    // if item
+    //     .fields
+    //     .iter()
+    //     .map(|field| field.ident.as_ref().unwrap().to_string())
+    //     .position(|ident| ident == "span")
+    //     .filter(|i| *i != 1)
+    //     .is_some()
+    // {
+    //     panic!("Second field of `{}` must be `span`.", it.item.ident);
+    // }
 
     let (size_64, align_64, offsets_64) = meta
         .layout_64

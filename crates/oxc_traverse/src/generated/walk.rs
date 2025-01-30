@@ -238,7 +238,7 @@ unsafe fn walk_label_identifier<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_this_expression<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut ThisExpression,
+    node: *mut ThisExpression<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_this_expression(&mut *node, ctx);
@@ -324,7 +324,7 @@ unsafe fn walk_array_expression_element<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_elision<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut Elision,
+    node: *mut Elision<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_elision(&mut *node, ctx);
@@ -1225,7 +1225,7 @@ unsafe fn walk_sequence_expression<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_super<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut Super,
+    node: *mut Super<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_super(&mut *node, ctx);
@@ -1522,7 +1522,7 @@ unsafe fn walk_variable_declarator<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_empty_statement<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut EmptyStatement,
+    node: *mut EmptyStatement<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_empty_statement(&mut *node, ctx);
@@ -2085,7 +2085,7 @@ unsafe fn walk_catch_parameter<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_debugger_statement<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut DebuggerStatement,
+    node: *mut DebuggerStatement<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_debugger_statement(&mut *node, ctx);
@@ -3425,7 +3425,7 @@ unsafe fn walk_jsx_expression<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_jsx_empty_expression<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut JSXEmptyExpression,
+    node: *mut JSXEmptyExpression<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_jsx_empty_expression(&mut *node, ctx);
@@ -3588,7 +3588,7 @@ unsafe fn walk_jsx_text<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_boolean_literal<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut BooleanLiteral,
+    node: *mut BooleanLiteral<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_boolean_literal(&mut *node, ctx);
@@ -3597,7 +3597,7 @@ unsafe fn walk_boolean_literal<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_null_literal<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut NullLiteral,
+    node: *mut NullLiteral<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_null_literal(&mut *node, ctx);
@@ -4201,7 +4201,7 @@ unsafe fn walk_ts_tuple_element<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_any_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSAnyKeyword,
+    node: *mut TSAnyKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_any_keyword(&mut *node, ctx);
@@ -4210,7 +4210,7 @@ unsafe fn walk_ts_any_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_string_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSStringKeyword,
+    node: *mut TSStringKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_string_keyword(&mut *node, ctx);
@@ -4219,7 +4219,7 @@ unsafe fn walk_ts_string_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_boolean_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSBooleanKeyword,
+    node: *mut TSBooleanKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_boolean_keyword(&mut *node, ctx);
@@ -4228,7 +4228,7 @@ unsafe fn walk_ts_boolean_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_number_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSNumberKeyword,
+    node: *mut TSNumberKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_number_keyword(&mut *node, ctx);
@@ -4237,7 +4237,7 @@ unsafe fn walk_ts_number_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_never_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSNeverKeyword,
+    node: *mut TSNeverKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_never_keyword(&mut *node, ctx);
@@ -4246,7 +4246,7 @@ unsafe fn walk_ts_never_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_intrinsic_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSIntrinsicKeyword,
+    node: *mut TSIntrinsicKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_intrinsic_keyword(&mut *node, ctx);
@@ -4255,7 +4255,7 @@ unsafe fn walk_ts_intrinsic_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_unknown_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSUnknownKeyword,
+    node: *mut TSUnknownKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_unknown_keyword(&mut *node, ctx);
@@ -4264,7 +4264,7 @@ unsafe fn walk_ts_unknown_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_null_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSNullKeyword,
+    node: *mut TSNullKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_null_keyword(&mut *node, ctx);
@@ -4273,7 +4273,7 @@ unsafe fn walk_ts_null_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_undefined_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSUndefinedKeyword,
+    node: *mut TSUndefinedKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_undefined_keyword(&mut *node, ctx);
@@ -4282,7 +4282,7 @@ unsafe fn walk_ts_undefined_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_void_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSVoidKeyword,
+    node: *mut TSVoidKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_void_keyword(&mut *node, ctx);
@@ -4291,7 +4291,7 @@ unsafe fn walk_ts_void_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_symbol_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSSymbolKeyword,
+    node: *mut TSSymbolKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_symbol_keyword(&mut *node, ctx);
@@ -4300,7 +4300,7 @@ unsafe fn walk_ts_symbol_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_this_type<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSThisType,
+    node: *mut TSThisType<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_this_type(&mut *node, ctx);
@@ -4309,7 +4309,7 @@ unsafe fn walk_ts_this_type<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_object_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSObjectKeyword,
+    node: *mut TSObjectKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_object_keyword(&mut *node, ctx);
@@ -4318,7 +4318,7 @@ unsafe fn walk_ts_object_keyword<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_ts_big_int_keyword<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut TSBigIntKeyword,
+    node: *mut TSBigIntKeyword<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_ts_big_int_keyword(&mut *node, ctx);
@@ -5577,7 +5577,7 @@ unsafe fn walk_js_doc_non_nullable_type<'a, Tr: Traverse<'a>>(
 
 unsafe fn walk_js_doc_unknown_type<'a, Tr: Traverse<'a>>(
     traverser: &mut Tr,
-    node: *mut JSDocUnknownType,
+    node: *mut JSDocUnknownType<'a>,
     ctx: &mut TraverseCtx<'a>,
 ) {
     traverser.enter_js_doc_unknown_type(&mut *node, ctx);

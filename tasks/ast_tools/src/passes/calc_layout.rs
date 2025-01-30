@@ -302,5 +302,7 @@ lazy_static! {
         ("RegExpFlags", PlatformLayout::of::<u8>()),
         // `PointerAlign` is a field of `Span`. ZST with pointer alignment.
         ("PointerAlign", PlatformLayout(Layout::known(0, 8, 0), Layout::known(0, 4, 0))),
+        // AstKind
+        ("AstKind", PlatformLayout::of::<u64>()),
     ]);
 }

@@ -13,14 +13,14 @@ use crate::ast::literal::*;
 
 use crate::ast::ts::*;
 
-impl GetSpan for BooleanLiteral {
+impl GetSpan for BooleanLiteral<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for NullLiteral {
+impl GetSpan for NullLiteral<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -139,7 +139,7 @@ impl GetSpan for LabelIdentifier<'_> {
     }
 }
 
-impl GetSpan for ThisExpression {
+impl GetSpan for ThisExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -204,7 +204,7 @@ impl GetSpan for ArrayExpressionElement<'_> {
     }
 }
 
-impl GetSpan for Elision {
+impl GetSpan for Elision<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -584,7 +584,7 @@ impl GetSpan for SequenceExpression<'_> {
     }
 }
 
-impl GetSpan for Super {
+impl GetSpan for Super<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -713,7 +713,7 @@ impl GetSpan for VariableDeclarator<'_> {
     }
 }
 
-impl GetSpan for EmptyStatement {
+impl GetSpan for EmptyStatement<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -915,7 +915,7 @@ impl GetSpan for CatchParameter<'_> {
     }
 }
 
-impl GetSpan for DebuggerStatement {
+impl GetSpan for DebuggerStatement<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -1477,98 +1477,98 @@ impl GetSpan for TSTupleElement<'_> {
     }
 }
 
-impl GetSpan for TSAnyKeyword {
+impl GetSpan for TSAnyKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSStringKeyword {
+impl GetSpan for TSStringKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSBooleanKeyword {
+impl GetSpan for TSBooleanKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSNumberKeyword {
+impl GetSpan for TSNumberKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSNeverKeyword {
+impl GetSpan for TSNeverKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSIntrinsicKeyword {
+impl GetSpan for TSIntrinsicKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSUnknownKeyword {
+impl GetSpan for TSUnknownKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSNullKeyword {
+impl GetSpan for TSNullKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSUndefinedKeyword {
+impl GetSpan for TSUndefinedKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSVoidKeyword {
+impl GetSpan for TSVoidKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSSymbolKeyword {
+impl GetSpan for TSSymbolKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSThisType {
+impl GetSpan for TSThisType<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSObjectKeyword {
+impl GetSpan for TSObjectKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for TSBigIntKeyword {
+impl GetSpan for TSBigIntKeyword<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -1939,7 +1939,7 @@ impl GetSpan for JSDocNonNullableType<'_> {
     }
 }
 
-impl GetSpan for JSDocUnknownType {
+impl GetSpan for JSDocUnknownType<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -1974,14 +1974,14 @@ impl GetSpan for JSXFragment<'_> {
     }
 }
 
-impl GetSpan for JSXOpeningFragment {
+impl GetSpan for JSXOpeningFragment<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for JSXClosingFragment {
+impl GetSpan for JSXClosingFragment<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -2081,7 +2081,7 @@ impl GetSpan for JSXExpression<'_> {
     }
 }
 
-impl GetSpan for JSXEmptyExpression {
+impl GetSpan for JSXEmptyExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span

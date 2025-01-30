@@ -9,6 +9,7 @@ use std::ptr;
 use oxc_span::{GetSpan, Span};
 
 use crate::ast::*;
+use crate::GetParent;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -184,8 +185,8 @@ pub enum AstType {
 #[derive(Debug, Clone, Copy)]
 #[repr(C, u8)]
 pub enum AstKind<'a> {
-    BooleanLiteral(&'a BooleanLiteral) = AstType::BooleanLiteral as u8,
-    NullLiteral(&'a NullLiteral) = AstType::NullLiteral as u8,
+    BooleanLiteral(&'a BooleanLiteral<'a>) = AstType::BooleanLiteral as u8,
+    NullLiteral(&'a NullLiteral<'a>) = AstType::NullLiteral as u8,
     NumericLiteral(&'a NumericLiteral<'a>) = AstType::NumericLiteral as u8,
     StringLiteral(&'a StringLiteral<'a>) = AstType::StringLiteral as u8,
     BigIntLiteral(&'a BigIntLiteral<'a>) = AstType::BigIntLiteral as u8,
@@ -195,10 +196,10 @@ pub enum AstKind<'a> {
     IdentifierReference(&'a IdentifierReference<'a>) = AstType::IdentifierReference as u8,
     BindingIdentifier(&'a BindingIdentifier<'a>) = AstType::BindingIdentifier as u8,
     LabelIdentifier(&'a LabelIdentifier<'a>) = AstType::LabelIdentifier as u8,
-    ThisExpression(&'a ThisExpression) = AstType::ThisExpression as u8,
+    ThisExpression(&'a ThisExpression<'a>) = AstType::ThisExpression as u8,
     ArrayExpression(&'a ArrayExpression<'a>) = AstType::ArrayExpression as u8,
     ArrayExpressionElement(&'a ArrayExpressionElement<'a>) = AstType::ArrayExpressionElement as u8,
-    Elision(&'a Elision) = AstType::Elision as u8,
+    Elision(&'a Elision<'a>) = AstType::Elision as u8,
     ObjectExpression(&'a ObjectExpression<'a>) = AstType::ObjectExpression as u8,
     ObjectProperty(&'a ObjectProperty<'a>) = AstType::ObjectProperty as u8,
     PropertyKey(&'a PropertyKey<'a>) = AstType::PropertyKey as u8,
@@ -227,7 +228,7 @@ pub enum AstKind<'a> {
     AssignmentTargetWithDefault(&'a AssignmentTargetWithDefault<'a>) =
         AstType::AssignmentTargetWithDefault as u8,
     SequenceExpression(&'a SequenceExpression<'a>) = AstType::SequenceExpression as u8,
-    Super(&'a Super) = AstType::Super as u8,
+    Super(&'a Super<'a>) = AstType::Super as u8,
     AwaitExpression(&'a AwaitExpression<'a>) = AstType::AwaitExpression as u8,
     ChainExpression(&'a ChainExpression<'a>) = AstType::ChainExpression as u8,
     ParenthesizedExpression(&'a ParenthesizedExpression<'a>) =
@@ -237,7 +238,7 @@ pub enum AstKind<'a> {
     BlockStatement(&'a BlockStatement<'a>) = AstType::BlockStatement as u8,
     VariableDeclaration(&'a VariableDeclaration<'a>) = AstType::VariableDeclaration as u8,
     VariableDeclarator(&'a VariableDeclarator<'a>) = AstType::VariableDeclarator as u8,
-    EmptyStatement(&'a EmptyStatement) = AstType::EmptyStatement as u8,
+    EmptyStatement(&'a EmptyStatement<'a>) = AstType::EmptyStatement as u8,
     ExpressionStatement(&'a ExpressionStatement<'a>) = AstType::ExpressionStatement as u8,
     IfStatement(&'a IfStatement<'a>) = AstType::IfStatement as u8,
     DoWhileStatement(&'a DoWhileStatement<'a>) = AstType::DoWhileStatement as u8,
@@ -257,7 +258,7 @@ pub enum AstKind<'a> {
     TryStatement(&'a TryStatement<'a>) = AstType::TryStatement as u8,
     CatchClause(&'a CatchClause<'a>) = AstType::CatchClause as u8,
     CatchParameter(&'a CatchParameter<'a>) = AstType::CatchParameter as u8,
-    DebuggerStatement(&'a DebuggerStatement) = AstType::DebuggerStatement as u8,
+    DebuggerStatement(&'a DebuggerStatement<'a>) = AstType::DebuggerStatement as u8,
     AssignmentPattern(&'a AssignmentPattern<'a>) = AstType::AssignmentPattern as u8,
     ObjectPattern(&'a ObjectPattern<'a>) = AstType::ObjectPattern as u8,
     ArrayPattern(&'a ArrayPattern<'a>) = AstType::ArrayPattern as u8,
@@ -298,20 +299,20 @@ pub enum AstKind<'a> {
     TSParenthesizedType(&'a TSParenthesizedType<'a>) = AstType::TSParenthesizedType as u8,
     TSIndexedAccessType(&'a TSIndexedAccessType<'a>) = AstType::TSIndexedAccessType as u8,
     TSNamedTupleMember(&'a TSNamedTupleMember<'a>) = AstType::TSNamedTupleMember as u8,
-    TSAnyKeyword(&'a TSAnyKeyword) = AstType::TSAnyKeyword as u8,
-    TSStringKeyword(&'a TSStringKeyword) = AstType::TSStringKeyword as u8,
-    TSBooleanKeyword(&'a TSBooleanKeyword) = AstType::TSBooleanKeyword as u8,
-    TSNumberKeyword(&'a TSNumberKeyword) = AstType::TSNumberKeyword as u8,
-    TSNeverKeyword(&'a TSNeverKeyword) = AstType::TSNeverKeyword as u8,
-    TSIntrinsicKeyword(&'a TSIntrinsicKeyword) = AstType::TSIntrinsicKeyword as u8,
-    TSUnknownKeyword(&'a TSUnknownKeyword) = AstType::TSUnknownKeyword as u8,
-    TSNullKeyword(&'a TSNullKeyword) = AstType::TSNullKeyword as u8,
-    TSUndefinedKeyword(&'a TSUndefinedKeyword) = AstType::TSUndefinedKeyword as u8,
-    TSVoidKeyword(&'a TSVoidKeyword) = AstType::TSVoidKeyword as u8,
-    TSSymbolKeyword(&'a TSSymbolKeyword) = AstType::TSSymbolKeyword as u8,
-    TSThisType(&'a TSThisType) = AstType::TSThisType as u8,
-    TSObjectKeyword(&'a TSObjectKeyword) = AstType::TSObjectKeyword as u8,
-    TSBigIntKeyword(&'a TSBigIntKeyword) = AstType::TSBigIntKeyword as u8,
+    TSAnyKeyword(&'a TSAnyKeyword<'a>) = AstType::TSAnyKeyword as u8,
+    TSStringKeyword(&'a TSStringKeyword<'a>) = AstType::TSStringKeyword as u8,
+    TSBooleanKeyword(&'a TSBooleanKeyword<'a>) = AstType::TSBooleanKeyword as u8,
+    TSNumberKeyword(&'a TSNumberKeyword<'a>) = AstType::TSNumberKeyword as u8,
+    TSNeverKeyword(&'a TSNeverKeyword<'a>) = AstType::TSNeverKeyword as u8,
+    TSIntrinsicKeyword(&'a TSIntrinsicKeyword<'a>) = AstType::TSIntrinsicKeyword as u8,
+    TSUnknownKeyword(&'a TSUnknownKeyword<'a>) = AstType::TSUnknownKeyword as u8,
+    TSNullKeyword(&'a TSNullKeyword<'a>) = AstType::TSNullKeyword as u8,
+    TSUndefinedKeyword(&'a TSUndefinedKeyword<'a>) = AstType::TSUndefinedKeyword as u8,
+    TSVoidKeyword(&'a TSVoidKeyword<'a>) = AstType::TSVoidKeyword as u8,
+    TSSymbolKeyword(&'a TSSymbolKeyword<'a>) = AstType::TSSymbolKeyword as u8,
+    TSThisType(&'a TSThisType<'a>) = AstType::TSThisType as u8,
+    TSObjectKeyword(&'a TSObjectKeyword<'a>) = AstType::TSObjectKeyword as u8,
+    TSBigIntKeyword(&'a TSBigIntKeyword<'a>) = AstType::TSBigIntKeyword as u8,
     TSTypeReference(&'a TSTypeReference<'a>) = AstType::TSTypeReference as u8,
     TSTypeName(&'a TSTypeName<'a>) = AstType::TSTypeName as u8,
     TSQualifiedName(&'a TSQualifiedName<'a>) = AstType::TSQualifiedName as u8,
@@ -551,8 +552,181 @@ impl GetSpan for AstKind<'_> {
 }
 
 impl<'a> AstKind<'a> {
+    /// Get the parent node within the AST tree
+    pub fn get_parent(&self) -> Option<AstKind<'a>> {
+        match self {
+            Self::BooleanLiteral(it) => it.get_parent(),
+            Self::NullLiteral(it) => it.get_parent(),
+            Self::NumericLiteral(it) => it.get_parent(),
+            Self::StringLiteral(it) => it.get_parent(),
+            Self::BigIntLiteral(it) => it.get_parent(),
+            Self::RegExpLiteral(it) => it.get_parent(),
+            Self::Program(it) => it.get_parent(),
+            Self::IdentifierName(it) => it.get_parent(),
+            Self::IdentifierReference(it) => it.get_parent(),
+            Self::BindingIdentifier(it) => it.get_parent(),
+            Self::LabelIdentifier(it) => it.get_parent(),
+            Self::ThisExpression(it) => it.get_parent(),
+            Self::ArrayExpression(it) => it.get_parent(),
+            Self::ArrayExpressionElement(it) => it.get_parent(),
+            Self::Elision(it) => it.get_parent(),
+            Self::ObjectExpression(it) => it.get_parent(),
+            Self::ObjectProperty(it) => it.get_parent(),
+            Self::PropertyKey(it) => it.get_parent(),
+            Self::TemplateLiteral(it) => it.get_parent(),
+            Self::TaggedTemplateExpression(it) => it.get_parent(),
+            Self::MemberExpression(it) => it.get_parent(),
+            Self::CallExpression(it) => it.get_parent(),
+            Self::NewExpression(it) => it.get_parent(),
+            Self::MetaProperty(it) => it.get_parent(),
+            Self::SpreadElement(it) => it.get_parent(),
+            Self::Argument(it) => it.get_parent(),
+            Self::UpdateExpression(it) => it.get_parent(),
+            Self::UnaryExpression(it) => it.get_parent(),
+            Self::BinaryExpression(it) => it.get_parent(),
+            Self::PrivateInExpression(it) => it.get_parent(),
+            Self::LogicalExpression(it) => it.get_parent(),
+            Self::ConditionalExpression(it) => it.get_parent(),
+            Self::AssignmentExpression(it) => it.get_parent(),
+            Self::AssignmentTarget(it) => it.get_parent(),
+            Self::SimpleAssignmentTarget(it) => it.get_parent(),
+            Self::AssignmentTargetPattern(it) => it.get_parent(),
+            Self::ArrayAssignmentTarget(it) => it.get_parent(),
+            Self::ObjectAssignmentTarget(it) => it.get_parent(),
+            Self::AssignmentTargetWithDefault(it) => it.get_parent(),
+            Self::SequenceExpression(it) => it.get_parent(),
+            Self::Super(it) => it.get_parent(),
+            Self::AwaitExpression(it) => it.get_parent(),
+            Self::ChainExpression(it) => it.get_parent(),
+            Self::ParenthesizedExpression(it) => it.get_parent(),
+            Self::Directive(it) => it.get_parent(),
+            Self::Hashbang(it) => it.get_parent(),
+            Self::BlockStatement(it) => it.get_parent(),
+            Self::VariableDeclaration(it) => it.get_parent(),
+            Self::VariableDeclarator(it) => it.get_parent(),
+            Self::EmptyStatement(it) => it.get_parent(),
+            Self::ExpressionStatement(it) => it.get_parent(),
+            Self::IfStatement(it) => it.get_parent(),
+            Self::DoWhileStatement(it) => it.get_parent(),
+            Self::WhileStatement(it) => it.get_parent(),
+            Self::ForStatement(it) => it.get_parent(),
+            Self::ForStatementInit(it) => it.get_parent(),
+            Self::ForInStatement(it) => it.get_parent(),
+            Self::ForOfStatement(it) => it.get_parent(),
+            Self::ContinueStatement(it) => it.get_parent(),
+            Self::BreakStatement(it) => it.get_parent(),
+            Self::ReturnStatement(it) => it.get_parent(),
+            Self::WithStatement(it) => it.get_parent(),
+            Self::SwitchStatement(it) => it.get_parent(),
+            Self::SwitchCase(it) => it.get_parent(),
+            Self::LabeledStatement(it) => it.get_parent(),
+            Self::ThrowStatement(it) => it.get_parent(),
+            Self::TryStatement(it) => it.get_parent(),
+            Self::CatchClause(it) => it.get_parent(),
+            Self::CatchParameter(it) => it.get_parent(),
+            Self::DebuggerStatement(it) => it.get_parent(),
+            Self::AssignmentPattern(it) => it.get_parent(),
+            Self::ObjectPattern(it) => it.get_parent(),
+            Self::ArrayPattern(it) => it.get_parent(),
+            Self::BindingRestElement(it) => it.get_parent(),
+            Self::Function(it) => it.get_parent(),
+            Self::FormalParameters(it) => it.get_parent(),
+            Self::FormalParameter(it) => it.get_parent(),
+            Self::FunctionBody(it) => it.get_parent(),
+            Self::ArrowFunctionExpression(it) => it.get_parent(),
+            Self::YieldExpression(it) => it.get_parent(),
+            Self::Class(it) => it.get_parent(),
+            Self::ClassBody(it) => it.get_parent(),
+            Self::MethodDefinition(it) => it.get_parent(),
+            Self::PropertyDefinition(it) => it.get_parent(),
+            Self::PrivateIdentifier(it) => it.get_parent(),
+            Self::StaticBlock(it) => it.get_parent(),
+            Self::ModuleDeclaration(it) => it.get_parent(),
+            Self::ImportExpression(it) => it.get_parent(),
+            Self::ImportDeclaration(it) => it.get_parent(),
+            Self::ImportSpecifier(it) => it.get_parent(),
+            Self::ImportDefaultSpecifier(it) => it.get_parent(),
+            Self::ImportNamespaceSpecifier(it) => it.get_parent(),
+            Self::ExportNamedDeclaration(it) => it.get_parent(),
+            Self::ExportDefaultDeclaration(it) => it.get_parent(),
+            Self::ExportAllDeclaration(it) => it.get_parent(),
+            Self::ExportSpecifier(it) => it.get_parent(),
+            Self::TSThisParameter(it) => it.get_parent(),
+            Self::TSEnumDeclaration(it) => it.get_parent(),
+            Self::TSEnumMember(it) => it.get_parent(),
+            Self::TSTypeAnnotation(it) => it.get_parent(),
+            Self::TSLiteralType(it) => it.get_parent(),
+            Self::TSConditionalType(it) => it.get_parent(),
+            Self::TSUnionType(it) => it.get_parent(),
+            Self::TSIntersectionType(it) => it.get_parent(),
+            Self::TSParenthesizedType(it) => it.get_parent(),
+            Self::TSIndexedAccessType(it) => it.get_parent(),
+            Self::TSNamedTupleMember(it) => it.get_parent(),
+            Self::TSAnyKeyword(it) => it.get_parent(),
+            Self::TSStringKeyword(it) => it.get_parent(),
+            Self::TSBooleanKeyword(it) => it.get_parent(),
+            Self::TSNumberKeyword(it) => it.get_parent(),
+            Self::TSNeverKeyword(it) => it.get_parent(),
+            Self::TSIntrinsicKeyword(it) => it.get_parent(),
+            Self::TSUnknownKeyword(it) => it.get_parent(),
+            Self::TSNullKeyword(it) => it.get_parent(),
+            Self::TSUndefinedKeyword(it) => it.get_parent(),
+            Self::TSVoidKeyword(it) => it.get_parent(),
+            Self::TSSymbolKeyword(it) => it.get_parent(),
+            Self::TSThisType(it) => it.get_parent(),
+            Self::TSObjectKeyword(it) => it.get_parent(),
+            Self::TSBigIntKeyword(it) => it.get_parent(),
+            Self::TSTypeReference(it) => it.get_parent(),
+            Self::TSTypeName(it) => it.get_parent(),
+            Self::TSQualifiedName(it) => it.get_parent(),
+            Self::TSTypeParameterInstantiation(it) => it.get_parent(),
+            Self::TSTypeParameter(it) => it.get_parent(),
+            Self::TSTypeParameterDeclaration(it) => it.get_parent(),
+            Self::TSTypeAliasDeclaration(it) => it.get_parent(),
+            Self::TSClassImplements(it) => it.get_parent(),
+            Self::TSInterfaceDeclaration(it) => it.get_parent(),
+            Self::TSPropertySignature(it) => it.get_parent(),
+            Self::TSMethodSignature(it) => it.get_parent(),
+            Self::TSConstructSignatureDeclaration(it) => it.get_parent(),
+            Self::TSInterfaceHeritage(it) => it.get_parent(),
+            Self::TSModuleDeclaration(it) => it.get_parent(),
+            Self::TSModuleBlock(it) => it.get_parent(),
+            Self::TSTypeLiteral(it) => it.get_parent(),
+            Self::TSInferType(it) => it.get_parent(),
+            Self::TSTypeQuery(it) => it.get_parent(),
+            Self::TSImportType(it) => it.get_parent(),
+            Self::TSMappedType(it) => it.get_parent(),
+            Self::TSTemplateLiteralType(it) => it.get_parent(),
+            Self::TSAsExpression(it) => it.get_parent(),
+            Self::TSSatisfiesExpression(it) => it.get_parent(),
+            Self::TSTypeAssertion(it) => it.get_parent(),
+            Self::TSImportEqualsDeclaration(it) => it.get_parent(),
+            Self::TSModuleReference(it) => it.get_parent(),
+            Self::TSExternalModuleReference(it) => it.get_parent(),
+            Self::TSNonNullExpression(it) => it.get_parent(),
+            Self::Decorator(it) => it.get_parent(),
+            Self::TSExportAssignment(it) => it.get_parent(),
+            Self::TSInstantiationExpression(it) => it.get_parent(),
+            Self::JSXElement(it) => it.get_parent(),
+            Self::JSXOpeningElement(it) => it.get_parent(),
+            Self::JSXClosingElement(it) => it.get_parent(),
+            Self::JSXFragment(it) => it.get_parent(),
+            Self::JSXElementName(it) => it.get_parent(),
+            Self::JSXNamespacedName(it) => it.get_parent(),
+            Self::JSXMemberExpression(it) => it.get_parent(),
+            Self::JSXMemberExpressionObject(it) => it.get_parent(),
+            Self::JSXExpressionContainer(it) => it.get_parent(),
+            Self::JSXAttributeItem(it) => it.get_parent(),
+            Self::JSXSpreadAttribute(it) => it.get_parent(),
+            Self::JSXIdentifier(it) => it.get_parent(),
+            Self::JSXText(it) => it.get_parent(),
+        }
+    }
+}
+
+impl<'a> AstKind<'a> {
     #[inline]
-    pub fn as_boolean_literal(self) -> Option<&'a BooleanLiteral> {
+    pub fn as_boolean_literal(self) -> Option<&'a BooleanLiteral<'a>> {
         if let Self::BooleanLiteral(v) = self {
             Some(v)
         } else {
@@ -561,7 +735,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_null_literal(self) -> Option<&'a NullLiteral> {
+    pub fn as_null_literal(self) -> Option<&'a NullLiteral<'a>> {
         if let Self::NullLiteral(v) = self {
             Some(v)
         } else {
@@ -651,7 +825,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_this_expression(self) -> Option<&'a ThisExpression> {
+    pub fn as_this_expression(self) -> Option<&'a ThisExpression<'a>> {
         if let Self::ThisExpression(v) = self {
             Some(v)
         } else {
@@ -678,7 +852,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_elision(self) -> Option<&'a Elision> {
+    pub fn as_elision(self) -> Option<&'a Elision<'a>> {
         if let Self::Elision(v) = self {
             Some(v)
         } else {
@@ -912,7 +1086,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_super(self) -> Option<&'a Super> {
+    pub fn as_super(self) -> Option<&'a Super<'a>> {
         if let Self::Super(v) = self {
             Some(v)
         } else {
@@ -993,7 +1167,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_empty_statement(self) -> Option<&'a EmptyStatement> {
+    pub fn as_empty_statement(self) -> Option<&'a EmptyStatement<'a>> {
         if let Self::EmptyStatement(v) = self {
             Some(v)
         } else {
@@ -1173,7 +1347,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_debugger_statement(self) -> Option<&'a DebuggerStatement> {
+    pub fn as_debugger_statement(self) -> Option<&'a DebuggerStatement<'a>> {
         if let Self::DebuggerStatement(v) = self {
             Some(v)
         } else {
@@ -1515,7 +1689,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_any_keyword(self) -> Option<&'a TSAnyKeyword> {
+    pub fn as_ts_any_keyword(self) -> Option<&'a TSAnyKeyword<'a>> {
         if let Self::TSAnyKeyword(v) = self {
             Some(v)
         } else {
@@ -1524,7 +1698,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_string_keyword(self) -> Option<&'a TSStringKeyword> {
+    pub fn as_ts_string_keyword(self) -> Option<&'a TSStringKeyword<'a>> {
         if let Self::TSStringKeyword(v) = self {
             Some(v)
         } else {
@@ -1533,7 +1707,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_boolean_keyword(self) -> Option<&'a TSBooleanKeyword> {
+    pub fn as_ts_boolean_keyword(self) -> Option<&'a TSBooleanKeyword<'a>> {
         if let Self::TSBooleanKeyword(v) = self {
             Some(v)
         } else {
@@ -1542,7 +1716,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_number_keyword(self) -> Option<&'a TSNumberKeyword> {
+    pub fn as_ts_number_keyword(self) -> Option<&'a TSNumberKeyword<'a>> {
         if let Self::TSNumberKeyword(v) = self {
             Some(v)
         } else {
@@ -1551,7 +1725,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_never_keyword(self) -> Option<&'a TSNeverKeyword> {
+    pub fn as_ts_never_keyword(self) -> Option<&'a TSNeverKeyword<'a>> {
         if let Self::TSNeverKeyword(v) = self {
             Some(v)
         } else {
@@ -1560,7 +1734,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_intrinsic_keyword(self) -> Option<&'a TSIntrinsicKeyword> {
+    pub fn as_ts_intrinsic_keyword(self) -> Option<&'a TSIntrinsicKeyword<'a>> {
         if let Self::TSIntrinsicKeyword(v) = self {
             Some(v)
         } else {
@@ -1569,7 +1743,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_unknown_keyword(self) -> Option<&'a TSUnknownKeyword> {
+    pub fn as_ts_unknown_keyword(self) -> Option<&'a TSUnknownKeyword<'a>> {
         if let Self::TSUnknownKeyword(v) = self {
             Some(v)
         } else {
@@ -1578,7 +1752,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_null_keyword(self) -> Option<&'a TSNullKeyword> {
+    pub fn as_ts_null_keyword(self) -> Option<&'a TSNullKeyword<'a>> {
         if let Self::TSNullKeyword(v) = self {
             Some(v)
         } else {
@@ -1587,7 +1761,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_undefined_keyword(self) -> Option<&'a TSUndefinedKeyword> {
+    pub fn as_ts_undefined_keyword(self) -> Option<&'a TSUndefinedKeyword<'a>> {
         if let Self::TSUndefinedKeyword(v) = self {
             Some(v)
         } else {
@@ -1596,7 +1770,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_void_keyword(self) -> Option<&'a TSVoidKeyword> {
+    pub fn as_ts_void_keyword(self) -> Option<&'a TSVoidKeyword<'a>> {
         if let Self::TSVoidKeyword(v) = self {
             Some(v)
         } else {
@@ -1605,7 +1779,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_symbol_keyword(self) -> Option<&'a TSSymbolKeyword> {
+    pub fn as_ts_symbol_keyword(self) -> Option<&'a TSSymbolKeyword<'a>> {
         if let Self::TSSymbolKeyword(v) = self {
             Some(v)
         } else {
@@ -1614,7 +1788,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_this_type(self) -> Option<&'a TSThisType> {
+    pub fn as_ts_this_type(self) -> Option<&'a TSThisType<'a>> {
         if let Self::TSThisType(v) = self {
             Some(v)
         } else {
@@ -1623,7 +1797,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_object_keyword(self) -> Option<&'a TSObjectKeyword> {
+    pub fn as_ts_object_keyword(self) -> Option<&'a TSObjectKeyword<'a>> {
         if let Self::TSObjectKeyword(v) = self {
             Some(v)
         } else {
@@ -1632,7 +1806,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_big_int_keyword(self) -> Option<&'a TSBigIntKeyword> {
+    pub fn as_ts_big_int_keyword(self) -> Option<&'a TSBigIntKeyword<'a>> {
         if let Self::TSBigIntKeyword(v) = self {
             Some(v)
         } else {

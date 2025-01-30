@@ -13,14 +13,14 @@ use crate::ast::literal::*;
 
 use crate::ast::ts::*;
 
-impl GetSpanMut for BooleanLiteral {
+impl GetSpanMut for BooleanLiteral<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for NullLiteral {
+impl GetSpanMut for NullLiteral<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -139,7 +139,7 @@ impl GetSpanMut for LabelIdentifier<'_> {
     }
 }
 
-impl GetSpanMut for ThisExpression {
+impl GetSpanMut for ThisExpression<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -204,7 +204,7 @@ impl GetSpanMut for ArrayExpressionElement<'_> {
     }
 }
 
-impl GetSpanMut for Elision {
+impl GetSpanMut for Elision<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -584,7 +584,7 @@ impl GetSpanMut for SequenceExpression<'_> {
     }
 }
 
-impl GetSpanMut for Super {
+impl GetSpanMut for Super<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -713,7 +713,7 @@ impl GetSpanMut for VariableDeclarator<'_> {
     }
 }
 
-impl GetSpanMut for EmptyStatement {
+impl GetSpanMut for EmptyStatement<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -915,7 +915,7 @@ impl GetSpanMut for CatchParameter<'_> {
     }
 }
 
-impl GetSpanMut for DebuggerStatement {
+impl GetSpanMut for DebuggerStatement<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -1477,98 +1477,98 @@ impl GetSpanMut for TSTupleElement<'_> {
     }
 }
 
-impl GetSpanMut for TSAnyKeyword {
+impl GetSpanMut for TSAnyKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSStringKeyword {
+impl GetSpanMut for TSStringKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSBooleanKeyword {
+impl GetSpanMut for TSBooleanKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSNumberKeyword {
+impl GetSpanMut for TSNumberKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSNeverKeyword {
+impl GetSpanMut for TSNeverKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSIntrinsicKeyword {
+impl GetSpanMut for TSIntrinsicKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSUnknownKeyword {
+impl GetSpanMut for TSUnknownKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSNullKeyword {
+impl GetSpanMut for TSNullKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSUndefinedKeyword {
+impl GetSpanMut for TSUndefinedKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSVoidKeyword {
+impl GetSpanMut for TSVoidKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSSymbolKeyword {
+impl GetSpanMut for TSSymbolKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSThisType {
+impl GetSpanMut for TSThisType<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSObjectKeyword {
+impl GetSpanMut for TSObjectKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for TSBigIntKeyword {
+impl GetSpanMut for TSBigIntKeyword<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -1939,7 +1939,7 @@ impl GetSpanMut for JSDocNonNullableType<'_> {
     }
 }
 
-impl GetSpanMut for JSDocUnknownType {
+impl GetSpanMut for JSDocUnknownType<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -1974,14 +1974,14 @@ impl GetSpanMut for JSXFragment<'_> {
     }
 }
 
-impl GetSpanMut for JSXOpeningFragment {
+impl GetSpanMut for JSXOpeningFragment<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
     }
 }
 
-impl GetSpanMut for JSXClosingFragment {
+impl GetSpanMut for JSXClosingFragment<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -2081,7 +2081,7 @@ impl GetSpanMut for JSXExpression<'_> {
     }
 }
 
-impl GetSpanMut for JSXEmptyExpression {
+impl GetSpanMut for JSXEmptyExpression<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
