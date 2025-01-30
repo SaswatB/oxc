@@ -120,6 +120,16 @@ impl Generator for AstKindGenerator {
             .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_parent()))
             .collect_vec();
 
+        let set_parent_matches: Vec<Arm> = have_kinds
+            .iter()
+            .map(|(ident, _)| {
+                parse_quote!(Self :: #ident(it) => {
+                    let it_mut = unsafe { &mut *(it as *const _ as *mut #ident) };
+                    it_mut.set_parent(new_parent)
+                })
+            })
+            .collect_vec();
+
         let as_ast_kind_impls: Vec<ImplItemFn> = have_kinds
             .iter()
             .map(|(ident, typ)| {
@@ -194,10 +204,14 @@ impl Generator for AstKindGenerator {
 
                 ///@@line_break
                 impl<'a> AstKind<'a> {
-                    /// Get the parent node within the AST tree
                     pub fn get_parent(&self) -> Option<AstKind<'a>> {
                         match self {
                             #(#parent_matches),*,
+                        }
+                    }
+                    pub fn set_parent(&mut self, new_parent: AstKind<'a>) {
+                        match self {
+                            #(#set_parent_matches),*,
                         }
                     }
                 }
