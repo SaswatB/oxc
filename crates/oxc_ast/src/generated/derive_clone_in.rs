@@ -1889,6 +1889,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for BindingPattern<'_> {
     type Cloned = BindingPattern<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         BindingPattern {
+            parent: Default::default(),
             kind: CloneIn::clone_in(&self.kind, allocator),
             type_annotation: CloneIn::clone_in(&self.type_annotation, allocator),
             optional: CloneIn::clone_in(&self.optional, allocator),

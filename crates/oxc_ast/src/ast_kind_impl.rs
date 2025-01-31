@@ -169,6 +169,394 @@ impl<'a> AstKind<'a> {
             Expression::TSInstantiationExpression(e) => Self::TSInstantiationExpression(e),
         }
     }
+
+    pub fn from_statement(s: &'a Statement<'a>) -> Self {
+        match s {
+            Statement::BlockStatement(s) => Self::BlockStatement(s),
+            Statement::BreakStatement(s) => Self::BreakStatement(s),
+            Statement::ContinueStatement(s) => Self::ContinueStatement(s),
+            Statement::DebuggerStatement(s) => Self::DebuggerStatement(s),
+            Statement::DoWhileStatement(s) => Self::DoWhileStatement(s),
+            Statement::EmptyStatement(s) => Self::EmptyStatement(s),
+            Statement::ExpressionStatement(s) => Self::ExpressionStatement(s),
+            Statement::ForInStatement(s) => Self::ForInStatement(s),
+            Statement::ForOfStatement(s) => Self::ForOfStatement(s),
+            Statement::ForStatement(s) => Self::ForStatement(s),
+            Statement::IfStatement(s) => Self::IfStatement(s),
+            Statement::LabeledStatement(s) => Self::LabeledStatement(s),
+            Statement::ReturnStatement(s) => Self::ReturnStatement(s),
+            Statement::SwitchStatement(s) => Self::SwitchStatement(s),
+            Statement::ThrowStatement(s) => Self::ThrowStatement(s),
+            Statement::TryStatement(s) => Self::TryStatement(s),
+            Statement::WhileStatement(s) => Self::WhileStatement(s),
+            Statement::WithStatement(s) => Self::WithStatement(s),
+
+            Statement::VariableDeclaration(s) => Self::VariableDeclaration(s),
+            Statement::FunctionDeclaration(s) => Self::Function(s),
+            Statement::ClassDeclaration(s) => Self::Class(s),
+            Statement::TSTypeAliasDeclaration(s) => Self::TSTypeAliasDeclaration(s),
+            Statement::TSInterfaceDeclaration(s) => Self::TSInterfaceDeclaration(s),
+            Statement::TSEnumDeclaration(s) => Self::TSEnumDeclaration(s),
+            Statement::TSModuleDeclaration(s) => Self::TSModuleDeclaration(s),
+            Statement::TSImportEqualsDeclaration(s) => Self::TSImportEqualsDeclaration(s),
+
+            Statement::ImportDeclaration(s) => Self::ImportDeclaration(s),
+            Statement::ExportAllDeclaration(s) => Self::ExportAllDeclaration(s),
+            Statement::ExportDefaultDeclaration(s) => Self::ExportDefaultDeclaration(s),
+            Statement::ExportNamedDeclaration(s) => Self::ExportNamedDeclaration(s),
+            Statement::TSExportAssignment(s) => Self::TSExportAssignment(s),
+            Statement::TSNamespaceExportDeclaration(s) => Self::TSNamespaceExportDeclaration(s),
+        }
+    }
+
+    pub fn from_binding_pattern_kind(b: &'a BindingPatternKind<'a>) -> Self {
+        match b {
+            BindingPatternKind::BindingIdentifier(b) => Self::BindingIdentifier(b),
+            BindingPatternKind::ObjectPattern(b) => Self::ObjectPattern(b),
+            BindingPatternKind::ArrayPattern(b) => Self::ArrayPattern(b),
+            BindingPatternKind::AssignmentPattern(b) => Self::AssignmentPattern(b),
+        }
+    }
+
+    pub fn from_chain_element(c: &'a ChainElement<'a>) -> Self {
+        match c {
+            ChainElement::CallExpression(c) => Self::CallExpression(c),
+            ChainElement::TSNonNullExpression(c) => Self::TSNonNullExpression(c),
+            ChainElement::ComputedMemberExpression(c) => Self::ComputedMemberExpression(c),
+            ChainElement::StaticMemberExpression(c) => Self::StaticMemberExpression(c),
+            ChainElement::PrivateFieldExpression(c) => Self::PrivateFieldExpression(c),
+        }
+    }
+
+    pub fn from_module_export_name(m: &'a ModuleExportName<'a>) -> Self {
+        match m {
+            ModuleExportName::IdentifierName(m) => Self::IdentifierName(m),
+            ModuleExportName::IdentifierReference(m) => Self::IdentifierReference(m),
+            ModuleExportName::StringLiteral(m) => Self::StringLiteral(m),
+        }
+    }
+
+    pub fn from_assignment_target_maybe_default(a: &'a AssignmentTargetMaybeDefault<'a>) -> Self {
+        match a {
+            AssignmentTargetMaybeDefault::AssignmentTargetWithDefault(a) => {
+                Self::AssignmentTargetWithDefault(a)
+            }
+            AssignmentTargetMaybeDefault::AssignmentTargetIdentifier(a) => {
+                Self::IdentifierReference(a)
+            }
+            AssignmentTargetMaybeDefault::TSAsExpression(a) => Self::TSAsExpression(a),
+            AssignmentTargetMaybeDefault::TSSatisfiesExpression(a) => {
+                Self::TSSatisfiesExpression(a)
+            }
+            AssignmentTargetMaybeDefault::TSNonNullExpression(a) => Self::TSNonNullExpression(a),
+            AssignmentTargetMaybeDefault::TSTypeAssertion(a) => Self::TSTypeAssertion(a),
+            AssignmentTargetMaybeDefault::TSInstantiationExpression(a) => {
+                Self::TSInstantiationExpression(a)
+            }
+            AssignmentTargetMaybeDefault::ComputedMemberExpression(a) => {
+                Self::ComputedMemberExpression(a)
+            }
+            AssignmentTargetMaybeDefault::StaticMemberExpression(a) => {
+                Self::StaticMemberExpression(a)
+            }
+            AssignmentTargetMaybeDefault::PrivateFieldExpression(a) => {
+                Self::PrivateFieldExpression(a)
+            }
+            AssignmentTargetMaybeDefault::ArrayAssignmentTarget(a) => {
+                Self::ArrayAssignmentTarget(a)
+            }
+            AssignmentTargetMaybeDefault::ObjectAssignmentTarget(a) => {
+                Self::ObjectAssignmentTarget(a)
+            }
+        }
+    }
+
+    pub fn from_for_statement_left(f: &'a ForStatementLeft<'a>) -> Self {
+        match f {
+            ForStatementLeft::VariableDeclaration(f) => Self::VariableDeclaration(f),
+
+            ForStatementLeft::AssignmentTargetIdentifier(a) => Self::IdentifierReference(a),
+            ForStatementLeft::TSAsExpression(a) => Self::TSAsExpression(a),
+            ForStatementLeft::TSSatisfiesExpression(a) => Self::TSSatisfiesExpression(a),
+            ForStatementLeft::TSNonNullExpression(a) => Self::TSNonNullExpression(a),
+            ForStatementLeft::TSTypeAssertion(a) => Self::TSTypeAssertion(a),
+            ForStatementLeft::TSInstantiationExpression(a) => Self::TSInstantiationExpression(a),
+            ForStatementLeft::ComputedMemberExpression(a) => Self::ComputedMemberExpression(a),
+            ForStatementLeft::StaticMemberExpression(a) => Self::StaticMemberExpression(a),
+            ForStatementLeft::PrivateFieldExpression(a) => Self::PrivateFieldExpression(a),
+            ForStatementLeft::ArrayAssignmentTarget(a) => Self::ArrayAssignmentTarget(a),
+            ForStatementLeft::ObjectAssignmentTarget(a) => Self::ObjectAssignmentTarget(a),
+        }
+    }
+
+    pub fn from_import_attribute_key(k: &'a ImportAttributeKey<'a>) -> Self {
+        match k {
+            ImportAttributeKey::Identifier(k) => Self::IdentifierName(k),
+            ImportAttributeKey::StringLiteral(k) => Self::StringLiteral(k),
+        }
+    }
+
+    pub fn from_export_default_declaration_kind(e: &'a ExportDefaultDeclarationKind<'a>) -> Self {
+        match e {
+            ExportDefaultDeclarationKind::FunctionDeclaration(e) => Self::Function(e),
+            ExportDefaultDeclarationKind::ClassDeclaration(e) => Self::Class(e),
+            ExportDefaultDeclarationKind::TSInterfaceDeclaration(e) => {
+                Self::TSInterfaceDeclaration(e)
+            }
+            ExportDefaultDeclarationKind::BooleanLiteral(e) => Self::BooleanLiteral(e),
+            ExportDefaultDeclarationKind::NullLiteral(e) => Self::NullLiteral(e),
+            ExportDefaultDeclarationKind::NumericLiteral(e) => Self::NumericLiteral(e),
+            ExportDefaultDeclarationKind::BigIntLiteral(e) => Self::BigIntLiteral(e),
+            ExportDefaultDeclarationKind::RegExpLiteral(e) => Self::RegExpLiteral(e),
+            ExportDefaultDeclarationKind::StringLiteral(e) => Self::StringLiteral(e),
+            ExportDefaultDeclarationKind::TemplateLiteral(e) => Self::TemplateLiteral(e),
+            ExportDefaultDeclarationKind::Identifier(e) => Self::IdentifierReference(e),
+            ExportDefaultDeclarationKind::MetaProperty(e) => Self::MetaProperty(e),
+            ExportDefaultDeclarationKind::Super(e) => Self::Super(e),
+            ExportDefaultDeclarationKind::ArrayExpression(e) => Self::ArrayExpression(e),
+            ExportDefaultDeclarationKind::ArrowFunctionExpression(e) => {
+                Self::ArrowFunctionExpression(e)
+            }
+            ExportDefaultDeclarationKind::AssignmentExpression(e) => Self::AssignmentExpression(e),
+            ExportDefaultDeclarationKind::AwaitExpression(e) => Self::AwaitExpression(e),
+            ExportDefaultDeclarationKind::BinaryExpression(e) => Self::BinaryExpression(e),
+            ExportDefaultDeclarationKind::CallExpression(e) => Self::CallExpression(e),
+            ExportDefaultDeclarationKind::ChainExpression(e) => Self::ChainExpression(e),
+            ExportDefaultDeclarationKind::ClassExpression(e) => Self::Class(e),
+            ExportDefaultDeclarationKind::ConditionalExpression(e) => {
+                Self::ConditionalExpression(e)
+            }
+            ExportDefaultDeclarationKind::FunctionExpression(e) => Self::Function(e),
+            ExportDefaultDeclarationKind::ImportExpression(e) => Self::ImportExpression(e),
+            ExportDefaultDeclarationKind::LogicalExpression(e) => Self::LogicalExpression(e),
+            ExportDefaultDeclarationKind::NewExpression(e) => Self::NewExpression(e),
+            ExportDefaultDeclarationKind::ObjectExpression(e) => Self::ObjectExpression(e),
+            ExportDefaultDeclarationKind::ParenthesizedExpression(e) => {
+                Self::ParenthesizedExpression(e)
+            }
+            ExportDefaultDeclarationKind::SequenceExpression(e) => Self::SequenceExpression(e),
+            ExportDefaultDeclarationKind::TaggedTemplateExpression(e) => {
+                Self::TaggedTemplateExpression(e)
+            }
+            ExportDefaultDeclarationKind::ThisExpression(e) => Self::ThisExpression(e),
+            ExportDefaultDeclarationKind::UnaryExpression(e) => Self::UnaryExpression(e),
+            ExportDefaultDeclarationKind::UpdateExpression(e) => Self::UpdateExpression(e),
+            ExportDefaultDeclarationKind::YieldExpression(e) => Self::YieldExpression(e),
+            ExportDefaultDeclarationKind::PrivateInExpression(e) => Self::PrivateInExpression(e),
+            ExportDefaultDeclarationKind::JSXElement(e) => Self::JSXElement(e),
+            ExportDefaultDeclarationKind::JSXFragment(e) => Self::JSXFragment(e),
+            ExportDefaultDeclarationKind::TSAsExpression(e) => Self::TSAsExpression(e),
+            ExportDefaultDeclarationKind::TSSatisfiesExpression(e) => {
+                Self::TSSatisfiesExpression(e)
+            }
+            ExportDefaultDeclarationKind::TSTypeAssertion(e) => Self::TSTypeAssertion(e),
+            ExportDefaultDeclarationKind::TSNonNullExpression(e) => Self::TSNonNullExpression(e),
+            ExportDefaultDeclarationKind::TSInstantiationExpression(e) => {
+                Self::TSInstantiationExpression(e)
+            }
+            ExportDefaultDeclarationKind::ComputedMemberExpression(e) => {
+                Self::ComputedMemberExpression(e)
+            }
+            ExportDefaultDeclarationKind::StaticMemberExpression(e) => {
+                Self::StaticMemberExpression(e)
+            }
+            ExportDefaultDeclarationKind::PrivateFieldExpression(e) => {
+                Self::PrivateFieldExpression(e)
+            }
+        }
+    }
+
+    pub fn from_jsx_attribute_name(j: &'a JSXAttributeName<'a>) -> Self {
+        match j {
+            JSXAttributeName::Identifier(j) => Self::JSXIdentifier(j),
+            JSXAttributeName::NamespacedName(j) => Self::JSXNamespacedName(j),
+        }
+    }
+
+    pub fn from_jsx_expression(j: &'a JSXExpression<'a>) -> Self {
+        match j {
+            JSXExpression::EmptyExpression(j) => Self::JSXEmptyExpression(j),
+            JSXExpression::BooleanLiteral(j) => Self::BooleanLiteral(j),
+            JSXExpression::NullLiteral(j) => Self::NullLiteral(j),
+            JSXExpression::NumericLiteral(j) => Self::NumericLiteral(j),
+            JSXExpression::BigIntLiteral(j) => Self::BigIntLiteral(j),
+            JSXExpression::RegExpLiteral(j) => Self::RegExpLiteral(j),
+            JSXExpression::StringLiteral(j) => Self::StringLiteral(j),
+            JSXExpression::TemplateLiteral(j) => Self::TemplateLiteral(j),
+            JSXExpression::Identifier(j) => Self::IdentifierReference(j),
+            JSXExpression::MetaProperty(j) => Self::MetaProperty(j),
+            JSXExpression::Super(j) => Self::Super(j),
+            JSXExpression::ArrayExpression(j) => Self::ArrayExpression(j),
+            JSXExpression::ArrowFunctionExpression(j) => Self::ArrowFunctionExpression(j),
+            JSXExpression::AssignmentExpression(j) => Self::AssignmentExpression(j),
+            JSXExpression::AwaitExpression(j) => Self::AwaitExpression(j),
+            JSXExpression::BinaryExpression(j) => Self::BinaryExpression(j),
+            JSXExpression::CallExpression(j) => Self::CallExpression(j),
+            JSXExpression::ChainExpression(j) => Self::ChainExpression(j),
+            JSXExpression::ClassExpression(j) => Self::Class(j),
+            JSXExpression::ConditionalExpression(j) => Self::ConditionalExpression(j),
+            JSXExpression::FunctionExpression(j) => Self::Function(j),
+            JSXExpression::ImportExpression(j) => Self::ImportExpression(j),
+            JSXExpression::LogicalExpression(j) => Self::LogicalExpression(j),
+            JSXExpression::NewExpression(j) => Self::NewExpression(j),
+            JSXExpression::ObjectExpression(j) => Self::ObjectExpression(j),
+            JSXExpression::ParenthesizedExpression(j) => Self::ParenthesizedExpression(j),
+            JSXExpression::SequenceExpression(j) => Self::SequenceExpression(j),
+            JSXExpression::TaggedTemplateExpression(j) => Self::TaggedTemplateExpression(j),
+            JSXExpression::ThisExpression(j) => Self::ThisExpression(j),
+            JSXExpression::UnaryExpression(j) => Self::UnaryExpression(j),
+            JSXExpression::UpdateExpression(j) => Self::UpdateExpression(j),
+            JSXExpression::YieldExpression(j) => Self::YieldExpression(j),
+            JSXExpression::PrivateInExpression(j) => Self::PrivateInExpression(j),
+            JSXExpression::JSXElement(j) => Self::JSXElement(j),
+            JSXExpression::JSXFragment(j) => Self::JSXFragment(j),
+            JSXExpression::TSAsExpression(j) => Self::TSAsExpression(j),
+            JSXExpression::TSSatisfiesExpression(j) => Self::TSSatisfiesExpression(j),
+            JSXExpression::TSTypeAssertion(j) => Self::TSTypeAssertion(j),
+            JSXExpression::TSNonNullExpression(j) => Self::TSNonNullExpression(j),
+            JSXExpression::TSInstantiationExpression(j) => Self::TSInstantiationExpression(j),
+            JSXExpression::ComputedMemberExpression(j) => Self::ComputedMemberExpression(j),
+            JSXExpression::StaticMemberExpression(j) => Self::StaticMemberExpression(j),
+            JSXExpression::PrivateFieldExpression(j) => Self::PrivateFieldExpression(j),
+        }
+    }
+
+    pub fn from_ts_type(t: &'a TSType<'a>) -> Self {
+        match t {
+            TSType::TSAnyKeyword(t) => Self::TSAnyKeyword(t),
+            TSType::TSBigIntKeyword(t) => Self::TSBigIntKeyword(t),
+            TSType::TSBooleanKeyword(t) => Self::TSBooleanKeyword(t),
+            TSType::TSIntrinsicKeyword(t) => Self::TSIntrinsicKeyword(t),
+            TSType::TSNeverKeyword(t) => Self::TSNeverKeyword(t),
+            TSType::TSNullKeyword(t) => Self::TSNullKeyword(t),
+            TSType::TSNumberKeyword(t) => Self::TSNumberKeyword(t),
+            TSType::TSObjectKeyword(t) => Self::TSObjectKeyword(t),
+            TSType::TSStringKeyword(t) => Self::TSStringKeyword(t),
+            TSType::TSSymbolKeyword(t) => Self::TSSymbolKeyword(t),
+            TSType::TSUndefinedKeyword(t) => Self::TSUndefinedKeyword(t),
+            TSType::TSUnknownKeyword(t) => Self::TSUnknownKeyword(t),
+            TSType::TSVoidKeyword(t) => Self::TSVoidKeyword(t),
+            TSType::TSArrayType(t) => Self::TSArrayType(t),
+            TSType::TSConditionalType(t) => Self::TSConditionalType(t),
+            TSType::TSConstructorType(t) => Self::TSConstructorType(t),
+            TSType::TSFunctionType(t) => Self::TSFunctionType(t),
+            TSType::TSImportType(t) => Self::TSImportType(t),
+            TSType::TSIndexedAccessType(t) => Self::TSIndexedAccessType(t),
+            TSType::TSInferType(t) => Self::TSInferType(t),
+            TSType::TSIntersectionType(t) => Self::TSIntersectionType(t),
+            TSType::TSLiteralType(t) => Self::TSLiteralType(t),
+            TSType::TSMappedType(t) => Self::TSMappedType(t),
+            TSType::TSNamedTupleMember(t) => Self::TSNamedTupleMember(t),
+            TSType::TSQualifiedName(t) => Self::TSQualifiedName(t),
+            TSType::TSTemplateLiteralType(t) => Self::TSTemplateLiteralType(t),
+            TSType::TSThisType(t) => Self::TSThisType(t),
+            TSType::TSTupleType(t) => Self::TSTupleType(t),
+            TSType::TSTypeLiteral(t) => Self::TSTypeLiteral(t),
+            TSType::TSTypeOperatorType(t) => Self::TSTypeOperator(t),
+            TSType::TSTypePredicate(t) => Self::TSTypePredicate(t),
+            TSType::TSTypeQuery(t) => Self::TSTypeQuery(t),
+            TSType::TSTypeReference(t) => Self::TSTypeReference(t),
+            TSType::TSUnionType(t) => Self::TSUnionType(t),
+            TSType::TSParenthesizedType(t) => Self::TSParenthesizedType(t),
+            TSType::JSDocNullableType(t) => Self::JSDocNullableType(t),
+            TSType::JSDocNonNullableType(t) => Self::JSDocNonNullableType(t),
+            TSType::JSDocUnknownType(t) => Self::JSDocUnknownType(t),
+        }
+    }
+
+    pub fn from_ts_import_attribute_name(t: &'a TSImportAttributeName<'a>) -> Self {
+        match t {
+            TSImportAttributeName::Identifier(t) => Self::IdentifierName(t),
+            TSImportAttributeName::StringLiteral(t) => Self::StringLiteral(t),
+        }
+    }
+
+    pub fn from_ts_type_query_expr_name(t: &'a TSTypeQueryExprName<'a>) -> Self {
+        match t {
+            TSTypeQueryExprName::TSImportType(t) => Self::TSImportType(t),
+            TSTypeQueryExprName::IdentifierReference(t) => Self::IdentifierReference(t),
+            TSTypeQueryExprName::QualifiedName(t) => Self::TSQualifiedName(t),
+        }
+    }
+
+    pub fn from_ts_module_declaration_name(t: &'a TSModuleDeclarationName<'a>) -> Self {
+        match t {
+            TSModuleDeclarationName::Identifier(t) => Self::BindingIdentifier(t),
+            TSModuleDeclarationName::StringLiteral(t) => Self::StringLiteral(t),
+        }
+    }
+
+    pub fn from_ts_type_predicate_name(t: &'a TSTypePredicateName<'a>) -> Self {
+        match t {
+            TSTypePredicateName::Identifier(t) => Self::IdentifierName(t),
+            TSTypePredicateName::This(t) => Self::TSThisType(t),
+        }
+    }
+
+    pub fn from_ts_tuple_element(t: &'a TSTupleElement<'a>) -> Self {
+        match t {
+            TSTupleElement::TSOptionalType(t) => Self::TSOptionalType(t),
+            TSTupleElement::TSRestType(t) => Self::TSRestType(t),
+            TSTupleElement::TSAnyKeyword(t) => Self::TSAnyKeyword(t),
+            TSTupleElement::TSBigIntKeyword(t) => Self::TSBigIntKeyword(t),
+            TSTupleElement::TSBooleanKeyword(t) => Self::TSBooleanKeyword(t),
+            TSTupleElement::TSIntrinsicKeyword(t) => Self::TSIntrinsicKeyword(t),
+            TSTupleElement::TSNeverKeyword(t) => Self::TSNeverKeyword(t),
+            TSTupleElement::TSNullKeyword(t) => Self::TSNullKeyword(t),
+            TSTupleElement::TSNumberKeyword(t) => Self::TSNumberKeyword(t),
+            TSTupleElement::TSObjectKeyword(t) => Self::TSObjectKeyword(t),
+            TSTupleElement::TSStringKeyword(t) => Self::TSStringKeyword(t),
+            TSTupleElement::TSSymbolKeyword(t) => Self::TSSymbolKeyword(t),
+            TSTupleElement::TSUndefinedKeyword(t) => Self::TSUndefinedKeyword(t),
+            TSTupleElement::TSUnknownKeyword(t) => Self::TSUnknownKeyword(t),
+            TSTupleElement::TSVoidKeyword(t) => Self::TSVoidKeyword(t),
+            TSTupleElement::TSArrayType(t) => Self::TSArrayType(t),
+            TSTupleElement::TSConditionalType(t) => Self::TSConditionalType(t),
+            TSTupleElement::TSConstructorType(t) => Self::TSConstructorType(t),
+            TSTupleElement::TSFunctionType(t) => Self::TSFunctionType(t),
+            TSTupleElement::TSImportType(t) => Self::TSImportType(t),
+            TSTupleElement::TSIndexedAccessType(t) => Self::TSIndexedAccessType(t),
+            TSTupleElement::TSInferType(t) => Self::TSInferType(t),
+            TSTupleElement::TSIntersectionType(t) => Self::TSIntersectionType(t),
+            TSTupleElement::TSLiteralType(t) => Self::TSLiteralType(t),
+            TSTupleElement::TSMappedType(t) => Self::TSMappedType(t),
+            TSTupleElement::TSNamedTupleMember(t) => Self::TSNamedTupleMember(t),
+            TSTupleElement::TSQualifiedName(t) => Self::TSQualifiedName(t),
+            TSTupleElement::TSTemplateLiteralType(t) => Self::TSTemplateLiteralType(t),
+            TSTupleElement::TSThisType(t) => Self::TSThisType(t),
+            TSTupleElement::TSTupleType(t) => Self::TSTupleType(t),
+            TSTupleElement::TSTypeLiteral(t) => Self::TSTypeLiteral(t),
+            TSTupleElement::TSTypeOperatorType(t) => Self::TSTypeOperator(t),
+            TSTupleElement::TSTypePredicate(t) => Self::TSTypePredicate(t),
+            TSTupleElement::TSTypeQuery(t) => Self::TSTypeQuery(t),
+            TSTupleElement::TSTypeReference(t) => Self::TSTypeReference(t),
+            TSTupleElement::TSUnionType(t) => Self::TSUnionType(t),
+            TSTupleElement::TSParenthesizedType(t) => Self::TSParenthesizedType(t),
+            TSTupleElement::JSDocNullableType(t) => Self::JSDocNullableType(t),
+            TSTupleElement::JSDocNonNullableType(t) => Self::JSDocNonNullableType(t),
+            TSTupleElement::JSDocUnknownType(t) => Self::JSDocUnknownType(t),
+        }
+    }
+
+    pub fn from_ts_literal(t: &'a TSLiteral<'a>) -> Self {
+        match t {
+            TSLiteral::BooleanLiteral(t) => Self::BooleanLiteral(t),
+            TSLiteral::NullLiteral(t) => Self::NullLiteral(t),
+            TSLiteral::NumericLiteral(t) => Self::NumericLiteral(t),
+            TSLiteral::BigIntLiteral(t) => Self::BigIntLiteral(t),
+            TSLiteral::RegExpLiteral(t) => Self::RegExpLiteral(t),
+            TSLiteral::StringLiteral(t) => Self::StringLiteral(t),
+            TSLiteral::TemplateLiteral(t) => Self::TemplateLiteral(t),
+            TSLiteral::UnaryExpression(t) => Self::UnaryExpression(t),
+        }
+    }
+
+    pub fn from_ts_enum_member_name(t: &'a TSEnumMemberName<'a>) -> Self {
+        match t {
+            TSEnumMemberName::Identifier(t) => Self::IdentifierName(t),
+            TSEnumMemberName::String(t) => Self::StringLiteral(t),
+        }
+    }
 }
 
 impl AstKind<'_> {
@@ -200,6 +588,7 @@ impl AstKind<'_> {
             Self::BreakStatement(_) => "BreakStatement".into(),
             Self::ContinueStatement(_) => "ContinueStatement".into(),
             Self::DebuggerStatement(_) => "DebuggerStatement".into(),
+            Self::BindingPattern(_) => "BindingPattern".into(),
             Self::DoWhileStatement(_) => "DoWhileStatement".into(),
             Self::EmptyStatement(_) => "EmptyStatement".into(),
             Self::ExpressionStatement(_) => "ExpressionStatement".into(),
@@ -286,6 +675,9 @@ impl AstKind<'_> {
                 format!("ObjectProperty({})", p.key.name().unwrap_or(COMPUTED)).into()
             }
             Self::PropertyKey(p) => format!("PropertyKey({})", p.name().unwrap_or(COMPUTED)).into(),
+            Self::ComputedMemberExpression(_) => "ComputedMemberExpression".into(),
+            Self::StaticMemberExpression(_) => "StaticMemberExpression".into(),
+            Self::PrivateFieldExpression(_) => "PrivateFieldExpression".into(),
             Self::Argument(_) => "Argument".into(),
             Self::ArrayExpressionElement(_) => "ArrayExpressionElement".into(),
             Self::AssignmentTarget(_) => "AssignmentTarget".into(),
@@ -341,6 +733,7 @@ impl AstKind<'_> {
             Self::JSXSpreadAttribute(_) => "JSXSpreadAttribute".into(),
             Self::JSXText(_) => "JSXText".into(),
             Self::JSXExpressionContainer(_) => "JSXExpressionContainer".into(),
+            Self::JSXEmptyExpression(_) => "JSXEmptyExpression".into(),
             Self::JSXIdentifier(id) => format!("JSXIdentifier({id})").into(),
             Self::JSXMemberExpression(_) => "JSXMemberExpression".into(),
             Self::JSXMemberExpressionObject(_) => "JSXMemberExpressionObject".into(),
@@ -354,10 +747,14 @@ impl AstKind<'_> {
             Self::TSMethodSignature(_) => "TSMethodSignature".into(),
             Self::TSNullKeyword(_) => "TSNullKeyword".into(),
             Self::TSTypeLiteral(_) => "TSTypeLiteral".into(),
+            Self::TSTypeOperator(_) => "TSTypeOperator".into(),
             Self::TSTypeReference(t) => format!("TSTypeReference({})", t.type_name).into(),
             Self::TSUnionType(_) => "TSUnionType".into(),
             Self::TSParenthesizedType(_) => "TSParenthesizedType".into(),
             Self::TSVoidKeyword(_) => "TSVoidKeyword".into(),
+            Self::TSArrayType(_) => "TSArrayType".into(),
+            Self::TSConstructorType(_) => "TSConstructorType".into(),
+            Self::TSFunctionType(_) => "TSFunctionType".into(),
             Self::TSBigIntKeyword(_) => "TSBigIntKeyword".into(),
             Self::TSBooleanKeyword(_) => "TSBooleanKeyword".into(),
             Self::TSIntrinsicKeyword(_) => "TSIntrinsicKeyword".into(),
@@ -367,6 +764,9 @@ impl AstKind<'_> {
             Self::TSStringKeyword(_) => "TSStringKeyword".into(),
             Self::TSSymbolKeyword(_) => "TSSymbolKeyword".into(),
             Self::TSThisType(_) => "TSThisType".into(),
+            Self::TSTupleType(_) => "TSTupleType".into(),
+            Self::TSOptionalType(_) => "TSOptionalType".into(),
+            Self::TSRestType(_) => "TSRestType".into(),
             Self::TSUndefinedKeyword(_) => "TSUndefinedKeyword".into(),
             Self::TSUnknownKeyword(_) => "TSUnknownKeyword".into(),
             Self::TSInferType(_) => "TSInferType".into(),
@@ -377,6 +777,7 @@ impl AstKind<'_> {
             Self::TSAsExpression(_) => "TSAsExpression".into(),
             Self::TSSatisfiesExpression(_) => "TSSatisfiesExpression".into(),
             Self::TSNonNullExpression(_) => "TSNonNullExpression".into(),
+            Self::TSNamespaceExportDeclaration(_) => "TSNamespaceExportDeclaration".into(),
             Self::TSInstantiationExpression(_) => "TSInstantiationExpression".into(),
 
             Self::TSEnumDeclaration(decl) => format!("TSEnumDeclaration({})", &decl.id.name).into(),
@@ -392,6 +793,7 @@ impl AstKind<'_> {
             Self::TSModuleDeclaration(m) => format!("TSModuleDeclaration({})", m.id).into(),
             Self::TSTypeAliasDeclaration(_) => "TSTypeAliasDeclaration".into(),
             Self::TSTypeAnnotation(_) => "TSTypeAnnotation".into(),
+            Self::TSTypePredicate(_) => "TSTypePredicate".into(),
             Self::TSTypeQuery(_) => "TSTypeQuery".into(),
             Self::TSTypeAssertion(_) => "TSTypeAssertion".into(),
             Self::TSThisParameter(_) => "TSThisParameter".into(),
@@ -407,6 +809,9 @@ impl AstKind<'_> {
             Self::TSConstructSignatureDeclaration(_) => "TSConstructSignatureDeclaration".into(),
             Self::TSModuleReference(_) => "TSModuleReference".into(),
             Self::TSExportAssignment(_) => "TSExportAssignment".into(),
+            Self::JSDocNullableType(_) => "JSDocNullableType".into(),
+            Self::JSDocNonNullableType(_) => "JSDocNonNullableType".into(),
+            Self::JSDocUnknownType(_) => "JSDocUnknownType".into(),
         }
     }
 }

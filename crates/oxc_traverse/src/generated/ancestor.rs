@@ -6971,6 +6971,7 @@ impl<'a, 't> GetAddress for CatchParameterWithoutPattern<'a, 't> {
     }
 }
 
+pub(crate) const OFFSET_BINDING_PATTERN_PARENT: usize = offset_of!(BindingPattern, parent);
 pub(crate) const OFFSET_BINDING_PATTERN_KIND: usize = offset_of!(BindingPattern, kind);
 pub(crate) const OFFSET_BINDING_PATTERN_TYPE_ANNOTATION: usize =
     offset_of!(BindingPattern, type_annotation);
@@ -6984,6 +6985,14 @@ pub struct BindingPatternWithoutKind<'a, 't>(
 );
 
 impl<'a, 't> BindingPatternWithoutKind<'a, 't> {
+    #[inline]
+    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+        unsafe {
+            &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_PARENT)
+                as *const Option<AstKind<'a>>)
+        }
+    }
+
     #[inline]
     pub fn type_annotation(self) -> &'t Option<Box<'a, TSTypeAnnotation<'a>>> {
         unsafe {
@@ -7013,6 +7022,14 @@ pub struct BindingPatternWithoutTypeAnnotation<'a, 't>(
 );
 
 impl<'a, 't> BindingPatternWithoutTypeAnnotation<'a, 't> {
+    #[inline]
+    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+        unsafe {
+            &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_PARENT)
+                as *const Option<AstKind<'a>>)
+        }
+    }
+
     #[inline]
     pub fn kind(self) -> &'t BindingPatternKind<'a> {
         unsafe {

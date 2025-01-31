@@ -4990,7 +4990,12 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
-        BindingPattern { kind, type_annotation: type_annotation.into_in(self.allocator), optional }
+        BindingPattern {
+            parent: None,
+            kind,
+            type_annotation: type_annotation.into_in(self.allocator),
+            optional,
+        }
     }
 
     /// Build a [`BindingPattern`], and store it in the memory arena.

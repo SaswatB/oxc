@@ -35,150 +35,167 @@ pub enum AstType {
     TemplateLiteral = 18,
     TaggedTemplateExpression = 19,
     MemberExpression = 20,
-    CallExpression = 21,
-    NewExpression = 22,
-    MetaProperty = 23,
-    SpreadElement = 24,
-    Argument = 25,
-    UpdateExpression = 26,
-    UnaryExpression = 27,
-    BinaryExpression = 28,
-    PrivateInExpression = 29,
-    LogicalExpression = 30,
-    ConditionalExpression = 31,
-    AssignmentExpression = 32,
-    AssignmentTarget = 33,
-    SimpleAssignmentTarget = 34,
-    AssignmentTargetPattern = 35,
-    ArrayAssignmentTarget = 36,
-    ObjectAssignmentTarget = 37,
-    AssignmentTargetWithDefault = 38,
-    SequenceExpression = 39,
-    Super = 40,
-    AwaitExpression = 41,
-    ChainExpression = 42,
-    ParenthesizedExpression = 43,
-    Directive = 44,
-    Hashbang = 45,
-    BlockStatement = 46,
-    VariableDeclaration = 47,
-    VariableDeclarator = 48,
-    EmptyStatement = 49,
-    ExpressionStatement = 50,
-    IfStatement = 51,
-    DoWhileStatement = 52,
-    WhileStatement = 53,
-    ForStatement = 54,
-    ForStatementInit = 55,
-    ForInStatement = 56,
-    ForOfStatement = 57,
-    ContinueStatement = 58,
-    BreakStatement = 59,
-    ReturnStatement = 60,
-    WithStatement = 61,
-    SwitchStatement = 62,
-    SwitchCase = 63,
-    LabeledStatement = 64,
-    ThrowStatement = 65,
-    TryStatement = 66,
-    CatchClause = 67,
-    CatchParameter = 68,
-    DebuggerStatement = 69,
-    AssignmentPattern = 70,
-    ObjectPattern = 71,
-    ArrayPattern = 72,
-    BindingRestElement = 73,
-    Function = 74,
-    FormalParameters = 75,
-    FormalParameter = 76,
-    FunctionBody = 77,
-    ArrowFunctionExpression = 78,
-    YieldExpression = 79,
-    Class = 80,
-    ClassBody = 81,
-    MethodDefinition = 82,
-    PropertyDefinition = 83,
-    PrivateIdentifier = 84,
-    StaticBlock = 85,
-    ModuleDeclaration = 86,
-    ImportExpression = 87,
-    ImportDeclaration = 88,
-    ImportSpecifier = 89,
-    ImportDefaultSpecifier = 90,
-    ImportNamespaceSpecifier = 91,
-    ExportNamedDeclaration = 92,
-    ExportDefaultDeclaration = 93,
-    ExportAllDeclaration = 94,
-    ExportSpecifier = 95,
-    TSThisParameter = 96,
-    TSEnumDeclaration = 97,
-    TSEnumMember = 98,
-    TSTypeAnnotation = 99,
-    TSLiteralType = 100,
-    TSConditionalType = 101,
-    TSUnionType = 102,
-    TSIntersectionType = 103,
-    TSParenthesizedType = 104,
-    TSIndexedAccessType = 105,
-    TSNamedTupleMember = 106,
-    TSAnyKeyword = 107,
-    TSStringKeyword = 108,
-    TSBooleanKeyword = 109,
-    TSNumberKeyword = 110,
-    TSNeverKeyword = 111,
-    TSIntrinsicKeyword = 112,
-    TSUnknownKeyword = 113,
-    TSNullKeyword = 114,
-    TSUndefinedKeyword = 115,
-    TSVoidKeyword = 116,
-    TSSymbolKeyword = 117,
-    TSThisType = 118,
-    TSObjectKeyword = 119,
-    TSBigIntKeyword = 120,
-    TSTypeReference = 121,
-    TSTypeName = 122,
-    TSQualifiedName = 123,
-    TSTypeParameterInstantiation = 124,
-    TSTypeParameter = 125,
-    TSTypeParameterDeclaration = 126,
-    TSTypeAliasDeclaration = 127,
-    TSClassImplements = 128,
-    TSInterfaceDeclaration = 129,
-    TSPropertySignature = 130,
-    TSMethodSignature = 131,
-    TSConstructSignatureDeclaration = 132,
-    TSInterfaceHeritage = 133,
-    TSModuleDeclaration = 134,
-    TSModuleBlock = 135,
-    TSTypeLiteral = 136,
-    TSInferType = 137,
-    TSTypeQuery = 138,
-    TSImportType = 139,
-    TSMappedType = 140,
-    TSTemplateLiteralType = 141,
-    TSAsExpression = 142,
-    TSSatisfiesExpression = 143,
-    TSTypeAssertion = 144,
-    TSImportEqualsDeclaration = 145,
-    TSModuleReference = 146,
-    TSExternalModuleReference = 147,
-    TSNonNullExpression = 148,
-    Decorator = 149,
-    TSExportAssignment = 150,
-    TSInstantiationExpression = 151,
-    JSXElement = 152,
-    JSXOpeningElement = 153,
-    JSXClosingElement = 154,
-    JSXFragment = 155,
-    JSXElementName = 156,
-    JSXNamespacedName = 157,
-    JSXMemberExpression = 158,
-    JSXMemberExpressionObject = 159,
-    JSXExpressionContainer = 160,
-    JSXAttributeItem = 161,
-    JSXSpreadAttribute = 162,
-    JSXIdentifier = 163,
-    JSXText = 164,
+    ComputedMemberExpression = 21,
+    StaticMemberExpression = 22,
+    PrivateFieldExpression = 23,
+    CallExpression = 24,
+    NewExpression = 25,
+    MetaProperty = 26,
+    SpreadElement = 27,
+    Argument = 28,
+    UpdateExpression = 29,
+    UnaryExpression = 30,
+    BinaryExpression = 31,
+    PrivateInExpression = 32,
+    LogicalExpression = 33,
+    ConditionalExpression = 34,
+    AssignmentExpression = 35,
+    AssignmentTarget = 36,
+    SimpleAssignmentTarget = 37,
+    AssignmentTargetPattern = 38,
+    ArrayAssignmentTarget = 39,
+    ObjectAssignmentTarget = 40,
+    AssignmentTargetWithDefault = 41,
+    SequenceExpression = 42,
+    Super = 43,
+    AwaitExpression = 44,
+    ChainExpression = 45,
+    ParenthesizedExpression = 46,
+    Directive = 47,
+    Hashbang = 48,
+    BlockStatement = 49,
+    VariableDeclaration = 50,
+    VariableDeclarator = 51,
+    EmptyStatement = 52,
+    ExpressionStatement = 53,
+    IfStatement = 54,
+    DoWhileStatement = 55,
+    WhileStatement = 56,
+    ForStatement = 57,
+    ForStatementInit = 58,
+    ForInStatement = 59,
+    ForOfStatement = 60,
+    ContinueStatement = 61,
+    BreakStatement = 62,
+    ReturnStatement = 63,
+    WithStatement = 64,
+    SwitchStatement = 65,
+    SwitchCase = 66,
+    LabeledStatement = 67,
+    ThrowStatement = 68,
+    TryStatement = 69,
+    CatchClause = 70,
+    CatchParameter = 71,
+    DebuggerStatement = 72,
+    BindingPattern = 73,
+    AssignmentPattern = 74,
+    ObjectPattern = 75,
+    ArrayPattern = 76,
+    BindingRestElement = 77,
+    Function = 78,
+    FormalParameters = 79,
+    FormalParameter = 80,
+    FunctionBody = 81,
+    ArrowFunctionExpression = 82,
+    YieldExpression = 83,
+    Class = 84,
+    ClassBody = 85,
+    MethodDefinition = 86,
+    PropertyDefinition = 87,
+    PrivateIdentifier = 88,
+    StaticBlock = 89,
+    ModuleDeclaration = 90,
+    ImportExpression = 91,
+    ImportDeclaration = 92,
+    ImportSpecifier = 93,
+    ImportDefaultSpecifier = 94,
+    ImportNamespaceSpecifier = 95,
+    ExportNamedDeclaration = 96,
+    ExportDefaultDeclaration = 97,
+    ExportAllDeclaration = 98,
+    ExportSpecifier = 99,
+    TSThisParameter = 100,
+    TSEnumDeclaration = 101,
+    TSEnumMember = 102,
+    TSTypeAnnotation = 103,
+    TSLiteralType = 104,
+    TSConditionalType = 105,
+    TSUnionType = 106,
+    TSIntersectionType = 107,
+    TSParenthesizedType = 108,
+    TSTypeOperator = 109,
+    TSArrayType = 110,
+    TSIndexedAccessType = 111,
+    TSTupleType = 112,
+    TSNamedTupleMember = 113,
+    TSOptionalType = 114,
+    TSRestType = 115,
+    TSAnyKeyword = 116,
+    TSStringKeyword = 117,
+    TSBooleanKeyword = 118,
+    TSNumberKeyword = 119,
+    TSNeverKeyword = 120,
+    TSIntrinsicKeyword = 121,
+    TSUnknownKeyword = 122,
+    TSNullKeyword = 123,
+    TSUndefinedKeyword = 124,
+    TSVoidKeyword = 125,
+    TSSymbolKeyword = 126,
+    TSThisType = 127,
+    TSObjectKeyword = 128,
+    TSBigIntKeyword = 129,
+    TSTypeReference = 130,
+    TSTypeName = 131,
+    TSQualifiedName = 132,
+    TSTypeParameterInstantiation = 133,
+    TSTypeParameter = 134,
+    TSTypeParameterDeclaration = 135,
+    TSTypeAliasDeclaration = 136,
+    TSClassImplements = 137,
+    TSInterfaceDeclaration = 138,
+    TSPropertySignature = 139,
+    TSMethodSignature = 140,
+    TSConstructSignatureDeclaration = 141,
+    TSInterfaceHeritage = 142,
+    TSTypePredicate = 143,
+    TSModuleDeclaration = 144,
+    TSModuleBlock = 145,
+    TSTypeLiteral = 146,
+    TSInferType = 147,
+    TSTypeQuery = 148,
+    TSImportType = 149,
+    TSFunctionType = 150,
+    TSConstructorType = 151,
+    TSMappedType = 152,
+    TSTemplateLiteralType = 153,
+    TSAsExpression = 154,
+    TSSatisfiesExpression = 155,
+    TSTypeAssertion = 156,
+    TSImportEqualsDeclaration = 157,
+    TSModuleReference = 158,
+    TSExternalModuleReference = 159,
+    TSNonNullExpression = 160,
+    Decorator = 161,
+    TSExportAssignment = 162,
+    TSNamespaceExportDeclaration = 163,
+    TSInstantiationExpression = 164,
+    JSDocNullableType = 165,
+    JSDocNonNullableType = 166,
+    JSDocUnknownType = 167,
+    JSXElement = 168,
+    JSXOpeningElement = 169,
+    JSXClosingElement = 170,
+    JSXFragment = 171,
+    JSXElementName = 172,
+    JSXNamespacedName = 173,
+    JSXMemberExpression = 174,
+    JSXMemberExpressionObject = 175,
+    JSXExpressionContainer = 176,
+    JSXEmptyExpression = 177,
+    JSXAttributeItem = 178,
+    JSXSpreadAttribute = 179,
+    JSXIdentifier = 180,
+    JSXText = 181,
 }
 
 /// Untyped AST Node Kind
@@ -207,6 +224,10 @@ pub enum AstKind<'a> {
     TaggedTemplateExpression(&'a TaggedTemplateExpression<'a>) =
         AstType::TaggedTemplateExpression as u8,
     MemberExpression(&'a MemberExpression<'a>) = AstType::MemberExpression as u8,
+    ComputedMemberExpression(&'a ComputedMemberExpression<'a>) =
+        AstType::ComputedMemberExpression as u8,
+    StaticMemberExpression(&'a StaticMemberExpression<'a>) = AstType::StaticMemberExpression as u8,
+    PrivateFieldExpression(&'a PrivateFieldExpression<'a>) = AstType::PrivateFieldExpression as u8,
     CallExpression(&'a CallExpression<'a>) = AstType::CallExpression as u8,
     NewExpression(&'a NewExpression<'a>) = AstType::NewExpression as u8,
     MetaProperty(&'a MetaProperty<'a>) = AstType::MetaProperty as u8,
@@ -259,6 +280,7 @@ pub enum AstKind<'a> {
     CatchClause(&'a CatchClause<'a>) = AstType::CatchClause as u8,
     CatchParameter(&'a CatchParameter<'a>) = AstType::CatchParameter as u8,
     DebuggerStatement(&'a DebuggerStatement<'a>) = AstType::DebuggerStatement as u8,
+    BindingPattern(&'a BindingPattern<'a>) = AstType::BindingPattern as u8,
     AssignmentPattern(&'a AssignmentPattern<'a>) = AstType::AssignmentPattern as u8,
     ObjectPattern(&'a ObjectPattern<'a>) = AstType::ObjectPattern as u8,
     ArrayPattern(&'a ArrayPattern<'a>) = AstType::ArrayPattern as u8,
@@ -297,8 +319,13 @@ pub enum AstKind<'a> {
     TSUnionType(&'a TSUnionType<'a>) = AstType::TSUnionType as u8,
     TSIntersectionType(&'a TSIntersectionType<'a>) = AstType::TSIntersectionType as u8,
     TSParenthesizedType(&'a TSParenthesizedType<'a>) = AstType::TSParenthesizedType as u8,
+    TSTypeOperator(&'a TSTypeOperator<'a>) = AstType::TSTypeOperator as u8,
+    TSArrayType(&'a TSArrayType<'a>) = AstType::TSArrayType as u8,
     TSIndexedAccessType(&'a TSIndexedAccessType<'a>) = AstType::TSIndexedAccessType as u8,
+    TSTupleType(&'a TSTupleType<'a>) = AstType::TSTupleType as u8,
     TSNamedTupleMember(&'a TSNamedTupleMember<'a>) = AstType::TSNamedTupleMember as u8,
+    TSOptionalType(&'a TSOptionalType<'a>) = AstType::TSOptionalType as u8,
+    TSRestType(&'a TSRestType<'a>) = AstType::TSRestType as u8,
     TSAnyKeyword(&'a TSAnyKeyword<'a>) = AstType::TSAnyKeyword as u8,
     TSStringKeyword(&'a TSStringKeyword<'a>) = AstType::TSStringKeyword as u8,
     TSBooleanKeyword(&'a TSBooleanKeyword<'a>) = AstType::TSBooleanKeyword as u8,
@@ -329,12 +356,15 @@ pub enum AstKind<'a> {
     TSConstructSignatureDeclaration(&'a TSConstructSignatureDeclaration<'a>) =
         AstType::TSConstructSignatureDeclaration as u8,
     TSInterfaceHeritage(&'a TSInterfaceHeritage<'a>) = AstType::TSInterfaceHeritage as u8,
+    TSTypePredicate(&'a TSTypePredicate<'a>) = AstType::TSTypePredicate as u8,
     TSModuleDeclaration(&'a TSModuleDeclaration<'a>) = AstType::TSModuleDeclaration as u8,
     TSModuleBlock(&'a TSModuleBlock<'a>) = AstType::TSModuleBlock as u8,
     TSTypeLiteral(&'a TSTypeLiteral<'a>) = AstType::TSTypeLiteral as u8,
     TSInferType(&'a TSInferType<'a>) = AstType::TSInferType as u8,
     TSTypeQuery(&'a TSTypeQuery<'a>) = AstType::TSTypeQuery as u8,
     TSImportType(&'a TSImportType<'a>) = AstType::TSImportType as u8,
+    TSFunctionType(&'a TSFunctionType<'a>) = AstType::TSFunctionType as u8,
+    TSConstructorType(&'a TSConstructorType<'a>) = AstType::TSConstructorType as u8,
     TSMappedType(&'a TSMappedType<'a>) = AstType::TSMappedType as u8,
     TSTemplateLiteralType(&'a TSTemplateLiteralType<'a>) = AstType::TSTemplateLiteralType as u8,
     TSAsExpression(&'a TSAsExpression<'a>) = AstType::TSAsExpression as u8,
@@ -348,8 +378,13 @@ pub enum AstKind<'a> {
     TSNonNullExpression(&'a TSNonNullExpression<'a>) = AstType::TSNonNullExpression as u8,
     Decorator(&'a Decorator<'a>) = AstType::Decorator as u8,
     TSExportAssignment(&'a TSExportAssignment<'a>) = AstType::TSExportAssignment as u8,
+    TSNamespaceExportDeclaration(&'a TSNamespaceExportDeclaration<'a>) =
+        AstType::TSNamespaceExportDeclaration as u8,
     TSInstantiationExpression(&'a TSInstantiationExpression<'a>) =
         AstType::TSInstantiationExpression as u8,
+    JSDocNullableType(&'a JSDocNullableType<'a>) = AstType::JSDocNullableType as u8,
+    JSDocNonNullableType(&'a JSDocNonNullableType<'a>) = AstType::JSDocNonNullableType as u8,
+    JSDocUnknownType(&'a JSDocUnknownType<'a>) = AstType::JSDocUnknownType as u8,
     JSXElement(&'a JSXElement<'a>) = AstType::JSXElement as u8,
     JSXOpeningElement(&'a JSXOpeningElement<'a>) = AstType::JSXOpeningElement as u8,
     JSXClosingElement(&'a JSXClosingElement<'a>) = AstType::JSXClosingElement as u8,
@@ -360,6 +395,7 @@ pub enum AstKind<'a> {
     JSXMemberExpressionObject(&'a JSXMemberExpressionObject<'a>) =
         AstType::JSXMemberExpressionObject as u8,
     JSXExpressionContainer(&'a JSXExpressionContainer<'a>) = AstType::JSXExpressionContainer as u8,
+    JSXEmptyExpression(&'a JSXEmptyExpression<'a>) = AstType::JSXEmptyExpression as u8,
     JSXAttributeItem(&'a JSXAttributeItem<'a>) = AstType::JSXAttributeItem as u8,
     JSXSpreadAttribute(&'a JSXSpreadAttribute<'a>) = AstType::JSXSpreadAttribute as u8,
     JSXIdentifier(&'a JSXIdentifier<'a>) = AstType::JSXIdentifier as u8,
@@ -403,6 +439,9 @@ impl GetSpan for AstKind<'_> {
             Self::TemplateLiteral(it) => it.span(),
             Self::TaggedTemplateExpression(it) => it.span(),
             Self::MemberExpression(it) => it.span(),
+            Self::ComputedMemberExpression(it) => it.span(),
+            Self::StaticMemberExpression(it) => it.span(),
+            Self::PrivateFieldExpression(it) => it.span(),
             Self::CallExpression(it) => it.span(),
             Self::NewExpression(it) => it.span(),
             Self::MetaProperty(it) => it.span(),
@@ -452,6 +491,7 @@ impl GetSpan for AstKind<'_> {
             Self::CatchClause(it) => it.span(),
             Self::CatchParameter(it) => it.span(),
             Self::DebuggerStatement(it) => it.span(),
+            Self::BindingPattern(it) => it.span(),
             Self::AssignmentPattern(it) => it.span(),
             Self::ObjectPattern(it) => it.span(),
             Self::ArrayPattern(it) => it.span(),
@@ -487,8 +527,13 @@ impl GetSpan for AstKind<'_> {
             Self::TSUnionType(it) => it.span(),
             Self::TSIntersectionType(it) => it.span(),
             Self::TSParenthesizedType(it) => it.span(),
+            Self::TSTypeOperator(it) => it.span(),
+            Self::TSArrayType(it) => it.span(),
             Self::TSIndexedAccessType(it) => it.span(),
+            Self::TSTupleType(it) => it.span(),
             Self::TSNamedTupleMember(it) => it.span(),
+            Self::TSOptionalType(it) => it.span(),
+            Self::TSRestType(it) => it.span(),
             Self::TSAnyKeyword(it) => it.span(),
             Self::TSStringKeyword(it) => it.span(),
             Self::TSBooleanKeyword(it) => it.span(),
@@ -516,12 +561,15 @@ impl GetSpan for AstKind<'_> {
             Self::TSMethodSignature(it) => it.span(),
             Self::TSConstructSignatureDeclaration(it) => it.span(),
             Self::TSInterfaceHeritage(it) => it.span(),
+            Self::TSTypePredicate(it) => it.span(),
             Self::TSModuleDeclaration(it) => it.span(),
             Self::TSModuleBlock(it) => it.span(),
             Self::TSTypeLiteral(it) => it.span(),
             Self::TSInferType(it) => it.span(),
             Self::TSTypeQuery(it) => it.span(),
             Self::TSImportType(it) => it.span(),
+            Self::TSFunctionType(it) => it.span(),
+            Self::TSConstructorType(it) => it.span(),
             Self::TSMappedType(it) => it.span(),
             Self::TSTemplateLiteralType(it) => it.span(),
             Self::TSAsExpression(it) => it.span(),
@@ -533,7 +581,11 @@ impl GetSpan for AstKind<'_> {
             Self::TSNonNullExpression(it) => it.span(),
             Self::Decorator(it) => it.span(),
             Self::TSExportAssignment(it) => it.span(),
+            Self::TSNamespaceExportDeclaration(it) => it.span(),
             Self::TSInstantiationExpression(it) => it.span(),
+            Self::JSDocNullableType(it) => it.span(),
+            Self::JSDocNonNullableType(it) => it.span(),
+            Self::JSDocUnknownType(it) => it.span(),
             Self::JSXElement(it) => it.span(),
             Self::JSXOpeningElement(it) => it.span(),
             Self::JSXClosingElement(it) => it.span(),
@@ -543,6 +595,7 @@ impl GetSpan for AstKind<'_> {
             Self::JSXMemberExpression(it) => it.span(),
             Self::JSXMemberExpressionObject(it) => it.span(),
             Self::JSXExpressionContainer(it) => it.span(),
+            Self::JSXEmptyExpression(it) => it.span(),
             Self::JSXAttributeItem(it) => it.span(),
             Self::JSXSpreadAttribute(it) => it.span(),
             Self::JSXIdentifier(it) => it.span(),
@@ -575,6 +628,9 @@ impl<'a> AstKind<'a> {
             Self::TemplateLiteral(it) => it.get_parent(),
             Self::TaggedTemplateExpression(it) => it.get_parent(),
             Self::MemberExpression(it) => it.get_parent(),
+            Self::ComputedMemberExpression(it) => it.get_parent(),
+            Self::StaticMemberExpression(it) => it.get_parent(),
+            Self::PrivateFieldExpression(it) => it.get_parent(),
             Self::CallExpression(it) => it.get_parent(),
             Self::NewExpression(it) => it.get_parent(),
             Self::MetaProperty(it) => it.get_parent(),
@@ -624,6 +680,7 @@ impl<'a> AstKind<'a> {
             Self::CatchClause(it) => it.get_parent(),
             Self::CatchParameter(it) => it.get_parent(),
             Self::DebuggerStatement(it) => it.get_parent(),
+            Self::BindingPattern(it) => it.get_parent(),
             Self::AssignmentPattern(it) => it.get_parent(),
             Self::ObjectPattern(it) => it.get_parent(),
             Self::ArrayPattern(it) => it.get_parent(),
@@ -659,8 +716,13 @@ impl<'a> AstKind<'a> {
             Self::TSUnionType(it) => it.get_parent(),
             Self::TSIntersectionType(it) => it.get_parent(),
             Self::TSParenthesizedType(it) => it.get_parent(),
+            Self::TSTypeOperator(it) => it.get_parent(),
+            Self::TSArrayType(it) => it.get_parent(),
             Self::TSIndexedAccessType(it) => it.get_parent(),
+            Self::TSTupleType(it) => it.get_parent(),
             Self::TSNamedTupleMember(it) => it.get_parent(),
+            Self::TSOptionalType(it) => it.get_parent(),
+            Self::TSRestType(it) => it.get_parent(),
             Self::TSAnyKeyword(it) => it.get_parent(),
             Self::TSStringKeyword(it) => it.get_parent(),
             Self::TSBooleanKeyword(it) => it.get_parent(),
@@ -688,12 +750,15 @@ impl<'a> AstKind<'a> {
             Self::TSMethodSignature(it) => it.get_parent(),
             Self::TSConstructSignatureDeclaration(it) => it.get_parent(),
             Self::TSInterfaceHeritage(it) => it.get_parent(),
+            Self::TSTypePredicate(it) => it.get_parent(),
             Self::TSModuleDeclaration(it) => it.get_parent(),
             Self::TSModuleBlock(it) => it.get_parent(),
             Self::TSTypeLiteral(it) => it.get_parent(),
             Self::TSInferType(it) => it.get_parent(),
             Self::TSTypeQuery(it) => it.get_parent(),
             Self::TSImportType(it) => it.get_parent(),
+            Self::TSFunctionType(it) => it.get_parent(),
+            Self::TSConstructorType(it) => it.get_parent(),
             Self::TSMappedType(it) => it.get_parent(),
             Self::TSTemplateLiteralType(it) => it.get_parent(),
             Self::TSAsExpression(it) => it.get_parent(),
@@ -705,7 +770,11 @@ impl<'a> AstKind<'a> {
             Self::TSNonNullExpression(it) => it.get_parent(),
             Self::Decorator(it) => it.get_parent(),
             Self::TSExportAssignment(it) => it.get_parent(),
+            Self::TSNamespaceExportDeclaration(it) => it.get_parent(),
             Self::TSInstantiationExpression(it) => it.get_parent(),
+            Self::JSDocNullableType(it) => it.get_parent(),
+            Self::JSDocNonNullableType(it) => it.get_parent(),
+            Self::JSDocUnknownType(it) => it.get_parent(),
             Self::JSXElement(it) => it.get_parent(),
             Self::JSXOpeningElement(it) => it.get_parent(),
             Self::JSXClosingElement(it) => it.get_parent(),
@@ -715,6 +784,7 @@ impl<'a> AstKind<'a> {
             Self::JSXMemberExpression(it) => it.get_parent(),
             Self::JSXMemberExpressionObject(it) => it.get_parent(),
             Self::JSXExpressionContainer(it) => it.get_parent(),
+            Self::JSXEmptyExpression(it) => it.get_parent(),
             Self::JSXAttributeItem(it) => it.get_parent(),
             Self::JSXSpreadAttribute(it) => it.get_parent(),
             Self::JSXIdentifier(it) => it.get_parent(),
@@ -805,6 +875,18 @@ impl<'a> AstKind<'a> {
             }
             Self::MemberExpression(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut MemberExpression) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::ComputedMemberExpression(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut ComputedMemberExpression) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::StaticMemberExpression(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut StaticMemberExpression) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::PrivateFieldExpression(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut PrivateFieldExpression) };
                 it_mut.set_parent(new_parent)
             }
             Self::CallExpression(it) => {
@@ -1003,6 +1085,10 @@ impl<'a> AstKind<'a> {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut DebuggerStatement) };
                 it_mut.set_parent(new_parent)
             }
+            Self::BindingPattern(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut BindingPattern) };
+                it_mut.set_parent(new_parent)
+            }
             Self::AssignmentPattern(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentPattern) };
                 it_mut.set_parent(new_parent)
@@ -1143,12 +1229,32 @@ impl<'a> AstKind<'a> {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSParenthesizedType) };
                 it_mut.set_parent(new_parent)
             }
+            Self::TSTypeOperator(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeOperator) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::TSArrayType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSArrayType) };
+                it_mut.set_parent(new_parent)
+            }
             Self::TSIndexedAccessType(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSIndexedAccessType) };
                 it_mut.set_parent(new_parent)
             }
+            Self::TSTupleType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTupleType) };
+                it_mut.set_parent(new_parent)
+            }
             Self::TSNamedTupleMember(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSNamedTupleMember) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::TSOptionalType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSOptionalType) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::TSRestType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSRestType) };
                 it_mut.set_parent(new_parent)
             }
             Self::TSAnyKeyword(it) => {
@@ -1260,6 +1366,10 @@ impl<'a> AstKind<'a> {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSInterfaceHeritage) };
                 it_mut.set_parent(new_parent)
             }
+            Self::TSTypePredicate(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypePredicate) };
+                it_mut.set_parent(new_parent)
+            }
             Self::TSModuleDeclaration(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSModuleDeclaration) };
                 it_mut.set_parent(new_parent)
@@ -1282,6 +1392,14 @@ impl<'a> AstKind<'a> {
             }
             Self::TSImportType(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSImportType) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::TSFunctionType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSFunctionType) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::TSConstructorType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSConstructorType) };
                 it_mut.set_parent(new_parent)
             }
             Self::TSMappedType(it) => {
@@ -1328,8 +1446,24 @@ impl<'a> AstKind<'a> {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSExportAssignment) };
                 it_mut.set_parent(new_parent)
             }
+            Self::TSNamespaceExportDeclaration(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNamespaceExportDeclaration) };
+                it_mut.set_parent(new_parent)
+            }
             Self::TSInstantiationExpression(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut TSInstantiationExpression) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::JSDocNullableType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocNullableType) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::JSDocNonNullableType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocNonNullableType) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::JSDocUnknownType(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocUnknownType) };
                 it_mut.set_parent(new_parent)
             }
             Self::JSXElement(it) => {
@@ -1366,6 +1500,10 @@ impl<'a> AstKind<'a> {
             }
             Self::JSXExpressionContainer(it) => {
                 let it_mut = unsafe { &mut *(it as *const _ as *mut JSXExpressionContainer) };
+                it_mut.set_parent(new_parent)
+            }
+            Self::JSXEmptyExpression(it) => {
+                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXEmptyExpression) };
                 it_mut.set_parent(new_parent)
             }
             Self::JSXAttributeItem(it) => {
@@ -1572,6 +1710,33 @@ impl<'a> AstKind<'a> {
     #[inline]
     pub fn as_member_expression(self) -> Option<&'a MemberExpression<'a>> {
         if let Self::MemberExpression(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_computed_member_expression(self) -> Option<&'a ComputedMemberExpression<'a>> {
+        if let Self::ComputedMemberExpression(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_static_member_expression(self) -> Option<&'a StaticMemberExpression<'a>> {
+        if let Self::StaticMemberExpression(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_private_field_expression(self) -> Option<&'a PrivateFieldExpression<'a>> {
+        if let Self::PrivateFieldExpression(v) = self {
             Some(v)
         } else {
             None
@@ -2020,6 +2185,15 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
+    pub fn as_binding_pattern(self) -> Option<&'a BindingPattern<'a>> {
+        if let Self::BindingPattern(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
     pub fn as_assignment_pattern(self) -> Option<&'a AssignmentPattern<'a>> {
         if let Self::AssignmentPattern(v) = self {
             Some(v)
@@ -2335,6 +2509,24 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
+    pub fn as_ts_type_operator(self) -> Option<&'a TSTypeOperator<'a>> {
+        if let Self::TSTypeOperator(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_ts_array_type(self) -> Option<&'a TSArrayType<'a>> {
+        if let Self::TSArrayType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
     pub fn as_ts_indexed_access_type(self) -> Option<&'a TSIndexedAccessType<'a>> {
         if let Self::TSIndexedAccessType(v) = self {
             Some(v)
@@ -2344,8 +2536,35 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
+    pub fn as_ts_tuple_type(self) -> Option<&'a TSTupleType<'a>> {
+        if let Self::TSTupleType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
     pub fn as_ts_named_tuple_member(self) -> Option<&'a TSNamedTupleMember<'a>> {
         if let Self::TSNamedTupleMember(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_ts_optional_type(self) -> Option<&'a TSOptionalType<'a>> {
+        if let Self::TSOptionalType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_ts_rest_type(self) -> Option<&'a TSRestType<'a>> {
+        if let Self::TSRestType(v) = self {
             Some(v)
         } else {
             None
@@ -2600,6 +2819,15 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
+    pub fn as_ts_type_predicate(self) -> Option<&'a TSTypePredicate<'a>> {
+        if let Self::TSTypePredicate(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
     pub fn as_ts_module_declaration(self) -> Option<&'a TSModuleDeclaration<'a>> {
         if let Self::TSModuleDeclaration(v) = self {
             Some(v)
@@ -2647,6 +2875,24 @@ impl<'a> AstKind<'a> {
     #[inline]
     pub fn as_ts_import_type(self) -> Option<&'a TSImportType<'a>> {
         if let Self::TSImportType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_ts_function_type(self) -> Option<&'a TSFunctionType<'a>> {
+        if let Self::TSFunctionType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_ts_constructor_type(self) -> Option<&'a TSConstructorType<'a>> {
+        if let Self::TSConstructorType(v) = self {
             Some(v)
         } else {
             None
@@ -2753,8 +2999,46 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
+    pub fn as_ts_namespace_export_declaration(
+        self,
+    ) -> Option<&'a TSNamespaceExportDeclaration<'a>> {
+        if let Self::TSNamespaceExportDeclaration(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
     pub fn as_ts_instantiation_expression(self) -> Option<&'a TSInstantiationExpression<'a>> {
         if let Self::TSInstantiationExpression(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_js_doc_nullable_type(self) -> Option<&'a JSDocNullableType<'a>> {
+        if let Self::JSDocNullableType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_js_doc_non_nullable_type(self) -> Option<&'a JSDocNonNullableType<'a>> {
+        if let Self::JSDocNonNullableType(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_js_doc_unknown_type(self) -> Option<&'a JSDocUnknownType<'a>> {
+        if let Self::JSDocUnknownType(v) = self {
             Some(v)
         } else {
             None
@@ -2836,6 +3120,15 @@ impl<'a> AstKind<'a> {
     #[inline]
     pub fn as_jsx_expression_container(self) -> Option<&'a JSXExpressionContainer<'a>> {
         if let Self::JSXExpressionContainer(v) = self {
+            Some(v)
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    pub fn as_jsx_empty_expression(self) -> Option<&'a JSXEmptyExpression<'a>> {
+        if let Self::JSXEmptyExpression(v) = self {
             Some(v)
         } else {
             None

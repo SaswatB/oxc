@@ -2,9 +2,14 @@
 // To edit this generated file you have to edit `tasks/ast_tools/src/derives/get_parent.rs`
 
 #![allow(clippy::match_same_arms)]
+#![allow(unused_variables)]
 
 use crate::AstKind;
 use crate::GetParent;
+#[allow(dead_code)]
+pub trait GetChildren<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>>;
+}
 
 use crate::ast::js::*;
 
@@ -24,6 +29,11 @@ impl<'a> GetParent<'a> for BooleanLiteral<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for BooleanLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for NullLiteral<'a> {
     #[inline]
@@ -33,6 +43,11 @@ impl<'a> GetParent<'a> for NullLiteral<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for NullLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -46,6 +61,11 @@ impl<'a> GetParent<'a> for NumericLiteral<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for NumericLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for StringLiteral<'a> {
     #[inline]
@@ -55,6 +75,11 @@ impl<'a> GetParent<'a> for StringLiteral<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for StringLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -68,6 +93,11 @@ impl<'a> GetParent<'a> for BigIntLiteral<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for BigIntLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for RegExpLiteral<'a> {
     #[inline]
@@ -77,6 +107,11 @@ impl<'a> GetParent<'a> for RegExpLiteral<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for RegExpLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -174,6 +209,55 @@ impl<'a> GetParent<'a> for Expression<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for Expression<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for IdentifierName<'a> {
     #[inline]
@@ -183,6 +267,11 @@ impl<'a> GetParent<'a> for IdentifierName<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for IdentifierName<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -196,6 +285,11 @@ impl<'a> GetParent<'a> for IdentifierReference<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for IdentifierReference<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for BindingIdentifier<'a> {
     #[inline]
@@ -205,6 +299,11 @@ impl<'a> GetParent<'a> for BindingIdentifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BindingIdentifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -218,6 +317,11 @@ impl<'a> GetParent<'a> for LabelIdentifier<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for LabelIdentifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for ThisExpression<'a> {
     #[inline]
@@ -229,6 +333,11 @@ impl<'a> GetParent<'a> for ThisExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ThisExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for ArrayExpression<'a> {
     #[inline]
@@ -238,6 +347,11 @@ impl<'a> GetParent<'a> for ArrayExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ArrayExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -339,6 +453,57 @@ impl<'a> GetParent<'a> for ArrayExpressionElement<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::SpreadElement(_) => vec![],
+            Self::Elision(child) => vec![AstKind::Elision(child)],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for Elision<'a> {
     #[inline]
@@ -350,6 +515,11 @@ impl<'a> GetParent<'a> for Elision<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for Elision<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for ObjectExpression<'a> {
     #[inline]
@@ -359,6 +529,11 @@ impl<'a> GetParent<'a> for ObjectExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ObjectExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -376,6 +551,15 @@ impl<'a> GetParent<'a> for ObjectPropertyKind<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ObjectPropertyKind<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ObjectProperty(_) => vec![],
+            Self::SpreadProperty(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ObjectProperty<'a> {
     #[inline]
@@ -385,6 +569,14 @@ impl<'a> GetParent<'a> for ObjectProperty<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ObjectProperty<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children.push(AstKind::from_expression(&self.value));
+        children
     }
 }
 
@@ -486,6 +678,57 @@ impl<'a> GetParent<'a> for PropertyKey<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for PropertyKey<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::StaticIdentifier(_) => vec![],
+            Self::PrivateIdentifier(_) => vec![],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TemplateLiteral<'a> {
     #[inline]
@@ -495,6 +738,11 @@ impl<'a> GetParent<'a> for TemplateLiteral<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -508,6 +756,14 @@ impl<'a> GetParent<'a> for TaggedTemplateExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TaggedTemplateExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.tag));
+        children.push(AstKind::TemplateLiteral(&self.quasi));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TemplateElement<'a> {
     #[inline]
@@ -517,6 +773,11 @@ impl<'a> GetParent<'a> for TemplateElement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TemplateElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -536,6 +797,16 @@ impl<'a> GetParent<'a> for MemberExpression<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for MemberExpression<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ComputedMemberExpression<'a> {
     #[inline]
@@ -545,6 +816,14 @@ impl<'a> GetParent<'a> for ComputedMemberExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.object));
+        children.push(AstKind::from_expression(&self.expression));
+        children
     }
 }
 
@@ -558,6 +837,14 @@ impl<'a> GetParent<'a> for StaticMemberExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for StaticMemberExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.object));
+        children.push(AstKind::IdentifierName(&self.property));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for PrivateFieldExpression<'a> {
     #[inline]
@@ -567,6 +854,14 @@ impl<'a> GetParent<'a> for PrivateFieldExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for PrivateFieldExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.object));
+        children.push(AstKind::PrivateIdentifier(&self.field));
+        children
     }
 }
 
@@ -580,6 +875,13 @@ impl<'a> GetParent<'a> for CallExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for CallExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.callee));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for NewExpression<'a> {
     #[inline]
@@ -589,6 +891,13 @@ impl<'a> GetParent<'a> for NewExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for NewExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.callee));
+        children
     }
 }
 
@@ -602,6 +911,14 @@ impl<'a> GetParent<'a> for MetaProperty<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for MetaProperty<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::IdentifierName(&self.meta));
+        children.push(AstKind::IdentifierName(&self.property));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for SpreadElement<'a> {
     #[inline]
@@ -611,6 +928,13 @@ impl<'a> GetParent<'a> for SpreadElement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for SpreadElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.argument));
+        children
     }
 }
 
@@ -710,6 +1034,56 @@ impl<'a> GetParent<'a> for Argument<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for Argument<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::SpreadElement(_) => vec![],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for UpdateExpression<'a> {
     #[inline]
@@ -719,6 +1093,13 @@ impl<'a> GetParent<'a> for UpdateExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for UpdateExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::SimpleAssignmentTarget(&self.argument));
+        children
     }
 }
 
@@ -732,6 +1113,13 @@ impl<'a> GetParent<'a> for UnaryExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for UnaryExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.argument));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for BinaryExpression<'a> {
     #[inline]
@@ -741,6 +1129,14 @@ impl<'a> GetParent<'a> for BinaryExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BinaryExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children
     }
 }
 
@@ -754,6 +1150,14 @@ impl<'a> GetParent<'a> for PrivateInExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for PrivateInExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PrivateIdentifier(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for LogicalExpression<'a> {
     #[inline]
@@ -763,6 +1167,14 @@ impl<'a> GetParent<'a> for LogicalExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for LogicalExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children
     }
 }
 
@@ -776,6 +1188,15 @@ impl<'a> GetParent<'a> for ConditionalExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ConditionalExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.test));
+        children.push(AstKind::from_expression(&self.consequent));
+        children.push(AstKind::from_expression(&self.alternate));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentExpression<'a> {
     #[inline]
@@ -785,6 +1206,14 @@ impl<'a> GetParent<'a> for AssignmentExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AssignmentExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::AssignmentTarget(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children
     }
 }
 
@@ -820,6 +1249,24 @@ impl<'a> GetParent<'a> for AssignmentTarget<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::AssignmentTargetIdentifier(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+            Self::ArrayAssignmentTarget(_) => vec![],
+            Self::ObjectAssignmentTarget(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for SimpleAssignmentTarget<'a> {
     fn get_parent(&self) -> Option<AstKind<'a>> {
@@ -849,6 +1296,22 @@ impl<'a> GetParent<'a> for SimpleAssignmentTarget<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::AssignmentTargetIdentifier(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentTargetPattern<'a> {
     fn get_parent(&self) -> Option<AstKind<'a>> {
@@ -864,6 +1327,15 @@ impl<'a> GetParent<'a> for AssignmentTargetPattern<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ArrayAssignmentTarget(_) => vec![],
+            Self::ObjectAssignmentTarget(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ArrayAssignmentTarget<'a> {
     #[inline]
@@ -873,6 +1345,11 @@ impl<'a> GetParent<'a> for ArrayAssignmentTarget<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ArrayAssignmentTarget<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -886,6 +1363,11 @@ impl<'a> GetParent<'a> for ObjectAssignmentTarget<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ObjectAssignmentTarget<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentTargetRest<'a> {
     #[inline]
@@ -895,6 +1377,13 @@ impl<'a> GetParent<'a> for AssignmentTargetRest<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AssignmentTargetRest<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::AssignmentTarget(&self.target));
+        children
     }
 }
 
@@ -932,6 +1421,25 @@ impl<'a> GetParent<'a> for AssignmentTargetMaybeDefault<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::AssignmentTargetWithDefault(_) => vec![],
+            Self::AssignmentTargetIdentifier(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+            Self::ArrayAssignmentTarget(_) => vec![],
+            Self::ObjectAssignmentTarget(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentTargetWithDefault<'a> {
     #[inline]
@@ -941,6 +1449,14 @@ impl<'a> GetParent<'a> for AssignmentTargetWithDefault<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AssignmentTargetWithDefault<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::AssignmentTarget(&self.binding));
+        children.push(AstKind::from_expression(&self.init));
+        children
     }
 }
 
@@ -962,6 +1478,15 @@ impl<'a> GetParent<'a> for AssignmentTargetProperty<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for AssignmentTargetProperty<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::AssignmentTargetPropertyIdentifier(_) => vec![],
+            Self::AssignmentTargetPropertyProperty(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentTargetPropertyIdentifier<'a> {
     #[inline]
@@ -971,6 +1496,13 @@ impl<'a> GetParent<'a> for AssignmentTargetPropertyIdentifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AssignmentTargetPropertyIdentifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::IdentifierReference(&self.binding));
+        children
     }
 }
 
@@ -984,6 +1516,14 @@ impl<'a> GetParent<'a> for AssignmentTargetPropertyProperty<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for AssignmentTargetPropertyProperty<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.name));
+        children.push(AstKind::from_assignment_target_maybe_default(&self.binding));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for SequenceExpression<'a> {
     #[inline]
@@ -993,6 +1533,11 @@ impl<'a> GetParent<'a> for SequenceExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for SequenceExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1006,6 +1551,11 @@ impl<'a> GetParent<'a> for Super<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for Super<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for AwaitExpression<'a> {
     #[inline]
@@ -1017,6 +1567,13 @@ impl<'a> GetParent<'a> for AwaitExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for AwaitExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.argument));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ChainExpression<'a> {
     #[inline]
@@ -1026,6 +1583,13 @@ impl<'a> GetParent<'a> for ChainExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ChainExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_chain_element(&self.expression));
+        children
     }
 }
 
@@ -1049,6 +1613,18 @@ impl<'a> GetParent<'a> for ChainElement<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ChainElement<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::CallExpression(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ParenthesizedExpression<'a> {
     #[inline]
@@ -1058,6 +1634,13 @@ impl<'a> GetParent<'a> for ParenthesizedExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ParenthesizedExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
     }
 }
 
@@ -1137,6 +1720,45 @@ impl<'a> GetParent<'a> for Statement<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for Statement<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::BlockStatement(_) => vec![],
+            Self::BreakStatement(_) => vec![],
+            Self::ContinueStatement(_) => vec![],
+            Self::DebuggerStatement(_) => vec![],
+            Self::DoWhileStatement(_) => vec![],
+            Self::EmptyStatement(_) => vec![],
+            Self::ExpressionStatement(_) => vec![],
+            Self::ForInStatement(_) => vec![],
+            Self::ForOfStatement(_) => vec![],
+            Self::ForStatement(_) => vec![],
+            Self::IfStatement(_) => vec![],
+            Self::LabeledStatement(_) => vec![],
+            Self::ReturnStatement(_) => vec![],
+            Self::SwitchStatement(_) => vec![],
+            Self::ThrowStatement(_) => vec![],
+            Self::TryStatement(_) => vec![],
+            Self::WhileStatement(_) => vec![],
+            Self::WithStatement(_) => vec![],
+            Self::VariableDeclaration(_) => vec![],
+            Self::FunctionDeclaration(_) => vec![],
+            Self::ClassDeclaration(_) => vec![],
+            Self::TSTypeAliasDeclaration(_) => vec![],
+            Self::TSInterfaceDeclaration(_) => vec![],
+            Self::TSEnumDeclaration(_) => vec![],
+            Self::TSModuleDeclaration(_) => vec![],
+            Self::TSImportEqualsDeclaration(_) => vec![],
+            Self::ImportDeclaration(_) => vec![],
+            Self::ExportAllDeclaration(_) => vec![],
+            Self::ExportDefaultDeclaration(_) => vec![],
+            Self::ExportNamedDeclaration(_) => vec![],
+            Self::TSExportAssignment(_) => vec![],
+            Self::TSNamespaceExportDeclaration(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for Directive<'a> {
     #[inline]
@@ -1146,6 +1768,13 @@ impl<'a> GetParent<'a> for Directive<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for Directive<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::StringLiteral(&self.expression));
+        children
     }
 }
 
@@ -1159,6 +1788,11 @@ impl<'a> GetParent<'a> for Hashbang<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for Hashbang<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for BlockStatement<'a> {
     #[inline]
@@ -1168,6 +1802,11 @@ impl<'a> GetParent<'a> for BlockStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BlockStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1197,6 +1836,21 @@ impl<'a> GetParent<'a> for Declaration<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for Declaration<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::VariableDeclaration(_) => vec![],
+            Self::FunctionDeclaration(_) => vec![],
+            Self::ClassDeclaration(_) => vec![],
+            Self::TSTypeAliasDeclaration(_) => vec![],
+            Self::TSInterfaceDeclaration(_) => vec![],
+            Self::TSEnumDeclaration(_) => vec![],
+            Self::TSModuleDeclaration(_) => vec![],
+            Self::TSImportEqualsDeclaration(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for VariableDeclaration<'a> {
     #[inline]
@@ -1206,6 +1860,11 @@ impl<'a> GetParent<'a> for VariableDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1219,6 +1878,13 @@ impl<'a> GetParent<'a> for VariableDeclarator<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for VariableDeclarator<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingPattern(&self.id));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for EmptyStatement<'a> {
     #[inline]
@@ -1228,6 +1894,11 @@ impl<'a> GetParent<'a> for EmptyStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for EmptyStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1241,6 +1912,13 @@ impl<'a> GetParent<'a> for ExpressionStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ExpressionStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for IfStatement<'a> {
     #[inline]
@@ -1250,6 +1928,14 @@ impl<'a> GetParent<'a> for IfStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for IfStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.test));
+        children.push(AstKind::from_statement(&self.consequent));
+        children
     }
 }
 
@@ -1263,6 +1949,14 @@ impl<'a> GetParent<'a> for DoWhileStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for DoWhileStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_statement(&self.body));
+        children.push(AstKind::from_expression(&self.test));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for WhileStatement<'a> {
     #[inline]
@@ -1274,6 +1968,14 @@ impl<'a> GetParent<'a> for WhileStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for WhileStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.test));
+        children.push(AstKind::from_statement(&self.body));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ForStatement<'a> {
     #[inline]
@@ -1283,6 +1985,13 @@ impl<'a> GetParent<'a> for ForStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ForStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_statement(&self.body));
+        children
     }
 }
 
@@ -1382,6 +2091,56 @@ impl<'a> GetParent<'a> for ForStatementInit<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ForStatementInit<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::VariableDeclaration(_) => vec![],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ForInStatement<'a> {
     #[inline]
@@ -1391,6 +2150,15 @@ impl<'a> GetParent<'a> for ForInStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ForInStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_for_statement_left(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children.push(AstKind::from_statement(&self.body));
+        children
     }
 }
 
@@ -1428,6 +2196,25 @@ impl<'a> GetParent<'a> for ForStatementLeft<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::VariableDeclaration(_) => vec![],
+            Self::AssignmentTargetIdentifier(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+            Self::ArrayAssignmentTarget(_) => vec![],
+            Self::ObjectAssignmentTarget(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ForOfStatement<'a> {
     #[inline]
@@ -1437,6 +2224,15 @@ impl<'a> GetParent<'a> for ForOfStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ForOfStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_for_statement_left(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children.push(AstKind::from_statement(&self.body));
+        children
     }
 }
 
@@ -1450,6 +2246,11 @@ impl<'a> GetParent<'a> for ContinueStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ContinueStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for BreakStatement<'a> {
     #[inline]
@@ -1459,6 +2260,11 @@ impl<'a> GetParent<'a> for BreakStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BreakStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1472,6 +2278,11 @@ impl<'a> GetParent<'a> for ReturnStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ReturnStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for WithStatement<'a> {
     #[inline]
@@ -1481,6 +2292,14 @@ impl<'a> GetParent<'a> for WithStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for WithStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.object));
+        children.push(AstKind::from_statement(&self.body));
+        children
     }
 }
 
@@ -1494,6 +2313,13 @@ impl<'a> GetParent<'a> for SwitchStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for SwitchStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.discriminant));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for SwitchCase<'a> {
     #[inline]
@@ -1503,6 +2329,11 @@ impl<'a> GetParent<'a> for SwitchCase<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for SwitchCase<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1516,6 +2347,14 @@ impl<'a> GetParent<'a> for LabeledStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for LabeledStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::LabelIdentifier(&self.label));
+        children.push(AstKind::from_statement(&self.body));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ThrowStatement<'a> {
     #[inline]
@@ -1525,6 +2364,13 @@ impl<'a> GetParent<'a> for ThrowStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ThrowStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.argument));
+        children
     }
 }
 
@@ -1538,6 +2384,11 @@ impl<'a> GetParent<'a> for TryStatement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TryStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for CatchClause<'a> {
     #[inline]
@@ -1547,6 +2398,11 @@ impl<'a> GetParent<'a> for CatchClause<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for CatchClause<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1560,6 +2416,13 @@ impl<'a> GetParent<'a> for CatchParameter<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for CatchParameter<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingPattern(&self.pattern));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for DebuggerStatement<'a> {
     #[inline]
@@ -1569,6 +2432,29 @@ impl<'a> GetParent<'a> for DebuggerStatement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for DebuggerStatement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
+
+impl<'a> GetParent<'a> for BindingPattern<'a> {
+    #[inline]
+    fn get_parent(&self) -> Option<AstKind<'a>> {
+        self.parent
+    }
+    #[inline]
+    fn set_parent(&mut self, new_parent: AstKind<'a>) {
+        self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BindingPattern<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_binding_pattern_kind(&self.kind));
+        children
     }
 }
 
@@ -1590,6 +2476,17 @@ impl<'a> GetParent<'a> for BindingPatternKind<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for BindingPatternKind<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::BindingIdentifier(_) => vec![],
+            Self::ObjectPattern(_) => vec![],
+            Self::ArrayPattern(_) => vec![],
+            Self::AssignmentPattern(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for AssignmentPattern<'a> {
     #[inline]
@@ -1599,6 +2496,14 @@ impl<'a> GetParent<'a> for AssignmentPattern<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AssignmentPattern<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingPattern(&self.left));
+        children.push(AstKind::from_expression(&self.right));
+        children
     }
 }
 
@@ -1612,6 +2517,11 @@ impl<'a> GetParent<'a> for ObjectPattern<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ObjectPattern<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for BindingProperty<'a> {
     #[inline]
@@ -1621,6 +2531,14 @@ impl<'a> GetParent<'a> for BindingProperty<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BindingProperty<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children.push(AstKind::BindingPattern(&self.value));
+        children
     }
 }
 
@@ -1634,6 +2552,11 @@ impl<'a> GetParent<'a> for ArrayPattern<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ArrayPattern<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for BindingRestElement<'a> {
     #[inline]
@@ -1643,6 +2566,13 @@ impl<'a> GetParent<'a> for BindingRestElement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for BindingRestElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingPattern(&self.argument));
+        children
     }
 }
 
@@ -1656,6 +2586,11 @@ impl<'a> GetParent<'a> for Function<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for Function<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for FormalParameters<'a> {
     #[inline]
@@ -1665,6 +2600,11 @@ impl<'a> GetParent<'a> for FormalParameters<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for FormalParameters<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1678,6 +2618,13 @@ impl<'a> GetParent<'a> for FormalParameter<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for FormalParameter<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingPattern(&self.pattern));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for FunctionBody<'a> {
     #[inline]
@@ -1687,6 +2634,11 @@ impl<'a> GetParent<'a> for FunctionBody<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for FunctionBody<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1700,6 +2652,11 @@ impl<'a> GetParent<'a> for ArrowFunctionExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ArrowFunctionExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for YieldExpression<'a> {
     #[inline]
@@ -1709,6 +2666,11 @@ impl<'a> GetParent<'a> for YieldExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for YieldExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1722,6 +2684,11 @@ impl<'a> GetParent<'a> for Class<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for Class<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for ClassBody<'a> {
     #[inline]
@@ -1731,6 +2698,11 @@ impl<'a> GetParent<'a> for ClassBody<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ClassBody<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1754,6 +2726,18 @@ impl<'a> GetParent<'a> for ClassElement<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ClassElement<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::StaticBlock(_) => vec![],
+            Self::MethodDefinition(_) => vec![],
+            Self::PropertyDefinition(_) => vec![],
+            Self::AccessorProperty(_) => vec![],
+            Self::TSIndexSignature(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for MethodDefinition<'a> {
     #[inline]
@@ -1763,6 +2747,13 @@ impl<'a> GetParent<'a> for MethodDefinition<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for MethodDefinition<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children
     }
 }
 
@@ -1776,6 +2767,13 @@ impl<'a> GetParent<'a> for PropertyDefinition<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for PropertyDefinition<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for PrivateIdentifier<'a> {
     #[inline]
@@ -1787,6 +2785,11 @@ impl<'a> GetParent<'a> for PrivateIdentifier<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for PrivateIdentifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for StaticBlock<'a> {
     #[inline]
@@ -1796,6 +2799,11 @@ impl<'a> GetParent<'a> for StaticBlock<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for StaticBlock<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1823,6 +2831,19 @@ impl<'a> GetParent<'a> for ModuleDeclaration<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ModuleDeclaration<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ImportDeclaration(_) => vec![],
+            Self::ExportAllDeclaration(_) => vec![],
+            Self::ExportDefaultDeclaration(_) => vec![],
+            Self::ExportNamedDeclaration(_) => vec![],
+            Self::TSExportAssignment(_) => vec![],
+            Self::TSNamespaceExportDeclaration(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for AccessorProperty<'a> {
     #[inline]
@@ -1832,6 +2853,13 @@ impl<'a> GetParent<'a> for AccessorProperty<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for AccessorProperty<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children
     }
 }
 
@@ -1845,6 +2873,13 @@ impl<'a> GetParent<'a> for ImportExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ImportExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.source));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ImportDeclaration<'a> {
     #[inline]
@@ -1854,6 +2889,13 @@ impl<'a> GetParent<'a> for ImportDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ImportDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::StringLiteral(&self.source));
+        children
     }
 }
 
@@ -1873,6 +2915,16 @@ impl<'a> GetParent<'a> for ImportDeclarationSpecifier<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ImportDeclarationSpecifier<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ImportSpecifier(_) => vec![],
+            Self::ImportDefaultSpecifier(_) => vec![],
+            Self::ImportNamespaceSpecifier(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ImportSpecifier<'a> {
     #[inline]
@@ -1882,6 +2934,14 @@ impl<'a> GetParent<'a> for ImportSpecifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ImportSpecifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_module_export_name(&self.imported));
+        children.push(AstKind::BindingIdentifier(&self.local));
+        children
     }
 }
 
@@ -1895,6 +2955,13 @@ impl<'a> GetParent<'a> for ImportDefaultSpecifier<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ImportDefaultSpecifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.local));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ImportNamespaceSpecifier<'a> {
     #[inline]
@@ -1904,6 +2971,13 @@ impl<'a> GetParent<'a> for ImportNamespaceSpecifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ImportNamespaceSpecifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.local));
+        children
     }
 }
 
@@ -1917,6 +2991,13 @@ impl<'a> GetParent<'a> for WithClause<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for WithClause<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::IdentifierName(&self.attributes_keyword));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ImportAttribute<'a> {
     #[inline]
@@ -1926,6 +3007,14 @@ impl<'a> GetParent<'a> for ImportAttribute<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ImportAttribute<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_import_attribute_key(&self.key));
+        children.push(AstKind::StringLiteral(&self.value));
+        children
     }
 }
 
@@ -1943,6 +3032,15 @@ impl<'a> GetParent<'a> for ImportAttributeKey<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ImportAttributeKey<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(child) => vec![AstKind::IdentifierName(child)],
+            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ExportNamedDeclaration<'a> {
     #[inline]
@@ -1952,6 +3050,11 @@ impl<'a> GetParent<'a> for ExportNamedDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ExportNamedDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -1965,6 +3068,14 @@ impl<'a> GetParent<'a> for ExportDefaultDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ExportDefaultDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_export_default_declaration_kind(&self.declaration));
+        children.push(AstKind::from_module_export_name(&self.exported));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ExportAllDeclaration<'a> {
     #[inline]
@@ -1976,6 +3087,13 @@ impl<'a> GetParent<'a> for ExportAllDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for ExportAllDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::StringLiteral(&self.source));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for ExportSpecifier<'a> {
     #[inline]
@@ -1985,6 +3103,14 @@ impl<'a> GetParent<'a> for ExportSpecifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for ExportSpecifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_module_export_name(&self.local));
+        children.push(AstKind::from_module_export_name(&self.exported));
+        children
     }
 }
 
@@ -2088,6 +3214,58 @@ impl<'a> GetParent<'a> for ExportDefaultDeclarationKind<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::FunctionDeclaration(_) => vec![],
+            Self::ClassDeclaration(_) => vec![],
+            Self::TSInterfaceDeclaration(_) => vec![],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for ModuleExportName<'a> {
     fn get_parent(&self) -> Option<AstKind<'a>> {
@@ -2105,6 +3283,16 @@ impl<'a> GetParent<'a> for ModuleExportName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for ModuleExportName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::IdentifierName(child) => vec![AstKind::IdentifierName(child)],
+            Self::IdentifierReference(child) => vec![AstKind::IdentifierReference(child)],
+            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSThisParameter<'a> {
     #[inline]
@@ -2114,6 +3302,11 @@ impl<'a> GetParent<'a> for TSThisParameter<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSThisParameter<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2127,6 +3320,13 @@ impl<'a> GetParent<'a> for TSEnumDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSEnumDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.id));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSEnumMember<'a> {
     #[inline]
@@ -2136,6 +3336,13 @@ impl<'a> GetParent<'a> for TSEnumMember<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSEnumMember<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_enum_member_name(&self.id));
+        children
     }
 }
 
@@ -2153,6 +3360,15 @@ impl<'a> GetParent<'a> for TSEnumMemberName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSEnumMemberName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(_) => vec![],
+            Self::String(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeAnnotation<'a> {
     #[inline]
@@ -2164,6 +3380,13 @@ impl<'a> GetParent<'a> for TSTypeAnnotation<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTypeAnnotation<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSLiteralType<'a> {
     #[inline]
@@ -2173,6 +3396,13 @@ impl<'a> GetParent<'a> for TSLiteralType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSLiteralType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_literal(&self.literal));
+        children
     }
 }
 
@@ -2199,6 +3429,21 @@ impl<'a> GetParent<'a> for TSLiteral<'a> {
             Self::StringLiteral(it) => GetParent::set_parent(it.as_mut(), new_parent),
             Self::TemplateLiteral(it) => GetParent::set_parent(it.as_mut(), new_parent),
             Self::UnaryExpression(it) => GetParent::set_parent(it.as_mut(), new_parent),
+        }
+    }
+}
+impl<'a> GetChildren<'a> for TSLiteral<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
         }
     }
 }
@@ -2289,6 +3534,51 @@ impl<'a> GetParent<'a> for TSType<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSType<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::TSAnyKeyword(_) => vec![],
+            Self::TSBigIntKeyword(_) => vec![],
+            Self::TSBooleanKeyword(_) => vec![],
+            Self::TSIntrinsicKeyword(_) => vec![],
+            Self::TSNeverKeyword(_) => vec![],
+            Self::TSNullKeyword(_) => vec![],
+            Self::TSNumberKeyword(_) => vec![],
+            Self::TSObjectKeyword(_) => vec![],
+            Self::TSStringKeyword(_) => vec![],
+            Self::TSSymbolKeyword(_) => vec![],
+            Self::TSUndefinedKeyword(_) => vec![],
+            Self::TSUnknownKeyword(_) => vec![],
+            Self::TSVoidKeyword(_) => vec![],
+            Self::TSArrayType(_) => vec![],
+            Self::TSConditionalType(_) => vec![],
+            Self::TSConstructorType(_) => vec![],
+            Self::TSFunctionType(_) => vec![],
+            Self::TSImportType(_) => vec![],
+            Self::TSIndexedAccessType(_) => vec![],
+            Self::TSInferType(_) => vec![],
+            Self::TSIntersectionType(_) => vec![],
+            Self::TSLiteralType(_) => vec![],
+            Self::TSMappedType(_) => vec![],
+            Self::TSNamedTupleMember(_) => vec![],
+            Self::TSQualifiedName(_) => vec![],
+            Self::TSTemplateLiteralType(_) => vec![],
+            Self::TSThisType(_) => vec![],
+            Self::TSTupleType(_) => vec![],
+            Self::TSTypeLiteral(_) => vec![],
+            Self::TSTypeOperatorType(_) => vec![],
+            Self::TSTypePredicate(_) => vec![],
+            Self::TSTypeQuery(_) => vec![],
+            Self::TSTypeReference(_) => vec![],
+            Self::TSUnionType(_) => vec![],
+            Self::TSParenthesizedType(_) => vec![],
+            Self::JSDocNullableType(_) => vec![],
+            Self::JSDocNonNullableType(_) => vec![],
+            Self::JSDocUnknownType(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSConditionalType<'a> {
     #[inline]
@@ -2298,6 +3588,16 @@ impl<'a> GetParent<'a> for TSConditionalType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSConditionalType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.check_type));
+        children.push(AstKind::from_ts_type(&self.extends_type));
+        children.push(AstKind::from_ts_type(&self.true_type));
+        children.push(AstKind::from_ts_type(&self.false_type));
+        children
     }
 }
 
@@ -2311,6 +3611,11 @@ impl<'a> GetParent<'a> for TSUnionType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSUnionType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSIntersectionType<'a> {
     #[inline]
@@ -2320,6 +3625,11 @@ impl<'a> GetParent<'a> for TSIntersectionType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSIntersectionType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2333,6 +3643,13 @@ impl<'a> GetParent<'a> for TSParenthesizedType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSParenthesizedType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeOperator<'a> {
     #[inline]
@@ -2342,6 +3659,13 @@ impl<'a> GetParent<'a> for TSTypeOperator<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypeOperator<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
     }
 }
 
@@ -2355,6 +3679,13 @@ impl<'a> GetParent<'a> for TSArrayType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSArrayType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.element_type));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSIndexedAccessType<'a> {
     #[inline]
@@ -2364,6 +3695,14 @@ impl<'a> GetParent<'a> for TSIndexedAccessType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSIndexedAccessType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.object_type));
+        children.push(AstKind::from_ts_type(&self.index_type));
+        children
     }
 }
 
@@ -2377,6 +3716,11 @@ impl<'a> GetParent<'a> for TSTupleType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTupleType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSNamedTupleMember<'a> {
     #[inline]
@@ -2386,6 +3730,14 @@ impl<'a> GetParent<'a> for TSNamedTupleMember<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSNamedTupleMember<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_tuple_element(&self.element_type));
+        children.push(AstKind::IdentifierName(&self.label));
+        children
     }
 }
 
@@ -2399,6 +3751,13 @@ impl<'a> GetParent<'a> for TSOptionalType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSOptionalType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSRestType<'a> {
     #[inline]
@@ -2408,6 +3767,13 @@ impl<'a> GetParent<'a> for TSRestType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSRestType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
     }
 }
 
@@ -2501,6 +3867,53 @@ impl<'a> GetParent<'a> for TSTupleElement<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSTupleElement<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::TSOptionalType(_) => vec![],
+            Self::TSRestType(_) => vec![],
+            Self::TSAnyKeyword(_) => vec![],
+            Self::TSBigIntKeyword(_) => vec![],
+            Self::TSBooleanKeyword(_) => vec![],
+            Self::TSIntrinsicKeyword(_) => vec![],
+            Self::TSNeverKeyword(_) => vec![],
+            Self::TSNullKeyword(_) => vec![],
+            Self::TSNumberKeyword(_) => vec![],
+            Self::TSObjectKeyword(_) => vec![],
+            Self::TSStringKeyword(_) => vec![],
+            Self::TSSymbolKeyword(_) => vec![],
+            Self::TSUndefinedKeyword(_) => vec![],
+            Self::TSUnknownKeyword(_) => vec![],
+            Self::TSVoidKeyword(_) => vec![],
+            Self::TSArrayType(_) => vec![],
+            Self::TSConditionalType(_) => vec![],
+            Self::TSConstructorType(_) => vec![],
+            Self::TSFunctionType(_) => vec![],
+            Self::TSImportType(_) => vec![],
+            Self::TSIndexedAccessType(_) => vec![],
+            Self::TSInferType(_) => vec![],
+            Self::TSIntersectionType(_) => vec![],
+            Self::TSLiteralType(_) => vec![],
+            Self::TSMappedType(_) => vec![],
+            Self::TSNamedTupleMember(_) => vec![],
+            Self::TSQualifiedName(_) => vec![],
+            Self::TSTemplateLiteralType(_) => vec![],
+            Self::TSThisType(_) => vec![],
+            Self::TSTupleType(_) => vec![],
+            Self::TSTypeLiteral(_) => vec![],
+            Self::TSTypeOperatorType(_) => vec![],
+            Self::TSTypePredicate(_) => vec![],
+            Self::TSTypeQuery(_) => vec![],
+            Self::TSTypeReference(_) => vec![],
+            Self::TSUnionType(_) => vec![],
+            Self::TSParenthesizedType(_) => vec![],
+            Self::JSDocNullableType(_) => vec![],
+            Self::JSDocNonNullableType(_) => vec![],
+            Self::JSDocUnknownType(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSAnyKeyword<'a> {
     #[inline]
@@ -2510,6 +3923,11 @@ impl<'a> GetParent<'a> for TSAnyKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSAnyKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2523,6 +3941,11 @@ impl<'a> GetParent<'a> for TSStringKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSStringKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSBooleanKeyword<'a> {
     #[inline]
@@ -2532,6 +3955,11 @@ impl<'a> GetParent<'a> for TSBooleanKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSBooleanKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2545,6 +3973,11 @@ impl<'a> GetParent<'a> for TSNumberKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSNumberKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSNeverKeyword<'a> {
     #[inline]
@@ -2554,6 +3987,11 @@ impl<'a> GetParent<'a> for TSNeverKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSNeverKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2567,6 +4005,11 @@ impl<'a> GetParent<'a> for TSIntrinsicKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSIntrinsicKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSUnknownKeyword<'a> {
     #[inline]
@@ -2576,6 +4019,11 @@ impl<'a> GetParent<'a> for TSUnknownKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSUnknownKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2589,6 +4037,11 @@ impl<'a> GetParent<'a> for TSNullKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSNullKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSUndefinedKeyword<'a> {
     #[inline]
@@ -2598,6 +4051,11 @@ impl<'a> GetParent<'a> for TSUndefinedKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSUndefinedKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2611,6 +4069,11 @@ impl<'a> GetParent<'a> for TSVoidKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSVoidKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSSymbolKeyword<'a> {
     #[inline]
@@ -2620,6 +4083,11 @@ impl<'a> GetParent<'a> for TSSymbolKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSSymbolKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2633,6 +4101,11 @@ impl<'a> GetParent<'a> for TSThisType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSThisType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSObjectKeyword<'a> {
     #[inline]
@@ -2642,6 +4115,11 @@ impl<'a> GetParent<'a> for TSObjectKeyword<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSObjectKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2655,6 +4133,11 @@ impl<'a> GetParent<'a> for TSBigIntKeyword<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSBigIntKeyword<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeReference<'a> {
     #[inline]
@@ -2664,6 +4147,13 @@ impl<'a> GetParent<'a> for TSTypeReference<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypeReference<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::TSTypeName(&self.type_name));
+        children
     }
 }
 
@@ -2681,6 +4171,15 @@ impl<'a> GetParent<'a> for TSTypeName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSTypeName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::IdentifierReference(_) => vec![],
+            Self::QualifiedName(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSQualifiedName<'a> {
     #[inline]
@@ -2690,6 +4189,14 @@ impl<'a> GetParent<'a> for TSQualifiedName<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSQualifiedName<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::TSTypeName(&self.left));
+        children.push(AstKind::IdentifierName(&self.right));
+        children
     }
 }
 
@@ -2703,6 +4210,11 @@ impl<'a> GetParent<'a> for TSTypeParameterInstantiation<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTypeParameterInstantiation<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeParameter<'a> {
     #[inline]
@@ -2712,6 +4224,13 @@ impl<'a> GetParent<'a> for TSTypeParameter<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypeParameter<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.name));
+        children
     }
 }
 
@@ -2725,6 +4244,11 @@ impl<'a> GetParent<'a> for TSTypeParameterDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeAliasDeclaration<'a> {
     #[inline]
@@ -2734,6 +4258,14 @@ impl<'a> GetParent<'a> for TSTypeAliasDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.id));
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
     }
 }
 
@@ -2747,6 +4279,13 @@ impl<'a> GetParent<'a> for TSClassImplements<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSClassImplements<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::TSTypeName(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSInterfaceDeclaration<'a> {
     #[inline]
@@ -2756,6 +4295,13 @@ impl<'a> GetParent<'a> for TSInterfaceDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSInterfaceDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.id));
+        children
     }
 }
 
@@ -2769,6 +4315,11 @@ impl<'a> GetParent<'a> for TSInterfaceBody<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSInterfaceBody<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSPropertySignature<'a> {
     #[inline]
@@ -2778,6 +4329,13 @@ impl<'a> GetParent<'a> for TSPropertySignature<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSPropertySignature<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children
     }
 }
 
@@ -2803,6 +4361,18 @@ impl<'a> GetParent<'a> for TSSignature<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSSignature<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::TSIndexSignature(_) => vec![],
+            Self::TSPropertySignature(_) => vec![],
+            Self::TSCallSignatureDeclaration(_) => vec![],
+            Self::TSConstructSignatureDeclaration(_) => vec![],
+            Self::TSMethodSignature(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSIndexSignature<'a> {
     #[inline]
@@ -2812,6 +4382,11 @@ impl<'a> GetParent<'a> for TSIndexSignature<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSIndexSignature<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2825,6 +4400,11 @@ impl<'a> GetParent<'a> for TSCallSignatureDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSCallSignatureDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSMethodSignature<'a> {
     #[inline]
@@ -2834,6 +4414,13 @@ impl<'a> GetParent<'a> for TSMethodSignature<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSMethodSignature<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::PropertyKey(&self.key));
+        children
     }
 }
 
@@ -2847,6 +4434,11 @@ impl<'a> GetParent<'a> for TSConstructSignatureDeclaration<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSConstructSignatureDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSIndexSignatureName<'a> {
     #[inline]
@@ -2856,6 +4448,11 @@ impl<'a> GetParent<'a> for TSIndexSignatureName<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2869,6 +4466,13 @@ impl<'a> GetParent<'a> for TSInterfaceHeritage<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSInterfaceHeritage<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypePredicate<'a> {
     #[inline]
@@ -2878,6 +4482,13 @@ impl<'a> GetParent<'a> for TSTypePredicate<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypePredicate<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type_predicate_name(&self.parameter_name));
+        children
     }
 }
 
@@ -2895,6 +4506,15 @@ impl<'a> GetParent<'a> for TSTypePredicateName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSTypePredicateName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(_) => vec![],
+            Self::This(child) => vec![AstKind::TSThisType(child)],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSModuleDeclaration<'a> {
     #[inline]
@@ -2904,6 +4524,13 @@ impl<'a> GetParent<'a> for TSModuleDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSModuleDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_module_declaration_name(&self.id));
+        children
     }
 }
 
@@ -2918,6 +4545,15 @@ impl<'a> GetParent<'a> for TSModuleDeclarationName<'a> {
         match self {
             Self::Identifier(it) => GetParent::set_parent(it, new_parent),
             Self::StringLiteral(it) => GetParent::set_parent(it, new_parent),
+        }
+    }
+}
+impl<'a> GetChildren<'a> for TSModuleDeclarationName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(child) => vec![AstKind::BindingIdentifier(child)],
+            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
         }
     }
 }
@@ -2936,6 +4572,15 @@ impl<'a> GetParent<'a> for TSModuleDeclarationBody<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSModuleDeclarationBody<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::TSModuleDeclaration(_) => vec![],
+            Self::TSModuleBlock(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSModuleBlock<'a> {
     #[inline]
@@ -2945,6 +4590,11 @@ impl<'a> GetParent<'a> for TSModuleBlock<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSModuleBlock<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -2958,6 +4608,11 @@ impl<'a> GetParent<'a> for TSTypeLiteral<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTypeLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSInferType<'a> {
     #[inline]
@@ -2969,6 +4624,11 @@ impl<'a> GetParent<'a> for TSInferType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSInferType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeQuery<'a> {
     #[inline]
@@ -2978,6 +4638,13 @@ impl<'a> GetParent<'a> for TSTypeQuery<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSTypeQuery<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type_query_expr_name(&self.expr_name));
+        children
     }
 }
 
@@ -2997,6 +4664,16 @@ impl<'a> GetParent<'a> for TSTypeQueryExprName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSTypeQueryExprName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::TSImportType(_) => vec![],
+            Self::IdentifierReference(_) => vec![],
+            Self::QualifiedName(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSImportType<'a> {
     #[inline]
@@ -3006,6 +4683,13 @@ impl<'a> GetParent<'a> for TSImportType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSImportType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.parameter));
+        children
     }
 }
 
@@ -3019,6 +4703,13 @@ impl<'a> GetParent<'a> for TSImportAttributes<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSImportAttributes<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::IdentifierName(&self.attributes_keyword));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSImportAttribute<'a> {
     #[inline]
@@ -3028,6 +4719,14 @@ impl<'a> GetParent<'a> for TSImportAttribute<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSImportAttribute<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_import_attribute_name(&self.name));
+        children.push(AstKind::from_expression(&self.value));
+        children
     }
 }
 
@@ -3045,6 +4744,15 @@ impl<'a> GetParent<'a> for TSImportAttributeName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSImportAttributeName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(child) => vec![AstKind::IdentifierName(child)],
+            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSFunctionType<'a> {
     #[inline]
@@ -3054,6 +4762,11 @@ impl<'a> GetParent<'a> for TSFunctionType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSFunctionType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3067,6 +4780,11 @@ impl<'a> GetParent<'a> for TSConstructorType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSConstructorType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSMappedType<'a> {
     #[inline]
@@ -3076,6 +4794,11 @@ impl<'a> GetParent<'a> for TSMappedType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSMappedType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3089,6 +4812,11 @@ impl<'a> GetParent<'a> for TSTemplateLiteralType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTemplateLiteralType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for TSAsExpression<'a> {
     #[inline]
@@ -3098,6 +4826,14 @@ impl<'a> GetParent<'a> for TSAsExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSAsExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
     }
 }
 
@@ -3111,6 +4847,14 @@ impl<'a> GetParent<'a> for TSSatisfiesExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSSatisfiesExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSTypeAssertion<'a> {
     #[inline]
@@ -3122,6 +4866,14 @@ impl<'a> GetParent<'a> for TSTypeAssertion<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSTypeAssertion<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSImportEqualsDeclaration<'a> {
     #[inline]
@@ -3131,6 +4883,14 @@ impl<'a> GetParent<'a> for TSImportEqualsDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSImportEqualsDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::BindingIdentifier(&self.id));
+        children.push(AstKind::TSModuleReference(&self.module_reference));
+        children
     }
 }
 
@@ -3150,6 +4910,16 @@ impl<'a> GetParent<'a> for TSModuleReference<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for TSModuleReference<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::ExternalModuleReference(_) => vec![],
+            Self::IdentifierReference(_) => vec![],
+            Self::QualifiedName(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for TSExternalModuleReference<'a> {
     #[inline]
@@ -3159,6 +4929,13 @@ impl<'a> GetParent<'a> for TSExternalModuleReference<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSExternalModuleReference<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::StringLiteral(&self.expression));
+        children
     }
 }
 
@@ -3172,6 +4949,13 @@ impl<'a> GetParent<'a> for TSNonNullExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSNonNullExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for Decorator<'a> {
     #[inline]
@@ -3181,6 +4965,13 @@ impl<'a> GetParent<'a> for Decorator<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for Decorator<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
     }
 }
 
@@ -3194,6 +4985,13 @@ impl<'a> GetParent<'a> for TSExportAssignment<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSExportAssignment<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for TSNamespaceExportDeclaration<'a> {
     #[inline]
@@ -3203,6 +5001,13 @@ impl<'a> GetParent<'a> for TSNamespaceExportDeclaration<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for TSNamespaceExportDeclaration<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::IdentifierName(&self.id));
+        children
     }
 }
 
@@ -3216,6 +5021,13 @@ impl<'a> GetParent<'a> for TSInstantiationExpression<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for TSInstantiationExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSDocNullableType<'a> {
     #[inline]
@@ -3225,6 +5037,13 @@ impl<'a> GetParent<'a> for JSDocNullableType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSDocNullableType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
     }
 }
 
@@ -3238,6 +5057,13 @@ impl<'a> GetParent<'a> for JSDocNonNullableType<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSDocNonNullableType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSDocUnknownType<'a> {
     #[inline]
@@ -3247,6 +5073,11 @@ impl<'a> GetParent<'a> for JSDocUnknownType<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSDocUnknownType<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3260,6 +5091,11 @@ impl<'a> GetParent<'a> for JSXElement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for JSXOpeningElement<'a> {
     #[inline]
@@ -3269,6 +5105,13 @@ impl<'a> GetParent<'a> for JSXOpeningElement<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXOpeningElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::JSXElementName(&self.name));
+        children
     }
 }
 
@@ -3282,6 +5125,13 @@ impl<'a> GetParent<'a> for JSXClosingElement<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXClosingElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::JSXElementName(&self.name));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSXFragment<'a> {
     #[inline]
@@ -3291,6 +5141,11 @@ impl<'a> GetParent<'a> for JSXFragment<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXFragment<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3304,6 +5159,11 @@ impl<'a> GetParent<'a> for JSXOpeningFragment<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXOpeningFragment<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+}
 
 impl<'a> GetParent<'a> for JSXClosingFragment<'a> {
     #[inline]
@@ -3313,6 +5173,11 @@ impl<'a> GetParent<'a> for JSXClosingFragment<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXClosingFragment<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3336,6 +5201,18 @@ impl<'a> GetParent<'a> for JSXElementName<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXElementName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(_) => vec![],
+            Self::IdentifierReference(_) => vec![],
+            Self::NamespacedName(_) => vec![],
+            Self::MemberExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXNamespacedName<'a> {
     #[inline]
@@ -3347,6 +5224,14 @@ impl<'a> GetParent<'a> for JSXNamespacedName<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXNamespacedName<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::JSXIdentifier(&self.namespace));
+        children.push(AstKind::JSXIdentifier(&self.property));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSXMemberExpression<'a> {
     #[inline]
@@ -3356,6 +5241,14 @@ impl<'a> GetParent<'a> for JSXMemberExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXMemberExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::JSXMemberExpressionObject(&self.object));
+        children.push(AstKind::JSXIdentifier(&self.property));
+        children
     }
 }
 
@@ -3375,6 +5268,16 @@ impl<'a> GetParent<'a> for JSXMemberExpressionObject<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXMemberExpressionObject<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::IdentifierReference(_) => vec![],
+            Self::MemberExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXExpressionContainer<'a> {
     #[inline]
@@ -3384,6 +5287,13 @@ impl<'a> GetParent<'a> for JSXExpressionContainer<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXExpressionContainer<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_jsx_expression(&self.expression));
+        children
     }
 }
 
@@ -3483,6 +5393,56 @@ impl<'a> GetParent<'a> for JSXExpression<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXExpression<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::EmptyExpression(child) => vec![AstKind::JSXEmptyExpression(child)],
+            Self::BooleanLiteral(_) => vec![],
+            Self::NullLiteral(_) => vec![],
+            Self::NumericLiteral(_) => vec![],
+            Self::BigIntLiteral(_) => vec![],
+            Self::RegExpLiteral(_) => vec![],
+            Self::StringLiteral(_) => vec![],
+            Self::TemplateLiteral(_) => vec![],
+            Self::Identifier(_) => vec![],
+            Self::MetaProperty(_) => vec![],
+            Self::Super(_) => vec![],
+            Self::ArrayExpression(_) => vec![],
+            Self::ArrowFunctionExpression(_) => vec![],
+            Self::AssignmentExpression(_) => vec![],
+            Self::AwaitExpression(_) => vec![],
+            Self::BinaryExpression(_) => vec![],
+            Self::CallExpression(_) => vec![],
+            Self::ChainExpression(_) => vec![],
+            Self::ClassExpression(_) => vec![],
+            Self::ConditionalExpression(_) => vec![],
+            Self::FunctionExpression(_) => vec![],
+            Self::ImportExpression(_) => vec![],
+            Self::LogicalExpression(_) => vec![],
+            Self::NewExpression(_) => vec![],
+            Self::ObjectExpression(_) => vec![],
+            Self::ParenthesizedExpression(_) => vec![],
+            Self::SequenceExpression(_) => vec![],
+            Self::TaggedTemplateExpression(_) => vec![],
+            Self::ThisExpression(_) => vec![],
+            Self::UnaryExpression(_) => vec![],
+            Self::UpdateExpression(_) => vec![],
+            Self::YieldExpression(_) => vec![],
+            Self::PrivateInExpression(_) => vec![],
+            Self::JSXElement(_) => vec![],
+            Self::JSXFragment(_) => vec![],
+            Self::TSAsExpression(_) => vec![],
+            Self::TSSatisfiesExpression(_) => vec![],
+            Self::TSTypeAssertion(_) => vec![],
+            Self::TSNonNullExpression(_) => vec![],
+            Self::TSInstantiationExpression(_) => vec![],
+            Self::ComputedMemberExpression(_) => vec![],
+            Self::StaticMemberExpression(_) => vec![],
+            Self::PrivateFieldExpression(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXEmptyExpression<'a> {
     #[inline]
@@ -3492,6 +5452,11 @@ impl<'a> GetParent<'a> for JSXEmptyExpression<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXEmptyExpression<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3509,6 +5474,15 @@ impl<'a> GetParent<'a> for JSXAttributeItem<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXAttributeItem<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Attribute(_) => vec![],
+            Self::SpreadAttribute(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXAttribute<'a> {
     #[inline]
@@ -3520,6 +5494,13 @@ impl<'a> GetParent<'a> for JSXAttribute<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXAttribute<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_jsx_attribute_name(&self.name));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSXSpreadAttribute<'a> {
     #[inline]
@@ -3529,6 +5510,13 @@ impl<'a> GetParent<'a> for JSXSpreadAttribute<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXSpreadAttribute<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.argument));
+        children
     }
 }
 
@@ -3543,6 +5531,15 @@ impl<'a> GetParent<'a> for JSXAttributeName<'a> {
         match self {
             Self::Identifier(it) => GetParent::set_parent(it.as_mut(), new_parent),
             Self::NamespacedName(it) => GetParent::set_parent(it.as_mut(), new_parent),
+        }
+    }
+}
+impl<'a> GetChildren<'a> for JSXAttributeName<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Identifier(_) => vec![],
+            Self::NamespacedName(_) => vec![],
         }
     }
 }
@@ -3565,6 +5562,17 @@ impl<'a> GetParent<'a> for JSXAttributeValue<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXAttributeValue<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::StringLiteral(_) => vec![],
+            Self::ExpressionContainer(_) => vec![],
+            Self::Element(_) => vec![],
+            Self::Fragment(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXIdentifier<'a> {
     #[inline]
@@ -3574,6 +5582,11 @@ impl<'a> GetParent<'a> for JSXIdentifier<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXIdentifier<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }
 
@@ -3597,6 +5610,18 @@ impl<'a> GetParent<'a> for JSXChild<'a> {
         }
     }
 }
+impl<'a> GetChildren<'a> for JSXChild<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Text(_) => vec![],
+            Self::Element(_) => vec![],
+            Self::Fragment(_) => vec![],
+            Self::ExpressionContainer(_) => vec![],
+            Self::Spread(_) => vec![],
+        }
+    }
+}
 
 impl<'a> GetParent<'a> for JSXSpreadChild<'a> {
     #[inline]
@@ -3608,6 +5633,13 @@ impl<'a> GetParent<'a> for JSXSpreadChild<'a> {
         self.parent = Some(new_parent);
     }
 }
+impl<'a> GetChildren<'a> for JSXSpreadChild<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::from_expression(&self.expression));
+        children
+    }
+}
 
 impl<'a> GetParent<'a> for JSXText<'a> {
     #[inline]
@@ -3617,5 +5649,10 @@ impl<'a> GetParent<'a> for JSXText<'a> {
     #[inline]
     fn set_parent(&mut self, new_parent: AstKind<'a>) {
         self.parent = Some(new_parent);
+    }
+}
+impl<'a> GetChildren<'a> for JSXText<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
     }
 }

@@ -1637,9 +1637,12 @@ pub struct DebuggerStatement<'a> {
 /// * <https://tc39.es/ecma262/#prod-BindingPattern>
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
 #[estree(no_type)]
 pub struct BindingPattern<'a> {
+    #[estree(skip)]
+    #[clone_in(default)]
+    pub parent: Option<AstKind<'a>>,
     // estree(flatten) the attributes because estree has no `BindingPattern`
     #[estree(
         flatten,
