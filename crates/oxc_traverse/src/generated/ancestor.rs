@@ -2493,6 +2493,7 @@ impl<'a, 't> GetAddress for Ancestor<'a, 't> {
     }
 }
 
+pub(crate) const OFFSET_PROGRAM_PARENT: usize = offset_of!(Program, parent);
 pub(crate) const OFFSET_PROGRAM_SPAN: usize = offset_of!(Program, span);
 pub(crate) const OFFSET_PROGRAM_SOURCE_TYPE: usize = offset_of!(Program, source_type);
 pub(crate) const OFFSET_PROGRAM_SOURCE_TEXT: usize = offset_of!(Program, source_text);
@@ -2511,6 +2512,13 @@ pub struct ProgramWithoutHashbang<'a, 't>(
 );
 
 impl<'a, 't> ProgramWithoutHashbang<'a, 't> {
+    #[inline]
+    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+        unsafe {
+            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
+        }
+    }
+
     #[inline]
     pub fn span(self) -> &'t Span {
         unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_SPAN) as *const Span) }
@@ -2575,6 +2583,13 @@ pub struct ProgramWithoutDirectives<'a, 't>(
 
 impl<'a, 't> ProgramWithoutDirectives<'a, 't> {
     #[inline]
+    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+        unsafe {
+            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
+        }
+    }
+
+    #[inline]
     pub fn span(self) -> &'t Span {
         unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_SPAN) as *const Span) }
     }
@@ -2636,6 +2651,13 @@ pub struct ProgramWithoutBody<'a, 't>(
 );
 
 impl<'a, 't> ProgramWithoutBody<'a, 't> {
+    #[inline]
+    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+        unsafe {
+            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
+        }
+    }
+
     #[inline]
     pub fn span(self) -> &'t Span {
         unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_SPAN) as *const Span) }

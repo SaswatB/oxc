@@ -57,17 +57,18 @@ const _: () = {
     assert!(size_of::<RegExpPattern>() == 24usize);
     assert!(align_of::<RegExpPattern>() == 8usize);
 
-    assert!(size_of::<Program>() == 176usize);
+    assert!(size_of::<Program>() == 192usize);
     assert!(align_of::<Program>() == 8usize);
-    assert!(offset_of!(Program, span) == 0usize);
-    assert!(offset_of!(Program, source_type) == 8usize);
-    assert!(offset_of!(Program, source_text) == 16usize);
-    assert!(offset_of!(Program, comments) == 32usize);
-    assert!(offset_of!(Program, hashbang) == 64usize);
-    assert!(offset_of!(Program, directives) == 104usize);
-    assert!(offset_of!(Program, body) == 136usize);
-    assert!(offset_of!(Program, scope_id) == 168usize);
-    assert!(offset_of!(Program, id) == 172usize);
+    assert!(offset_of!(Program, parent) == 0usize);
+    assert!(offset_of!(Program, span) == 16usize);
+    assert!(offset_of!(Program, source_type) == 24usize);
+    assert!(offset_of!(Program, source_text) == 32usize);
+    assert!(offset_of!(Program, comments) == 48usize);
+    assert!(offset_of!(Program, hashbang) == 80usize);
+    assert!(offset_of!(Program, directives) == 120usize);
+    assert!(offset_of!(Program, body) == 152usize);
+    assert!(offset_of!(Program, scope_id) == 184usize);
+    assert!(offset_of!(Program, id) == 188usize);
 
     assert!(size_of::<Expression>() == 16usize);
     assert!(align_of::<Expression>() == 8usize);
@@ -1806,17 +1807,18 @@ const _: () = {
     assert!(size_of::<RegExpPattern>() == 12usize);
     assert!(align_of::<RegExpPattern>() == 4usize);
 
-    assert!(size_of::<Program>() == 112usize);
+    assert!(size_of::<Program>() == 128usize);
     assert!(align_of::<Program>() == 8usize);
-    assert!(offset_of!(Program, span) == 0usize);
-    assert!(offset_of!(Program, source_type) == 8usize);
-    assert!(offset_of!(Program, source_text) == 12usize);
-    assert!(offset_of!(Program, comments) == 20usize);
-    assert!(offset_of!(Program, hashbang) == 40usize);
-    assert!(offset_of!(Program, directives) == 72usize);
-    assert!(offset_of!(Program, body) == 88usize);
-    assert!(offset_of!(Program, scope_id) == 104usize);
-    assert!(offset_of!(Program, id) == 108usize);
+    assert!(offset_of!(Program, parent) == 0usize);
+    assert!(offset_of!(Program, span) == 16usize);
+    assert!(offset_of!(Program, source_type) == 24usize);
+    assert!(offset_of!(Program, source_text) == 28usize);
+    assert!(offset_of!(Program, comments) == 36usize);
+    assert!(offset_of!(Program, hashbang) == 56usize);
+    assert!(offset_of!(Program, directives) == 88usize);
+    assert!(offset_of!(Program, body) == 104usize);
+    assert!(offset_of!(Program, scope_id) == 120usize);
+    assert!(offset_of!(Program, id) == 124usize);
 
     assert!(size_of::<Expression>() == 8usize);
     assert!(align_of::<Expression>() == 4usize);

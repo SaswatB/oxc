@@ -209,6 +209,19 @@ impl<'a> AstKind<'a> {
         }
     }
 
+    pub fn from_declaration(d: &'a Declaration<'a>) -> Self {
+        match d {
+            Declaration::VariableDeclaration(d) => Self::VariableDeclaration(d),
+            Declaration::FunctionDeclaration(d) => Self::Function(d),
+            Declaration::ClassDeclaration(d) => Self::Class(d),
+            Declaration::TSTypeAliasDeclaration(d) => Self::TSTypeAliasDeclaration(d),
+            Declaration::TSInterfaceDeclaration(d) => Self::TSInterfaceDeclaration(d),
+            Declaration::TSEnumDeclaration(d) => Self::TSEnumDeclaration(d),
+            Declaration::TSModuleDeclaration(d) => Self::TSModuleDeclaration(d),
+            Declaration::TSImportEqualsDeclaration(d) => Self::TSImportEqualsDeclaration(d),
+        }
+    }
+
     pub fn from_binding_pattern_kind(b: &'a BindingPatternKind<'a>) -> Self {
         match b {
             BindingPatternKind::BindingIdentifier(b) => Self::BindingIdentifier(b),
@@ -267,6 +280,17 @@ impl<'a> AstKind<'a> {
             }
             AssignmentTargetMaybeDefault::ObjectAssignmentTarget(a) => {
                 Self::ObjectAssignmentTarget(a)
+            }
+        }
+    }
+
+    pub fn from_assignment_target_property(a: &'a AssignmentTargetProperty<'a>) -> Self {
+        match a {
+            AssignmentTargetProperty::AssignmentTargetPropertyIdentifier(a) => {
+                Self::AssignmentTargetPropertyIdentifier(a)
+            }
+            AssignmentTargetProperty::AssignmentTargetPropertyProperty(a) => {
+                Self::AssignmentTargetPropertyProperty(a)
             }
         }
     }
@@ -366,10 +390,48 @@ impl<'a> AstKind<'a> {
         }
     }
 
+    pub fn from_import_declaration_specifier(i: &'a ImportDeclarationSpecifier<'a>) -> Self {
+        match i {
+            ImportDeclarationSpecifier::ImportSpecifier(i) => Self::ImportSpecifier(i),
+            ImportDeclarationSpecifier::ImportDefaultSpecifier(i) => {
+                Self::ImportDefaultSpecifier(i)
+            }
+            ImportDeclarationSpecifier::ImportNamespaceSpecifier(i) => {
+                Self::ImportNamespaceSpecifier(i)
+            }
+        }
+    }
+
+    pub fn from_object_property_kind(o: &'a ObjectPropertyKind<'a>) -> Self {
+        match o {
+            ObjectPropertyKind::ObjectProperty(o) => Self::ObjectProperty(o),
+            ObjectPropertyKind::SpreadProperty(o) => Self::SpreadElement(o),
+        }
+    }
+
+    pub fn from_class_element(c: &'a ClassElement<'a>) -> Self {
+        match c {
+            ClassElement::StaticBlock(c) => Self::StaticBlock(c),
+            ClassElement::MethodDefinition(c) => Self::MethodDefinition(c),
+            ClassElement::PropertyDefinition(c) => Self::PropertyDefinition(c),
+            ClassElement::AccessorProperty(c) => Self::AccessorProperty(c),
+            ClassElement::TSIndexSignature(c) => Self::TSIndexSignature(c),
+        }
+    }
+
     pub fn from_jsx_attribute_name(j: &'a JSXAttributeName<'a>) -> Self {
         match j {
             JSXAttributeName::Identifier(j) => Self::JSXIdentifier(j),
             JSXAttributeName::NamespacedName(j) => Self::JSXNamespacedName(j),
+        }
+    }
+
+    pub fn from_jsx_attribute_value(j: &'a JSXAttributeValue<'a>) -> Self {
+        match j {
+            JSXAttributeValue::StringLiteral(j) => Self::StringLiteral(j),
+            JSXAttributeValue::ExpressionContainer(j) => Self::JSXExpressionContainer(j),
+            JSXAttributeValue::Element(j) => Self::JSXElement(j),
+            JSXAttributeValue::Fragment(j) => Self::JSXFragment(j),
         }
     }
 
@@ -418,6 +480,16 @@ impl<'a> AstKind<'a> {
             JSXExpression::ComputedMemberExpression(j) => Self::ComputedMemberExpression(j),
             JSXExpression::StaticMemberExpression(j) => Self::StaticMemberExpression(j),
             JSXExpression::PrivateFieldExpression(j) => Self::PrivateFieldExpression(j),
+        }
+    }
+
+    pub fn from_jsx_child(j: &'a JSXChild<'a>) -> Self {
+        match j {
+            JSXChild::Text(j) => Self::JSXText(j),
+            JSXChild::Element(j) => Self::JSXElement(j),
+            JSXChild::Fragment(j) => Self::JSXFragment(j),
+            JSXChild::ExpressionContainer(j) => Self::JSXExpressionContainer(j),
+            JSXChild::Spread(j) => Self::JSXSpreadChild(j),
         }
     }
 
@@ -555,6 +627,25 @@ impl<'a> AstKind<'a> {
         match t {
             TSEnumMemberName::Identifier(t) => Self::IdentifierName(t),
             TSEnumMemberName::String(t) => Self::StringLiteral(t),
+        }
+    }
+
+    pub fn from_ts_signature(t: &'a TSSignature<'a>) -> Self {
+        match t {
+            TSSignature::TSIndexSignature(t) => Self::TSIndexSignature(t),
+            TSSignature::TSPropertySignature(t) => Self::TSPropertySignature(t),
+            TSSignature::TSCallSignatureDeclaration(t) => Self::TSCallSignatureDeclaration(t),
+            TSSignature::TSConstructSignatureDeclaration(t) => {
+                Self::TSConstructSignatureDeclaration(t)
+            }
+            TSSignature::TSMethodSignature(t) => Self::TSMethodSignature(t),
+        }
+    }
+
+    pub fn from_ts_module_declaration_body(t: &'a TSModuleDeclarationBody<'a>) -> Self {
+        match t {
+            TSModuleDeclarationBody::TSModuleDeclaration(t) => Self::TSModuleDeclaration(t),
+            TSModuleDeclarationBody::TSModuleBlock(t) => Self::TSModuleBlock(t),
         }
     }
 }
@@ -812,6 +903,25 @@ impl AstKind<'_> {
             Self::JSDocNullableType(_) => "JSDocNullableType".into(),
             Self::JSDocNonNullableType(_) => "JSDocNonNullableType".into(),
             Self::JSDocUnknownType(_) => "JSDocUnknownType".into(),
+
+            Self::TemplateElement(_) => "TemplateElement".into(),
+            Self::AssignmentTargetRest(_) => "AssignmentTargetRest".into(),
+            Self::AssignmentTargetPropertyIdentifier(_) => {
+                "AssignmentTargetPropertyIdentifier".into()
+            }
+            Self::AssignmentTargetPropertyProperty(_) => "AssignmentTargetPropertyProperty".into(),
+            Self::AccessorProperty(_) => "AccessorProperty".into(),
+            Self::WithClause(_) => "WithClause".into(),
+            Self::ImportAttribute(_) => "ImportAttribute".into(),
+            Self::JSXAttribute(_) => "JSXAttribute".into(),
+            Self::JSXSpreadChild(_) => "JSXSpreadChild".into(),
+            Self::BindingProperty(_) => "BindingProperty".into(),
+            Self::TSInterfaceBody(_) => "TSInterfaceBody".into(),
+            Self::TSIndexSignature(_) => "TSIndexSignature".into(),
+            Self::TSCallSignatureDeclaration(_) => "TSCallSignatureDeclaration".into(),
+            Self::TSIndexSignatureName(_) => "TSIndexSignatureName".into(),
+            Self::TSImportAttributes(_) => "TSImportAttributes".into(),
+            Self::TSImportAttribute(_) => "TSImportAttribute".into(),
         }
     }
 }

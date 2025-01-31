@@ -15,19 +15,30 @@ fn handle_special_case(field_name: &str, field_expr: TokenStream) -> Option<Toke
     match field_name {
         "Expression" => Some(quote! { AstKind::from_expression(#field_expr) }),
         "Statement" => Some(quote! { AstKind::from_statement(#field_expr) }),
+        "Declaration" => Some(quote! { AstKind::from_declaration(#field_expr) }),
         "BindingPatternKind" => Some(quote! { AstKind::from_binding_pattern_kind(#field_expr) }),
         "ChainElement" => Some(quote! { AstKind::from_chain_element(#field_expr) }),
         "ModuleExportName" => Some(quote! { AstKind::from_module_export_name(#field_expr) }),
         "AssignmentTargetMaybeDefault" => {
             Some(quote! { AstKind::from_assignment_target_maybe_default(#field_expr) })
         }
+        "AssignmentTargetProperty" => {
+            Some(quote! { AstKind::from_assignment_target_property(#field_expr) })
+        }
         "ForStatementLeft" => Some(quote! { AstKind::from_for_statement_left(#field_expr) }),
         "ImportAttributeKey" => Some(quote! { AstKind::from_import_attribute_key(#field_expr) }),
         "ExportDefaultDeclarationKind" => {
             Some(quote! { AstKind::from_export_default_declaration_kind(#field_expr) })
         }
+        "ImportDeclarationSpecifier" => {
+            Some(quote! { AstKind::from_import_declaration_specifier(#field_expr) })
+        }
+        "ObjectPropertyKind" => Some(quote! { AstKind::from_object_property_kind(#field_expr) }),
+        "ClassElement" => Some(quote! { AstKind::from_class_element(#field_expr) }),
         "JSXAttributeName" => Some(quote! { AstKind::from_jsx_attribute_name(#field_expr) }),
+        "JSXAttributeValue" => Some(quote! { AstKind::from_jsx_attribute_value(#field_expr) }),
         "JSXExpression" => Some(quote! { AstKind::from_jsx_expression(#field_expr) }),
+        "JSXChild" => Some(quote! { AstKind::from_jsx_child(#field_expr) }),
         "TSType" => Some(quote! { AstKind::from_ts_type(#field_expr) }),
         "TSImportAttributeName" => {
             Some(quote! { AstKind::from_ts_import_attribute_name(#field_expr) })
@@ -42,6 +53,10 @@ fn handle_special_case(field_name: &str, field_expr: TokenStream) -> Option<Toke
         "TSTupleElement" => Some(quote! { AstKind::from_ts_tuple_element(#field_expr) }),
         "TSLiteral" => Some(quote! { AstKind::from_ts_literal(#field_expr) }),
         "TSEnumMemberName" => Some(quote! { AstKind::from_ts_enum_member_name(#field_expr) }),
+        "TSSignature" => Some(quote! { AstKind::from_ts_signature(#field_expr) }),
+        "TSModuleDeclarationBody" => {
+            Some(quote! { AstKind::from_ts_module_declaration_body(#field_expr) })
+        }
         _ => None,
     }
 }
@@ -312,14 +327,15 @@ fn generate_struct_get_children_fn(def: &StructDef, schema: &Schema) -> TokenStr
     let mut child_fields = Vec::new();
 
     for field in &def.fields {
-        if let Some(type_id) = field.typ.type_id() {
+        if let Some(type_id) = field.typ.transparent_type_id() {
             if let Some(field_def) = schema.get(type_id) {
                 if field_def.is_visitable() {
                     let field_name = field_def.name();
                     if !BLACK_LIST.iter().any(|&x| x == field_name) {
                         let field_ident =
                             field.ident().expect("struct field should have an identifier");
-                        child_fields.push((field_ident, field_def.name()));
+                        let analysis = field.typ.analysis();
+                        child_fields.push((field_ident, field_def.name(), analysis.wrapper));
                     }
                 }
             }
@@ -335,19 +351,113 @@ fn generate_struct_get_children_fn(def: &StructDef, schema: &Schema) -> TokenStr
             }
         }
     } else {
-        let field_conversions = child_fields.iter().map(|(field, field_type)| {
-            let field_expr = quote!(&self.#field);
-            if let Some(special_case) = handle_special_case(field_type, field_expr) {
-                quote! {
-                    children.push(#special_case);
+        let field_conversions =
+            child_fields.iter().map(|(field, field_type, wrapper)| match wrapper {
+                TypeWrapper::Vec | TypeWrapper::VecBox => {
+                    let field_expr = quote!(&self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, quote!(item)) {
+                        quote! {
+                            for item in #field_expr {
+                                children.push(#special_case);
+                            }
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            for item in #field_expr {
+                                children.push(AstKind::#field_type_ident(item));
+                            }
+                        }
+                    }
                 }
-            } else {
-                let field_type_ident = format_ident!("{field_type}");
-                quote! {
-                    children.push(AstKind::#field_type_ident(&self.#field));
+                TypeWrapper::OptVec => {
+                    let field_expr = quote!(&self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, quote!(item)) {
+                        quote! {
+                            if let Some(vec) = #field_expr {
+                                for item in vec {
+                                    children.push(#special_case);
+                                }
+                            }
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            if let Some(vec) = #field_expr {
+                                for item in vec {
+                                    children.push(AstKind::#field_type_ident(item));
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        });
+                TypeWrapper::VecOpt => {
+                    let field_expr = quote!(&self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, quote!(item)) {
+                        quote! {
+                            for opt_item in #field_expr {
+                                if let Some(item) = opt_item {
+                                    children.push(#special_case);
+                                }
+                            }
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            for opt_item in #field_expr {
+                                if let Some(item) = opt_item {
+                                    children.push(AstKind::#field_type_ident(item));
+                                }
+                            }
+                        }
+                    }
+                }
+                TypeWrapper::Opt | TypeWrapper::OptBox => {
+                    let field_expr = quote!(&self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, quote!(field)) {
+                        quote! {
+                            if let Some(field) = #field_expr {
+                                children.push(#special_case);
+                            }
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            if let Some(field) = #field_expr {
+                                children.push(AstKind::#field_type_ident(field));
+                            }
+                        }
+                    }
+                }
+                TypeWrapper::Box => {
+                    let field_expr = quote!(&*self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, field_expr.clone())
+                    {
+                        quote! {
+                            children.push(#special_case);
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            children.push(AstKind::#field_type_ident(#field_expr));
+                        }
+                    }
+                }
+                _ => {
+                    let field_expr = quote!(&self.#field);
+                    if let Some(special_case) = handle_special_case(field_type, field_expr.clone())
+                    {
+                        quote! {
+                            children.push(#special_case);
+                        }
+                    } else {
+                        let field_type_ident = format_ident!("{field_type}");
+                        quote! {
+                            children.push(AstKind::#field_type_ident(#field_expr));
+                        }
+                    }
+                }
+            });
 
         quote! {
             impl<'a> GetChildren<'a> for #target_type {

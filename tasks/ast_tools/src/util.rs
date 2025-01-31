@@ -116,7 +116,7 @@ impl<'a> TypeIdentResult<'a> {
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize)]
 pub enum TypeWrapper {
     None,
     Box,

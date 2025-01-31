@@ -107,6 +107,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for Program<'_> {
     type Cloned = Program<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         Program {
+            parent: Default::default(),
             span: CloneIn::clone_in(&self.span, allocator),
             source_type: CloneIn::clone_in(&self.source_type, allocator),
             source_text: CloneIn::clone_in(&self.source_text, allocator),

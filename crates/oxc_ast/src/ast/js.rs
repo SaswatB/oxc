@@ -20,7 +20,6 @@ use oxc_syntax::{
 };
 
 use crate::AstKind;
-use crate::GetParent;
 
 use super::{macros::inherit_variants, *};
 
@@ -31,8 +30,11 @@ use super::{macros::inherit_variants, *};
     strict_if(self.source_type.is_strict() || self.has_use_strict_directive()),
 )]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct Program<'a> {
+    #[estree(skip)]
+    #[clone_in(default)]
+    pub parent: Option<AstKind<'a>>, // this is never actually set for Program
     pub span: Span,
     pub source_type: SourceType,
     #[estree(skip)]
@@ -48,17 +50,6 @@ pub struct Program<'a> {
     pub scope_id: Cell<Option<ScopeId>>,
     #[atomic()]
     pub id: u32,
-}
-
-impl<'a> GetParent<'a> for Program<'a> {
-    #[inline]
-    fn get_parent(&self) -> Option<AstKind<'a>> {
-        None
-    }
-    #[inline]
-    fn set_parent(&mut self, _new_parent: AstKind<'a>) {
-        // noop
-    }
 }
 
 inherit_variants! {

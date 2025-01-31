@@ -1607,8 +1607,10 @@ pub mod walk {
 
     #[inline]
     pub fn walk_template_element<'a, V: Visit<'a>>(visitor: &mut V, it: &TemplateElement<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TemplateElement(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2071,10 +2073,12 @@ pub mod walk {
 
     #[inline]
     pub fn walk_binding_property<'a, V: Visit<'a>>(visitor: &mut V, it: &BindingProperty<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::BindingProperty(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_property_key(&it.key);
         visitor.visit_binding_pattern(&it.value);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2214,10 +2218,12 @@ pub mod walk {
         visitor: &mut V,
         it: &TSImportAttributes<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSImportAttributes(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_identifier_name(&it.attributes_keyword);
         visitor.visit_ts_import_attribute_list(&it.elements);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2232,10 +2238,12 @@ pub mod walk {
 
     #[inline]
     pub fn walk_ts_import_attribute<'a, V: Visit<'a>>(visitor: &mut V, it: &TSImportAttribute<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSImportAttribute(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_ts_import_attribute_name(&it.name);
         visitor.visit_expression(&it.value);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2463,10 +2471,12 @@ pub mod walk {
 
     #[inline]
     pub fn walk_ts_index_signature<'a, V: Visit<'a>>(visitor: &mut V, it: &TSIndexSignature<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSIndexSignature(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_ts_index_signature_names(&it.parameters);
         visitor.visit_ts_type_annotation(&it.type_annotation);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2484,9 +2494,11 @@ pub mod walk {
         visitor: &mut V,
         it: &TSIndexSignatureName<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSIndexSignatureName(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_ts_type_annotation(&it.type_annotation);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2509,7 +2521,8 @@ pub mod walk {
         visitor: &mut V,
         it: &TSCallSignatureDeclaration<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSCallSignatureDeclaration(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         if let Some(type_parameters) = &it.type_parameters {
             visitor.visit_ts_type_parameter_declaration(type_parameters);
@@ -2521,6 +2534,7 @@ pub mod walk {
         if let Some(return_type) = &it.return_type {
             visitor.visit_ts_type_annotation(return_type);
         }
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2937,9 +2951,11 @@ pub mod walk {
         visitor: &mut V,
         it: &AssignmentTargetRest<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::AssignmentTargetRest(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_assignment_target(&it.target);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2987,12 +3003,14 @@ pub mod walk {
         visitor: &mut V,
         it: &AssignmentTargetPropertyIdentifier<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::AssignmentTargetPropertyIdentifier(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_identifier_reference(&it.binding);
         if let Some(init) = &it.init {
             visitor.visit_expression(init);
         }
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -3000,10 +3018,12 @@ pub mod walk {
         visitor: &mut V,
         it: &AssignmentTargetPropertyProperty<'a>,
     ) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::AssignmentTargetPropertyProperty(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_property_key(&it.name);
         visitor.visit_assignment_target_maybe_default(&it.binding);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -3236,7 +3256,8 @@ pub mod walk {
 
     #[inline]
     pub fn walk_accessor_property<'a, V: Visit<'a>>(visitor: &mut V, it: &AccessorProperty<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::AccessorProperty(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_decorators(&it.decorators);
         visitor.visit_property_key(&it.key);
@@ -3246,6 +3267,7 @@ pub mod walk {
         if let Some(type_annotation) = &it.type_annotation {
             visitor.visit_ts_type_annotation(type_annotation);
         }
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -3532,12 +3554,14 @@ pub mod walk {
 
     #[inline]
     pub fn walk_jsx_attribute<'a, V: Visit<'a>>(visitor: &mut V, it: &JSXAttribute<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::JSXAttribute(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_jsx_attribute_name(&it.name);
         if let Some(value) = &it.value {
             visitor.visit_jsx_attribute_value(value);
         }
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -3628,9 +3652,11 @@ pub mod walk {
 
     #[inline]
     pub fn walk_jsx_spread_child<'a, V: Visit<'a>>(visitor: &mut V, it: &JSXSpreadChild<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::JSXSpreadChild(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.expression);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -3994,9 +4020,11 @@ pub mod walk {
 
     #[inline]
     pub fn walk_ts_interface_body<'a, V: Visit<'a>>(visitor: &mut V, it: &TSInterfaceBody<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::TSInterfaceBody(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_ts_signatures(&it.body);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -4244,10 +4272,12 @@ pub mod walk {
 
     #[inline]
     pub fn walk_with_clause<'a, V: Visit<'a>>(visitor: &mut V, it: &WithClause<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::WithClause(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_identifier_name(&it.attributes_keyword);
         visitor.visit_import_attributes(&it.with_entries);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -4262,10 +4292,12 @@ pub mod walk {
 
     #[inline]
     pub fn walk_import_attribute<'a, V: Visit<'a>>(visitor: &mut V, it: &ImportAttribute<'a>) {
-        // NOTE: AstKind doesn't exists!
+        let kind = AstKind::ImportAttribute(visitor.alloc(it));
+        visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_import_attribute_key(&it.key);
         visitor.visit_string_literal(&it.value);
+        visitor.leave_node(kind);
     }
 
     #[inline]

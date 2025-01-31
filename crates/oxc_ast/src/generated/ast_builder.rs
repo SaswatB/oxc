@@ -249,6 +249,7 @@ impl<'a> AstBuilder<'a> {
         S: IntoIn<'a, &'a str>,
     {
         Program {
+            parent: None,
             span,
             source_type,
             source_text: source_text.into_in(self.allocator),
@@ -322,6 +323,7 @@ impl<'a> AstBuilder<'a> {
         S: IntoIn<'a, &'a str>,
     {
         Program {
+            parent: None,
             span,
             source_type,
             source_text: source_text.into_in(self.allocator),

@@ -16,27 +16,19 @@ pub struct AstKindGenerator;
 
 define_generator!(AstKindGenerator);
 
-pub const BLACK_LIST: [&str; 45] = [
+pub const BLACK_LIST: [&str; 29] = [
     "Span",
     "Expression",
     "ObjectPropertyKind",
-    "TemplateElement",
-    "AssignmentTargetRest",
     "AssignmentTargetMaybeDefault",
     "AssignmentTargetProperty",
-    "AssignmentTargetPropertyIdentifier",
-    "AssignmentTargetPropertyProperty",
     "ChainElement",
     "Statement",
     "Declaration",
     "ForStatementLeft",
     "BindingPatternKind",
-    "BindingProperty",
     "ClassElement",
-    "AccessorProperty",
     "ImportDeclarationSpecifier",
-    "WithClause",
-    "ImportAttribute",
     "ImportAttributeKey",
     "ExportDefaultDeclarationKind",
     "ModuleExportName",
@@ -44,24 +36,16 @@ pub const BLACK_LIST: [&str; 45] = [
     "TSLiteral",
     "TSType",
     "TSTupleElement",
-    "TSInterfaceBody",
     "TSSignature",
-    "TSIndexSignature",
-    "TSCallSignatureDeclaration",
-    "TSIndexSignatureName",
     "TSTypePredicateName",
     "TSModuleDeclarationName",
     "TSModuleDeclarationBody",
     "TSTypeQueryExprName",
-    "TSImportAttribute",
-    "TSImportAttributes",
     "TSImportAttributeName",
     "JSXExpression",
-    "JSXAttribute",
     "JSXAttributeName",
     "JSXAttributeValue",
     "JSXChild",
-    "JSXSpreadChild",
 ];
 
 impl Generator for AstKindGenerator {
@@ -113,6 +97,11 @@ impl Generator for AstKindGenerator {
             })
             .collect_vec();
 
+        let get_children_matches: Vec<Arm> = have_kinds
+            .iter()
+            .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_children()))
+            .collect_vec();
+
         let as_ast_kind_impls: Vec<ImplItemFn> = have_kinds
             .iter()
             .map(|(ident, typ)| {
@@ -146,6 +135,7 @@ impl Generator for AstKindGenerator {
                 ///@@line_break
                 use crate::ast::*;
                 use crate::GetParent;
+                use crate::generated::derive_get_parent::GetChildren;
 
                 ///@@line_break
                 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -195,6 +185,11 @@ impl Generator for AstKindGenerator {
                     pub fn set_parent(&mut self, new_parent: AstKind<'a>) {
                         match self {
                             #(#set_parent_matches),*,
+                        }
+                    }
+                    pub fn get_children(&self) -> Vec<AstKind<'a>> {
+                        match self {
+                            #(#get_children_matches),*,
                         }
                     }
                 }
