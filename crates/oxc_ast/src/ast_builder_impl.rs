@@ -12,7 +12,7 @@ use oxc_allocator::{Allocator, Box, FromIn, Vec};
 use oxc_span::{Atom, Span, SPAN};
 use oxc_syntax::{number::NumberBase, operator::UnaryOperator, scope::ScopeId};
 
-use crate::{ast::*, AstBuilder, AstKind, GetParent};
+use crate::{ast::*, ast_builder::COUNTER, AstBuilder};
 
 /// Type that can be used in any AST builder method call which requires an `IntoIn<'a, Anything<'a>>`.
 /// Pass `NONE` instead of `None::<Anything<'a>>`.
@@ -191,10 +191,7 @@ impl<'a> AstBuilder<'a> {
             NONE,
             NONE,
         );
-        let mut result = mem::replace(function, empty_function);
-        let parent = AstKind::Function(unsafe { &*(&result as *const _) });
-        result.params.set_parent(parent);
-        result
+        mem::replace(function, empty_function)
     }
 
     /// Move an array element out by replacing it with an [`ArrayExpressionElement::Elision`].
@@ -236,8 +233,7 @@ impl<'a> AstBuilder<'a> {
     #[inline]
     pub fn use_strict_directive(self) -> Directive<'a> {
         let use_strict = Atom::from("use strict");
-        let str = self.string_literal(SPAN, use_strict, None);
-        self.directive(SPAN, str, use_strict)
+        self.directive(SPAN, self.string_literal(SPAN, use_strict, None), use_strict)
     }
 
     /* ---------- Functions ---------- */
@@ -330,7 +326,7 @@ impl<'a> AstBuilder<'a> {
     ) -> Vec<'a, TSInterfaceHeritage<'a>> {
         Vec::from_iter_in(
             extends.into_iter().map(|(expression, type_parameters, span)| TSInterfaceHeritage {
-                parent: None,
+                node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
                 span,
                 expression,
                 type_parameters,
@@ -341,13 +337,19 @@ impl<'a> AstBuilder<'a> {
 
     /// Create an [`JSXOpeningElement`].
     #[inline]
-    pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment<'a> {
-        JSXOpeningFragment { parent: None, span }
+    pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment {
+        JSXOpeningFragment {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Create an [`JSXClosingElement`].
     #[inline]
-    pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment<'a> {
-        JSXClosingFragment { parent: None, span }
+    pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment {
+        JSXClosingFragment {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 }

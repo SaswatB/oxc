@@ -16,7 +16,7 @@ use oxc_syntax::{reference::ReferenceId, scope::ScopeId, symbol::SymbolId};
 
 use crate::ast::*;
 
-static COUNTER: AtomicU32 = AtomicU32::new(1);
+pub static COUNTER: AtomicU32 = AtomicU32::new(1);
 
 /// AST builder for creating AST nodes
 #[derive(Clone, Copy)]
@@ -34,8 +34,12 @@ impl<'a> AstBuilder<'a> {
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn boolean_literal(self, span: Span, value: bool) -> BooleanLiteral<'a> {
-        BooleanLiteral { parent: None, span, value }
+    pub fn boolean_literal(self, span: Span, value: bool) -> BooleanLiteral {
+        BooleanLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value,
+        }
     }
 
     /// Build a [`BooleanLiteral`], and store it in the memory arena.
@@ -46,7 +50,7 @@ impl<'a> AstBuilder<'a> {
     /// - span: Node location in source code
     /// - value: The boolean value itself
     #[inline]
-    pub fn alloc_boolean_literal(self, span: Span, value: bool) -> Box<'a, BooleanLiteral<'a>> {
+    pub fn alloc_boolean_literal(self, span: Span, value: bool) -> Box<'a, BooleanLiteral> {
         Box::new_in(self.boolean_literal(span, value), self.allocator)
     }
 
@@ -57,8 +61,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: Node location in source code
     #[inline]
-    pub fn null_literal(self, span: Span) -> NullLiteral<'a> {
-        NullLiteral { parent: None, span }
+    pub fn null_literal(self, span: Span) -> NullLiteral {
+        NullLiteral { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`NullLiteral`], and store it in the memory arena.
@@ -68,7 +72,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: Node location in source code
     #[inline]
-    pub fn alloc_null_literal(self, span: Span) -> Box<'a, NullLiteral<'a>> {
+    pub fn alloc_null_literal(self, span: Span) -> Box<'a, NullLiteral> {
         Box::new_in(self.null_literal(span), self.allocator)
     }
 
@@ -89,7 +93,13 @@ impl<'a> AstBuilder<'a> {
         raw: Option<Atom<'a>>,
         base: NumberBase,
     ) -> NumericLiteral<'a> {
-        NumericLiteral { parent: None, span, value, raw, base }
+        NumericLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value,
+            raw,
+            base,
+        }
     }
 
     /// Build a [`NumericLiteral`], and store it in the memory arena.
@@ -125,7 +135,12 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        StringLiteral { parent: None, span, value: value.into_in(self.allocator), raw }
+        StringLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value: value.into_in(self.allocator),
+            raw,
+        }
     }
 
     /// Build a [`StringLiteral`], and store it in the memory arena.
@@ -162,7 +177,12 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        BigIntLiteral { parent: None, span, raw: raw.into_in(self.allocator), base }
+        BigIntLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            raw: raw.into_in(self.allocator),
+            base,
+        }
     }
 
     /// Build a [`BigIntLiteral`], and store it in the memory arena.
@@ -201,7 +221,12 @@ impl<'a> AstBuilder<'a> {
         regex: RegExp<'a>,
         raw: Option<Atom<'a>>,
     ) -> RegExpLiteral<'a> {
-        RegExpLiteral { parent: None, span, regex, raw }
+        RegExpLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            regex,
+            raw,
+        }
     }
 
     /// Build a [`RegExpLiteral`], and store it in the memory arena.
@@ -249,7 +274,7 @@ impl<'a> AstBuilder<'a> {
         S: IntoIn<'a, &'a str>,
     {
         Program {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             source_type,
             source_text: source_text.into_in(self.allocator),
@@ -258,7 +283,6 @@ impl<'a> AstBuilder<'a> {
             directives,
             body,
             scope_id: Default::default(),
-            id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
         }
     }
 
@@ -323,7 +347,7 @@ impl<'a> AstBuilder<'a> {
         S: IntoIn<'a, &'a str>,
     {
         Program {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             source_type,
             source_text: source_text.into_in(self.allocator),
@@ -332,7 +356,6 @@ impl<'a> AstBuilder<'a> {
             directives,
             body,
             scope_id: Cell::new(Some(scope_id)),
-            id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
         }
     }
 
@@ -1102,8 +1125,8 @@ impl<'a> AstBuilder<'a> {
     pub fn expression_jsx_fragment(
         self,
         span: Span,
-        opening_fragment: JSXOpeningFragment<'a>,
-        closing_fragment: JSXClosingFragment<'a>,
+        opening_fragment: JSXOpeningFragment,
+        closing_fragment: JSXClosingFragment,
         children: Vec<'a, JSXChild<'a>>,
     ) -> Expression<'a> {
         Expression::JSXFragment(self.alloc_jsx_fragment(
@@ -1221,7 +1244,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        IdentifierName { parent: None, span, name: name.into_in(self.allocator) }
+        IdentifierName {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name: name.into_in(self.allocator),
+        }
     }
 
     /// Build an [`IdentifierName`], and store it in the memory arena.
@@ -1252,7 +1279,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         IdentifierReference {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             name: name.into_in(self.allocator),
             reference_id: Default::default(),
@@ -1297,7 +1324,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         IdentifierReference {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             name: name.into_in(self.allocator),
             reference_id: Cell::new(Some(reference_id)),
@@ -1341,7 +1368,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         BindingIdentifier {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             name: name.into_in(self.allocator),
             symbol_id: Default::default(),
@@ -1382,7 +1409,7 @@ impl<'a> AstBuilder<'a> {
         A: IntoIn<'a, Atom<'a>>,
     {
         BindingIdentifier {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             name: name.into_in(self.allocator),
             symbol_id: Cell::new(Some(symbol_id)),
@@ -1422,7 +1449,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        LabelIdentifier { parent: None, span, name: name.into_in(self.allocator) }
+        LabelIdentifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name: name.into_in(self.allocator),
+        }
     }
 
     /// Build a [`LabelIdentifier`], and store it in the memory arena.
@@ -1447,8 +1478,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn this_expression(self, span: Span) -> ThisExpression<'a> {
-        ThisExpression { parent: None, span }
+    pub fn this_expression(self, span: Span) -> ThisExpression {
+        ThisExpression { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`ThisExpression`], and store it in the memory arena.
@@ -1458,7 +1489,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_this_expression(self, span: Span) -> Box<'a, ThisExpression<'a>> {
+    pub fn alloc_this_expression(self, span: Span) -> Box<'a, ThisExpression> {
         Box::new_in(self.this_expression(span), self.allocator)
     }
 
@@ -1477,7 +1508,12 @@ impl<'a> AstBuilder<'a> {
         elements: Vec<'a, ArrayExpressionElement<'a>>,
         trailing_comma: Option<Span>,
     ) -> ArrayExpression<'a> {
-        ArrayExpression { parent: None, span, elements, trailing_comma }
+        ArrayExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            elements,
+            trailing_comma,
+        }
     }
 
     /// Build an [`ArrayExpression`], and store it in the memory arena.
@@ -1530,8 +1566,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn elision(self, span: Span) -> Elision<'a> {
-        Elision { parent: None, span }
+    pub fn elision(self, span: Span) -> Elision {
+        Elision { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build an [`Elision`], and store it in the memory arena.
@@ -1541,7 +1577,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_elision(self, span: Span) -> Box<'a, Elision<'a>> {
+    pub fn alloc_elision(self, span: Span) -> Box<'a, Elision> {
         Box::new_in(self.elision(span), self.allocator)
     }
 
@@ -1560,7 +1596,12 @@ impl<'a> AstBuilder<'a> {
         properties: Vec<'a, ObjectPropertyKind<'a>>,
         trailing_comma: Option<Span>,
     ) -> ObjectExpression<'a> {
-        ObjectExpression { parent: None, span, properties, trailing_comma }
+        ObjectExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            properties,
+            trailing_comma,
+        }
     }
 
     /// Build an [`ObjectExpression`], and store it in the memory arena.
@@ -1648,7 +1689,16 @@ impl<'a> AstBuilder<'a> {
         shorthand: bool,
         computed: bool,
     ) -> ObjectProperty<'a> {
-        ObjectProperty { parent: None, span, kind, key, value, method, shorthand, computed }
+        ObjectProperty {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            kind,
+            key,
+            value,
+            method,
+            shorthand,
+            computed,
+        }
     }
 
     /// Build an [`ObjectProperty`], and store it in the memory arena.
@@ -1725,7 +1775,12 @@ impl<'a> AstBuilder<'a> {
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
     ) -> TemplateLiteral<'a> {
-        TemplateLiteral { parent: None, span, quasis, expressions }
+        TemplateLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            quasis,
+            expressions,
+        }
     }
 
     /// Build a [`TemplateLiteral`], and store it in the memory arena.
@@ -1767,7 +1822,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TaggedTemplateExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             tag,
             quasi,
@@ -1816,7 +1871,12 @@ impl<'a> AstBuilder<'a> {
         tail: bool,
         value: TemplateElementValue<'a>,
     ) -> TemplateElement<'a> {
-        TemplateElement { parent: None, span, tail, value }
+        TemplateElement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            tail,
+            value,
+        }
     }
 
     /// Build a [`TemplateElement`], and store it in the memory arena.
@@ -1920,7 +1980,13 @@ impl<'a> AstBuilder<'a> {
         expression: Expression<'a>,
         optional: bool,
     ) -> ComputedMemberExpression<'a> {
-        ComputedMemberExpression { parent: None, span, object, expression, optional }
+        ComputedMemberExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object,
+            expression,
+            optional,
+        }
     }
 
     /// Build a [`ComputedMemberExpression`], and store it in the memory arena.
@@ -1963,7 +2029,13 @@ impl<'a> AstBuilder<'a> {
         property: IdentifierName<'a>,
         optional: bool,
     ) -> StaticMemberExpression<'a> {
-        StaticMemberExpression { parent: None, span, object, property, optional }
+        StaticMemberExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object,
+            property,
+            optional,
+        }
     }
 
     /// Build a [`StaticMemberExpression`], and store it in the memory arena.
@@ -2003,7 +2075,13 @@ impl<'a> AstBuilder<'a> {
         field: PrivateIdentifier<'a>,
         optional: bool,
     ) -> PrivateFieldExpression<'a> {
-        PrivateFieldExpression { parent: None, span, object, field, optional }
+        PrivateFieldExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object,
+            field,
+            optional,
+        }
     }
 
     /// Build a [`PrivateFieldExpression`], and store it in the memory arena.
@@ -2049,7 +2127,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         CallExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             callee,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -2107,7 +2185,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         NewExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             callee,
             arguments,
@@ -2153,7 +2231,12 @@ impl<'a> AstBuilder<'a> {
         meta: IdentifierName<'a>,
         property: IdentifierName<'a>,
     ) -> MetaProperty<'a> {
-        MetaProperty { parent: None, span, meta, property }
+        MetaProperty {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            meta,
+            property,
+        }
     }
 
     /// Build a [`MetaProperty`], and store it in the memory arena.
@@ -2183,7 +2266,11 @@ impl<'a> AstBuilder<'a> {
     /// - argument: The expression being spread.
     #[inline]
     pub fn spread_element(self, span: Span, argument: Expression<'a>) -> SpreadElement<'a> {
-        SpreadElement { parent: None, span, argument }
+        SpreadElement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build a [`SpreadElement`], and store it in the memory arena.
@@ -2231,7 +2318,13 @@ impl<'a> AstBuilder<'a> {
         prefix: bool,
         argument: SimpleAssignmentTarget<'a>,
     ) -> UpdateExpression<'a> {
-        UpdateExpression { parent: None, span, operator, prefix, argument }
+        UpdateExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            operator,
+            prefix,
+            argument,
+        }
     }
 
     /// Build an [`UpdateExpression`], and store it in the memory arena.
@@ -2269,7 +2362,12 @@ impl<'a> AstBuilder<'a> {
         operator: UnaryOperator,
         argument: Expression<'a>,
     ) -> UnaryExpression<'a> {
-        UnaryExpression { parent: None, span, operator, argument }
+        UnaryExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            operator,
+            argument,
+        }
     }
 
     /// Build an [`UnaryExpression`], and store it in the memory arena.
@@ -2307,7 +2405,13 @@ impl<'a> AstBuilder<'a> {
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> BinaryExpression<'a> {
-        BinaryExpression { parent: None, span, left, operator, right }
+        BinaryExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            operator,
+            right,
+        }
     }
 
     /// Build a [`BinaryExpression`], and store it in the memory arena.
@@ -2347,7 +2451,13 @@ impl<'a> AstBuilder<'a> {
         operator: BinaryOperator,
         right: Expression<'a>,
     ) -> PrivateInExpression<'a> {
-        PrivateInExpression { parent: None, span, left, operator, right }
+        PrivateInExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            operator,
+            right,
+        }
     }
 
     /// Build a [`PrivateInExpression`], and store it in the memory arena.
@@ -2387,7 +2497,13 @@ impl<'a> AstBuilder<'a> {
         operator: LogicalOperator,
         right: Expression<'a>,
     ) -> LogicalExpression<'a> {
-        LogicalExpression { parent: None, span, left, operator, right }
+        LogicalExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            operator,
+            right,
+        }
     }
 
     /// Build a [`LogicalExpression`], and store it in the memory arena.
@@ -2427,7 +2543,13 @@ impl<'a> AstBuilder<'a> {
         consequent: Expression<'a>,
         alternate: Expression<'a>,
     ) -> ConditionalExpression<'a> {
-        ConditionalExpression { parent: None, span, test, consequent, alternate }
+        ConditionalExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            test,
+            consequent,
+            alternate,
+        }
     }
 
     /// Build a [`ConditionalExpression`], and store it in the memory arena.
@@ -2467,7 +2589,13 @@ impl<'a> AstBuilder<'a> {
         left: AssignmentTarget<'a>,
         right: Expression<'a>,
     ) -> AssignmentExpression<'a> {
-        AssignmentExpression { parent: None, span, operator, left, right }
+        AssignmentExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            operator,
+            left,
+            right,
+        }
     }
 
     /// Build an [`AssignmentExpression`], and store it in the memory arena.
@@ -2682,7 +2810,13 @@ impl<'a> AstBuilder<'a> {
         rest: Option<AssignmentTargetRest<'a>>,
         trailing_comma: Option<Span>,
     ) -> ArrayAssignmentTarget<'a> {
-        ArrayAssignmentTarget { parent: None, span, elements, rest, trailing_comma }
+        ArrayAssignmentTarget {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            elements,
+            rest,
+            trailing_comma,
+        }
     }
 
     /// Build an [`ArrayAssignmentTarget`], and store it in the memory arena.
@@ -2723,7 +2857,12 @@ impl<'a> AstBuilder<'a> {
         properties: Vec<'a, AssignmentTargetProperty<'a>>,
         rest: Option<AssignmentTargetRest<'a>>,
     ) -> ObjectAssignmentTarget<'a> {
-        ObjectAssignmentTarget { parent: None, span, properties, rest }
+        ObjectAssignmentTarget {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            properties,
+            rest,
+        }
     }
 
     /// Build an [`ObjectAssignmentTarget`], and store it in the memory arena.
@@ -2757,7 +2896,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         target: AssignmentTarget<'a>,
     ) -> AssignmentTargetRest<'a> {
-        AssignmentTargetRest { parent: None, span, target }
+        AssignmentTargetRest {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            target,
+        }
     }
 
     /// Build an [`AssignmentTargetRest`], and store it in the memory arena.
@@ -2811,7 +2954,12 @@ impl<'a> AstBuilder<'a> {
         binding: AssignmentTarget<'a>,
         init: Expression<'a>,
     ) -> AssignmentTargetWithDefault<'a> {
-        AssignmentTargetWithDefault { parent: None, span, binding, init }
+        AssignmentTargetWithDefault {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            binding,
+            init,
+        }
     }
 
     /// Build an [`AssignmentTargetWithDefault`], and store it in the memory arena.
@@ -2889,7 +3037,12 @@ impl<'a> AstBuilder<'a> {
         binding: IdentifierReference<'a>,
         init: Option<Expression<'a>>,
     ) -> AssignmentTargetPropertyIdentifier<'a> {
-        AssignmentTargetPropertyIdentifier { parent: None, span, binding, init }
+        AssignmentTargetPropertyIdentifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            binding,
+            init,
+        }
     }
 
     /// Build an [`AssignmentTargetPropertyIdentifier`], and store it in the memory arena.
@@ -2927,7 +3080,13 @@ impl<'a> AstBuilder<'a> {
         binding: AssignmentTargetMaybeDefault<'a>,
         computed: bool,
     ) -> AssignmentTargetPropertyProperty<'a> {
-        AssignmentTargetPropertyProperty { parent: None, span, name, binding, computed }
+        AssignmentTargetPropertyProperty {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name,
+            binding,
+            computed,
+        }
     }
 
     /// Build an [`AssignmentTargetPropertyProperty`], and store it in the memory arena.
@@ -2966,7 +3125,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expressions: Vec<'a, Expression<'a>>,
     ) -> SequenceExpression<'a> {
-        SequenceExpression { parent: None, span, expressions }
+        SequenceExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expressions,
+        }
     }
 
     /// Build a [`SequenceExpression`], and store it in the memory arena.
@@ -2992,8 +3155,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn super_(self, span: Span) -> Super<'a> {
-        Super { parent: None, span }
+    pub fn super_(self, span: Span) -> Super {
+        Super { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`Super`], and store it in the memory arena.
@@ -3003,7 +3166,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_super(self, span: Span) -> Box<'a, Super<'a>> {
+    pub fn alloc_super(self, span: Span) -> Box<'a, Super> {
         Box::new_in(self.super_(span), self.allocator)
     }
 
@@ -3016,7 +3179,11 @@ impl<'a> AstBuilder<'a> {
     /// - argument
     #[inline]
     pub fn await_expression(self, span: Span, argument: Expression<'a>) -> AwaitExpression<'a> {
-        AwaitExpression { parent: None, span, argument }
+        AwaitExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build an [`AwaitExpression`], and store it in the memory arena.
@@ -3044,7 +3211,11 @@ impl<'a> AstBuilder<'a> {
     /// - expression
     #[inline]
     pub fn chain_expression(self, span: Span, expression: ChainElement<'a>) -> ChainExpression<'a> {
-        ChainExpression { parent: None, span, expression }
+        ChainExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`ChainExpression`], and store it in the memory arena.
@@ -3123,7 +3294,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: Expression<'a>,
     ) -> ParenthesizedExpression<'a> {
-        ParenthesizedExpression { parent: None, span, expression }
+        ParenthesizedExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`ParenthesizedExpression`], and store it in the memory arena.
@@ -3457,7 +3632,12 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Directive { parent: None, span, expression, directive: directive.into_in(self.allocator) }
+        Directive {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+            directive: directive.into_in(self.allocator),
+        }
     }
 
     /// Build a [`Directive`], and store it in the memory arena.
@@ -3493,7 +3673,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        Hashbang { parent: None, span, value: value.into_in(self.allocator) }
+        Hashbang {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value: value.into_in(self.allocator),
+        }
     }
 
     /// Build a [`Hashbang`], and store it in the memory arena.
@@ -3520,7 +3704,12 @@ impl<'a> AstBuilder<'a> {
     /// - body
     #[inline]
     pub fn block_statement(self, span: Span, body: Vec<'a, Statement<'a>>) -> BlockStatement<'a> {
-        BlockStatement { parent: None, span, body, scope_id: Default::default() }
+        BlockStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`BlockStatement`], and store it in the memory arena.
@@ -3554,7 +3743,12 @@ impl<'a> AstBuilder<'a> {
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> BlockStatement<'a> {
-        BlockStatement { parent: None, span, body, scope_id: Cell::new(Some(scope_id)) }
+        BlockStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+            scope_id: Cell::new(Some(scope_id)),
+        }
     }
 
     /// Build a [`BlockStatement`] with `ScopeId`, and store it in the memory arena.
@@ -3860,7 +4054,13 @@ impl<'a> AstBuilder<'a> {
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> VariableDeclaration<'a> {
-        VariableDeclaration { parent: None, span, kind, declarations, declare }
+        VariableDeclaration {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            kind,
+            declarations,
+            declare,
+        }
     }
 
     /// Build a [`VariableDeclaration`], and store it in the memory arena.
@@ -3902,7 +4102,14 @@ impl<'a> AstBuilder<'a> {
         init: Option<Expression<'a>>,
         definite: bool,
     ) -> VariableDeclarator<'a> {
-        VariableDeclarator { parent: None, span, kind, id, init, definite }
+        VariableDeclarator {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            kind,
+            id,
+            init,
+            definite,
+        }
     }
 
     /// Build a [`VariableDeclarator`], and store it in the memory arena.
@@ -3934,8 +4141,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn empty_statement(self, span: Span) -> EmptyStatement<'a> {
-        EmptyStatement { parent: None, span }
+    pub fn empty_statement(self, span: Span) -> EmptyStatement {
+        EmptyStatement { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build an [`EmptyStatement`], and store it in the memory arena.
@@ -3945,7 +4152,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_empty_statement(self, span: Span) -> Box<'a, EmptyStatement<'a>> {
+    pub fn alloc_empty_statement(self, span: Span) -> Box<'a, EmptyStatement> {
         Box::new_in(self.empty_statement(span), self.allocator)
     }
 
@@ -3962,7 +4169,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: Expression<'a>,
     ) -> ExpressionStatement<'a> {
-        ExpressionStatement { parent: None, span, expression }
+        ExpressionStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build an [`ExpressionStatement`], and store it in the memory arena.
@@ -3998,7 +4209,13 @@ impl<'a> AstBuilder<'a> {
         consequent: Statement<'a>,
         alternate: Option<Statement<'a>>,
     ) -> IfStatement<'a> {
-        IfStatement { parent: None, span, test, consequent, alternate }
+        IfStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            test,
+            consequent,
+            alternate,
+        }
     }
 
     /// Build an [`IfStatement`], and store it in the memory arena.
@@ -4036,7 +4253,12 @@ impl<'a> AstBuilder<'a> {
         body: Statement<'a>,
         test: Expression<'a>,
     ) -> DoWhileStatement<'a> {
-        DoWhileStatement { parent: None, span, body, test }
+        DoWhileStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+            test,
+        }
     }
 
     /// Build a [`DoWhileStatement`], and store it in the memory arena.
@@ -4072,7 +4294,12 @@ impl<'a> AstBuilder<'a> {
         test: Expression<'a>,
         body: Statement<'a>,
     ) -> WhileStatement<'a> {
-        WhileStatement { parent: None, span, test, body }
+        WhileStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            test,
+            body,
+        }
     }
 
     /// Build a [`WhileStatement`], and store it in the memory arena.
@@ -4112,7 +4339,15 @@ impl<'a> AstBuilder<'a> {
         update: Option<Expression<'a>>,
         body: Statement<'a>,
     ) -> ForStatement<'a> {
-        ForStatement { parent: None, span, init, test, update, body, scope_id: Default::default() }
+        ForStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            init,
+            test,
+            update,
+            body,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`ForStatement`], and store it in the memory arena.
@@ -4159,7 +4394,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> ForStatement<'a> {
         ForStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             init,
             test,
@@ -4238,7 +4473,14 @@ impl<'a> AstBuilder<'a> {
         right: Expression<'a>,
         body: Statement<'a>,
     ) -> ForInStatement<'a> {
-        ForInStatement { parent: None, span, left, right, body, scope_id: Default::default() }
+        ForInStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            right,
+            body,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`ForInStatement`], and store it in the memory arena.
@@ -4281,7 +4523,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> ForInStatement<'a> {
         ForInStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             left,
             right,
@@ -4360,7 +4602,7 @@ impl<'a> AstBuilder<'a> {
         body: Statement<'a>,
     ) -> ForOfStatement<'a> {
         ForOfStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#await,
             left,
@@ -4414,7 +4656,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> ForOfStatement<'a> {
         ForOfStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#await,
             left,
@@ -4464,7 +4706,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> ContinueStatement<'a> {
-        ContinueStatement { parent: None, span, label }
+        ContinueStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            label,
+        }
     }
 
     /// Build a [`ContinueStatement`], and store it in the memory arena.
@@ -4496,7 +4742,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         label: Option<LabelIdentifier<'a>>,
     ) -> BreakStatement<'a> {
-        BreakStatement { parent: None, span, label }
+        BreakStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            label,
+        }
     }
 
     /// Build a [`BreakStatement`], and store it in the memory arena.
@@ -4528,7 +4778,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         argument: Option<Expression<'a>>,
     ) -> ReturnStatement<'a> {
-        ReturnStatement { parent: None, span, argument }
+        ReturnStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build a [`ReturnStatement`], and store it in the memory arena.
@@ -4562,7 +4816,12 @@ impl<'a> AstBuilder<'a> {
         object: Expression<'a>,
         body: Statement<'a>,
     ) -> WithStatement<'a> {
-        WithStatement { parent: None, span, object, body }
+        WithStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object,
+            body,
+        }
     }
 
     /// Build a [`WithStatement`], and store it in the memory arena.
@@ -4598,7 +4857,13 @@ impl<'a> AstBuilder<'a> {
         discriminant: Expression<'a>,
         cases: Vec<'a, SwitchCase<'a>>,
     ) -> SwitchStatement<'a> {
-        SwitchStatement { parent: None, span, discriminant, cases, scope_id: Default::default() }
+        SwitchStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            discriminant,
+            cases,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`SwitchStatement`], and store it in the memory arena.
@@ -4637,7 +4902,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> SwitchStatement<'a> {
         SwitchStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             discriminant,
             cases,
@@ -4683,7 +4948,12 @@ impl<'a> AstBuilder<'a> {
         test: Option<Expression<'a>>,
         consequent: Vec<'a, Statement<'a>>,
     ) -> SwitchCase<'a> {
-        SwitchCase { parent: None, span, test, consequent }
+        SwitchCase {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            test,
+            consequent,
+        }
     }
 
     /// Build a [`SwitchCase`], and store it in the memory arena.
@@ -4719,7 +4989,12 @@ impl<'a> AstBuilder<'a> {
         label: LabelIdentifier<'a>,
         body: Statement<'a>,
     ) -> LabeledStatement<'a> {
-        LabeledStatement { parent: None, span, label, body }
+        LabeledStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            label,
+            body,
+        }
     }
 
     /// Build a [`LabeledStatement`], and store it in the memory arena.
@@ -4749,7 +5024,11 @@ impl<'a> AstBuilder<'a> {
     /// - argument: The expression being thrown, e.g. `err` in `throw err;`
     #[inline]
     pub fn throw_statement(self, span: Span, argument: Expression<'a>) -> ThrowStatement<'a> {
-        ThrowStatement { parent: None, span, argument }
+        ThrowStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build a [`ThrowStatement`], and store it in the memory arena.
@@ -4791,7 +5070,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, BlockStatement<'a>>>>,
     {
         TryStatement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             block: block.into_in(self.allocator),
             handler: handler.into_in(self.allocator),
@@ -4843,7 +5122,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
         CatchClause {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             param,
             body: body.into_in(self.allocator),
@@ -4893,7 +5172,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, BlockStatement<'a>>>,
     {
         CatchClause {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             param,
             body: body.into_in(self.allocator),
@@ -4933,7 +5212,11 @@ impl<'a> AstBuilder<'a> {
     /// - pattern: The bound error
     #[inline]
     pub fn catch_parameter(self, span: Span, pattern: BindingPattern<'a>) -> CatchParameter<'a> {
-        CatchParameter { parent: None, span, pattern }
+        CatchParameter {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            pattern,
+        }
     }
 
     /// Build a [`CatchParameter`], and store it in the memory arena.
@@ -4959,8 +5242,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn debugger_statement(self, span: Span) -> DebuggerStatement<'a> {
-        DebuggerStatement { parent: None, span }
+    pub fn debugger_statement(self, span: Span) -> DebuggerStatement {
+        DebuggerStatement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`DebuggerStatement`], and store it in the memory arena.
@@ -4970,7 +5256,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_debugger_statement(self, span: Span) -> Box<'a, DebuggerStatement<'a>> {
+    pub fn alloc_debugger_statement(self, span: Span) -> Box<'a, DebuggerStatement> {
         Box::new_in(self.debugger_statement(span), self.allocator)
     }
 
@@ -4993,7 +5279,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         BindingPattern {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             kind,
             type_annotation: type_annotation.into_in(self.allocator),
             optional,
@@ -5115,7 +5401,12 @@ impl<'a> AstBuilder<'a> {
         left: BindingPattern<'a>,
         right: Expression<'a>,
     ) -> AssignmentPattern<'a> {
-        AssignmentPattern { parent: None, span, left, right }
+        AssignmentPattern {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            right,
+        }
     }
 
     /// Build an [`AssignmentPattern`], and store it in the memory arena.
@@ -5154,7 +5445,12 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        ObjectPattern { parent: None, span, properties, rest: rest.into_in(self.allocator) }
+        ObjectPattern {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            properties,
+            rest: rest.into_in(self.allocator),
+        }
     }
 
     /// Build an [`ObjectPattern`], and store it in the memory arena.
@@ -5197,7 +5493,14 @@ impl<'a> AstBuilder<'a> {
         shorthand: bool,
         computed: bool,
     ) -> BindingProperty<'a> {
-        BindingProperty { parent: None, span, key, value, shorthand, computed }
+        BindingProperty {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            key,
+            value,
+            shorthand,
+            computed,
+        }
     }
 
     /// Build a [`BindingProperty`], and store it in the memory arena.
@@ -5240,7 +5543,12 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        ArrayPattern { parent: None, span, elements, rest: rest.into_in(self.allocator) }
+        ArrayPattern {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            elements,
+            rest: rest.into_in(self.allocator),
+        }
     }
 
     /// Build an [`ArrayPattern`], and store it in the memory arena.
@@ -5277,7 +5585,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         argument: BindingPattern<'a>,
     ) -> BindingRestElement<'a> {
-        BindingRestElement { parent: None, span, argument }
+        BindingRestElement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build a [`BindingRestElement`], and store it in the memory arena.
@@ -5335,7 +5647,7 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Function {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             id,
@@ -5448,7 +5760,7 @@ impl<'a> AstBuilder<'a> {
         T5: IntoIn<'a, Option<Box<'a, FunctionBody<'a>>>>,
     {
         Function {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             id,
@@ -5543,7 +5855,13 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        FormalParameters { parent: None, span, kind, items, rest: rest.into_in(self.allocator) }
+        FormalParameters {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            kind,
+            items,
+            rest: rest.into_in(self.allocator),
+        }
     }
 
     /// Build a [`FormalParameters`], and store it in the memory arena.
@@ -5591,7 +5909,7 @@ impl<'a> AstBuilder<'a> {
         r#override: bool,
     ) -> FormalParameter<'a> {
         FormalParameter {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             decorators,
             pattern,
@@ -5643,7 +5961,12 @@ impl<'a> AstBuilder<'a> {
         directives: Vec<'a, Directive<'a>>,
         statements: Vec<'a, Statement<'a>>,
     ) -> FunctionBody<'a> {
-        FunctionBody { parent: None, span, directives, statements }
+        FunctionBody {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            directives,
+            statements,
+        }
     }
 
     /// Build a [`FunctionBody`], and store it in the memory arena.
@@ -5694,7 +6017,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
     {
         ArrowFunctionExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             r#async,
@@ -5781,7 +6104,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
     {
         ArrowFunctionExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             r#async,
@@ -5854,7 +6177,12 @@ impl<'a> AstBuilder<'a> {
         delegate: bool,
         argument: Option<Expression<'a>>,
     ) -> YieldExpression<'a> {
-        YieldExpression { parent: None, span, delegate, argument }
+        YieldExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            delegate,
+            argument,
+        }
     }
 
     /// Build a [`YieldExpression`], and store it in the memory arena.
@@ -5912,7 +6240,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             decorators,
@@ -6021,7 +6349,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             decorators,
@@ -6103,7 +6431,11 @@ impl<'a> AstBuilder<'a> {
     /// - body
     #[inline]
     pub fn class_body(self, span: Span, body: Vec<'a, ClassElement<'a>>) -> ClassBody<'a> {
-        ClassBody { parent: None, span, body }
+        ClassBody {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+        }
     }
 
     /// Build a [`ClassBody`], and store it in the memory arena.
@@ -6357,7 +6689,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, Function<'a>>>,
     {
         MethodDefinition {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             decorators,
@@ -6465,7 +6797,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         PropertyDefinition {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             decorators,
@@ -6556,7 +6888,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        PrivateIdentifier { parent: None, span, name: name.into_in(self.allocator) }
+        PrivateIdentifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name: name.into_in(self.allocator),
+        }
     }
 
     /// Build a [`PrivateIdentifier`], and store it in the memory arena.
@@ -6583,7 +6919,12 @@ impl<'a> AstBuilder<'a> {
     /// - body
     #[inline]
     pub fn static_block(self, span: Span, body: Vec<'a, Statement<'a>>) -> StaticBlock<'a> {
-        StaticBlock { parent: None, span, body, scope_id: Default::default() }
+        StaticBlock {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+            scope_id: Default::default(),
+        }
     }
 
     /// Build a [`StaticBlock`], and store it in the memory arena.
@@ -6617,7 +6958,12 @@ impl<'a> AstBuilder<'a> {
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
     ) -> StaticBlock<'a> {
-        StaticBlock { parent: None, span, body, scope_id: Cell::new(Some(scope_id)) }
+        StaticBlock {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+            scope_id: Cell::new(Some(scope_id)),
+        }
     }
 
     /// Build a [`StaticBlock`] with `ScopeId`, and store it in the memory arena.
@@ -6826,7 +7172,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         AccessorProperty {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#type,
             decorators,
@@ -6906,7 +7252,13 @@ impl<'a> AstBuilder<'a> {
         arguments: Vec<'a, Expression<'a>>,
         phase: Option<ImportPhase>,
     ) -> ImportExpression<'a> {
-        ImportExpression { parent: None, span, source, arguments, phase }
+        ImportExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            source,
+            arguments,
+            phase,
+        }
     }
 
     /// Build an [`ImportExpression`], and store it in the memory arena.
@@ -6954,7 +7306,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ImportDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             specifiers,
             source,
@@ -7072,7 +7424,13 @@ impl<'a> AstBuilder<'a> {
         local: BindingIdentifier<'a>,
         import_kind: ImportOrExportKind,
     ) -> ImportSpecifier<'a> {
-        ImportSpecifier { parent: None, span, imported, local, import_kind }
+        ImportSpecifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            imported,
+            local,
+            import_kind,
+        }
     }
 
     /// Build an [`ImportSpecifier`], and store it in the memory arena.
@@ -7108,7 +7466,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportDefaultSpecifier<'a> {
-        ImportDefaultSpecifier { parent: None, span, local }
+        ImportDefaultSpecifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            local,
+        }
     }
 
     /// Build an [`ImportDefaultSpecifier`], and store it in the memory arena.
@@ -7140,7 +7502,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         local: BindingIdentifier<'a>,
     ) -> ImportNamespaceSpecifier<'a> {
-        ImportNamespaceSpecifier { parent: None, span, local }
+        ImportNamespaceSpecifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            local,
+        }
     }
 
     /// Build an [`ImportNamespaceSpecifier`], and store it in the memory arena.
@@ -7174,7 +7540,12 @@ impl<'a> AstBuilder<'a> {
         attributes_keyword: IdentifierName<'a>,
         with_entries: Vec<'a, ImportAttribute<'a>>,
     ) -> WithClause<'a> {
-        WithClause { parent: None, span, attributes_keyword, with_entries }
+        WithClause {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            attributes_keyword,
+            with_entries,
+        }
     }
 
     /// Build a [`WithClause`], and store it in the memory arena.
@@ -7210,7 +7581,12 @@ impl<'a> AstBuilder<'a> {
         key: ImportAttributeKey<'a>,
         value: StringLiteral<'a>,
     ) -> ImportAttribute<'a> {
-        ImportAttribute { parent: None, span, key, value }
+        ImportAttribute {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            key,
+            value,
+        }
     }
 
     /// Build an [`ImportAttribute`], and store it in the memory arena.
@@ -7292,7 +7668,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ExportNamedDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             declaration,
             specifiers,
@@ -7354,7 +7730,12 @@ impl<'a> AstBuilder<'a> {
         declaration: ExportDefaultDeclarationKind<'a>,
         exported: ModuleExportName<'a>,
     ) -> ExportDefaultDeclaration<'a> {
-        ExportDefaultDeclaration { parent: None, span, declaration, exported }
+        ExportDefaultDeclaration {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            declaration,
+            exported,
+        }
     }
 
     /// Build an [`ExportDefaultDeclaration`], and store it in the memory arena.
@@ -7398,7 +7779,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, WithClause<'a>>>>,
     {
         ExportAllDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             exported,
             source,
@@ -7452,7 +7833,13 @@ impl<'a> AstBuilder<'a> {
         exported: ModuleExportName<'a>,
         export_kind: ImportOrExportKind,
     ) -> ExportSpecifier<'a> {
-        ExportSpecifier { parent: None, span, local, exported, export_kind }
+        ExportSpecifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            local,
+            exported,
+            export_kind,
+        }
     }
 
     /// Build an [`ExportSpecifier`], and store it in the memory arena.
@@ -7682,7 +8069,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSThisParameter {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             this_span,
             type_annotation: type_annotation.into_in(self.allocator),
@@ -7730,7 +8117,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSEnumDeclaration<'a> {
         TSEnumDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             members,
@@ -7784,7 +8171,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSEnumDeclaration<'a> {
         TSEnumDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             members,
@@ -7836,7 +8223,12 @@ impl<'a> AstBuilder<'a> {
         id: TSEnumMemberName<'a>,
         initializer: Option<Expression<'a>>,
     ) -> TSEnumMember<'a> {
-        TSEnumMember { parent: None, span, id, initializer }
+        TSEnumMember {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            id,
+            initializer,
+        }
     }
 
     /// Build a [`TSEnumMember`], and store it in the memory arena.
@@ -7906,7 +8298,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSTypeAnnotation<'a> {
-        TSTypeAnnotation { parent: None, span, type_annotation }
+        TSTypeAnnotation {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSTypeAnnotation`], and store it in the memory arena.
@@ -7934,7 +8330,11 @@ impl<'a> AstBuilder<'a> {
     /// - literal
     #[inline]
     pub fn ts_literal_type(self, span: Span, literal: TSLiteral<'a>) -> TSLiteralType<'a> {
-        TSLiteralType { parent: None, span, literal }
+        TSLiteralType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            literal,
+        }
     }
 
     /// Build a [`TSLiteralType`], and store it in the memory arena.
@@ -8755,7 +9155,7 @@ impl<'a> AstBuilder<'a> {
         false_type: TSType<'a>,
     ) -> TSConditionalType<'a> {
         TSConditionalType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             check_type,
             extends_type,
@@ -8812,7 +9212,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSConditionalType<'a> {
         TSConditionalType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             check_type,
             extends_type,
@@ -8865,7 +9265,11 @@ impl<'a> AstBuilder<'a> {
     /// - types: The types in the union.
     #[inline]
     pub fn ts_union_type(self, span: Span, types: Vec<'a, TSType<'a>>) -> TSUnionType<'a> {
-        TSUnionType { parent: None, span, types }
+        TSUnionType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            types,
+        }
     }
 
     /// Build a [`TSUnionType`], and store it in the memory arena.
@@ -8897,7 +9301,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         types: Vec<'a, TSType<'a>>,
     ) -> TSIntersectionType<'a> {
-        TSIntersectionType { parent: None, span, types }
+        TSIntersectionType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            types,
+        }
     }
 
     /// Build a [`TSIntersectionType`], and store it in the memory arena.
@@ -8929,7 +9337,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         type_annotation: TSType<'a>,
     ) -> TSParenthesizedType<'a> {
-        TSParenthesizedType { parent: None, span, type_annotation }
+        TSParenthesizedType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSParenthesizedType`], and store it in the memory arena.
@@ -8963,7 +9375,12 @@ impl<'a> AstBuilder<'a> {
         operator: TSTypeOperatorOperator,
         type_annotation: TSType<'a>,
     ) -> TSTypeOperator<'a> {
-        TSTypeOperator { parent: None, span, operator, type_annotation }
+        TSTypeOperator {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            operator,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSTypeOperator`], and store it in the memory arena.
@@ -8993,7 +9410,11 @@ impl<'a> AstBuilder<'a> {
     /// - element_type
     #[inline]
     pub fn ts_array_type(self, span: Span, element_type: TSType<'a>) -> TSArrayType<'a> {
-        TSArrayType { parent: None, span, element_type }
+        TSArrayType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            element_type,
+        }
     }
 
     /// Build a [`TSArrayType`], and store it in the memory arena.
@@ -9027,7 +9448,12 @@ impl<'a> AstBuilder<'a> {
         object_type: TSType<'a>,
         index_type: TSType<'a>,
     ) -> TSIndexedAccessType<'a> {
-        TSIndexedAccessType { parent: None, span, object_type, index_type }
+        TSIndexedAccessType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object_type,
+            index_type,
+        }
     }
 
     /// Build a [`TSIndexedAccessType`], and store it in the memory arena.
@@ -9061,7 +9487,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         element_types: Vec<'a, TSTupleElement<'a>>,
     ) -> TSTupleType<'a> {
-        TSTupleType { parent: None, span, element_types }
+        TSTupleType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            element_types,
+        }
     }
 
     /// Build a [`TSTupleType`], and store it in the memory arena.
@@ -9097,7 +9527,13 @@ impl<'a> AstBuilder<'a> {
         label: IdentifierName<'a>,
         optional: bool,
     ) -> TSNamedTupleMember<'a> {
-        TSNamedTupleMember { parent: None, span, element_type, label, optional }
+        TSNamedTupleMember {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            element_type,
+            label,
+            optional,
+        }
     }
 
     /// Build a [`TSNamedTupleMember`], and store it in the memory arena.
@@ -9129,7 +9565,11 @@ impl<'a> AstBuilder<'a> {
     /// - type_annotation
     #[inline]
     pub fn ts_optional_type(self, span: Span, type_annotation: TSType<'a>) -> TSOptionalType<'a> {
-        TSOptionalType { parent: None, span, type_annotation }
+        TSOptionalType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSOptionalType`], and store it in the memory arena.
@@ -9157,7 +9597,11 @@ impl<'a> AstBuilder<'a> {
     /// - type_annotation
     #[inline]
     pub fn ts_rest_type(self, span: Span, type_annotation: TSType<'a>) -> TSRestType<'a> {
-        TSRestType { parent: None, span, type_annotation }
+        TSRestType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSRestType`], and store it in the memory arena.
@@ -9215,8 +9659,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_any_keyword(self, span: Span) -> TSAnyKeyword<'a> {
-        TSAnyKeyword { parent: None, span }
+    pub fn ts_any_keyword(self, span: Span) -> TSAnyKeyword {
+        TSAnyKeyword { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`TSAnyKeyword`], and store it in the memory arena.
@@ -9226,7 +9670,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_any_keyword(self, span: Span) -> Box<'a, TSAnyKeyword<'a>> {
+    pub fn alloc_ts_any_keyword(self, span: Span) -> Box<'a, TSAnyKeyword> {
         Box::new_in(self.ts_any_keyword(span), self.allocator)
     }
 
@@ -9237,8 +9681,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_string_keyword(self, span: Span) -> TSStringKeyword<'a> {
-        TSStringKeyword { parent: None, span }
+    pub fn ts_string_keyword(self, span: Span) -> TSStringKeyword {
+        TSStringKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSStringKeyword`], and store it in the memory arena.
@@ -9248,7 +9695,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_string_keyword(self, span: Span) -> Box<'a, TSStringKeyword<'a>> {
+    pub fn alloc_ts_string_keyword(self, span: Span) -> Box<'a, TSStringKeyword> {
         Box::new_in(self.ts_string_keyword(span), self.allocator)
     }
 
@@ -9259,8 +9706,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_boolean_keyword(self, span: Span) -> TSBooleanKeyword<'a> {
-        TSBooleanKeyword { parent: None, span }
+    pub fn ts_boolean_keyword(self, span: Span) -> TSBooleanKeyword {
+        TSBooleanKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSBooleanKeyword`], and store it in the memory arena.
@@ -9270,7 +9720,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_boolean_keyword(self, span: Span) -> Box<'a, TSBooleanKeyword<'a>> {
+    pub fn alloc_ts_boolean_keyword(self, span: Span) -> Box<'a, TSBooleanKeyword> {
         Box::new_in(self.ts_boolean_keyword(span), self.allocator)
     }
 
@@ -9281,8 +9731,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_number_keyword(self, span: Span) -> TSNumberKeyword<'a> {
-        TSNumberKeyword { parent: None, span }
+    pub fn ts_number_keyword(self, span: Span) -> TSNumberKeyword {
+        TSNumberKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSNumberKeyword`], and store it in the memory arena.
@@ -9292,7 +9745,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_number_keyword(self, span: Span) -> Box<'a, TSNumberKeyword<'a>> {
+    pub fn alloc_ts_number_keyword(self, span: Span) -> Box<'a, TSNumberKeyword> {
         Box::new_in(self.ts_number_keyword(span), self.allocator)
     }
 
@@ -9303,8 +9756,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_never_keyword(self, span: Span) -> TSNeverKeyword<'a> {
-        TSNeverKeyword { parent: None, span }
+    pub fn ts_never_keyword(self, span: Span) -> TSNeverKeyword {
+        TSNeverKeyword { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`TSNeverKeyword`], and store it in the memory arena.
@@ -9314,7 +9767,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_never_keyword(self, span: Span) -> Box<'a, TSNeverKeyword<'a>> {
+    pub fn alloc_ts_never_keyword(self, span: Span) -> Box<'a, TSNeverKeyword> {
         Box::new_in(self.ts_never_keyword(span), self.allocator)
     }
 
@@ -9325,8 +9778,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_intrinsic_keyword(self, span: Span) -> TSIntrinsicKeyword<'a> {
-        TSIntrinsicKeyword { parent: None, span }
+    pub fn ts_intrinsic_keyword(self, span: Span) -> TSIntrinsicKeyword {
+        TSIntrinsicKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSIntrinsicKeyword`], and store it in the memory arena.
@@ -9336,7 +9792,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_intrinsic_keyword(self, span: Span) -> Box<'a, TSIntrinsicKeyword<'a>> {
+    pub fn alloc_ts_intrinsic_keyword(self, span: Span) -> Box<'a, TSIntrinsicKeyword> {
         Box::new_in(self.ts_intrinsic_keyword(span), self.allocator)
     }
 
@@ -9347,8 +9803,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_unknown_keyword(self, span: Span) -> TSUnknownKeyword<'a> {
-        TSUnknownKeyword { parent: None, span }
+    pub fn ts_unknown_keyword(self, span: Span) -> TSUnknownKeyword {
+        TSUnknownKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSUnknownKeyword`], and store it in the memory arena.
@@ -9358,7 +9817,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_unknown_keyword(self, span: Span) -> Box<'a, TSUnknownKeyword<'a>> {
+    pub fn alloc_ts_unknown_keyword(self, span: Span) -> Box<'a, TSUnknownKeyword> {
         Box::new_in(self.ts_unknown_keyword(span), self.allocator)
     }
 
@@ -9369,8 +9828,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_null_keyword(self, span: Span) -> TSNullKeyword<'a> {
-        TSNullKeyword { parent: None, span }
+    pub fn ts_null_keyword(self, span: Span) -> TSNullKeyword {
+        TSNullKeyword { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`TSNullKeyword`], and store it in the memory arena.
@@ -9380,7 +9839,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_null_keyword(self, span: Span) -> Box<'a, TSNullKeyword<'a>> {
+    pub fn alloc_ts_null_keyword(self, span: Span) -> Box<'a, TSNullKeyword> {
         Box::new_in(self.ts_null_keyword(span), self.allocator)
     }
 
@@ -9391,8 +9850,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_undefined_keyword(self, span: Span) -> TSUndefinedKeyword<'a> {
-        TSUndefinedKeyword { parent: None, span }
+    pub fn ts_undefined_keyword(self, span: Span) -> TSUndefinedKeyword {
+        TSUndefinedKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSUndefinedKeyword`], and store it in the memory arena.
@@ -9402,7 +9864,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_undefined_keyword(self, span: Span) -> Box<'a, TSUndefinedKeyword<'a>> {
+    pub fn alloc_ts_undefined_keyword(self, span: Span) -> Box<'a, TSUndefinedKeyword> {
         Box::new_in(self.ts_undefined_keyword(span), self.allocator)
     }
 
@@ -9413,8 +9875,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_void_keyword(self, span: Span) -> TSVoidKeyword<'a> {
-        TSVoidKeyword { parent: None, span }
+    pub fn ts_void_keyword(self, span: Span) -> TSVoidKeyword {
+        TSVoidKeyword { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`TSVoidKeyword`], and store it in the memory arena.
@@ -9424,7 +9886,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_void_keyword(self, span: Span) -> Box<'a, TSVoidKeyword<'a>> {
+    pub fn alloc_ts_void_keyword(self, span: Span) -> Box<'a, TSVoidKeyword> {
         Box::new_in(self.ts_void_keyword(span), self.allocator)
     }
 
@@ -9435,8 +9897,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_symbol_keyword(self, span: Span) -> TSSymbolKeyword<'a> {
-        TSSymbolKeyword { parent: None, span }
+    pub fn ts_symbol_keyword(self, span: Span) -> TSSymbolKeyword {
+        TSSymbolKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSSymbolKeyword`], and store it in the memory arena.
@@ -9446,7 +9911,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_symbol_keyword(self, span: Span) -> Box<'a, TSSymbolKeyword<'a>> {
+    pub fn alloc_ts_symbol_keyword(self, span: Span) -> Box<'a, TSSymbolKeyword> {
         Box::new_in(self.ts_symbol_keyword(span), self.allocator)
     }
 
@@ -9457,8 +9922,8 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_this_type(self, span: Span) -> TSThisType<'a> {
-        TSThisType { parent: None, span }
+    pub fn ts_this_type(self, span: Span) -> TSThisType {
+        TSThisType { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
     }
 
     /// Build a [`TSThisType`], and store it in the memory arena.
@@ -9468,7 +9933,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_this_type(self, span: Span) -> Box<'a, TSThisType<'a>> {
+    pub fn alloc_ts_this_type(self, span: Span) -> Box<'a, TSThisType> {
         Box::new_in(self.ts_this_type(span), self.allocator)
     }
 
@@ -9479,8 +9944,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_object_keyword(self, span: Span) -> TSObjectKeyword<'a> {
-        TSObjectKeyword { parent: None, span }
+    pub fn ts_object_keyword(self, span: Span) -> TSObjectKeyword {
+        TSObjectKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSObjectKeyword`], and store it in the memory arena.
@@ -9490,7 +9958,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_object_keyword(self, span: Span) -> Box<'a, TSObjectKeyword<'a>> {
+    pub fn alloc_ts_object_keyword(self, span: Span) -> Box<'a, TSObjectKeyword> {
         Box::new_in(self.ts_object_keyword(span), self.allocator)
     }
 
@@ -9501,8 +9969,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn ts_big_int_keyword(self, span: Span) -> TSBigIntKeyword<'a> {
-        TSBigIntKeyword { parent: None, span }
+    pub fn ts_big_int_keyword(self, span: Span) -> TSBigIntKeyword {
+        TSBigIntKeyword {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`TSBigIntKeyword`], and store it in the memory arena.
@@ -9512,7 +9983,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_ts_big_int_keyword(self, span: Span) -> Box<'a, TSBigIntKeyword<'a>> {
+    pub fn alloc_ts_big_int_keyword(self, span: Span) -> Box<'a, TSBigIntKeyword> {
         Box::new_in(self.ts_big_int_keyword(span), self.allocator)
     }
 
@@ -9535,7 +10006,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSTypeReference {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_name,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -9611,7 +10082,12 @@ impl<'a> AstBuilder<'a> {
         left: TSTypeName<'a>,
         right: IdentifierName<'a>,
     ) -> TSQualifiedName<'a> {
-        TSQualifiedName { parent: None, span, left, right }
+        TSQualifiedName {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            left,
+            right,
+        }
     }
 
     /// Build a [`TSQualifiedName`], and store it in the memory arena.
@@ -9645,7 +10121,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         params: Vec<'a, TSType<'a>>,
     ) -> TSTypeParameterInstantiation<'a> {
-        TSTypeParameterInstantiation { parent: None, span, params }
+        TSTypeParameterInstantiation {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            params,
+        }
     }
 
     /// Build a [`TSTypeParameterInstantiation`], and store it in the memory arena.
@@ -9687,7 +10167,16 @@ impl<'a> AstBuilder<'a> {
         out: bool,
         r#const: bool,
     ) -> TSTypeParameter<'a> {
-        TSTypeParameter { parent: None, span, name, constraint, default, r#in, out, r#const }
+        TSTypeParameter {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name,
+            constraint,
+            default,
+            r#in,
+            out,
+            r#const,
+        }
     }
 
     /// Build a [`TSTypeParameter`], and store it in the memory arena.
@@ -9732,7 +10221,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         params: Vec<'a, TSTypeParameter<'a>>,
     ) -> TSTypeParameterDeclaration<'a> {
-        TSTypeParameterDeclaration { parent: None, span, params }
+        TSTypeParameterDeclaration {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            params,
+        }
     }
 
     /// Build a [`TSTypeParameterDeclaration`], and store it in the memory arena.
@@ -9774,7 +10267,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         TSTypeAliasDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -9837,7 +10330,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
     {
         TSTypeAliasDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -9903,7 +10396,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSClassImplements {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -9957,7 +10450,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             extends,
@@ -10027,7 +10520,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             extends,
@@ -10092,7 +10585,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         body: Vec<'a, TSSignature<'a>>,
     ) -> TSInterfaceBody<'a> {
-        TSInterfaceBody { parent: None, span, body }
+        TSInterfaceBody {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            body,
+        }
     }
 
     /// Build a [`TSInterfaceBody`], and store it in the memory arena.
@@ -10136,7 +10633,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSPropertySignature {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             computed,
             optional,
@@ -10373,7 +10870,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSIndexSignature {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             parameters,
             type_annotation: type_annotation.into_in(self.allocator),
@@ -10435,7 +10932,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSCallSignatureDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             this_param,
@@ -10514,7 +11011,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSMethodSignature {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             key,
             computed,
@@ -10613,7 +11110,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSMethodSignature {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             key,
             computed,
@@ -10702,7 +11199,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSConstructSignatureDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             params: params.into_in(self.allocator),
@@ -10764,7 +11261,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSConstructSignatureDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             params: params.into_in(self.allocator),
@@ -10829,7 +11326,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSIndexSignatureName {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             name: name.into_in(self.allocator),
             type_annotation: type_annotation.into_in(self.allocator),
@@ -10877,7 +11374,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSInterfaceHeritage {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -10926,7 +11423,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
         TSTypePredicate {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             parameter_name,
             asserts,
@@ -11008,7 +11505,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSModuleDeclaration<'a> {
         TSModuleDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             body,
@@ -11062,7 +11559,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSModuleDeclaration<'a> {
         TSModuleDeclaration {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             id,
             body,
@@ -11192,7 +11689,12 @@ impl<'a> AstBuilder<'a> {
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
     ) -> TSModuleBlock<'a> {
-        TSModuleBlock { parent: None, span, directives, body }
+        TSModuleBlock {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            directives,
+            body,
+        }
     }
 
     /// Build a [`TSModuleBlock`], and store it in the memory arena.
@@ -11226,7 +11728,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         members: Vec<'a, TSSignature<'a>>,
     ) -> TSTypeLiteral<'a> {
-        TSTypeLiteral { parent: None, span, members }
+        TSTypeLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            members,
+        }
     }
 
     /// Build a [`TSTypeLiteral`], and store it in the memory arena.
@@ -11257,7 +11763,11 @@ impl<'a> AstBuilder<'a> {
     where
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
-        TSInferType { parent: None, span, type_parameter: type_parameter.into_in(self.allocator) }
+        TSInferType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_parameter: type_parameter.into_in(self.allocator),
+        }
     }
 
     /// Build a [`TSInferType`], and store it in the memory arena.
@@ -11294,7 +11804,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSTypeQuery {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expr_name,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -11383,7 +11893,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         TSImportType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             is_type_of,
             parameter,
@@ -11446,7 +11956,12 @@ impl<'a> AstBuilder<'a> {
         attributes_keyword: IdentifierName<'a>,
         elements: Vec<'a, TSImportAttribute<'a>>,
     ) -> TSImportAttributes<'a> {
-        TSImportAttributes { parent: None, span, attributes_keyword, elements }
+        TSImportAttributes {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            attributes_keyword,
+            elements,
+        }
     }
 
     /// Build a [`TSImportAttributes`], and store it in the memory arena.
@@ -11482,7 +11997,12 @@ impl<'a> AstBuilder<'a> {
         name: TSImportAttributeName<'a>,
         value: Expression<'a>,
     ) -> TSImportAttribute<'a> {
-        TSImportAttribute { parent: None, span, name, value }
+        TSImportAttribute {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name,
+            value,
+        }
     }
 
     /// Build a [`TSImportAttribute`], and store it in the memory arena.
@@ -11565,7 +12085,7 @@ impl<'a> AstBuilder<'a> {
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSFunctionType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameters: type_parameters.into_in(self.allocator),
             this_param: this_param.into_in(self.allocator),
@@ -11630,7 +12150,7 @@ impl<'a> AstBuilder<'a> {
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
         TSConstructorType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             r#abstract,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -11694,7 +12214,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
         TSMappedType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameter: type_parameter.into_in(self.allocator),
             name_type,
@@ -11769,7 +12289,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameter<'a>>>,
     {
         TSMappedType {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             type_parameter: type_parameter.into_in(self.allocator),
             name_type,
@@ -11835,7 +12355,12 @@ impl<'a> AstBuilder<'a> {
         quasis: Vec<'a, TemplateElement<'a>>,
         types: Vec<'a, TSType<'a>>,
     ) -> TSTemplateLiteralType<'a> {
-        TSTemplateLiteralType { parent: None, span, quasis, types }
+        TSTemplateLiteralType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            quasis,
+            types,
+        }
     }
 
     /// Build a [`TSTemplateLiteralType`], and store it in the memory arena.
@@ -11871,7 +12396,12 @@ impl<'a> AstBuilder<'a> {
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSAsExpression<'a> {
-        TSAsExpression { parent: None, span, expression, type_annotation }
+        TSAsExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSAsExpression`], and store it in the memory arena.
@@ -11907,7 +12437,12 @@ impl<'a> AstBuilder<'a> {
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSSatisfiesExpression<'a> {
-        TSSatisfiesExpression { parent: None, span, expression, type_annotation }
+        TSSatisfiesExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSSatisfiesExpression`], and store it in the memory arena.
@@ -11943,7 +12478,12 @@ impl<'a> AstBuilder<'a> {
         expression: Expression<'a>,
         type_annotation: TSType<'a>,
     ) -> TSTypeAssertion<'a> {
-        TSTypeAssertion { parent: None, span, expression, type_annotation }
+        TSTypeAssertion {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+            type_annotation,
+        }
     }
 
     /// Build a [`TSTypeAssertion`], and store it in the memory arena.
@@ -11981,7 +12521,13 @@ impl<'a> AstBuilder<'a> {
         module_reference: TSModuleReference<'a>,
         import_kind: ImportOrExportKind,
     ) -> TSImportEqualsDeclaration<'a> {
-        TSImportEqualsDeclaration { parent: None, span, id, module_reference, import_kind }
+        TSImportEqualsDeclaration {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            id,
+            module_reference,
+            import_kind,
+        }
     }
 
     /// Build a [`TSImportEqualsDeclaration`], and store it in the memory arena.
@@ -12038,7 +12584,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: StringLiteral<'a>,
     ) -> TSExternalModuleReference<'a> {
-        TSExternalModuleReference { parent: None, span, expression }
+        TSExternalModuleReference {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`TSExternalModuleReference`], and store it in the memory arena.
@@ -12070,7 +12620,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: Expression<'a>,
     ) -> TSNonNullExpression<'a> {
-        TSNonNullExpression { parent: None, span, expression }
+        TSNonNullExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`TSNonNullExpression`], and store it in the memory arena.
@@ -12098,7 +12652,11 @@ impl<'a> AstBuilder<'a> {
     /// - expression
     #[inline]
     pub fn decorator(self, span: Span, expression: Expression<'a>) -> Decorator<'a> {
-        Decorator { parent: None, span, expression }
+        Decorator {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`Decorator`], and store it in the memory arena.
@@ -12126,7 +12684,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: Expression<'a>,
     ) -> TSExportAssignment<'a> {
-        TSExportAssignment { parent: None, span, expression }
+        TSExportAssignment {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`TSExportAssignment`], and store it in the memory arena.
@@ -12158,7 +12720,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         id: IdentifierName<'a>,
     ) -> TSNamespaceExportDeclaration<'a> {
-        TSNamespaceExportDeclaration { parent: None, span, id }
+        TSNamespaceExportDeclaration {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            id,
+        }
     }
 
     /// Build a [`TSNamespaceExportDeclaration`], and store it in the memory arena.
@@ -12196,7 +12762,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Box<'a, TSTypeParameterInstantiation<'a>>>,
     {
         TSInstantiationExpression {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
@@ -12242,7 +12808,12 @@ impl<'a> AstBuilder<'a> {
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> JSDocNullableType<'a> {
-        JSDocNullableType { parent: None, span, type_annotation, postfix }
+        JSDocNullableType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+            postfix,
+        }
     }
 
     /// Build a [`JSDocNullableType`], and store it in the memory arena.
@@ -12278,7 +12849,12 @@ impl<'a> AstBuilder<'a> {
         type_annotation: TSType<'a>,
         postfix: bool,
     ) -> JSDocNonNullableType<'a> {
-        JSDocNonNullableType { parent: None, span, type_annotation, postfix }
+        JSDocNonNullableType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            type_annotation,
+            postfix,
+        }
     }
 
     /// Build a [`JSDocNonNullableType`], and store it in the memory arena.
@@ -12306,8 +12882,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn js_doc_unknown_type(self, span: Span) -> JSDocUnknownType<'a> {
-        JSDocUnknownType { parent: None, span }
+    pub fn js_doc_unknown_type(self, span: Span) -> JSDocUnknownType {
+        JSDocUnknownType {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`JSDocUnknownType`], and store it in the memory arena.
@@ -12317,7 +12896,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_js_doc_unknown_type(self, span: Span) -> Box<'a, JSDocUnknownType<'a>> {
+    pub fn alloc_js_doc_unknown_type(self, span: Span) -> Box<'a, JSDocUnknownType> {
         Box::new_in(self.js_doc_unknown_type(span), self.allocator)
     }
 
@@ -12343,7 +12922,7 @@ impl<'a> AstBuilder<'a> {
         T2: IntoIn<'a, Option<Box<'a, JSXClosingElement<'a>>>>,
     {
         JSXElement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             opening_element: opening_element.into_in(self.allocator),
             closing_element: closing_element.into_in(self.allocator),
@@ -12401,7 +12980,7 @@ impl<'a> AstBuilder<'a> {
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
         JSXOpeningElement {
-            parent: None,
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             self_closing,
             name,
@@ -12451,7 +13030,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         name: JSXElementName<'a>,
     ) -> JSXClosingElement<'a> {
-        JSXClosingElement { parent: None, span, name }
+        JSXClosingElement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name,
+        }
     }
 
     /// Build a [`JSXClosingElement`], and store it in the memory arena.
@@ -12483,11 +13066,17 @@ impl<'a> AstBuilder<'a> {
     pub fn jsx_fragment(
         self,
         span: Span,
-        opening_fragment: JSXOpeningFragment<'a>,
-        closing_fragment: JSXClosingFragment<'a>,
+        opening_fragment: JSXOpeningFragment,
+        closing_fragment: JSXClosingFragment,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXFragment<'a> {
-        JSXFragment { parent: None, span, opening_fragment, closing_fragment, children }
+        JSXFragment {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            opening_fragment,
+            closing_fragment,
+            children,
+        }
     }
 
     /// Build a [`JSXFragment`], and store it in the memory arena.
@@ -12503,8 +13092,8 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_jsx_fragment(
         self,
         span: Span,
-        opening_fragment: JSXOpeningFragment<'a>,
-        closing_fragment: JSXClosingFragment<'a>,
+        opening_fragment: JSXOpeningFragment,
+        closing_fragment: JSXClosingFragment,
         children: Vec<'a, JSXChild<'a>>,
     ) -> Box<'a, JSXFragment<'a>> {
         Box::new_in(
@@ -12605,7 +13194,12 @@ impl<'a> AstBuilder<'a> {
         namespace: JSXIdentifier<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXNamespacedName<'a> {
-        JSXNamespacedName { parent: None, span, namespace, property }
+        JSXNamespacedName {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            namespace,
+            property,
+        }
     }
 
     /// Build a [`JSXNamespacedName`], and store it in the memory arena.
@@ -12641,7 +13235,12 @@ impl<'a> AstBuilder<'a> {
         object: JSXMemberExpressionObject<'a>,
         property: JSXIdentifier<'a>,
     ) -> JSXMemberExpression<'a> {
-        JSXMemberExpression { parent: None, span, object, property }
+        JSXMemberExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            object,
+            property,
+        }
     }
 
     /// Build a [`JSXMemberExpression`], and store it in the memory arena.
@@ -12728,7 +13327,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         expression: JSXExpression<'a>,
     ) -> JSXExpressionContainer<'a> {
-        JSXExpressionContainer { parent: None, span, expression }
+        JSXExpressionContainer {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`JSXExpressionContainer`], and store it in the memory arena.
@@ -12763,8 +13366,11 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: Node location in source code
     #[inline]
-    pub fn jsx_empty_expression(self, span: Span) -> JSXEmptyExpression<'a> {
-        JSXEmptyExpression { parent: None, span }
+    pub fn jsx_empty_expression(self, span: Span) -> JSXEmptyExpression {
+        JSXEmptyExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
     /// Build a [`JSXEmptyExpression`], and store it in the memory arena.
@@ -12774,7 +13380,7 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: Node location in source code
     #[inline]
-    pub fn alloc_jsx_empty_expression(self, span: Span) -> Box<'a, JSXEmptyExpression<'a>> {
+    pub fn alloc_jsx_empty_expression(self, span: Span) -> Box<'a, JSXEmptyExpression> {
         Box::new_in(self.jsx_empty_expression(span), self.allocator)
     }
 
@@ -12827,7 +13433,12 @@ impl<'a> AstBuilder<'a> {
         name: JSXAttributeName<'a>,
         value: Option<JSXAttributeValue<'a>>,
     ) -> JSXAttribute<'a> {
-        JSXAttribute { parent: None, span, name, value }
+        JSXAttribute {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name,
+            value,
+        }
     }
 
     /// Build a [`JSXAttribute`], and store it in the memory arena.
@@ -12861,7 +13472,11 @@ impl<'a> AstBuilder<'a> {
         span: Span,
         argument: Expression<'a>,
     ) -> JSXSpreadAttribute<'a> {
-        JSXSpreadAttribute { parent: None, span, argument }
+        JSXSpreadAttribute {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            argument,
+        }
     }
 
     /// Build a [`JSXSpreadAttribute`], and store it in the memory arena.
@@ -12994,8 +13609,8 @@ impl<'a> AstBuilder<'a> {
     pub fn jsx_attribute_value_jsx_fragment(
         self,
         span: Span,
-        opening_fragment: JSXOpeningFragment<'a>,
-        closing_fragment: JSXClosingFragment<'a>,
+        opening_fragment: JSXOpeningFragment,
+        closing_fragment: JSXClosingFragment,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXAttributeValue<'a> {
         JSXAttributeValue::Fragment(self.alloc_jsx_fragment(
@@ -13018,7 +13633,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXIdentifier { parent: None, span, name: name.into_in(self.allocator) }
+        JSXIdentifier {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            name: name.into_in(self.allocator),
+        }
     }
 
     /// Build a [`JSXIdentifier`], and store it in the memory arena.
@@ -13088,8 +13707,8 @@ impl<'a> AstBuilder<'a> {
     pub fn jsx_child_jsx_fragment(
         self,
         span: Span,
-        opening_fragment: JSXOpeningFragment<'a>,
-        closing_fragment: JSXClosingFragment<'a>,
+        opening_fragment: JSXOpeningFragment,
+        closing_fragment: JSXClosingFragment,
         children: Vec<'a, JSXChild<'a>>,
     ) -> JSXChild<'a> {
         JSXChild::Fragment(self.alloc_jsx_fragment(
@@ -13141,7 +13760,11 @@ impl<'a> AstBuilder<'a> {
     /// - expression: The expression being spread.
     #[inline]
     pub fn jsx_spread_child(self, span: Span, expression: Expression<'a>) -> JSXSpreadChild<'a> {
-        JSXSpreadChild { parent: None, span, expression }
+        JSXSpreadChild {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+        }
     }
 
     /// Build a [`JSXSpreadChild`], and store it in the memory arena.
@@ -13172,7 +13795,11 @@ impl<'a> AstBuilder<'a> {
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        JSXText { parent: None, span, value: value.into_in(self.allocator) }
+        JSXText {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value: value.into_in(self.allocator),
+        }
     }
 
     /// Build a [`JSXText`], and store it in the memory arena.

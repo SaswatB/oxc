@@ -82,21 +82,6 @@ impl Generator for AstKindGenerator {
             .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.span()))
             .collect_vec();
 
-        let parent_matches: Vec<Arm> = have_kinds
-            .iter()
-            .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_parent()))
-            .collect_vec();
-
-        let set_parent_matches: Vec<Arm> = have_kinds
-            .iter()
-            .map(|(ident, _)| {
-                parse_quote!(Self :: #ident(it) => {
-                    let it_mut = unsafe { &mut *(it as *const _ as *mut #ident) };
-                    it_mut.set_parent(new_parent)
-                })
-            })
-            .collect_vec();
-
         let get_children_matches: Vec<Arm> = have_kinds
             .iter()
             .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_children()))
@@ -134,8 +119,7 @@ impl Generator for AstKindGenerator {
 
                 ///@@line_break
                 use crate::ast::*;
-                use crate::GetParent;
-                use crate::generated::derive_get_parent::GetChildren;
+                use super::derive_get_children::GetChildren;
 
                 ///@@line_break
                 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -177,16 +161,6 @@ impl Generator for AstKindGenerator {
 
                 ///@@line_break
                 impl<'a> AstKind<'a> {
-                    pub fn get_parent(&self) -> Option<AstKind<'a>> {
-                        match self {
-                            #(#parent_matches),*,
-                        }
-                    }
-                    pub fn set_parent(&mut self, new_parent: AstKind<'a>) {
-                        match self {
-                            #(#set_parent_matches),*,
-                        }
-                    }
                     pub fn get_children(&self) -> Vec<AstKind<'a>> {
                         match self {
                             #(#get_children_matches),*,

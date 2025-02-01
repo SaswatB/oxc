@@ -13,7 +13,6 @@ use std::{cell::Cell, marker::PhantomData, mem::offset_of};
 
 use oxc_allocator::{Address, Box, GetAddress, Vec};
 use oxc_ast::ast::*;
-use oxc_ast::AstKind;
 use oxc_syntax::scope::ScopeId;
 
 /// Type of [`Ancestor`].
@@ -2493,7 +2492,7 @@ impl<'a, 't> GetAddress for Ancestor<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_PROGRAM_PARENT: usize = offset_of!(Program, parent);
+pub(crate) const OFFSET_PROGRAM_NODE_ID: usize = offset_of!(Program, node_id);
 pub(crate) const OFFSET_PROGRAM_SPAN: usize = offset_of!(Program, span);
 pub(crate) const OFFSET_PROGRAM_SOURCE_TYPE: usize = offset_of!(Program, source_type);
 pub(crate) const OFFSET_PROGRAM_SOURCE_TEXT: usize = offset_of!(Program, source_text);
@@ -2502,7 +2501,6 @@ pub(crate) const OFFSET_PROGRAM_HASHBANG: usize = offset_of!(Program, hashbang);
 pub(crate) const OFFSET_PROGRAM_DIRECTIVES: usize = offset_of!(Program, directives);
 pub(crate) const OFFSET_PROGRAM_BODY: usize = offset_of!(Program, body);
 pub(crate) const OFFSET_PROGRAM_SCOPE_ID: usize = offset_of!(Program, scope_id);
-pub(crate) const OFFSET_PROGRAM_ID: usize = offset_of!(Program, id);
 
 #[repr(transparent)]
 #[derive(Clone, Copy, Debug)]
@@ -2513,10 +2511,8 @@ pub struct ProgramWithoutHashbang<'a, 't>(
 
 impl<'a, 't> ProgramWithoutHashbang<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2559,11 +2555,6 @@ impl<'a, 't> ProgramWithoutHashbang<'a, 't> {
         unsafe {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
-    }
-
-    #[inline]
-    pub fn id(self) -> &'t u32 {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
     }
 }
 
@@ -2583,10 +2574,8 @@ pub struct ProgramWithoutDirectives<'a, 't>(
 
 impl<'a, 't> ProgramWithoutDirectives<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2629,11 +2618,6 @@ impl<'a, 't> ProgramWithoutDirectives<'a, 't> {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
     }
-
-    #[inline]
-    pub fn id(self) -> &'t u32 {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
-    }
 }
 
 impl<'a, 't> GetAddress for ProgramWithoutDirectives<'a, 't> {
@@ -2652,10 +2636,8 @@ pub struct ProgramWithoutBody<'a, 't>(
 
 impl<'a, 't> ProgramWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROGRAM_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2699,11 +2681,6 @@ impl<'a, 't> ProgramWithoutBody<'a, 't> {
             &*((self.0 as *const u8).add(OFFSET_PROGRAM_SCOPE_ID) as *const Cell<Option<ScopeId>>)
         }
     }
-
-    #[inline]
-    pub fn id(self) -> &'t u32 {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_PROGRAM_ID) as *const u32) }
-    }
 }
 
 impl<'a, 't> GetAddress for ProgramWithoutBody<'a, 't> {
@@ -2713,7 +2690,7 @@ impl<'a, 't> GetAddress for ProgramWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ARRAY_EXPRESSION_PARENT: usize = offset_of!(ArrayExpression, parent);
+pub(crate) const OFFSET_ARRAY_EXPRESSION_NODE_ID: usize = offset_of!(ArrayExpression, node_id);
 pub(crate) const OFFSET_ARRAY_EXPRESSION_SPAN: usize = offset_of!(ArrayExpression, span);
 pub(crate) const OFFSET_ARRAY_EXPRESSION_ELEMENTS: usize = offset_of!(ArrayExpression, elements);
 pub(crate) const OFFSET_ARRAY_EXPRESSION_TRAILING_COMMA: usize =
@@ -2728,11 +2705,8 @@ pub struct ArrayExpressionWithoutElements<'a, 't>(
 
 impl<'a, 't> ArrayExpressionWithoutElements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARRAY_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ARRAY_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2756,7 +2730,7 @@ impl<'a, 't> GetAddress for ArrayExpressionWithoutElements<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_OBJECT_EXPRESSION_PARENT: usize = offset_of!(ObjectExpression, parent);
+pub(crate) const OFFSET_OBJECT_EXPRESSION_NODE_ID: usize = offset_of!(ObjectExpression, node_id);
 pub(crate) const OFFSET_OBJECT_EXPRESSION_SPAN: usize = offset_of!(ObjectExpression, span);
 pub(crate) const OFFSET_OBJECT_EXPRESSION_PROPERTIES: usize =
     offset_of!(ObjectExpression, properties);
@@ -2772,11 +2746,8 @@ pub struct ObjectExpressionWithoutProperties<'a, 't>(
 
 impl<'a, 't> ObjectExpressionWithoutProperties<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_OBJECT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2800,7 +2771,7 @@ impl<'a, 't> GetAddress for ObjectExpressionWithoutProperties<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_OBJECT_PROPERTY_PARENT: usize = offset_of!(ObjectProperty, parent);
+pub(crate) const OFFSET_OBJECT_PROPERTY_NODE_ID: usize = offset_of!(ObjectProperty, node_id);
 pub(crate) const OFFSET_OBJECT_PROPERTY_SPAN: usize = offset_of!(ObjectProperty, span);
 pub(crate) const OFFSET_OBJECT_PROPERTY_KIND: usize = offset_of!(ObjectProperty, kind);
 pub(crate) const OFFSET_OBJECT_PROPERTY_KEY: usize = offset_of!(ObjectProperty, key);
@@ -2818,11 +2789,8 @@ pub struct ObjectPropertyWithoutKey<'a, 't>(
 
 impl<'a, 't> ObjectPropertyWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_OBJECT_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2874,11 +2842,8 @@ pub struct ObjectPropertyWithoutValue<'a, 't>(
 
 impl<'a, 't> ObjectPropertyWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_OBJECT_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2921,7 +2886,7 @@ impl<'a, 't> GetAddress for ObjectPropertyWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TEMPLATE_LITERAL_PARENT: usize = offset_of!(TemplateLiteral, parent);
+pub(crate) const OFFSET_TEMPLATE_LITERAL_NODE_ID: usize = offset_of!(TemplateLiteral, node_id);
 pub(crate) const OFFSET_TEMPLATE_LITERAL_SPAN: usize = offset_of!(TemplateLiteral, span);
 pub(crate) const OFFSET_TEMPLATE_LITERAL_QUASIS: usize = offset_of!(TemplateLiteral, quasis);
 pub(crate) const OFFSET_TEMPLATE_LITERAL_EXPRESSIONS: usize =
@@ -2936,11 +2901,8 @@ pub struct TemplateLiteralWithoutQuasis<'a, 't>(
 
 impl<'a, 't> TemplateLiteralWithoutQuasis<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TEMPLATE_LITERAL_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TEMPLATE_LITERAL_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -2973,11 +2935,8 @@ pub struct TemplateLiteralWithoutExpressions<'a, 't>(
 
 impl<'a, 't> TemplateLiteralWithoutExpressions<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TEMPLATE_LITERAL_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TEMPLATE_LITERAL_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3001,8 +2960,8 @@ impl<'a, 't> GetAddress for TemplateLiteralWithoutExpressions<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TAGGED_TEMPLATE_EXPRESSION_PARENT: usize =
-    offset_of!(TaggedTemplateExpression, parent);
+pub(crate) const OFFSET_TAGGED_TEMPLATE_EXPRESSION_NODE_ID: usize =
+    offset_of!(TaggedTemplateExpression, node_id);
 pub(crate) const OFFSET_TAGGED_TEMPLATE_EXPRESSION_SPAN: usize =
     offset_of!(TaggedTemplateExpression, span);
 pub(crate) const OFFSET_TAGGED_TEMPLATE_EXPRESSION_TAG: usize =
@@ -3021,10 +2980,9 @@ pub struct TaggedTemplateExpressionWithoutTag<'a, 't>(
 
 impl<'a, 't> TaggedTemplateExpressionWithoutTag<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3068,10 +3026,9 @@ pub struct TaggedTemplateExpressionWithoutQuasi<'a, 't>(
 
 impl<'a, 't> TaggedTemplateExpressionWithoutQuasi<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3115,10 +3072,9 @@ pub struct TaggedTemplateExpressionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TaggedTemplateExpressionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TAGGED_TEMPLATE_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3153,8 +3109,8 @@ impl<'a, 't> GetAddress for TaggedTemplateExpressionWithoutTypeParameters<'a, 't
     }
 }
 
-pub(crate) const OFFSET_COMPUTED_MEMBER_EXPRESSION_PARENT: usize =
-    offset_of!(ComputedMemberExpression, parent);
+pub(crate) const OFFSET_COMPUTED_MEMBER_EXPRESSION_NODE_ID: usize =
+    offset_of!(ComputedMemberExpression, node_id);
 pub(crate) const OFFSET_COMPUTED_MEMBER_EXPRESSION_SPAN: usize =
     offset_of!(ComputedMemberExpression, span);
 pub(crate) const OFFSET_COMPUTED_MEMBER_EXPRESSION_OBJECT: usize =
@@ -3173,10 +3129,9 @@ pub struct ComputedMemberExpressionWithoutObject<'a, 't>(
 
 impl<'a, 't> ComputedMemberExpressionWithoutObject<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_COMPUTED_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_COMPUTED_MEMBER_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3219,10 +3174,9 @@ pub struct ComputedMemberExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> ComputedMemberExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_COMPUTED_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_COMPUTED_MEMBER_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3256,8 +3210,8 @@ impl<'a, 't> GetAddress for ComputedMemberExpressionWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_STATIC_MEMBER_EXPRESSION_PARENT: usize =
-    offset_of!(StaticMemberExpression, parent);
+pub(crate) const OFFSET_STATIC_MEMBER_EXPRESSION_NODE_ID: usize =
+    offset_of!(StaticMemberExpression, node_id);
 pub(crate) const OFFSET_STATIC_MEMBER_EXPRESSION_SPAN: usize =
     offset_of!(StaticMemberExpression, span);
 pub(crate) const OFFSET_STATIC_MEMBER_EXPRESSION_OBJECT: usize =
@@ -3276,10 +3230,9 @@ pub struct StaticMemberExpressionWithoutObject<'a, 't>(
 
 impl<'a, 't> StaticMemberExpressionWithoutObject<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_STATIC_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_STATIC_MEMBER_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3322,10 +3275,9 @@ pub struct StaticMemberExpressionWithoutProperty<'a, 't>(
 
 impl<'a, 't> StaticMemberExpressionWithoutProperty<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_STATIC_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_STATIC_MEMBER_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3359,8 +3311,8 @@ impl<'a, 't> GetAddress for StaticMemberExpressionWithoutProperty<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_PRIVATE_FIELD_EXPRESSION_PARENT: usize =
-    offset_of!(PrivateFieldExpression, parent);
+pub(crate) const OFFSET_PRIVATE_FIELD_EXPRESSION_NODE_ID: usize =
+    offset_of!(PrivateFieldExpression, node_id);
 pub(crate) const OFFSET_PRIVATE_FIELD_EXPRESSION_SPAN: usize =
     offset_of!(PrivateFieldExpression, span);
 pub(crate) const OFFSET_PRIVATE_FIELD_EXPRESSION_OBJECT: usize =
@@ -3379,10 +3331,9 @@ pub struct PrivateFieldExpressionWithoutObject<'a, 't>(
 
 impl<'a, 't> PrivateFieldExpressionWithoutObject<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PRIVATE_FIELD_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_PRIVATE_FIELD_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3425,10 +3376,9 @@ pub struct PrivateFieldExpressionWithoutField<'a, 't>(
 
 impl<'a, 't> PrivateFieldExpressionWithoutField<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PRIVATE_FIELD_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_PRIVATE_FIELD_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -3462,7 +3412,7 @@ impl<'a, 't> GetAddress for PrivateFieldExpressionWithoutField<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CALL_EXPRESSION_PARENT: usize = offset_of!(CallExpression, parent);
+pub(crate) const OFFSET_CALL_EXPRESSION_NODE_ID: usize = offset_of!(CallExpression, node_id);
 pub(crate) const OFFSET_CALL_EXPRESSION_SPAN: usize = offset_of!(CallExpression, span);
 pub(crate) const OFFSET_CALL_EXPRESSION_CALLEE: usize = offset_of!(CallExpression, callee);
 pub(crate) const OFFSET_CALL_EXPRESSION_TYPE_PARAMETERS: usize =
@@ -3479,11 +3429,8 @@ pub struct CallExpressionWithoutCallee<'a, 't>(
 
 impl<'a, 't> CallExpressionWithoutCallee<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3529,11 +3476,8 @@ pub struct CallExpressionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> CallExpressionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3578,11 +3522,8 @@ pub struct CallExpressionWithoutArguments<'a, 't>(
 
 impl<'a, 't> CallExpressionWithoutArguments<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CALL_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3618,7 +3559,7 @@ impl<'a, 't> GetAddress for CallExpressionWithoutArguments<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_NEW_EXPRESSION_PARENT: usize = offset_of!(NewExpression, parent);
+pub(crate) const OFFSET_NEW_EXPRESSION_NODE_ID: usize = offset_of!(NewExpression, node_id);
 pub(crate) const OFFSET_NEW_EXPRESSION_SPAN: usize = offset_of!(NewExpression, span);
 pub(crate) const OFFSET_NEW_EXPRESSION_CALLEE: usize = offset_of!(NewExpression, callee);
 pub(crate) const OFFSET_NEW_EXPRESSION_ARGUMENTS: usize = offset_of!(NewExpression, arguments);
@@ -3634,11 +3575,8 @@ pub struct NewExpressionWithoutCallee<'a, 't>(
 
 impl<'a, 't> NewExpressionWithoutCallee<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3679,11 +3617,8 @@ pub struct NewExpressionWithoutArguments<'a, 't>(
 
 impl<'a, 't> NewExpressionWithoutArguments<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3723,11 +3658,8 @@ pub struct NewExpressionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> NewExpressionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_NEW_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3758,7 +3690,7 @@ impl<'a, 't> GetAddress for NewExpressionWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_META_PROPERTY_PARENT: usize = offset_of!(MetaProperty, parent);
+pub(crate) const OFFSET_META_PROPERTY_NODE_ID: usize = offset_of!(MetaProperty, node_id);
 pub(crate) const OFFSET_META_PROPERTY_SPAN: usize = offset_of!(MetaProperty, span);
 pub(crate) const OFFSET_META_PROPERTY_META: usize = offset_of!(MetaProperty, meta);
 pub(crate) const OFFSET_META_PROPERTY_PROPERTY: usize = offset_of!(MetaProperty, property);
@@ -3772,10 +3704,8 @@ pub struct MetaPropertyWithoutMeta<'a, 't>(
 
 impl<'a, 't> MetaPropertyWithoutMeta<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_META_PROPERTY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_META_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3808,10 +3738,8 @@ pub struct MetaPropertyWithoutProperty<'a, 't>(
 
 impl<'a, 't> MetaPropertyWithoutProperty<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_META_PROPERTY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_META_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3834,7 +3762,7 @@ impl<'a, 't> GetAddress for MetaPropertyWithoutProperty<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_SPREAD_ELEMENT_PARENT: usize = offset_of!(SpreadElement, parent);
+pub(crate) const OFFSET_SPREAD_ELEMENT_NODE_ID: usize = offset_of!(SpreadElement, node_id);
 pub(crate) const OFFSET_SPREAD_ELEMENT_SPAN: usize = offset_of!(SpreadElement, span);
 pub(crate) const OFFSET_SPREAD_ELEMENT_ARGUMENT: usize = offset_of!(SpreadElement, argument);
 
@@ -3847,11 +3775,8 @@ pub struct SpreadElementWithoutArgument<'a, 't>(
 
 impl<'a, 't> SpreadElementWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SPREAD_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SPREAD_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3867,7 +3792,7 @@ impl<'a, 't> GetAddress for SpreadElementWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_UPDATE_EXPRESSION_PARENT: usize = offset_of!(UpdateExpression, parent);
+pub(crate) const OFFSET_UPDATE_EXPRESSION_NODE_ID: usize = offset_of!(UpdateExpression, node_id);
 pub(crate) const OFFSET_UPDATE_EXPRESSION_SPAN: usize = offset_of!(UpdateExpression, span);
 pub(crate) const OFFSET_UPDATE_EXPRESSION_OPERATOR: usize = offset_of!(UpdateExpression, operator);
 pub(crate) const OFFSET_UPDATE_EXPRESSION_PREFIX: usize = offset_of!(UpdateExpression, prefix);
@@ -3882,11 +3807,8 @@ pub struct UpdateExpressionWithoutArgument<'a, 't>(
 
 impl<'a, 't> UpdateExpressionWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_UPDATE_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_UPDATE_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3915,7 +3837,7 @@ impl<'a, 't> GetAddress for UpdateExpressionWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_UNARY_EXPRESSION_PARENT: usize = offset_of!(UnaryExpression, parent);
+pub(crate) const OFFSET_UNARY_EXPRESSION_NODE_ID: usize = offset_of!(UnaryExpression, node_id);
 pub(crate) const OFFSET_UNARY_EXPRESSION_SPAN: usize = offset_of!(UnaryExpression, span);
 pub(crate) const OFFSET_UNARY_EXPRESSION_OPERATOR: usize = offset_of!(UnaryExpression, operator);
 pub(crate) const OFFSET_UNARY_EXPRESSION_ARGUMENT: usize = offset_of!(UnaryExpression, argument);
@@ -3929,11 +3851,8 @@ pub struct UnaryExpressionWithoutArgument<'a, 't>(
 
 impl<'a, 't> UnaryExpressionWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_UNARY_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_UNARY_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -3956,7 +3875,7 @@ impl<'a, 't> GetAddress for UnaryExpressionWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BINARY_EXPRESSION_PARENT: usize = offset_of!(BinaryExpression, parent);
+pub(crate) const OFFSET_BINARY_EXPRESSION_NODE_ID: usize = offset_of!(BinaryExpression, node_id);
 pub(crate) const OFFSET_BINARY_EXPRESSION_SPAN: usize = offset_of!(BinaryExpression, span);
 pub(crate) const OFFSET_BINARY_EXPRESSION_LEFT: usize = offset_of!(BinaryExpression, left);
 pub(crate) const OFFSET_BINARY_EXPRESSION_OPERATOR: usize = offset_of!(BinaryExpression, operator);
@@ -3971,11 +3890,8 @@ pub struct BinaryExpressionWithoutLeft<'a, 't>(
 
 impl<'a, 't> BinaryExpressionWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINARY_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINARY_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4015,11 +3931,8 @@ pub struct BinaryExpressionWithoutRight<'a, 't>(
 
 impl<'a, 't> BinaryExpressionWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINARY_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINARY_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4050,8 +3963,8 @@ impl<'a, 't> GetAddress for BinaryExpressionWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_PRIVATE_IN_EXPRESSION_PARENT: usize =
-    offset_of!(PrivateInExpression, parent);
+pub(crate) const OFFSET_PRIVATE_IN_EXPRESSION_NODE_ID: usize =
+    offset_of!(PrivateInExpression, node_id);
 pub(crate) const OFFSET_PRIVATE_IN_EXPRESSION_SPAN: usize = offset_of!(PrivateInExpression, span);
 pub(crate) const OFFSET_PRIVATE_IN_EXPRESSION_LEFT: usize = offset_of!(PrivateInExpression, left);
 pub(crate) const OFFSET_PRIVATE_IN_EXPRESSION_OPERATOR: usize =
@@ -4067,11 +3980,8 @@ pub struct PrivateInExpressionWithoutLeft<'a, 't>(
 
 impl<'a, 't> PrivateInExpressionWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PRIVATE_IN_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PRIVATE_IN_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4112,11 +4022,8 @@ pub struct PrivateInExpressionWithoutRight<'a, 't>(
 
 impl<'a, 't> PrivateInExpressionWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PRIVATE_IN_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PRIVATE_IN_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4148,7 +4055,7 @@ impl<'a, 't> GetAddress for PrivateInExpressionWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_LOGICAL_EXPRESSION_PARENT: usize = offset_of!(LogicalExpression, parent);
+pub(crate) const OFFSET_LOGICAL_EXPRESSION_NODE_ID: usize = offset_of!(LogicalExpression, node_id);
 pub(crate) const OFFSET_LOGICAL_EXPRESSION_SPAN: usize = offset_of!(LogicalExpression, span);
 pub(crate) const OFFSET_LOGICAL_EXPRESSION_LEFT: usize = offset_of!(LogicalExpression, left);
 pub(crate) const OFFSET_LOGICAL_EXPRESSION_OPERATOR: usize =
@@ -4164,11 +4071,8 @@ pub struct LogicalExpressionWithoutLeft<'a, 't>(
 
 impl<'a, 't> LogicalExpressionWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_LOGICAL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_LOGICAL_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4208,11 +4112,8 @@ pub struct LogicalExpressionWithoutRight<'a, 't>(
 
 impl<'a, 't> LogicalExpressionWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_LOGICAL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_LOGICAL_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4243,8 +4144,8 @@ impl<'a, 't> GetAddress for LogicalExpressionWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CONDITIONAL_EXPRESSION_PARENT: usize =
-    offset_of!(ConditionalExpression, parent);
+pub(crate) const OFFSET_CONDITIONAL_EXPRESSION_NODE_ID: usize =
+    offset_of!(ConditionalExpression, node_id);
 pub(crate) const OFFSET_CONDITIONAL_EXPRESSION_SPAN: usize =
     offset_of!(ConditionalExpression, span);
 pub(crate) const OFFSET_CONDITIONAL_EXPRESSION_TEST: usize =
@@ -4263,10 +4164,9 @@ pub struct ConditionalExpressionWithoutTest<'a, 't>(
 
 impl<'a, 't> ConditionalExpressionWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -4308,10 +4208,9 @@ pub struct ConditionalExpressionWithoutConsequent<'a, 't>(
 
 impl<'a, 't> ConditionalExpressionWithoutConsequent<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -4353,10 +4252,9 @@ pub struct ConditionalExpressionWithoutAlternate<'a, 't>(
 
 impl<'a, 't> ConditionalExpressionWithoutAlternate<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_CONDITIONAL_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -4389,8 +4287,8 @@ impl<'a, 't> GetAddress for ConditionalExpressionWithoutAlternate<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_EXPRESSION_PARENT: usize =
-    offset_of!(AssignmentExpression, parent);
+pub(crate) const OFFSET_ASSIGNMENT_EXPRESSION_NODE_ID: usize =
+    offset_of!(AssignmentExpression, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_EXPRESSION_SPAN: usize = offset_of!(AssignmentExpression, span);
 pub(crate) const OFFSET_ASSIGNMENT_EXPRESSION_OPERATOR: usize =
     offset_of!(AssignmentExpression, operator);
@@ -4407,11 +4305,8 @@ pub struct AssignmentExpressionWithoutLeft<'a, 't>(
 
 impl<'a, 't> AssignmentExpressionWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4452,11 +4347,8 @@ pub struct AssignmentExpressionWithoutRight<'a, 't>(
 
 impl<'a, 't> AssignmentExpressionWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -4488,8 +4380,8 @@ impl<'a, 't> GetAddress for AssignmentExpressionWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ARRAY_ASSIGNMENT_TARGET_PARENT: usize =
-    offset_of!(ArrayAssignmentTarget, parent);
+pub(crate) const OFFSET_ARRAY_ASSIGNMENT_TARGET_NODE_ID: usize =
+    offset_of!(ArrayAssignmentTarget, node_id);
 pub(crate) const OFFSET_ARRAY_ASSIGNMENT_TARGET_SPAN: usize =
     offset_of!(ArrayAssignmentTarget, span);
 pub(crate) const OFFSET_ARRAY_ASSIGNMENT_TARGET_ELEMENTS: usize =
@@ -4508,10 +4400,9 @@ pub struct ArrayAssignmentTargetWithoutElements<'a, 't>(
 
 impl<'a, 't> ArrayAssignmentTargetWithoutElements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARRAY_ASSIGNMENT_TARGET_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARRAY_ASSIGNMENT_TARGET_NODE_ID) as *const u32)
         }
     }
 
@@ -4553,10 +4444,9 @@ pub struct ArrayAssignmentTargetWithoutRest<'a, 't>(
 
 impl<'a, 't> ArrayAssignmentTargetWithoutRest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARRAY_ASSIGNMENT_TARGET_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARRAY_ASSIGNMENT_TARGET_NODE_ID) as *const u32)
         }
     }
 
@@ -4589,8 +4479,8 @@ impl<'a, 't> GetAddress for ArrayAssignmentTargetWithoutRest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_OBJECT_ASSIGNMENT_TARGET_PARENT: usize =
-    offset_of!(ObjectAssignmentTarget, parent);
+pub(crate) const OFFSET_OBJECT_ASSIGNMENT_TARGET_NODE_ID: usize =
+    offset_of!(ObjectAssignmentTarget, node_id);
 pub(crate) const OFFSET_OBJECT_ASSIGNMENT_TARGET_SPAN: usize =
     offset_of!(ObjectAssignmentTarget, span);
 pub(crate) const OFFSET_OBJECT_ASSIGNMENT_TARGET_PROPERTIES: usize =
@@ -4607,10 +4497,9 @@ pub struct ObjectAssignmentTargetWithoutProperties<'a, 't>(
 
 impl<'a, 't> ObjectAssignmentTargetWithoutProperties<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_ASSIGNMENT_TARGET_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_OBJECT_ASSIGNMENT_TARGET_NODE_ID) as *const u32)
         }
     }
 
@@ -4646,10 +4535,9 @@ pub struct ObjectAssignmentTargetWithoutRest<'a, 't>(
 
 impl<'a, 't> ObjectAssignmentTargetWithoutRest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_ASSIGNMENT_TARGET_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_OBJECT_ASSIGNMENT_TARGET_NODE_ID) as *const u32)
         }
     }
 
@@ -4676,8 +4564,8 @@ impl<'a, 't> GetAddress for ObjectAssignmentTargetWithoutRest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_TARGET_REST_PARENT: usize =
-    offset_of!(AssignmentTargetRest, parent);
+pub(crate) const OFFSET_ASSIGNMENT_TARGET_REST_NODE_ID: usize =
+    offset_of!(AssignmentTargetRest, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_REST_SPAN: usize = offset_of!(AssignmentTargetRest, span);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_REST_TARGET: usize =
     offset_of!(AssignmentTargetRest, target);
@@ -4691,10 +4579,9 @@ pub struct AssignmentTargetRestWithoutTarget<'a, 't>(
 
 impl<'a, 't> AssignmentTargetRestWithoutTarget<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_REST_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_REST_NODE_ID) as *const u32)
         }
     }
 
@@ -4711,8 +4598,8 @@ impl<'a, 't> GetAddress for AssignmentTargetRestWithoutTarget<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_PARENT: usize =
-    offset_of!(AssignmentTargetWithDefault, parent);
+pub(crate) const OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_NODE_ID: usize =
+    offset_of!(AssignmentTargetWithDefault, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_SPAN: usize =
     offset_of!(AssignmentTargetWithDefault, span);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_BINDING: usize =
@@ -4729,10 +4616,10 @@ pub struct AssignmentTargetWithDefaultWithoutBinding<'a, 't>(
 
 impl<'a, 't> AssignmentTargetWithDefaultWithoutBinding<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4768,10 +4655,10 @@ pub struct AssignmentTargetWithDefaultWithoutInit<'a, 't>(
 
 impl<'a, 't> AssignmentTargetWithDefaultWithoutInit<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_WITH_DEFAULT_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4798,8 +4685,8 @@ impl<'a, 't> GetAddress for AssignmentTargetWithDefaultWithoutInit<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_PARENT: usize =
-    offset_of!(AssignmentTargetPropertyIdentifier, parent);
+pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_NODE_ID: usize =
+    offset_of!(AssignmentTargetPropertyIdentifier, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_SPAN: usize =
     offset_of!(AssignmentTargetPropertyIdentifier, span);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_BINDING: usize =
@@ -4816,10 +4703,10 @@ pub struct AssignmentTargetPropertyIdentifierWithoutBinding<'a, 't>(
 
 impl<'a, 't> AssignmentTargetPropertyIdentifierWithoutBinding<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4856,10 +4743,10 @@ pub struct AssignmentTargetPropertyIdentifierWithoutInit<'a, 't>(
 
 impl<'a, 't> AssignmentTargetPropertyIdentifierWithoutInit<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_IDENTIFIER_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4887,8 +4774,8 @@ impl<'a, 't> GetAddress for AssignmentTargetPropertyIdentifierWithoutInit<'a, 't
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_PARENT: usize =
-    offset_of!(AssignmentTargetPropertyProperty, parent);
+pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_NODE_ID: usize =
+    offset_of!(AssignmentTargetPropertyProperty, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_SPAN: usize =
     offset_of!(AssignmentTargetPropertyProperty, span);
 pub(crate) const OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_NAME: usize =
@@ -4907,10 +4794,10 @@ pub struct AssignmentTargetPropertyPropertyWithoutName<'a, 't>(
 
 impl<'a, 't> AssignmentTargetPropertyPropertyWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4955,10 +4842,10 @@ pub struct AssignmentTargetPropertyPropertyWithoutBinding<'a, 't>(
 
 impl<'a, 't> AssignmentTargetPropertyPropertyWithoutBinding<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_TARGET_PROPERTY_PROPERTY_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -4994,7 +4881,8 @@ impl<'a, 't> GetAddress for AssignmentTargetPropertyPropertyWithoutBinding<'a, '
     }
 }
 
-pub(crate) const OFFSET_SEQUENCE_EXPRESSION_PARENT: usize = offset_of!(SequenceExpression, parent);
+pub(crate) const OFFSET_SEQUENCE_EXPRESSION_NODE_ID: usize =
+    offset_of!(SequenceExpression, node_id);
 pub(crate) const OFFSET_SEQUENCE_EXPRESSION_SPAN: usize = offset_of!(SequenceExpression, span);
 pub(crate) const OFFSET_SEQUENCE_EXPRESSION_EXPRESSIONS: usize =
     offset_of!(SequenceExpression, expressions);
@@ -5008,11 +4896,8 @@ pub struct SequenceExpressionWithoutExpressions<'a, 't>(
 
 impl<'a, 't> SequenceExpressionWithoutExpressions<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SEQUENCE_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SEQUENCE_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5028,7 +4913,7 @@ impl<'a, 't> GetAddress for SequenceExpressionWithoutExpressions<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_AWAIT_EXPRESSION_PARENT: usize = offset_of!(AwaitExpression, parent);
+pub(crate) const OFFSET_AWAIT_EXPRESSION_NODE_ID: usize = offset_of!(AwaitExpression, node_id);
 pub(crate) const OFFSET_AWAIT_EXPRESSION_SPAN: usize = offset_of!(AwaitExpression, span);
 pub(crate) const OFFSET_AWAIT_EXPRESSION_ARGUMENT: usize = offset_of!(AwaitExpression, argument);
 
@@ -5041,11 +4926,8 @@ pub struct AwaitExpressionWithoutArgument<'a, 't>(
 
 impl<'a, 't> AwaitExpressionWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_AWAIT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_AWAIT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5061,7 +4943,7 @@ impl<'a, 't> GetAddress for AwaitExpressionWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CHAIN_EXPRESSION_PARENT: usize = offset_of!(ChainExpression, parent);
+pub(crate) const OFFSET_CHAIN_EXPRESSION_NODE_ID: usize = offset_of!(ChainExpression, node_id);
 pub(crate) const OFFSET_CHAIN_EXPRESSION_SPAN: usize = offset_of!(ChainExpression, span);
 pub(crate) const OFFSET_CHAIN_EXPRESSION_EXPRESSION: usize =
     offset_of!(ChainExpression, expression);
@@ -5075,11 +4957,8 @@ pub struct ChainExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> ChainExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CHAIN_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CHAIN_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5095,8 +4974,8 @@ impl<'a, 't> GetAddress for ChainExpressionWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_PARENTHESIZED_EXPRESSION_PARENT: usize =
-    offset_of!(ParenthesizedExpression, parent);
+pub(crate) const OFFSET_PARENTHESIZED_EXPRESSION_NODE_ID: usize =
+    offset_of!(ParenthesizedExpression, node_id);
 pub(crate) const OFFSET_PARENTHESIZED_EXPRESSION_SPAN: usize =
     offset_of!(ParenthesizedExpression, span);
 pub(crate) const OFFSET_PARENTHESIZED_EXPRESSION_EXPRESSION: usize =
@@ -5111,10 +4990,9 @@ pub struct ParenthesizedExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> ParenthesizedExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PARENTHESIZED_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_PARENTHESIZED_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -5133,7 +5011,7 @@ impl<'a, 't> GetAddress for ParenthesizedExpressionWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_DIRECTIVE_PARENT: usize = offset_of!(Directive, parent);
+pub(crate) const OFFSET_DIRECTIVE_NODE_ID: usize = offset_of!(Directive, node_id);
 pub(crate) const OFFSET_DIRECTIVE_SPAN: usize = offset_of!(Directive, span);
 pub(crate) const OFFSET_DIRECTIVE_EXPRESSION: usize = offset_of!(Directive, expression);
 pub(crate) const OFFSET_DIRECTIVE_DIRECTIVE: usize = offset_of!(Directive, directive);
@@ -5147,10 +5025,8 @@ pub struct DirectiveWithoutExpression<'a, 't>(
 
 impl<'a, 't> DirectiveWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_DIRECTIVE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_DIRECTIVE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5171,7 +5047,7 @@ impl<'a, 't> GetAddress for DirectiveWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BLOCK_STATEMENT_PARENT: usize = offset_of!(BlockStatement, parent);
+pub(crate) const OFFSET_BLOCK_STATEMENT_NODE_ID: usize = offset_of!(BlockStatement, node_id);
 pub(crate) const OFFSET_BLOCK_STATEMENT_SPAN: usize = offset_of!(BlockStatement, span);
 pub(crate) const OFFSET_BLOCK_STATEMENT_BODY: usize = offset_of!(BlockStatement, body);
 pub(crate) const OFFSET_BLOCK_STATEMENT_SCOPE_ID: usize = offset_of!(BlockStatement, scope_id);
@@ -5185,11 +5061,8 @@ pub struct BlockStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> BlockStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BLOCK_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BLOCK_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5213,8 +5086,8 @@ impl<'a, 't> GetAddress for BlockStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_VARIABLE_DECLARATION_PARENT: usize =
-    offset_of!(VariableDeclaration, parent);
+pub(crate) const OFFSET_VARIABLE_DECLARATION_NODE_ID: usize =
+    offset_of!(VariableDeclaration, node_id);
 pub(crate) const OFFSET_VARIABLE_DECLARATION_SPAN: usize = offset_of!(VariableDeclaration, span);
 pub(crate) const OFFSET_VARIABLE_DECLARATION_KIND: usize = offset_of!(VariableDeclaration, kind);
 pub(crate) const OFFSET_VARIABLE_DECLARATION_DECLARATIONS: usize =
@@ -5231,11 +5104,8 @@ pub struct VariableDeclarationWithoutDeclarations<'a, 't>(
 
 impl<'a, 't> VariableDeclarationWithoutDeclarations<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5264,7 +5134,8 @@ impl<'a, 't> GetAddress for VariableDeclarationWithoutDeclarations<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_VARIABLE_DECLARATOR_PARENT: usize = offset_of!(VariableDeclarator, parent);
+pub(crate) const OFFSET_VARIABLE_DECLARATOR_NODE_ID: usize =
+    offset_of!(VariableDeclarator, node_id);
 pub(crate) const OFFSET_VARIABLE_DECLARATOR_SPAN: usize = offset_of!(VariableDeclarator, span);
 pub(crate) const OFFSET_VARIABLE_DECLARATOR_KIND: usize = offset_of!(VariableDeclarator, kind);
 pub(crate) const OFFSET_VARIABLE_DECLARATOR_ID: usize = offset_of!(VariableDeclarator, id);
@@ -5281,11 +5152,8 @@ pub struct VariableDeclaratorWithoutId<'a, 't>(
 
 impl<'a, 't> VariableDeclaratorWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATOR_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATOR_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5331,11 +5199,8 @@ pub struct VariableDeclaratorWithoutInit<'a, 't>(
 
 impl<'a, 't> VariableDeclaratorWithoutInit<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATOR_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_VARIABLE_DECLARATOR_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5372,8 +5237,8 @@ impl<'a, 't> GetAddress for VariableDeclaratorWithoutInit<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_EXPRESSION_STATEMENT_PARENT: usize =
-    offset_of!(ExpressionStatement, parent);
+pub(crate) const OFFSET_EXPRESSION_STATEMENT_NODE_ID: usize =
+    offset_of!(ExpressionStatement, node_id);
 pub(crate) const OFFSET_EXPRESSION_STATEMENT_SPAN: usize = offset_of!(ExpressionStatement, span);
 pub(crate) const OFFSET_EXPRESSION_STATEMENT_EXPRESSION: usize =
     offset_of!(ExpressionStatement, expression);
@@ -5387,11 +5252,8 @@ pub struct ExpressionStatementWithoutExpression<'a, 't>(
 
 impl<'a, 't> ExpressionStatementWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPRESSION_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_EXPRESSION_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5407,7 +5269,7 @@ impl<'a, 't> GetAddress for ExpressionStatementWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IF_STATEMENT_PARENT: usize = offset_of!(IfStatement, parent);
+pub(crate) const OFFSET_IF_STATEMENT_NODE_ID: usize = offset_of!(IfStatement, node_id);
 pub(crate) const OFFSET_IF_STATEMENT_SPAN: usize = offset_of!(IfStatement, span);
 pub(crate) const OFFSET_IF_STATEMENT_TEST: usize = offset_of!(IfStatement, test);
 pub(crate) const OFFSET_IF_STATEMENT_CONSEQUENT: usize = offset_of!(IfStatement, consequent);
@@ -5422,10 +5284,8 @@ pub struct IfStatementWithoutTest<'a, 't>(
 
 impl<'a, 't> IfStatementWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5465,10 +5325,8 @@ pub struct IfStatementWithoutConsequent<'a, 't>(
 
 impl<'a, 't> IfStatementWithoutConsequent<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5506,10 +5364,8 @@ pub struct IfStatementWithoutAlternate<'a, 't>(
 
 impl<'a, 't> IfStatementWithoutAlternate<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5537,7 +5393,7 @@ impl<'a, 't> GetAddress for IfStatementWithoutAlternate<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_DO_WHILE_STATEMENT_PARENT: usize = offset_of!(DoWhileStatement, parent);
+pub(crate) const OFFSET_DO_WHILE_STATEMENT_NODE_ID: usize = offset_of!(DoWhileStatement, node_id);
 pub(crate) const OFFSET_DO_WHILE_STATEMENT_SPAN: usize = offset_of!(DoWhileStatement, span);
 pub(crate) const OFFSET_DO_WHILE_STATEMENT_BODY: usize = offset_of!(DoWhileStatement, body);
 pub(crate) const OFFSET_DO_WHILE_STATEMENT_TEST: usize = offset_of!(DoWhileStatement, test);
@@ -5551,11 +5407,8 @@ pub struct DoWhileStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> DoWhileStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_DO_WHILE_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_DO_WHILE_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5587,11 +5440,8 @@ pub struct DoWhileStatementWithoutTest<'a, 't>(
 
 impl<'a, 't> DoWhileStatementWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_DO_WHILE_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_DO_WHILE_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5614,7 +5464,7 @@ impl<'a, 't> GetAddress for DoWhileStatementWithoutTest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_WHILE_STATEMENT_PARENT: usize = offset_of!(WhileStatement, parent);
+pub(crate) const OFFSET_WHILE_STATEMENT_NODE_ID: usize = offset_of!(WhileStatement, node_id);
 pub(crate) const OFFSET_WHILE_STATEMENT_SPAN: usize = offset_of!(WhileStatement, span);
 pub(crate) const OFFSET_WHILE_STATEMENT_TEST: usize = offset_of!(WhileStatement, test);
 pub(crate) const OFFSET_WHILE_STATEMENT_BODY: usize = offset_of!(WhileStatement, body);
@@ -5628,11 +5478,8 @@ pub struct WhileStatementWithoutTest<'a, 't>(
 
 impl<'a, 't> WhileStatementWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WHILE_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WHILE_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5664,11 +5511,8 @@ pub struct WhileStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> WhileStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WHILE_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WHILE_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5691,7 +5535,7 @@ impl<'a, 't> GetAddress for WhileStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FOR_STATEMENT_PARENT: usize = offset_of!(ForStatement, parent);
+pub(crate) const OFFSET_FOR_STATEMENT_NODE_ID: usize = offset_of!(ForStatement, node_id);
 pub(crate) const OFFSET_FOR_STATEMENT_SPAN: usize = offset_of!(ForStatement, span);
 pub(crate) const OFFSET_FOR_STATEMENT_INIT: usize = offset_of!(ForStatement, init);
 pub(crate) const OFFSET_FOR_STATEMENT_TEST: usize = offset_of!(ForStatement, test);
@@ -5708,10 +5552,8 @@ pub struct ForStatementWithoutInit<'a, 't>(
 
 impl<'a, 't> ForStatementWithoutInit<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5765,10 +5607,8 @@ pub struct ForStatementWithoutTest<'a, 't>(
 
 impl<'a, 't> ForStatementWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5822,10 +5662,8 @@ pub struct ForStatementWithoutUpdate<'a, 't>(
 
 impl<'a, 't> ForStatementWithoutUpdate<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5879,10 +5717,8 @@ pub struct ForStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> ForStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5930,7 +5766,7 @@ impl<'a, 't> GetAddress for ForStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FOR_IN_STATEMENT_PARENT: usize = offset_of!(ForInStatement, parent);
+pub(crate) const OFFSET_FOR_IN_STATEMENT_NODE_ID: usize = offset_of!(ForInStatement, node_id);
 pub(crate) const OFFSET_FOR_IN_STATEMENT_SPAN: usize = offset_of!(ForInStatement, span);
 pub(crate) const OFFSET_FOR_IN_STATEMENT_LEFT: usize = offset_of!(ForInStatement, left);
 pub(crate) const OFFSET_FOR_IN_STATEMENT_RIGHT: usize = offset_of!(ForInStatement, right);
@@ -5946,11 +5782,8 @@ pub struct ForInStatementWithoutLeft<'a, 't>(
 
 impl<'a, 't> ForInStatementWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -5997,11 +5830,8 @@ pub struct ForInStatementWithoutRight<'a, 't>(
 
 impl<'a, 't> ForInStatementWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6049,11 +5879,8 @@ pub struct ForInStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> ForInStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_IN_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6092,7 +5919,7 @@ impl<'a, 't> GetAddress for ForInStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FOR_OF_STATEMENT_PARENT: usize = offset_of!(ForOfStatement, parent);
+pub(crate) const OFFSET_FOR_OF_STATEMENT_NODE_ID: usize = offset_of!(ForOfStatement, node_id);
 pub(crate) const OFFSET_FOR_OF_STATEMENT_SPAN: usize = offset_of!(ForOfStatement, span);
 pub(crate) const OFFSET_FOR_OF_STATEMENT_AWAIT: usize = offset_of!(ForOfStatement, r#await);
 pub(crate) const OFFSET_FOR_OF_STATEMENT_LEFT: usize = offset_of!(ForOfStatement, left);
@@ -6109,11 +5936,8 @@ pub struct ForOfStatementWithoutLeft<'a, 't>(
 
 impl<'a, 't> ForOfStatementWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6165,11 +5989,8 @@ pub struct ForOfStatementWithoutRight<'a, 't>(
 
 impl<'a, 't> ForOfStatementWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6222,11 +6043,8 @@ pub struct ForOfStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> ForOfStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FOR_OF_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6270,7 +6088,7 @@ impl<'a, 't> GetAddress for ForOfStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CONTINUE_STATEMENT_PARENT: usize = offset_of!(ContinueStatement, parent);
+pub(crate) const OFFSET_CONTINUE_STATEMENT_NODE_ID: usize = offset_of!(ContinueStatement, node_id);
 pub(crate) const OFFSET_CONTINUE_STATEMENT_SPAN: usize = offset_of!(ContinueStatement, span);
 pub(crate) const OFFSET_CONTINUE_STATEMENT_LABEL: usize = offset_of!(ContinueStatement, label);
 
@@ -6283,11 +6101,8 @@ pub struct ContinueStatementWithoutLabel<'a, 't>(
 
 impl<'a, 't> ContinueStatementWithoutLabel<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CONTINUE_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CONTINUE_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6303,7 +6118,7 @@ impl<'a, 't> GetAddress for ContinueStatementWithoutLabel<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BREAK_STATEMENT_PARENT: usize = offset_of!(BreakStatement, parent);
+pub(crate) const OFFSET_BREAK_STATEMENT_NODE_ID: usize = offset_of!(BreakStatement, node_id);
 pub(crate) const OFFSET_BREAK_STATEMENT_SPAN: usize = offset_of!(BreakStatement, span);
 pub(crate) const OFFSET_BREAK_STATEMENT_LABEL: usize = offset_of!(BreakStatement, label);
 
@@ -6316,11 +6131,8 @@ pub struct BreakStatementWithoutLabel<'a, 't>(
 
 impl<'a, 't> BreakStatementWithoutLabel<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BREAK_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BREAK_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6336,7 +6148,7 @@ impl<'a, 't> GetAddress for BreakStatementWithoutLabel<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_RETURN_STATEMENT_PARENT: usize = offset_of!(ReturnStatement, parent);
+pub(crate) const OFFSET_RETURN_STATEMENT_NODE_ID: usize = offset_of!(ReturnStatement, node_id);
 pub(crate) const OFFSET_RETURN_STATEMENT_SPAN: usize = offset_of!(ReturnStatement, span);
 pub(crate) const OFFSET_RETURN_STATEMENT_ARGUMENT: usize = offset_of!(ReturnStatement, argument);
 
@@ -6349,11 +6161,8 @@ pub struct ReturnStatementWithoutArgument<'a, 't>(
 
 impl<'a, 't> ReturnStatementWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_RETURN_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_RETURN_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6369,7 +6178,7 @@ impl<'a, 't> GetAddress for ReturnStatementWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_WITH_STATEMENT_PARENT: usize = offset_of!(WithStatement, parent);
+pub(crate) const OFFSET_WITH_STATEMENT_NODE_ID: usize = offset_of!(WithStatement, node_id);
 pub(crate) const OFFSET_WITH_STATEMENT_SPAN: usize = offset_of!(WithStatement, span);
 pub(crate) const OFFSET_WITH_STATEMENT_OBJECT: usize = offset_of!(WithStatement, object);
 pub(crate) const OFFSET_WITH_STATEMENT_BODY: usize = offset_of!(WithStatement, body);
@@ -6383,11 +6192,8 @@ pub struct WithStatementWithoutObject<'a, 't>(
 
 impl<'a, 't> WithStatementWithoutObject<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WITH_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WITH_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6417,11 +6223,8 @@ pub struct WithStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> WithStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WITH_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WITH_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6444,7 +6247,7 @@ impl<'a, 't> GetAddress for WithStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_SWITCH_STATEMENT_PARENT: usize = offset_of!(SwitchStatement, parent);
+pub(crate) const OFFSET_SWITCH_STATEMENT_NODE_ID: usize = offset_of!(SwitchStatement, node_id);
 pub(crate) const OFFSET_SWITCH_STATEMENT_SPAN: usize = offset_of!(SwitchStatement, span);
 pub(crate) const OFFSET_SWITCH_STATEMENT_DISCRIMINANT: usize =
     offset_of!(SwitchStatement, discriminant);
@@ -6460,11 +6263,8 @@ pub struct SwitchStatementWithoutDiscriminant<'a, 't>(
 
 impl<'a, 't> SwitchStatementWithoutDiscriminant<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SWITCH_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SWITCH_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6505,11 +6305,8 @@ pub struct SwitchStatementWithoutCases<'a, 't>(
 
 impl<'a, 't> SwitchStatementWithoutCases<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SWITCH_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SWITCH_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6541,7 +6338,7 @@ impl<'a, 't> GetAddress for SwitchStatementWithoutCases<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_SWITCH_CASE_PARENT: usize = offset_of!(SwitchCase, parent);
+pub(crate) const OFFSET_SWITCH_CASE_NODE_ID: usize = offset_of!(SwitchCase, node_id);
 pub(crate) const OFFSET_SWITCH_CASE_SPAN: usize = offset_of!(SwitchCase, span);
 pub(crate) const OFFSET_SWITCH_CASE_TEST: usize = offset_of!(SwitchCase, test);
 pub(crate) const OFFSET_SWITCH_CASE_CONSEQUENT: usize = offset_of!(SwitchCase, consequent);
@@ -6555,10 +6352,8 @@ pub struct SwitchCaseWithoutTest<'a, 't>(
 
 impl<'a, 't> SwitchCaseWithoutTest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SWITCH_CASE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SWITCH_CASE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6591,10 +6386,8 @@ pub struct SwitchCaseWithoutConsequent<'a, 't>(
 
 impl<'a, 't> SwitchCaseWithoutConsequent<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_SWITCH_CASE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_SWITCH_CASE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6617,7 +6410,7 @@ impl<'a, 't> GetAddress for SwitchCaseWithoutConsequent<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_LABELED_STATEMENT_PARENT: usize = offset_of!(LabeledStatement, parent);
+pub(crate) const OFFSET_LABELED_STATEMENT_NODE_ID: usize = offset_of!(LabeledStatement, node_id);
 pub(crate) const OFFSET_LABELED_STATEMENT_SPAN: usize = offset_of!(LabeledStatement, span);
 pub(crate) const OFFSET_LABELED_STATEMENT_LABEL: usize = offset_of!(LabeledStatement, label);
 pub(crate) const OFFSET_LABELED_STATEMENT_BODY: usize = offset_of!(LabeledStatement, body);
@@ -6631,11 +6424,8 @@ pub struct LabeledStatementWithoutLabel<'a, 't>(
 
 impl<'a, 't> LabeledStatementWithoutLabel<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_LABELED_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_LABELED_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6667,11 +6457,8 @@ pub struct LabeledStatementWithoutBody<'a, 't>(
 
 impl<'a, 't> LabeledStatementWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_LABELED_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_LABELED_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6695,7 +6482,7 @@ impl<'a, 't> GetAddress for LabeledStatementWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_THROW_STATEMENT_PARENT: usize = offset_of!(ThrowStatement, parent);
+pub(crate) const OFFSET_THROW_STATEMENT_NODE_ID: usize = offset_of!(ThrowStatement, node_id);
 pub(crate) const OFFSET_THROW_STATEMENT_SPAN: usize = offset_of!(ThrowStatement, span);
 pub(crate) const OFFSET_THROW_STATEMENT_ARGUMENT: usize = offset_of!(ThrowStatement, argument);
 
@@ -6708,11 +6495,8 @@ pub struct ThrowStatementWithoutArgument<'a, 't>(
 
 impl<'a, 't> ThrowStatementWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_THROW_STATEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_THROW_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6728,7 +6512,7 @@ impl<'a, 't> GetAddress for ThrowStatementWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TRY_STATEMENT_PARENT: usize = offset_of!(TryStatement, parent);
+pub(crate) const OFFSET_TRY_STATEMENT_NODE_ID: usize = offset_of!(TryStatement, node_id);
 pub(crate) const OFFSET_TRY_STATEMENT_SPAN: usize = offset_of!(TryStatement, span);
 pub(crate) const OFFSET_TRY_STATEMENT_BLOCK: usize = offset_of!(TryStatement, block);
 pub(crate) const OFFSET_TRY_STATEMENT_HANDLER: usize = offset_of!(TryStatement, handler);
@@ -6743,10 +6527,8 @@ pub struct TryStatementWithoutBlock<'a, 't>(
 
 impl<'a, 't> TryStatementWithoutBlock<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6787,10 +6569,8 @@ pub struct TryStatementWithoutHandler<'a, 't>(
 
 impl<'a, 't> TryStatementWithoutHandler<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6831,10 +6611,8 @@ pub struct TryStatementWithoutFinalizer<'a, 't>(
 
 impl<'a, 't> TryStatementWithoutFinalizer<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TRY_STATEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6866,7 +6644,7 @@ impl<'a, 't> GetAddress for TryStatementWithoutFinalizer<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CATCH_CLAUSE_PARENT: usize = offset_of!(CatchClause, parent);
+pub(crate) const OFFSET_CATCH_CLAUSE_NODE_ID: usize = offset_of!(CatchClause, node_id);
 pub(crate) const OFFSET_CATCH_CLAUSE_SPAN: usize = offset_of!(CatchClause, span);
 pub(crate) const OFFSET_CATCH_CLAUSE_PARAM: usize = offset_of!(CatchClause, param);
 pub(crate) const OFFSET_CATCH_CLAUSE_BODY: usize = offset_of!(CatchClause, body);
@@ -6881,10 +6659,8 @@ pub struct CatchClauseWithoutParam<'a, 't>(
 
 impl<'a, 't> CatchClauseWithoutParam<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CATCH_CLAUSE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CATCH_CLAUSE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6925,10 +6701,8 @@ pub struct CatchClauseWithoutBody<'a, 't>(
 
 impl<'a, 't> CatchClauseWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CATCH_CLAUSE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CATCH_CLAUSE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6960,7 +6734,7 @@ impl<'a, 't> GetAddress for CatchClauseWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CATCH_PARAMETER_PARENT: usize = offset_of!(CatchParameter, parent);
+pub(crate) const OFFSET_CATCH_PARAMETER_NODE_ID: usize = offset_of!(CatchParameter, node_id);
 pub(crate) const OFFSET_CATCH_PARAMETER_SPAN: usize = offset_of!(CatchParameter, span);
 pub(crate) const OFFSET_CATCH_PARAMETER_PATTERN: usize = offset_of!(CatchParameter, pattern);
 
@@ -6973,11 +6747,8 @@ pub struct CatchParameterWithoutPattern<'a, 't>(
 
 impl<'a, 't> CatchParameterWithoutPattern<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CATCH_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CATCH_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -6993,7 +6764,7 @@ impl<'a, 't> GetAddress for CatchParameterWithoutPattern<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BINDING_PATTERN_PARENT: usize = offset_of!(BindingPattern, parent);
+pub(crate) const OFFSET_BINDING_PATTERN_NODE_ID: usize = offset_of!(BindingPattern, node_id);
 pub(crate) const OFFSET_BINDING_PATTERN_KIND: usize = offset_of!(BindingPattern, kind);
 pub(crate) const OFFSET_BINDING_PATTERN_TYPE_ANNOTATION: usize =
     offset_of!(BindingPattern, type_annotation);
@@ -7008,11 +6779,8 @@ pub struct BindingPatternWithoutKind<'a, 't>(
 
 impl<'a, 't> BindingPatternWithoutKind<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7045,11 +6813,8 @@ pub struct BindingPatternWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> BindingPatternWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINDING_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7073,7 +6838,7 @@ impl<'a, 't> GetAddress for BindingPatternWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ASSIGNMENT_PATTERN_PARENT: usize = offset_of!(AssignmentPattern, parent);
+pub(crate) const OFFSET_ASSIGNMENT_PATTERN_NODE_ID: usize = offset_of!(AssignmentPattern, node_id);
 pub(crate) const OFFSET_ASSIGNMENT_PATTERN_SPAN: usize = offset_of!(AssignmentPattern, span);
 pub(crate) const OFFSET_ASSIGNMENT_PATTERN_LEFT: usize = offset_of!(AssignmentPattern, left);
 pub(crate) const OFFSET_ASSIGNMENT_PATTERN_RIGHT: usize = offset_of!(AssignmentPattern, right);
@@ -7087,11 +6852,8 @@ pub struct AssignmentPatternWithoutLeft<'a, 't>(
 
 impl<'a, 't> AssignmentPatternWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7123,11 +6885,8 @@ pub struct AssignmentPatternWithoutRight<'a, 't>(
 
 impl<'a, 't> AssignmentPatternWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ASSIGNMENT_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7151,7 +6910,7 @@ impl<'a, 't> GetAddress for AssignmentPatternWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_OBJECT_PATTERN_PARENT: usize = offset_of!(ObjectPattern, parent);
+pub(crate) const OFFSET_OBJECT_PATTERN_NODE_ID: usize = offset_of!(ObjectPattern, node_id);
 pub(crate) const OFFSET_OBJECT_PATTERN_SPAN: usize = offset_of!(ObjectPattern, span);
 pub(crate) const OFFSET_OBJECT_PATTERN_PROPERTIES: usize = offset_of!(ObjectPattern, properties);
 pub(crate) const OFFSET_OBJECT_PATTERN_REST: usize = offset_of!(ObjectPattern, rest);
@@ -7165,11 +6924,8 @@ pub struct ObjectPatternWithoutProperties<'a, 't>(
 
 impl<'a, 't> ObjectPatternWithoutProperties<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_OBJECT_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7202,11 +6958,8 @@ pub struct ObjectPatternWithoutRest<'a, 't>(
 
 impl<'a, 't> ObjectPatternWithoutRest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_OBJECT_PATTERN_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_OBJECT_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7230,7 +6983,7 @@ impl<'a, 't> GetAddress for ObjectPatternWithoutRest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BINDING_PROPERTY_PARENT: usize = offset_of!(BindingProperty, parent);
+pub(crate) const OFFSET_BINDING_PROPERTY_NODE_ID: usize = offset_of!(BindingProperty, node_id);
 pub(crate) const OFFSET_BINDING_PROPERTY_SPAN: usize = offset_of!(BindingProperty, span);
 pub(crate) const OFFSET_BINDING_PROPERTY_KEY: usize = offset_of!(BindingProperty, key);
 pub(crate) const OFFSET_BINDING_PROPERTY_VALUE: usize = offset_of!(BindingProperty, value);
@@ -7246,11 +6999,8 @@ pub struct BindingPropertyWithoutKey<'a, 't>(
 
 impl<'a, 't> BindingPropertyWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINDING_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINDING_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7293,11 +7043,8 @@ pub struct BindingPropertyWithoutValue<'a, 't>(
 
 impl<'a, 't> BindingPropertyWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINDING_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINDING_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7330,7 +7077,7 @@ impl<'a, 't> GetAddress for BindingPropertyWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ARRAY_PATTERN_PARENT: usize = offset_of!(ArrayPattern, parent);
+pub(crate) const OFFSET_ARRAY_PATTERN_NODE_ID: usize = offset_of!(ArrayPattern, node_id);
 pub(crate) const OFFSET_ARRAY_PATTERN_SPAN: usize = offset_of!(ArrayPattern, span);
 pub(crate) const OFFSET_ARRAY_PATTERN_ELEMENTS: usize = offset_of!(ArrayPattern, elements);
 pub(crate) const OFFSET_ARRAY_PATTERN_REST: usize = offset_of!(ArrayPattern, rest);
@@ -7344,10 +7091,8 @@ pub struct ArrayPatternWithoutElements<'a, 't>(
 
 impl<'a, 't> ArrayPatternWithoutElements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARRAY_PATTERN_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ARRAY_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7380,10 +7125,8 @@ pub struct ArrayPatternWithoutRest<'a, 't>(
 
 impl<'a, 't> ArrayPatternWithoutRest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARRAY_PATTERN_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ARRAY_PATTERN_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7407,7 +7150,8 @@ impl<'a, 't> GetAddress for ArrayPatternWithoutRest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_BINDING_REST_ELEMENT_PARENT: usize = offset_of!(BindingRestElement, parent);
+pub(crate) const OFFSET_BINDING_REST_ELEMENT_NODE_ID: usize =
+    offset_of!(BindingRestElement, node_id);
 pub(crate) const OFFSET_BINDING_REST_ELEMENT_SPAN: usize = offset_of!(BindingRestElement, span);
 pub(crate) const OFFSET_BINDING_REST_ELEMENT_ARGUMENT: usize =
     offset_of!(BindingRestElement, argument);
@@ -7421,11 +7165,8 @@ pub struct BindingRestElementWithoutArgument<'a, 't>(
 
 impl<'a, 't> BindingRestElementWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_BINDING_REST_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_BINDING_REST_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7441,7 +7182,7 @@ impl<'a, 't> GetAddress for BindingRestElementWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FUNCTION_PARENT: usize = offset_of!(Function, parent);
+pub(crate) const OFFSET_FUNCTION_NODE_ID: usize = offset_of!(Function, node_id);
 pub(crate) const OFFSET_FUNCTION_SPAN: usize = offset_of!(Function, span);
 pub(crate) const OFFSET_FUNCTION_TYPE: usize = offset_of!(Function, r#type);
 pub(crate) const OFFSET_FUNCTION_ID: usize = offset_of!(Function, id);
@@ -7464,10 +7205,8 @@ pub struct FunctionWithoutId<'a, 't>(
 
 impl<'a, 't> FunctionWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7559,10 +7298,8 @@ pub struct FunctionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> FunctionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7654,10 +7391,8 @@ pub struct FunctionWithoutThisParam<'a, 't>(
 
 impl<'a, 't> FunctionWithoutThisParam<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7749,10 +7484,8 @@ pub struct FunctionWithoutParams<'a, 't>(
 
 impl<'a, 't> FunctionWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7844,10 +7577,8 @@ pub struct FunctionWithoutReturnType<'a, 't>(
 
 impl<'a, 't> FunctionWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -7939,10 +7670,8 @@ pub struct FunctionWithoutBody<'a, 't>(
 
 impl<'a, 't> FunctionWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8025,7 +7754,7 @@ impl<'a, 't> GetAddress for FunctionWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FORMAL_PARAMETERS_PARENT: usize = offset_of!(FormalParameters, parent);
+pub(crate) const OFFSET_FORMAL_PARAMETERS_NODE_ID: usize = offset_of!(FormalParameters, node_id);
 pub(crate) const OFFSET_FORMAL_PARAMETERS_SPAN: usize = offset_of!(FormalParameters, span);
 pub(crate) const OFFSET_FORMAL_PARAMETERS_KIND: usize = offset_of!(FormalParameters, kind);
 pub(crate) const OFFSET_FORMAL_PARAMETERS_ITEMS: usize = offset_of!(FormalParameters, items);
@@ -8040,11 +7769,8 @@ pub struct FormalParametersWithoutItems<'a, 't>(
 
 impl<'a, 't> FormalParametersWithoutItems<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETERS_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETERS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8085,11 +7811,8 @@ pub struct FormalParametersWithoutRest<'a, 't>(
 
 impl<'a, 't> FormalParametersWithoutRest<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETERS_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETERS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8121,7 +7844,7 @@ impl<'a, 't> GetAddress for FormalParametersWithoutRest<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FORMAL_PARAMETER_PARENT: usize = offset_of!(FormalParameter, parent);
+pub(crate) const OFFSET_FORMAL_PARAMETER_NODE_ID: usize = offset_of!(FormalParameter, node_id);
 pub(crate) const OFFSET_FORMAL_PARAMETER_SPAN: usize = offset_of!(FormalParameter, span);
 pub(crate) const OFFSET_FORMAL_PARAMETER_DECORATORS: usize =
     offset_of!(FormalParameter, decorators);
@@ -8140,11 +7863,8 @@ pub struct FormalParameterWithoutDecorators<'a, 't>(
 
 impl<'a, 't> FormalParameterWithoutDecorators<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8195,11 +7915,8 @@ pub struct FormalParameterWithoutPattern<'a, 't>(
 
 impl<'a, 't> FormalParameterWithoutPattern<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FORMAL_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8241,7 +7958,7 @@ impl<'a, 't> GetAddress for FormalParameterWithoutPattern<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_FUNCTION_BODY_PARENT: usize = offset_of!(FunctionBody, parent);
+pub(crate) const OFFSET_FUNCTION_BODY_NODE_ID: usize = offset_of!(FunctionBody, node_id);
 pub(crate) const OFFSET_FUNCTION_BODY_SPAN: usize = offset_of!(FunctionBody, span);
 pub(crate) const OFFSET_FUNCTION_BODY_DIRECTIVES: usize = offset_of!(FunctionBody, directives);
 pub(crate) const OFFSET_FUNCTION_BODY_STATEMENTS: usize = offset_of!(FunctionBody, statements);
@@ -8255,10 +7972,8 @@ pub struct FunctionBodyWithoutDirectives<'a, 't>(
 
 impl<'a, 't> FunctionBodyWithoutDirectives<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_BODY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_BODY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8291,10 +8006,8 @@ pub struct FunctionBodyWithoutStatements<'a, 't>(
 
 impl<'a, 't> FunctionBodyWithoutStatements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_FUNCTION_BODY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_FUNCTION_BODY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8318,8 +8031,8 @@ impl<'a, 't> GetAddress for FunctionBodyWithoutStatements<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ARROW_FUNCTION_EXPRESSION_PARENT: usize =
-    offset_of!(ArrowFunctionExpression, parent);
+pub(crate) const OFFSET_ARROW_FUNCTION_EXPRESSION_NODE_ID: usize =
+    offset_of!(ArrowFunctionExpression, node_id);
 pub(crate) const OFFSET_ARROW_FUNCTION_EXPRESSION_SPAN: usize =
     offset_of!(ArrowFunctionExpression, span);
 pub(crate) const OFFSET_ARROW_FUNCTION_EXPRESSION_EXPRESSION: usize =
@@ -8346,10 +8059,9 @@ pub struct ArrowFunctionExpressionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> ArrowFunctionExpressionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -8424,10 +8136,9 @@ pub struct ArrowFunctionExpressionWithoutParams<'a, 't>(
 
 impl<'a, 't> ArrowFunctionExpressionWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -8502,10 +8213,9 @@ pub struct ArrowFunctionExpressionWithoutReturnType<'a, 't>(
 
 impl<'a, 't> ArrowFunctionExpressionWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -8580,10 +8290,9 @@ pub struct ArrowFunctionExpressionWithoutBody<'a, 't>(
 
 impl<'a, 't> ArrowFunctionExpressionWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_ARROW_FUNCTION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -8649,7 +8358,7 @@ impl<'a, 't> GetAddress for ArrowFunctionExpressionWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_YIELD_EXPRESSION_PARENT: usize = offset_of!(YieldExpression, parent);
+pub(crate) const OFFSET_YIELD_EXPRESSION_NODE_ID: usize = offset_of!(YieldExpression, node_id);
 pub(crate) const OFFSET_YIELD_EXPRESSION_SPAN: usize = offset_of!(YieldExpression, span);
 pub(crate) const OFFSET_YIELD_EXPRESSION_DELEGATE: usize = offset_of!(YieldExpression, delegate);
 pub(crate) const OFFSET_YIELD_EXPRESSION_ARGUMENT: usize = offset_of!(YieldExpression, argument);
@@ -8663,11 +8372,8 @@ pub struct YieldExpressionWithoutArgument<'a, 't>(
 
 impl<'a, 't> YieldExpressionWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_YIELD_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_YIELD_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8688,7 +8394,7 @@ impl<'a, 't> GetAddress for YieldExpressionWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CLASS_PARENT: usize = offset_of!(Class, parent);
+pub(crate) const OFFSET_CLASS_NODE_ID: usize = offset_of!(Class, node_id);
 pub(crate) const OFFSET_CLASS_SPAN: usize = offset_of!(Class, span);
 pub(crate) const OFFSET_CLASS_TYPE: usize = offset_of!(Class, r#type);
 pub(crate) const OFFSET_CLASS_DECORATORS: usize = offset_of!(Class, decorators);
@@ -8712,8 +8418,8 @@ pub struct ClassWithoutDecorators<'a, 't>(
 
 impl<'a, 't> ClassWithoutDecorators<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8800,8 +8506,8 @@ pub struct ClassWithoutId<'a, 't>(pub(crate) *const Class<'a>, pub(crate) Phanto
 
 impl<'a, 't> ClassWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8891,8 +8597,8 @@ pub struct ClassWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> ClassWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -8981,8 +8687,8 @@ pub struct ClassWithoutSuperClass<'a, 't>(
 
 impl<'a, 't> ClassWithoutSuperClass<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9072,8 +8778,8 @@ pub struct ClassWithoutSuperTypeParameters<'a, 't>(
 
 impl<'a, 't> ClassWithoutSuperTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9162,8 +8868,8 @@ pub struct ClassWithoutImplements<'a, 't>(
 
 impl<'a, 't> ClassWithoutImplements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9249,8 +8955,8 @@ pub struct ClassWithoutBody<'a, 't>(pub(crate) *const Class<'a>, pub(crate) Phan
 
 impl<'a, 't> ClassWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_PARENT) as *const Option<AstKind<'a>>) }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9333,7 +9039,7 @@ impl<'a, 't> GetAddress for ClassWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_CLASS_BODY_PARENT: usize = offset_of!(ClassBody, parent);
+pub(crate) const OFFSET_CLASS_BODY_NODE_ID: usize = offset_of!(ClassBody, node_id);
 pub(crate) const OFFSET_CLASS_BODY_SPAN: usize = offset_of!(ClassBody, span);
 pub(crate) const OFFSET_CLASS_BODY_BODY: usize = offset_of!(ClassBody, body);
 
@@ -9346,10 +9052,8 @@ pub struct ClassBodyWithoutBody<'a, 't>(
 
 impl<'a, 't> ClassBodyWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_CLASS_BODY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_CLASS_BODY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9365,7 +9069,7 @@ impl<'a, 't> GetAddress for ClassBodyWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_METHOD_DEFINITION_PARENT: usize = offset_of!(MethodDefinition, parent);
+pub(crate) const OFFSET_METHOD_DEFINITION_NODE_ID: usize = offset_of!(MethodDefinition, node_id);
 pub(crate) const OFFSET_METHOD_DEFINITION_SPAN: usize = offset_of!(MethodDefinition, span);
 pub(crate) const OFFSET_METHOD_DEFINITION_TYPE: usize = offset_of!(MethodDefinition, r#type);
 pub(crate) const OFFSET_METHOD_DEFINITION_DECORATORS: usize =
@@ -9390,11 +9094,8 @@ pub struct MethodDefinitionWithoutDecorators<'a, 't>(
 
 impl<'a, 't> MethodDefinitionWithoutDecorators<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9478,11 +9179,8 @@ pub struct MethodDefinitionWithoutKey<'a, 't>(
 
 impl<'a, 't> MethodDefinitionWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9567,11 +9265,8 @@ pub struct MethodDefinitionWithoutValue<'a, 't>(
 
 impl<'a, 't> MethodDefinitionWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_METHOD_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9646,7 +9341,8 @@ impl<'a, 't> GetAddress for MethodDefinitionWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_PROPERTY_DEFINITION_PARENT: usize = offset_of!(PropertyDefinition, parent);
+pub(crate) const OFFSET_PROPERTY_DEFINITION_NODE_ID: usize =
+    offset_of!(PropertyDefinition, node_id);
 pub(crate) const OFFSET_PROPERTY_DEFINITION_SPAN: usize = offset_of!(PropertyDefinition, span);
 pub(crate) const OFFSET_PROPERTY_DEFINITION_TYPE: usize = offset_of!(PropertyDefinition, r#type);
 pub(crate) const OFFSET_PROPERTY_DEFINITION_DECORATORS: usize =
@@ -9681,11 +9377,8 @@ pub struct PropertyDefinitionWithoutDecorators<'a, 't>(
 
 impl<'a, 't> PropertyDefinitionWithoutDecorators<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9784,11 +9477,8 @@ pub struct PropertyDefinitionWithoutKey<'a, 't>(
 
 impl<'a, 't> PropertyDefinitionWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9888,11 +9578,8 @@ pub struct PropertyDefinitionWithoutValue<'a, 't>(
 
 impl<'a, 't> PropertyDefinitionWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -9991,11 +9678,8 @@ pub struct PropertyDefinitionWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> PropertyDefinitionWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_PROPERTY_DEFINITION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10085,7 +9769,7 @@ impl<'a, 't> GetAddress for PropertyDefinitionWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_STATIC_BLOCK_PARENT: usize = offset_of!(StaticBlock, parent);
+pub(crate) const OFFSET_STATIC_BLOCK_NODE_ID: usize = offset_of!(StaticBlock, node_id);
 pub(crate) const OFFSET_STATIC_BLOCK_SPAN: usize = offset_of!(StaticBlock, span);
 pub(crate) const OFFSET_STATIC_BLOCK_BODY: usize = offset_of!(StaticBlock, body);
 pub(crate) const OFFSET_STATIC_BLOCK_SCOPE_ID: usize = offset_of!(StaticBlock, scope_id);
@@ -10099,10 +9783,8 @@ pub struct StaticBlockWithoutBody<'a, 't>(
 
 impl<'a, 't> StaticBlockWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_STATIC_BLOCK_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_STATIC_BLOCK_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10126,7 +9808,7 @@ impl<'a, 't> GetAddress for StaticBlockWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_ACCESSOR_PROPERTY_PARENT: usize = offset_of!(AccessorProperty, parent);
+pub(crate) const OFFSET_ACCESSOR_PROPERTY_NODE_ID: usize = offset_of!(AccessorProperty, node_id);
 pub(crate) const OFFSET_ACCESSOR_PROPERTY_SPAN: usize = offset_of!(AccessorProperty, span);
 pub(crate) const OFFSET_ACCESSOR_PROPERTY_TYPE: usize = offset_of!(AccessorProperty, r#type);
 pub(crate) const OFFSET_ACCESSOR_PROPERTY_DECORATORS: usize =
@@ -10150,11 +9832,8 @@ pub struct AccessorPropertyWithoutDecorators<'a, 't>(
 
 impl<'a, 't> AccessorPropertyWithoutDecorators<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10233,11 +9912,8 @@ pub struct AccessorPropertyWithoutKey<'a, 't>(
 
 impl<'a, 't> AccessorPropertyWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10317,11 +9993,8 @@ pub struct AccessorPropertyWithoutValue<'a, 't>(
 
 impl<'a, 't> AccessorPropertyWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10400,11 +10073,8 @@ pub struct AccessorPropertyWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> AccessorPropertyWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_ACCESSOR_PROPERTY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10474,7 +10144,7 @@ impl<'a, 't> GetAddress for AccessorPropertyWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_EXPRESSION_PARENT: usize = offset_of!(ImportExpression, parent);
+pub(crate) const OFFSET_IMPORT_EXPRESSION_NODE_ID: usize = offset_of!(ImportExpression, node_id);
 pub(crate) const OFFSET_IMPORT_EXPRESSION_SPAN: usize = offset_of!(ImportExpression, span);
 pub(crate) const OFFSET_IMPORT_EXPRESSION_SOURCE: usize = offset_of!(ImportExpression, source);
 pub(crate) const OFFSET_IMPORT_EXPRESSION_ARGUMENTS: usize =
@@ -10490,11 +10160,8 @@ pub struct ImportExpressionWithoutSource<'a, 't>(
 
 impl<'a, 't> ImportExpressionWithoutSource<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10535,11 +10202,8 @@ pub struct ImportExpressionWithoutArguments<'a, 't>(
 
 impl<'a, 't> ImportExpressionWithoutArguments<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10570,7 +10234,7 @@ impl<'a, 't> GetAddress for ImportExpressionWithoutArguments<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_DECLARATION_PARENT: usize = offset_of!(ImportDeclaration, parent);
+pub(crate) const OFFSET_IMPORT_DECLARATION_NODE_ID: usize = offset_of!(ImportDeclaration, node_id);
 pub(crate) const OFFSET_IMPORT_DECLARATION_SPAN: usize = offset_of!(ImportDeclaration, span);
 pub(crate) const OFFSET_IMPORT_DECLARATION_SPECIFIERS: usize =
     offset_of!(ImportDeclaration, specifiers);
@@ -10590,11 +10254,8 @@ pub struct ImportDeclarationWithoutSpecifiers<'a, 't>(
 
 impl<'a, 't> ImportDeclarationWithoutSpecifiers<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10651,11 +10312,8 @@ pub struct ImportDeclarationWithoutSource<'a, 't>(
 
 impl<'a, 't> ImportDeclarationWithoutSource<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10712,11 +10370,8 @@ pub struct ImportDeclarationWithoutWithClause<'a, 't>(
 
 impl<'a, 't> ImportDeclarationWithoutWithClause<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10764,7 +10419,7 @@ impl<'a, 't> GetAddress for ImportDeclarationWithoutWithClause<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_SPECIFIER_PARENT: usize = offset_of!(ImportSpecifier, parent);
+pub(crate) const OFFSET_IMPORT_SPECIFIER_NODE_ID: usize = offset_of!(ImportSpecifier, node_id);
 pub(crate) const OFFSET_IMPORT_SPECIFIER_SPAN: usize = offset_of!(ImportSpecifier, span);
 pub(crate) const OFFSET_IMPORT_SPECIFIER_IMPORTED: usize = offset_of!(ImportSpecifier, imported);
 pub(crate) const OFFSET_IMPORT_SPECIFIER_LOCAL: usize = offset_of!(ImportSpecifier, local);
@@ -10780,11 +10435,8 @@ pub struct ImportSpecifierWithoutImported<'a, 't>(
 
 impl<'a, 't> ImportSpecifierWithoutImported<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_SPECIFIER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10825,11 +10477,8 @@ pub struct ImportSpecifierWithoutLocal<'a, 't>(
 
 impl<'a, 't> ImportSpecifierWithoutLocal<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_SPECIFIER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10861,8 +10510,8 @@ impl<'a, 't> GetAddress for ImportSpecifierWithoutLocal<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_DEFAULT_SPECIFIER_PARENT: usize =
-    offset_of!(ImportDefaultSpecifier, parent);
+pub(crate) const OFFSET_IMPORT_DEFAULT_SPECIFIER_NODE_ID: usize =
+    offset_of!(ImportDefaultSpecifier, node_id);
 pub(crate) const OFFSET_IMPORT_DEFAULT_SPECIFIER_SPAN: usize =
     offset_of!(ImportDefaultSpecifier, span);
 pub(crate) const OFFSET_IMPORT_DEFAULT_SPECIFIER_LOCAL: usize =
@@ -10877,10 +10526,9 @@ pub struct ImportDefaultSpecifierWithoutLocal<'a, 't>(
 
 impl<'a, 't> ImportDefaultSpecifierWithoutLocal<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_DEFAULT_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_IMPORT_DEFAULT_SPECIFIER_NODE_ID) as *const u32)
         }
     }
 
@@ -10899,8 +10547,8 @@ impl<'a, 't> GetAddress for ImportDefaultSpecifierWithoutLocal<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_NAMESPACE_SPECIFIER_PARENT: usize =
-    offset_of!(ImportNamespaceSpecifier, parent);
+pub(crate) const OFFSET_IMPORT_NAMESPACE_SPECIFIER_NODE_ID: usize =
+    offset_of!(ImportNamespaceSpecifier, node_id);
 pub(crate) const OFFSET_IMPORT_NAMESPACE_SPECIFIER_SPAN: usize =
     offset_of!(ImportNamespaceSpecifier, span);
 pub(crate) const OFFSET_IMPORT_NAMESPACE_SPECIFIER_LOCAL: usize =
@@ -10915,10 +10563,9 @@ pub struct ImportNamespaceSpecifierWithoutLocal<'a, 't>(
 
 impl<'a, 't> ImportNamespaceSpecifierWithoutLocal<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_NAMESPACE_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_IMPORT_NAMESPACE_SPECIFIER_NODE_ID) as *const u32)
         }
     }
 
@@ -10937,7 +10584,7 @@ impl<'a, 't> GetAddress for ImportNamespaceSpecifierWithoutLocal<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_WITH_CLAUSE_PARENT: usize = offset_of!(WithClause, parent);
+pub(crate) const OFFSET_WITH_CLAUSE_NODE_ID: usize = offset_of!(WithClause, node_id);
 pub(crate) const OFFSET_WITH_CLAUSE_SPAN: usize = offset_of!(WithClause, span);
 pub(crate) const OFFSET_WITH_CLAUSE_ATTRIBUTES_KEYWORD: usize =
     offset_of!(WithClause, attributes_keyword);
@@ -10952,10 +10599,8 @@ pub struct WithClauseWithoutAttributesKeyword<'a, 't>(
 
 impl<'a, 't> WithClauseWithoutAttributesKeyword<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WITH_CLAUSE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WITH_CLAUSE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -10988,10 +10633,8 @@ pub struct WithClauseWithoutWithEntries<'a, 't>(
 
 impl<'a, 't> WithClauseWithoutWithEntries<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_WITH_CLAUSE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_WITH_CLAUSE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11015,7 +10658,7 @@ impl<'a, 't> GetAddress for WithClauseWithoutWithEntries<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_IMPORT_ATTRIBUTE_PARENT: usize = offset_of!(ImportAttribute, parent);
+pub(crate) const OFFSET_IMPORT_ATTRIBUTE_NODE_ID: usize = offset_of!(ImportAttribute, node_id);
 pub(crate) const OFFSET_IMPORT_ATTRIBUTE_SPAN: usize = offset_of!(ImportAttribute, span);
 pub(crate) const OFFSET_IMPORT_ATTRIBUTE_KEY: usize = offset_of!(ImportAttribute, key);
 pub(crate) const OFFSET_IMPORT_ATTRIBUTE_VALUE: usize = offset_of!(ImportAttribute, value);
@@ -11029,11 +10672,8 @@ pub struct ImportAttributeWithoutKey<'a, 't>(
 
 impl<'a, 't> ImportAttributeWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_ATTRIBUTE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11065,11 +10705,8 @@ pub struct ImportAttributeWithoutValue<'a, 't>(
 
 impl<'a, 't> ImportAttributeWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_IMPORT_ATTRIBUTE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_IMPORT_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11093,8 +10730,8 @@ impl<'a, 't> GetAddress for ImportAttributeWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_EXPORT_NAMED_DECLARATION_PARENT: usize =
-    offset_of!(ExportNamedDeclaration, parent);
+pub(crate) const OFFSET_EXPORT_NAMED_DECLARATION_NODE_ID: usize =
+    offset_of!(ExportNamedDeclaration, node_id);
 pub(crate) const OFFSET_EXPORT_NAMED_DECLARATION_SPAN: usize =
     offset_of!(ExportNamedDeclaration, span);
 pub(crate) const OFFSET_EXPORT_NAMED_DECLARATION_DECLARATION: usize =
@@ -11117,10 +10754,9 @@ pub struct ExportNamedDeclarationWithoutDeclaration<'a, 't>(
 
 impl<'a, 't> ExportNamedDeclarationWithoutDeclaration<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11180,10 +10816,9 @@ pub struct ExportNamedDeclarationWithoutSpecifiers<'a, 't>(
 
 impl<'a, 't> ExportNamedDeclarationWithoutSpecifiers<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11243,10 +10878,9 @@ pub struct ExportNamedDeclarationWithoutSource<'a, 't>(
 
 impl<'a, 't> ExportNamedDeclarationWithoutSource<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11306,10 +10940,9 @@ pub struct ExportNamedDeclarationWithoutWithClause<'a, 't>(
 
 impl<'a, 't> ExportNamedDeclarationWithoutWithClause<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_NAMED_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11360,8 +10993,8 @@ impl<'a, 't> GetAddress for ExportNamedDeclarationWithoutWithClause<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_EXPORT_DEFAULT_DECLARATION_PARENT: usize =
-    offset_of!(ExportDefaultDeclaration, parent);
+pub(crate) const OFFSET_EXPORT_DEFAULT_DECLARATION_NODE_ID: usize =
+    offset_of!(ExportDefaultDeclaration, node_id);
 pub(crate) const OFFSET_EXPORT_DEFAULT_DECLARATION_SPAN: usize =
     offset_of!(ExportDefaultDeclaration, span);
 pub(crate) const OFFSET_EXPORT_DEFAULT_DECLARATION_DECLARATION: usize =
@@ -11378,10 +11011,9 @@ pub struct ExportDefaultDeclarationWithoutDeclaration<'a, 't>(
 
 impl<'a, 't> ExportDefaultDeclarationWithoutDeclaration<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_DEFAULT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_DEFAULT_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11417,10 +11049,9 @@ pub struct ExportDefaultDeclarationWithoutExported<'a, 't>(
 
 impl<'a, 't> ExportDefaultDeclarationWithoutExported<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_DEFAULT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_DEFAULT_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11447,8 +11078,8 @@ impl<'a, 't> GetAddress for ExportDefaultDeclarationWithoutExported<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_EXPORT_ALL_DECLARATION_PARENT: usize =
-    offset_of!(ExportAllDeclaration, parent);
+pub(crate) const OFFSET_EXPORT_ALL_DECLARATION_NODE_ID: usize =
+    offset_of!(ExportAllDeclaration, node_id);
 pub(crate) const OFFSET_EXPORT_ALL_DECLARATION_SPAN: usize = offset_of!(ExportAllDeclaration, span);
 pub(crate) const OFFSET_EXPORT_ALL_DECLARATION_EXPORTED: usize =
     offset_of!(ExportAllDeclaration, exported);
@@ -11468,10 +11099,9 @@ pub struct ExportAllDeclarationWithoutExported<'a, 't>(
 
 impl<'a, 't> ExportAllDeclarationWithoutExported<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11521,10 +11151,9 @@ pub struct ExportAllDeclarationWithoutSource<'a, 't>(
 
 impl<'a, 't> ExportAllDeclarationWithoutSource<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11574,10 +11203,9 @@ pub struct ExportAllDeclarationWithoutWithClause<'a, 't>(
 
 impl<'a, 't> ExportAllDeclarationWithoutWithClause<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_EXPORT_ALL_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -11618,7 +11246,7 @@ impl<'a, 't> GetAddress for ExportAllDeclarationWithoutWithClause<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_EXPORT_SPECIFIER_PARENT: usize = offset_of!(ExportSpecifier, parent);
+pub(crate) const OFFSET_EXPORT_SPECIFIER_NODE_ID: usize = offset_of!(ExportSpecifier, node_id);
 pub(crate) const OFFSET_EXPORT_SPECIFIER_SPAN: usize = offset_of!(ExportSpecifier, span);
 pub(crate) const OFFSET_EXPORT_SPECIFIER_LOCAL: usize = offset_of!(ExportSpecifier, local);
 pub(crate) const OFFSET_EXPORT_SPECIFIER_EXPORTED: usize = offset_of!(ExportSpecifier, exported);
@@ -11634,11 +11262,8 @@ pub struct ExportSpecifierWithoutLocal<'a, 't>(
 
 impl<'a, 't> ExportSpecifierWithoutLocal<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_EXPORT_SPECIFIER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11679,11 +11304,8 @@ pub struct ExportSpecifierWithoutExported<'a, 't>(
 
 impl<'a, 't> ExportSpecifierWithoutExported<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_EXPORT_SPECIFIER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_EXPORT_SPECIFIER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11715,7 +11337,7 @@ impl<'a, 't> GetAddress for ExportSpecifierWithoutExported<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_ELEMENT_PARENT: usize = offset_of!(JSXElement, parent);
+pub(crate) const OFFSET_JSX_ELEMENT_NODE_ID: usize = offset_of!(JSXElement, node_id);
 pub(crate) const OFFSET_JSX_ELEMENT_SPAN: usize = offset_of!(JSXElement, span);
 pub(crate) const OFFSET_JSX_ELEMENT_OPENING_ELEMENT: usize =
     offset_of!(JSXElement, opening_element);
@@ -11732,10 +11354,8 @@ pub struct JSXElementWithoutOpeningElement<'a, 't>(
 
 impl<'a, 't> JSXElementWithoutOpeningElement<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11776,10 +11396,8 @@ pub struct JSXElementWithoutClosingElement<'a, 't>(
 
 impl<'a, 't> JSXElementWithoutClosingElement<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11820,10 +11438,8 @@ pub struct JSXElementWithoutChildren<'a, 't>(
 
 impl<'a, 't> JSXElementWithoutChildren<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11855,7 +11471,7 @@ impl<'a, 't> GetAddress for JSXElementWithoutChildren<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_OPENING_ELEMENT_PARENT: usize = offset_of!(JSXOpeningElement, parent);
+pub(crate) const OFFSET_JSX_OPENING_ELEMENT_NODE_ID: usize = offset_of!(JSXOpeningElement, node_id);
 pub(crate) const OFFSET_JSX_OPENING_ELEMENT_SPAN: usize = offset_of!(JSXOpeningElement, span);
 pub(crate) const OFFSET_JSX_OPENING_ELEMENT_SELF_CLOSING: usize =
     offset_of!(JSXOpeningElement, self_closing);
@@ -11874,11 +11490,8 @@ pub struct JSXOpeningElementWithoutName<'a, 't>(
 
 impl<'a, 't> JSXOpeningElementWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11926,11 +11539,8 @@ pub struct JSXOpeningElementWithoutAttributes<'a, 't>(
 
 impl<'a, 't> JSXOpeningElementWithoutAttributes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -11978,11 +11588,8 @@ pub struct JSXOpeningElementWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> JSXOpeningElementWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_OPENING_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12021,7 +11628,7 @@ impl<'a, 't> GetAddress for JSXOpeningElementWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_CLOSING_ELEMENT_PARENT: usize = offset_of!(JSXClosingElement, parent);
+pub(crate) const OFFSET_JSX_CLOSING_ELEMENT_NODE_ID: usize = offset_of!(JSXClosingElement, node_id);
 pub(crate) const OFFSET_JSX_CLOSING_ELEMENT_SPAN: usize = offset_of!(JSXClosingElement, span);
 pub(crate) const OFFSET_JSX_CLOSING_ELEMENT_NAME: usize = offset_of!(JSXClosingElement, name);
 
@@ -12034,11 +11641,8 @@ pub struct JSXClosingElementWithoutName<'a, 't>(
 
 impl<'a, 't> JSXClosingElementWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_CLOSING_ELEMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_CLOSING_ELEMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12054,7 +11658,7 @@ impl<'a, 't> GetAddress for JSXClosingElementWithoutName<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_FRAGMENT_PARENT: usize = offset_of!(JSXFragment, parent);
+pub(crate) const OFFSET_JSX_FRAGMENT_NODE_ID: usize = offset_of!(JSXFragment, node_id);
 pub(crate) const OFFSET_JSX_FRAGMENT_SPAN: usize = offset_of!(JSXFragment, span);
 pub(crate) const OFFSET_JSX_FRAGMENT_OPENING_FRAGMENT: usize =
     offset_of!(JSXFragment, opening_fragment);
@@ -12071,10 +11675,8 @@ pub struct JSXFragmentWithoutChildren<'a, 't>(
 
 impl<'a, 't> JSXFragmentWithoutChildren<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_FRAGMENT_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_FRAGMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12083,18 +11685,18 @@ impl<'a, 't> JSXFragmentWithoutChildren<'a, 't> {
     }
 
     #[inline]
-    pub fn opening_fragment(self) -> &'t JSXOpeningFragment<'a> {
+    pub fn opening_fragment(self) -> &'t JSXOpeningFragment {
         unsafe {
             &*((self.0 as *const u8).add(OFFSET_JSX_FRAGMENT_OPENING_FRAGMENT)
-                as *const JSXOpeningFragment<'a>)
+                as *const JSXOpeningFragment)
         }
     }
 
     #[inline]
-    pub fn closing_fragment(self) -> &'t JSXClosingFragment<'a> {
+    pub fn closing_fragment(self) -> &'t JSXClosingFragment {
         unsafe {
             &*((self.0 as *const u8).add(OFFSET_JSX_FRAGMENT_CLOSING_FRAGMENT)
-                as *const JSXClosingFragment<'a>)
+                as *const JSXClosingFragment)
         }
     }
 }
@@ -12106,7 +11708,7 @@ impl<'a, 't> GetAddress for JSXFragmentWithoutChildren<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_NAMESPACED_NAME_PARENT: usize = offset_of!(JSXNamespacedName, parent);
+pub(crate) const OFFSET_JSX_NAMESPACED_NAME_NODE_ID: usize = offset_of!(JSXNamespacedName, node_id);
 pub(crate) const OFFSET_JSX_NAMESPACED_NAME_SPAN: usize = offset_of!(JSXNamespacedName, span);
 pub(crate) const OFFSET_JSX_NAMESPACED_NAME_NAMESPACE: usize =
     offset_of!(JSXNamespacedName, namespace);
@@ -12122,11 +11724,8 @@ pub struct JSXNamespacedNameWithoutNamespace<'a, 't>(
 
 impl<'a, 't> JSXNamespacedNameWithoutNamespace<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_NAMESPACED_NAME_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_NAMESPACED_NAME_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12159,11 +11758,8 @@ pub struct JSXNamespacedNameWithoutProperty<'a, 't>(
 
 impl<'a, 't> JSXNamespacedNameWithoutProperty<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_NAMESPACED_NAME_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_NAMESPACED_NAME_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12187,8 +11783,8 @@ impl<'a, 't> GetAddress for JSXNamespacedNameWithoutProperty<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_MEMBER_EXPRESSION_PARENT: usize =
-    offset_of!(JSXMemberExpression, parent);
+pub(crate) const OFFSET_JSX_MEMBER_EXPRESSION_NODE_ID: usize =
+    offset_of!(JSXMemberExpression, node_id);
 pub(crate) const OFFSET_JSX_MEMBER_EXPRESSION_SPAN: usize = offset_of!(JSXMemberExpression, span);
 pub(crate) const OFFSET_JSX_MEMBER_EXPRESSION_OBJECT: usize =
     offset_of!(JSXMemberExpression, object);
@@ -12204,11 +11800,8 @@ pub struct JSXMemberExpressionWithoutObject<'a, 't>(
 
 impl<'a, 't> JSXMemberExpressionWithoutObject<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_MEMBER_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12241,11 +11834,8 @@ pub struct JSXMemberExpressionWithoutProperty<'a, 't>(
 
 impl<'a, 't> JSXMemberExpressionWithoutProperty<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_MEMBER_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_MEMBER_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12269,8 +11859,8 @@ impl<'a, 't> GetAddress for JSXMemberExpressionWithoutProperty<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_EXPRESSION_CONTAINER_PARENT: usize =
-    offset_of!(JSXExpressionContainer, parent);
+pub(crate) const OFFSET_JSX_EXPRESSION_CONTAINER_NODE_ID: usize =
+    offset_of!(JSXExpressionContainer, node_id);
 pub(crate) const OFFSET_JSX_EXPRESSION_CONTAINER_SPAN: usize =
     offset_of!(JSXExpressionContainer, span);
 pub(crate) const OFFSET_JSX_EXPRESSION_CONTAINER_EXPRESSION: usize =
@@ -12285,10 +11875,9 @@ pub struct JSXExpressionContainerWithoutExpression<'a, 't>(
 
 impl<'a, 't> JSXExpressionContainerWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_EXPRESSION_CONTAINER_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_JSX_EXPRESSION_CONTAINER_NODE_ID) as *const u32)
         }
     }
 
@@ -12307,7 +11896,7 @@ impl<'a, 't> GetAddress for JSXExpressionContainerWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_ATTRIBUTE_PARENT: usize = offset_of!(JSXAttribute, parent);
+pub(crate) const OFFSET_JSX_ATTRIBUTE_NODE_ID: usize = offset_of!(JSXAttribute, node_id);
 pub(crate) const OFFSET_JSX_ATTRIBUTE_SPAN: usize = offset_of!(JSXAttribute, span);
 pub(crate) const OFFSET_JSX_ATTRIBUTE_NAME: usize = offset_of!(JSXAttribute, name);
 pub(crate) const OFFSET_JSX_ATTRIBUTE_VALUE: usize = offset_of!(JSXAttribute, value);
@@ -12321,10 +11910,8 @@ pub struct JSXAttributeWithoutName<'a, 't>(
 
 impl<'a, 't> JSXAttributeWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_ATTRIBUTE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12357,10 +11944,8 @@ pub struct JSXAttributeWithoutValue<'a, 't>(
 
 impl<'a, 't> JSXAttributeWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_ATTRIBUTE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12383,7 +11968,8 @@ impl<'a, 't> GetAddress for JSXAttributeWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_SPREAD_ATTRIBUTE_PARENT: usize = offset_of!(JSXSpreadAttribute, parent);
+pub(crate) const OFFSET_JSX_SPREAD_ATTRIBUTE_NODE_ID: usize =
+    offset_of!(JSXSpreadAttribute, node_id);
 pub(crate) const OFFSET_JSX_SPREAD_ATTRIBUTE_SPAN: usize = offset_of!(JSXSpreadAttribute, span);
 pub(crate) const OFFSET_JSX_SPREAD_ATTRIBUTE_ARGUMENT: usize =
     offset_of!(JSXSpreadAttribute, argument);
@@ -12397,11 +11983,8 @@ pub struct JSXSpreadAttributeWithoutArgument<'a, 't>(
 
 impl<'a, 't> JSXSpreadAttributeWithoutArgument<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_SPREAD_ATTRIBUTE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_SPREAD_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12417,7 +12000,7 @@ impl<'a, 't> GetAddress for JSXSpreadAttributeWithoutArgument<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JSX_SPREAD_CHILD_PARENT: usize = offset_of!(JSXSpreadChild, parent);
+pub(crate) const OFFSET_JSX_SPREAD_CHILD_NODE_ID: usize = offset_of!(JSXSpreadChild, node_id);
 pub(crate) const OFFSET_JSX_SPREAD_CHILD_SPAN: usize = offset_of!(JSXSpreadChild, span);
 pub(crate) const OFFSET_JSX_SPREAD_CHILD_EXPRESSION: usize = offset_of!(JSXSpreadChild, expression);
 
@@ -12430,11 +12013,8 @@ pub struct JSXSpreadChildWithoutExpression<'a, 't>(
 
 impl<'a, 't> JSXSpreadChildWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JSX_SPREAD_CHILD_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JSX_SPREAD_CHILD_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12450,7 +12030,7 @@ impl<'a, 't> GetAddress for JSXSpreadChildWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_THIS_PARAMETER_PARENT: usize = offset_of!(TSThisParameter, parent);
+pub(crate) const OFFSET_TS_THIS_PARAMETER_NODE_ID: usize = offset_of!(TSThisParameter, node_id);
 pub(crate) const OFFSET_TS_THIS_PARAMETER_SPAN: usize = offset_of!(TSThisParameter, span);
 pub(crate) const OFFSET_TS_THIS_PARAMETER_THIS_SPAN: usize = offset_of!(TSThisParameter, this_span);
 pub(crate) const OFFSET_TS_THIS_PARAMETER_TYPE_ANNOTATION: usize =
@@ -12465,11 +12045,8 @@ pub struct TSThisParameterWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSThisParameterWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_THIS_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_THIS_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12490,7 +12067,7 @@ impl<'a, 't> GetAddress for TSThisParameterWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_ENUM_DECLARATION_PARENT: usize = offset_of!(TSEnumDeclaration, parent);
+pub(crate) const OFFSET_TS_ENUM_DECLARATION_NODE_ID: usize = offset_of!(TSEnumDeclaration, node_id);
 pub(crate) const OFFSET_TS_ENUM_DECLARATION_SPAN: usize = offset_of!(TSEnumDeclaration, span);
 pub(crate) const OFFSET_TS_ENUM_DECLARATION_ID: usize = offset_of!(TSEnumDeclaration, id);
 pub(crate) const OFFSET_TS_ENUM_DECLARATION_MEMBERS: usize = offset_of!(TSEnumDeclaration, members);
@@ -12508,11 +12085,8 @@ pub struct TSEnumDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSEnumDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_ENUM_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_ENUM_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12563,11 +12137,8 @@ pub struct TSEnumDeclarationWithoutMembers<'a, 't>(
 
 impl<'a, 't> TSEnumDeclarationWithoutMembers<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_ENUM_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_ENUM_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12609,7 +12180,7 @@ impl<'a, 't> GetAddress for TSEnumDeclarationWithoutMembers<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_ENUM_MEMBER_PARENT: usize = offset_of!(TSEnumMember, parent);
+pub(crate) const OFFSET_TS_ENUM_MEMBER_NODE_ID: usize = offset_of!(TSEnumMember, node_id);
 pub(crate) const OFFSET_TS_ENUM_MEMBER_SPAN: usize = offset_of!(TSEnumMember, span);
 pub(crate) const OFFSET_TS_ENUM_MEMBER_ID: usize = offset_of!(TSEnumMember, id);
 pub(crate) const OFFSET_TS_ENUM_MEMBER_INITIALIZER: usize = offset_of!(TSEnumMember, initializer);
@@ -12623,11 +12194,8 @@ pub struct TSEnumMemberWithoutId<'a, 't>(
 
 impl<'a, 't> TSEnumMemberWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_ENUM_MEMBER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_ENUM_MEMBER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12660,11 +12228,8 @@ pub struct TSEnumMemberWithoutInitializer<'a, 't>(
 
 impl<'a, 't> TSEnumMemberWithoutInitializer<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_ENUM_MEMBER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_ENUM_MEMBER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12687,7 +12252,7 @@ impl<'a, 't> GetAddress for TSEnumMemberWithoutInitializer<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_ANNOTATION_PARENT: usize = offset_of!(TSTypeAnnotation, parent);
+pub(crate) const OFFSET_TS_TYPE_ANNOTATION_NODE_ID: usize = offset_of!(TSTypeAnnotation, node_id);
 pub(crate) const OFFSET_TS_TYPE_ANNOTATION_SPAN: usize = offset_of!(TSTypeAnnotation, span);
 pub(crate) const OFFSET_TS_TYPE_ANNOTATION_TYPE_ANNOTATION: usize =
     offset_of!(TSTypeAnnotation, type_annotation);
@@ -12701,11 +12266,8 @@ pub struct TSTypeAnnotationWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSTypeAnnotationWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ANNOTATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ANNOTATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12721,7 +12283,7 @@ impl<'a, 't> GetAddress for TSTypeAnnotationWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_LITERAL_TYPE_PARENT: usize = offset_of!(TSLiteralType, parent);
+pub(crate) const OFFSET_TS_LITERAL_TYPE_NODE_ID: usize = offset_of!(TSLiteralType, node_id);
 pub(crate) const OFFSET_TS_LITERAL_TYPE_SPAN: usize = offset_of!(TSLiteralType, span);
 pub(crate) const OFFSET_TS_LITERAL_TYPE_LITERAL: usize = offset_of!(TSLiteralType, literal);
 
@@ -12734,11 +12296,8 @@ pub struct TSLiteralTypeWithoutLiteral<'a, 't>(
 
 impl<'a, 't> TSLiteralTypeWithoutLiteral<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_LITERAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_LITERAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12754,7 +12313,7 @@ impl<'a, 't> GetAddress for TSLiteralTypeWithoutLiteral<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_CONDITIONAL_TYPE_PARENT: usize = offset_of!(TSConditionalType, parent);
+pub(crate) const OFFSET_TS_CONDITIONAL_TYPE_NODE_ID: usize = offset_of!(TSConditionalType, node_id);
 pub(crate) const OFFSET_TS_CONDITIONAL_TYPE_SPAN: usize = offset_of!(TSConditionalType, span);
 pub(crate) const OFFSET_TS_CONDITIONAL_TYPE_CHECK_TYPE: usize =
     offset_of!(TSConditionalType, check_type);
@@ -12776,11 +12335,8 @@ pub struct TSConditionalTypeWithoutCheckType<'a, 't>(
 
 impl<'a, 't> TSConditionalTypeWithoutCheckType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12836,11 +12392,8 @@ pub struct TSConditionalTypeWithoutExtendsType<'a, 't>(
 
 impl<'a, 't> TSConditionalTypeWithoutExtendsType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12896,11 +12449,8 @@ pub struct TSConditionalTypeWithoutTrueType<'a, 't>(
 
 impl<'a, 't> TSConditionalTypeWithoutTrueType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -12957,11 +12507,8 @@ pub struct TSConditionalTypeWithoutFalseType<'a, 't>(
 
 impl<'a, 't> TSConditionalTypeWithoutFalseType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONDITIONAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13008,7 +12555,7 @@ impl<'a, 't> GetAddress for TSConditionalTypeWithoutFalseType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_UNION_TYPE_PARENT: usize = offset_of!(TSUnionType, parent);
+pub(crate) const OFFSET_TS_UNION_TYPE_NODE_ID: usize = offset_of!(TSUnionType, node_id);
 pub(crate) const OFFSET_TS_UNION_TYPE_SPAN: usize = offset_of!(TSUnionType, span);
 pub(crate) const OFFSET_TS_UNION_TYPE_TYPES: usize = offset_of!(TSUnionType, types);
 
@@ -13021,10 +12568,8 @@ pub struct TSUnionTypeWithoutTypes<'a, 't>(
 
 impl<'a, 't> TSUnionTypeWithoutTypes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_UNION_TYPE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_UNION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13040,7 +12585,8 @@ impl<'a, 't> GetAddress for TSUnionTypeWithoutTypes<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INTERSECTION_TYPE_PARENT: usize = offset_of!(TSIntersectionType, parent);
+pub(crate) const OFFSET_TS_INTERSECTION_TYPE_NODE_ID: usize =
+    offset_of!(TSIntersectionType, node_id);
 pub(crate) const OFFSET_TS_INTERSECTION_TYPE_SPAN: usize = offset_of!(TSIntersectionType, span);
 pub(crate) const OFFSET_TS_INTERSECTION_TYPE_TYPES: usize = offset_of!(TSIntersectionType, types);
 
@@ -13053,11 +12599,8 @@ pub struct TSIntersectionTypeWithoutTypes<'a, 't>(
 
 impl<'a, 't> TSIntersectionTypeWithoutTypes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERSECTION_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INTERSECTION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13073,8 +12616,8 @@ impl<'a, 't> GetAddress for TSIntersectionTypeWithoutTypes<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_PARENTHESIZED_TYPE_PARENT: usize =
-    offset_of!(TSParenthesizedType, parent);
+pub(crate) const OFFSET_TS_PARENTHESIZED_TYPE_NODE_ID: usize =
+    offset_of!(TSParenthesizedType, node_id);
 pub(crate) const OFFSET_TS_PARENTHESIZED_TYPE_SPAN: usize = offset_of!(TSParenthesizedType, span);
 pub(crate) const OFFSET_TS_PARENTHESIZED_TYPE_TYPE_ANNOTATION: usize =
     offset_of!(TSParenthesizedType, type_annotation);
@@ -13088,11 +12631,8 @@ pub struct TSParenthesizedTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSParenthesizedTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_PARENTHESIZED_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_PARENTHESIZED_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13108,7 +12648,7 @@ impl<'a, 't> GetAddress for TSParenthesizedTypeWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_OPERATOR_PARENT: usize = offset_of!(TSTypeOperator, parent);
+pub(crate) const OFFSET_TS_TYPE_OPERATOR_NODE_ID: usize = offset_of!(TSTypeOperator, node_id);
 pub(crate) const OFFSET_TS_TYPE_OPERATOR_SPAN: usize = offset_of!(TSTypeOperator, span);
 pub(crate) const OFFSET_TS_TYPE_OPERATOR_OPERATOR: usize = offset_of!(TSTypeOperator, operator);
 pub(crate) const OFFSET_TS_TYPE_OPERATOR_TYPE_ANNOTATION: usize =
@@ -13123,11 +12663,8 @@ pub struct TSTypeOperatorWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSTypeOperatorWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_OPERATOR_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_OPERATOR_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13151,7 +12688,7 @@ impl<'a, 't> GetAddress for TSTypeOperatorWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_ARRAY_TYPE_PARENT: usize = offset_of!(TSArrayType, parent);
+pub(crate) const OFFSET_TS_ARRAY_TYPE_NODE_ID: usize = offset_of!(TSArrayType, node_id);
 pub(crate) const OFFSET_TS_ARRAY_TYPE_SPAN: usize = offset_of!(TSArrayType, span);
 pub(crate) const OFFSET_TS_ARRAY_TYPE_ELEMENT_TYPE: usize = offset_of!(TSArrayType, element_type);
 
@@ -13164,10 +12701,8 @@ pub struct TSArrayTypeWithoutElementType<'a, 't>(
 
 impl<'a, 't> TSArrayTypeWithoutElementType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_ARRAY_TYPE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_ARRAY_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13183,8 +12718,8 @@ impl<'a, 't> GetAddress for TSArrayTypeWithoutElementType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INDEXED_ACCESS_TYPE_PARENT: usize =
-    offset_of!(TSIndexedAccessType, parent);
+pub(crate) const OFFSET_TS_INDEXED_ACCESS_TYPE_NODE_ID: usize =
+    offset_of!(TSIndexedAccessType, node_id);
 pub(crate) const OFFSET_TS_INDEXED_ACCESS_TYPE_SPAN: usize = offset_of!(TSIndexedAccessType, span);
 pub(crate) const OFFSET_TS_INDEXED_ACCESS_TYPE_OBJECT_TYPE: usize =
     offset_of!(TSIndexedAccessType, object_type);
@@ -13200,10 +12735,9 @@ pub struct TSIndexedAccessTypeWithoutObjectType<'a, 't>(
 
 impl<'a, 't> TSIndexedAccessTypeWithoutObjectType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INDEXED_ACCESS_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INDEXED_ACCESS_TYPE_NODE_ID) as *const u32)
         }
     }
 
@@ -13237,10 +12771,9 @@ pub struct TSIndexedAccessTypeWithoutIndexType<'a, 't>(
 
 impl<'a, 't> TSIndexedAccessTypeWithoutIndexType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INDEXED_ACCESS_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INDEXED_ACCESS_TYPE_NODE_ID) as *const u32)
         }
     }
 
@@ -13265,7 +12798,7 @@ impl<'a, 't> GetAddress for TSIndexedAccessTypeWithoutIndexType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TUPLE_TYPE_PARENT: usize = offset_of!(TSTupleType, parent);
+pub(crate) const OFFSET_TS_TUPLE_TYPE_NODE_ID: usize = offset_of!(TSTupleType, node_id);
 pub(crate) const OFFSET_TS_TUPLE_TYPE_SPAN: usize = offset_of!(TSTupleType, span);
 pub(crate) const OFFSET_TS_TUPLE_TYPE_ELEMENT_TYPES: usize = offset_of!(TSTupleType, element_types);
 
@@ -13278,10 +12811,8 @@ pub struct TSTupleTypeWithoutElementTypes<'a, 't>(
 
 impl<'a, 't> TSTupleTypeWithoutElementTypes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TUPLE_TYPE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TUPLE_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13297,8 +12828,8 @@ impl<'a, 't> GetAddress for TSTupleTypeWithoutElementTypes<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_NAMED_TUPLE_MEMBER_PARENT: usize =
-    offset_of!(TSNamedTupleMember, parent);
+pub(crate) const OFFSET_TS_NAMED_TUPLE_MEMBER_NODE_ID: usize =
+    offset_of!(TSNamedTupleMember, node_id);
 pub(crate) const OFFSET_TS_NAMED_TUPLE_MEMBER_SPAN: usize = offset_of!(TSNamedTupleMember, span);
 pub(crate) const OFFSET_TS_NAMED_TUPLE_MEMBER_ELEMENT_TYPE: usize =
     offset_of!(TSNamedTupleMember, element_type);
@@ -13315,11 +12846,8 @@ pub struct TSNamedTupleMemberWithoutElementType<'a, 't>(
 
 impl<'a, 't> TSNamedTupleMemberWithoutElementType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_NAMED_TUPLE_MEMBER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_NAMED_TUPLE_MEMBER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13359,11 +12887,8 @@ pub struct TSNamedTupleMemberWithoutLabel<'a, 't>(
 
 impl<'a, 't> TSNamedTupleMemberWithoutLabel<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_NAMED_TUPLE_MEMBER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_NAMED_TUPLE_MEMBER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13394,7 +12919,7 @@ impl<'a, 't> GetAddress for TSNamedTupleMemberWithoutLabel<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_OPTIONAL_TYPE_PARENT: usize = offset_of!(TSOptionalType, parent);
+pub(crate) const OFFSET_TS_OPTIONAL_TYPE_NODE_ID: usize = offset_of!(TSOptionalType, node_id);
 pub(crate) const OFFSET_TS_OPTIONAL_TYPE_SPAN: usize = offset_of!(TSOptionalType, span);
 pub(crate) const OFFSET_TS_OPTIONAL_TYPE_TYPE_ANNOTATION: usize =
     offset_of!(TSOptionalType, type_annotation);
@@ -13408,11 +12933,8 @@ pub struct TSOptionalTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSOptionalTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_OPTIONAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_OPTIONAL_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13428,7 +12950,7 @@ impl<'a, 't> GetAddress for TSOptionalTypeWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_REST_TYPE_PARENT: usize = offset_of!(TSRestType, parent);
+pub(crate) const OFFSET_TS_REST_TYPE_NODE_ID: usize = offset_of!(TSRestType, node_id);
 pub(crate) const OFFSET_TS_REST_TYPE_SPAN: usize = offset_of!(TSRestType, span);
 pub(crate) const OFFSET_TS_REST_TYPE_TYPE_ANNOTATION: usize =
     offset_of!(TSRestType, type_annotation);
@@ -13442,10 +12964,8 @@ pub struct TSRestTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSRestTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_REST_TYPE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_REST_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13461,7 +12981,7 @@ impl<'a, 't> GetAddress for TSRestTypeWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_REFERENCE_PARENT: usize = offset_of!(TSTypeReference, parent);
+pub(crate) const OFFSET_TS_TYPE_REFERENCE_NODE_ID: usize = offset_of!(TSTypeReference, node_id);
 pub(crate) const OFFSET_TS_TYPE_REFERENCE_SPAN: usize = offset_of!(TSTypeReference, span);
 pub(crate) const OFFSET_TS_TYPE_REFERENCE_TYPE_NAME: usize = offset_of!(TSTypeReference, type_name);
 pub(crate) const OFFSET_TS_TYPE_REFERENCE_TYPE_PARAMETERS: usize =
@@ -13476,11 +12996,8 @@ pub struct TSTypeReferenceWithoutTypeName<'a, 't>(
 
 impl<'a, 't> TSTypeReferenceWithoutTypeName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_REFERENCE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_REFERENCE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13513,11 +13030,8 @@ pub struct TSTypeReferenceWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSTypeReferenceWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_REFERENCE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_REFERENCE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13541,7 +13055,7 @@ impl<'a, 't> GetAddress for TSTypeReferenceWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_QUALIFIED_NAME_PARENT: usize = offset_of!(TSQualifiedName, parent);
+pub(crate) const OFFSET_TS_QUALIFIED_NAME_NODE_ID: usize = offset_of!(TSQualifiedName, node_id);
 pub(crate) const OFFSET_TS_QUALIFIED_NAME_SPAN: usize = offset_of!(TSQualifiedName, span);
 pub(crate) const OFFSET_TS_QUALIFIED_NAME_LEFT: usize = offset_of!(TSQualifiedName, left);
 pub(crate) const OFFSET_TS_QUALIFIED_NAME_RIGHT: usize = offset_of!(TSQualifiedName, right);
@@ -13555,11 +13069,8 @@ pub struct TSQualifiedNameWithoutLeft<'a, 't>(
 
 impl<'a, 't> TSQualifiedNameWithoutLeft<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_QUALIFIED_NAME_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_QUALIFIED_NAME_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13592,11 +13103,8 @@ pub struct TSQualifiedNameWithoutRight<'a, 't>(
 
 impl<'a, 't> TSQualifiedNameWithoutRight<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_QUALIFIED_NAME_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_QUALIFIED_NAME_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13619,8 +13127,8 @@ impl<'a, 't> GetAddress for TSQualifiedNameWithoutRight<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_PARENT: usize =
-    offset_of!(TSTypeParameterInstantiation, parent);
+pub(crate) const OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_NODE_ID: usize =
+    offset_of!(TSTypeParameterInstantiation, node_id);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_SPAN: usize =
     offset_of!(TSTypeParameterInstantiation, span);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_PARAMS: usize =
@@ -13635,10 +13143,10 @@ pub struct TSTypeParameterInstantiationWithoutParams<'a, 't>(
 
 impl<'a, 't> TSTypeParameterInstantiationWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_INSTANTIATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -13658,7 +13166,7 @@ impl<'a, 't> GetAddress for TSTypeParameterInstantiationWithoutParams<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_PARAMETER_PARENT: usize = offset_of!(TSTypeParameter, parent);
+pub(crate) const OFFSET_TS_TYPE_PARAMETER_NODE_ID: usize = offset_of!(TSTypeParameter, node_id);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_SPAN: usize = offset_of!(TSTypeParameter, span);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_NAME: usize = offset_of!(TSTypeParameter, name);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_CONSTRAINT: usize =
@@ -13677,11 +13185,8 @@ pub struct TSTypeParameterWithoutName<'a, 't>(
 
 impl<'a, 't> TSTypeParameterWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13737,11 +13242,8 @@ pub struct TSTypeParameterWithoutConstraint<'a, 't>(
 
 impl<'a, 't> TSTypeParameterWithoutConstraint<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13797,11 +13299,8 @@ pub struct TSTypeParameterWithoutDefault<'a, 't>(
 
 impl<'a, 't> TSTypeParameterWithoutDefault<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -13848,8 +13347,8 @@ impl<'a, 't> GetAddress for TSTypeParameterWithoutDefault<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_PARAMETER_DECLARATION_PARENT: usize =
-    offset_of!(TSTypeParameterDeclaration, parent);
+pub(crate) const OFFSET_TS_TYPE_PARAMETER_DECLARATION_NODE_ID: usize =
+    offset_of!(TSTypeParameterDeclaration, node_id);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_DECLARATION_SPAN: usize =
     offset_of!(TSTypeParameterDeclaration, span);
 pub(crate) const OFFSET_TS_TYPE_PARAMETER_DECLARATION_PARAMS: usize =
@@ -13864,10 +13363,10 @@ pub struct TSTypeParameterDeclarationWithoutParams<'a, 't>(
 
 impl<'a, 't> TSTypeParameterDeclarationWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PARAMETER_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -13886,8 +13385,8 @@ impl<'a, 't> GetAddress for TSTypeParameterDeclarationWithoutParams<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_ALIAS_DECLARATION_PARENT: usize =
-    offset_of!(TSTypeAliasDeclaration, parent);
+pub(crate) const OFFSET_TS_TYPE_ALIAS_DECLARATION_NODE_ID: usize =
+    offset_of!(TSTypeAliasDeclaration, node_id);
 pub(crate) const OFFSET_TS_TYPE_ALIAS_DECLARATION_SPAN: usize =
     offset_of!(TSTypeAliasDeclaration, span);
 pub(crate) const OFFSET_TS_TYPE_ALIAS_DECLARATION_ID: usize =
@@ -13910,10 +13409,9 @@ pub struct TSTypeAliasDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSTypeAliasDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -13972,10 +13470,9 @@ pub struct TSTypeAliasDeclarationWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSTypeAliasDeclarationWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14034,10 +13531,9 @@ pub struct TSTypeAliasDeclarationWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSTypeAliasDeclarationWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ALIAS_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14087,7 +13583,7 @@ impl<'a, 't> GetAddress for TSTypeAliasDeclarationWithoutTypeAnnotation<'a, 't> 
     }
 }
 
-pub(crate) const OFFSET_TS_CLASS_IMPLEMENTS_PARENT: usize = offset_of!(TSClassImplements, parent);
+pub(crate) const OFFSET_TS_CLASS_IMPLEMENTS_NODE_ID: usize = offset_of!(TSClassImplements, node_id);
 pub(crate) const OFFSET_TS_CLASS_IMPLEMENTS_SPAN: usize = offset_of!(TSClassImplements, span);
 pub(crate) const OFFSET_TS_CLASS_IMPLEMENTS_EXPRESSION: usize =
     offset_of!(TSClassImplements, expression);
@@ -14103,11 +13599,8 @@ pub struct TSClassImplementsWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSClassImplementsWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CLASS_IMPLEMENTS_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CLASS_IMPLEMENTS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14140,11 +13633,8 @@ pub struct TSClassImplementsWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSClassImplementsWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CLASS_IMPLEMENTS_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CLASS_IMPLEMENTS_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14168,8 +13658,8 @@ impl<'a, 't> GetAddress for TSClassImplementsWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INTERFACE_DECLARATION_PARENT: usize =
-    offset_of!(TSInterfaceDeclaration, parent);
+pub(crate) const OFFSET_TS_INTERFACE_DECLARATION_NODE_ID: usize =
+    offset_of!(TSInterfaceDeclaration, node_id);
 pub(crate) const OFFSET_TS_INTERFACE_DECLARATION_SPAN: usize =
     offset_of!(TSInterfaceDeclaration, span);
 pub(crate) const OFFSET_TS_INTERFACE_DECLARATION_ID: usize = offset_of!(TSInterfaceDeclaration, id);
@@ -14193,10 +13683,9 @@ pub struct TSInterfaceDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSInterfaceDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14263,10 +13752,9 @@ pub struct TSInterfaceDeclarationWithoutExtends<'a, 't>(
 
 impl<'a, 't> TSInterfaceDeclarationWithoutExtends<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14333,10 +13821,9 @@ pub struct TSInterfaceDeclarationWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSInterfaceDeclarationWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14403,10 +13890,9 @@ pub struct TSInterfaceDeclarationWithoutBody<'a, 't>(
 
 impl<'a, 't> TSInterfaceDeclarationWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -14464,7 +13950,7 @@ impl<'a, 't> GetAddress for TSInterfaceDeclarationWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INTERFACE_BODY_PARENT: usize = offset_of!(TSInterfaceBody, parent);
+pub(crate) const OFFSET_TS_INTERFACE_BODY_NODE_ID: usize = offset_of!(TSInterfaceBody, node_id);
 pub(crate) const OFFSET_TS_INTERFACE_BODY_SPAN: usize = offset_of!(TSInterfaceBody, span);
 pub(crate) const OFFSET_TS_INTERFACE_BODY_BODY: usize = offset_of!(TSInterfaceBody, body);
 
@@ -14477,11 +13963,8 @@ pub struct TSInterfaceBodyWithoutBody<'a, 't>(
 
 impl<'a, 't> TSInterfaceBodyWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_BODY_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_BODY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14497,8 +13980,8 @@ impl<'a, 't> GetAddress for TSInterfaceBodyWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_PROPERTY_SIGNATURE_PARENT: usize =
-    offset_of!(TSPropertySignature, parent);
+pub(crate) const OFFSET_TS_PROPERTY_SIGNATURE_NODE_ID: usize =
+    offset_of!(TSPropertySignature, node_id);
 pub(crate) const OFFSET_TS_PROPERTY_SIGNATURE_SPAN: usize = offset_of!(TSPropertySignature, span);
 pub(crate) const OFFSET_TS_PROPERTY_SIGNATURE_COMPUTED: usize =
     offset_of!(TSPropertySignature, computed);
@@ -14519,11 +14002,8 @@ pub struct TSPropertySignatureWithoutKey<'a, 't>(
 
 impl<'a, 't> TSPropertySignatureWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_PROPERTY_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_PROPERTY_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14577,11 +14057,8 @@ pub struct TSPropertySignatureWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSPropertySignatureWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_PROPERTY_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_PROPERTY_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14626,7 +14103,7 @@ impl<'a, 't> GetAddress for TSPropertySignatureWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INDEX_SIGNATURE_PARENT: usize = offset_of!(TSIndexSignature, parent);
+pub(crate) const OFFSET_TS_INDEX_SIGNATURE_NODE_ID: usize = offset_of!(TSIndexSignature, node_id);
 pub(crate) const OFFSET_TS_INDEX_SIGNATURE_SPAN: usize = offset_of!(TSIndexSignature, span);
 pub(crate) const OFFSET_TS_INDEX_SIGNATURE_PARAMETERS: usize =
     offset_of!(TSIndexSignature, parameters);
@@ -14644,11 +14121,8 @@ pub struct TSIndexSignatureWithoutParameters<'a, 't>(
 
 impl<'a, 't> TSIndexSignatureWithoutParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14691,11 +14165,8 @@ pub struct TSIndexSignatureWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSIndexSignatureWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -14729,8 +14200,8 @@ impl<'a, 't> GetAddress for TSIndexSignatureWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_CALL_SIGNATURE_DECLARATION_PARENT: usize =
-    offset_of!(TSCallSignatureDeclaration, parent);
+pub(crate) const OFFSET_TS_CALL_SIGNATURE_DECLARATION_NODE_ID: usize =
+    offset_of!(TSCallSignatureDeclaration, node_id);
 pub(crate) const OFFSET_TS_CALL_SIGNATURE_DECLARATION_SPAN: usize =
     offset_of!(TSCallSignatureDeclaration, span);
 pub(crate) const OFFSET_TS_CALL_SIGNATURE_DECLARATION_TYPE_PARAMETERS: usize =
@@ -14751,10 +14222,10 @@ pub struct TSCallSignatureDeclarationWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSCallSignatureDeclarationWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -14806,10 +14277,10 @@ pub struct TSCallSignatureDeclarationWithoutThisParam<'a, 't>(
 
 impl<'a, 't> TSCallSignatureDeclarationWithoutThisParam<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -14861,10 +14332,10 @@ pub struct TSCallSignatureDeclarationWithoutParams<'a, 't>(
 
 impl<'a, 't> TSCallSignatureDeclarationWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -14916,10 +14387,10 @@ pub struct TSCallSignatureDeclarationWithoutReturnType<'a, 't>(
 
 impl<'a, 't> TSCallSignatureDeclarationWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CALL_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -14962,7 +14433,7 @@ impl<'a, 't> GetAddress for TSCallSignatureDeclarationWithoutReturnType<'a, 't> 
     }
 }
 
-pub(crate) const OFFSET_TS_METHOD_SIGNATURE_PARENT: usize = offset_of!(TSMethodSignature, parent);
+pub(crate) const OFFSET_TS_METHOD_SIGNATURE_NODE_ID: usize = offset_of!(TSMethodSignature, node_id);
 pub(crate) const OFFSET_TS_METHOD_SIGNATURE_SPAN: usize = offset_of!(TSMethodSignature, span);
 pub(crate) const OFFSET_TS_METHOD_SIGNATURE_KEY: usize = offset_of!(TSMethodSignature, key);
 pub(crate) const OFFSET_TS_METHOD_SIGNATURE_COMPUTED: usize =
@@ -14989,11 +14460,8 @@ pub struct TSMethodSignatureWithoutKey<'a, 't>(
 
 impl<'a, 't> TSMethodSignatureWithoutKey<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15076,11 +14544,8 @@ pub struct TSMethodSignatureWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSMethodSignatureWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15162,11 +14627,8 @@ pub struct TSMethodSignatureWithoutThisParam<'a, 't>(
 
 impl<'a, 't> TSMethodSignatureWithoutThisParam<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15248,11 +14710,8 @@ pub struct TSMethodSignatureWithoutParams<'a, 't>(
 
 impl<'a, 't> TSMethodSignatureWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15334,11 +14793,8 @@ pub struct TSMethodSignatureWithoutReturnType<'a, 't>(
 
 impl<'a, 't> TSMethodSignatureWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_METHOD_SIGNATURE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15411,8 +14867,8 @@ impl<'a, 't> GetAddress for TSMethodSignatureWithoutReturnType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_PARENT: usize =
-    offset_of!(TSConstructSignatureDeclaration, parent);
+pub(crate) const OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_NODE_ID: usize =
+    offset_of!(TSConstructSignatureDeclaration, node_id);
 pub(crate) const OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_SPAN: usize =
     offset_of!(TSConstructSignatureDeclaration, span);
 pub(crate) const OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_TYPE_PARAMETERS: usize =
@@ -15433,10 +14889,10 @@ pub struct TSConstructSignatureDeclarationWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSConstructSignatureDeclarationWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -15489,10 +14945,10 @@ pub struct TSConstructSignatureDeclarationWithoutParams<'a, 't>(
 
 impl<'a, 't> TSConstructSignatureDeclarationWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -15545,10 +15001,10 @@ pub struct TSConstructSignatureDeclarationWithoutReturnType<'a, 't>(
 
 impl<'a, 't> TSConstructSignatureDeclarationWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCT_SIGNATURE_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -15592,8 +15048,8 @@ impl<'a, 't> GetAddress for TSConstructSignatureDeclarationWithoutReturnType<'a,
     }
 }
 
-pub(crate) const OFFSET_TS_INDEX_SIGNATURE_NAME_PARENT: usize =
-    offset_of!(TSIndexSignatureName, parent);
+pub(crate) const OFFSET_TS_INDEX_SIGNATURE_NAME_NODE_ID: usize =
+    offset_of!(TSIndexSignatureName, node_id);
 pub(crate) const OFFSET_TS_INDEX_SIGNATURE_NAME_SPAN: usize =
     offset_of!(TSIndexSignatureName, span);
 pub(crate) const OFFSET_TS_INDEX_SIGNATURE_NAME_NAME: usize =
@@ -15610,10 +15066,9 @@ pub struct TSIndexSignatureNameWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSIndexSignatureNameWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_NAME_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INDEX_SIGNATURE_NAME_NODE_ID) as *const u32)
         }
     }
 
@@ -15637,8 +15092,8 @@ impl<'a, 't> GetAddress for TSIndexSignatureNameWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INTERFACE_HERITAGE_PARENT: usize =
-    offset_of!(TSInterfaceHeritage, parent);
+pub(crate) const OFFSET_TS_INTERFACE_HERITAGE_NODE_ID: usize =
+    offset_of!(TSInterfaceHeritage, node_id);
 pub(crate) const OFFSET_TS_INTERFACE_HERITAGE_SPAN: usize = offset_of!(TSInterfaceHeritage, span);
 pub(crate) const OFFSET_TS_INTERFACE_HERITAGE_EXPRESSION: usize =
     offset_of!(TSInterfaceHeritage, expression);
@@ -15654,11 +15109,8 @@ pub struct TSInterfaceHeritageWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSInterfaceHeritageWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_HERITAGE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_HERITAGE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15691,11 +15143,8 @@ pub struct TSInterfaceHeritageWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSInterfaceHeritageWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_HERITAGE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INTERFACE_HERITAGE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15719,7 +15168,7 @@ impl<'a, 't> GetAddress for TSInterfaceHeritageWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_PREDICATE_PARENT: usize = offset_of!(TSTypePredicate, parent);
+pub(crate) const OFFSET_TS_TYPE_PREDICATE_NODE_ID: usize = offset_of!(TSTypePredicate, node_id);
 pub(crate) const OFFSET_TS_TYPE_PREDICATE_SPAN: usize = offset_of!(TSTypePredicate, span);
 pub(crate) const OFFSET_TS_TYPE_PREDICATE_PARAMETER_NAME: usize =
     offset_of!(TSTypePredicate, parameter_name);
@@ -15736,11 +15185,8 @@ pub struct TSTypePredicateWithoutParameterName<'a, 't>(
 
 impl<'a, 't> TSTypePredicateWithoutParameterName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PREDICATE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PREDICATE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15778,11 +15224,8 @@ pub struct TSTypePredicateWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSTypePredicateWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PREDICATE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_PREDICATE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15811,8 +15254,8 @@ impl<'a, 't> GetAddress for TSTypePredicateWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_MODULE_DECLARATION_PARENT: usize =
-    offset_of!(TSModuleDeclaration, parent);
+pub(crate) const OFFSET_TS_MODULE_DECLARATION_NODE_ID: usize =
+    offset_of!(TSModuleDeclaration, node_id);
 pub(crate) const OFFSET_TS_MODULE_DECLARATION_SPAN: usize = offset_of!(TSModuleDeclaration, span);
 pub(crate) const OFFSET_TS_MODULE_DECLARATION_ID: usize = offset_of!(TSModuleDeclaration, id);
 pub(crate) const OFFSET_TS_MODULE_DECLARATION_BODY: usize = offset_of!(TSModuleDeclaration, body);
@@ -15831,11 +15274,8 @@ pub struct TSModuleDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSModuleDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MODULE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MODULE_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15891,11 +15331,8 @@ pub struct TSModuleDeclarationWithoutBody<'a, 't>(
 
 impl<'a, 't> TSModuleDeclarationWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MODULE_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MODULE_DECLARATION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15942,7 +15379,7 @@ impl<'a, 't> GetAddress for TSModuleDeclarationWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_MODULE_BLOCK_PARENT: usize = offset_of!(TSModuleBlock, parent);
+pub(crate) const OFFSET_TS_MODULE_BLOCK_NODE_ID: usize = offset_of!(TSModuleBlock, node_id);
 pub(crate) const OFFSET_TS_MODULE_BLOCK_SPAN: usize = offset_of!(TSModuleBlock, span);
 pub(crate) const OFFSET_TS_MODULE_BLOCK_DIRECTIVES: usize = offset_of!(TSModuleBlock, directives);
 pub(crate) const OFFSET_TS_MODULE_BLOCK_BODY: usize = offset_of!(TSModuleBlock, body);
@@ -15956,11 +15393,8 @@ pub struct TSModuleBlockWithoutDirectives<'a, 't>(
 
 impl<'a, 't> TSModuleBlockWithoutDirectives<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MODULE_BLOCK_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MODULE_BLOCK_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -15993,11 +15427,8 @@ pub struct TSModuleBlockWithoutBody<'a, 't>(
 
 impl<'a, 't> TSModuleBlockWithoutBody<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MODULE_BLOCK_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MODULE_BLOCK_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16021,7 +15452,7 @@ impl<'a, 't> GetAddress for TSModuleBlockWithoutBody<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_LITERAL_PARENT: usize = offset_of!(TSTypeLiteral, parent);
+pub(crate) const OFFSET_TS_TYPE_LITERAL_NODE_ID: usize = offset_of!(TSTypeLiteral, node_id);
 pub(crate) const OFFSET_TS_TYPE_LITERAL_SPAN: usize = offset_of!(TSTypeLiteral, span);
 pub(crate) const OFFSET_TS_TYPE_LITERAL_MEMBERS: usize = offset_of!(TSTypeLiteral, members);
 
@@ -16034,11 +15465,8 @@ pub struct TSTypeLiteralWithoutMembers<'a, 't>(
 
 impl<'a, 't> TSTypeLiteralWithoutMembers<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_LITERAL_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_LITERAL_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16054,7 +15482,7 @@ impl<'a, 't> GetAddress for TSTypeLiteralWithoutMembers<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INFER_TYPE_PARENT: usize = offset_of!(TSInferType, parent);
+pub(crate) const OFFSET_TS_INFER_TYPE_NODE_ID: usize = offset_of!(TSInferType, node_id);
 pub(crate) const OFFSET_TS_INFER_TYPE_SPAN: usize = offset_of!(TSInferType, span);
 pub(crate) const OFFSET_TS_INFER_TYPE_TYPE_PARAMETER: usize =
     offset_of!(TSInferType, type_parameter);
@@ -16068,10 +15496,8 @@ pub struct TSInferTypeWithoutTypeParameter<'a, 't>(
 
 impl<'a, 't> TSInferTypeWithoutTypeParameter<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INFER_TYPE_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_INFER_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16087,7 +15513,7 @@ impl<'a, 't> GetAddress for TSInferTypeWithoutTypeParameter<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_QUERY_PARENT: usize = offset_of!(TSTypeQuery, parent);
+pub(crate) const OFFSET_TS_TYPE_QUERY_NODE_ID: usize = offset_of!(TSTypeQuery, node_id);
 pub(crate) const OFFSET_TS_TYPE_QUERY_SPAN: usize = offset_of!(TSTypeQuery, span);
 pub(crate) const OFFSET_TS_TYPE_QUERY_EXPR_NAME: usize = offset_of!(TSTypeQuery, expr_name);
 pub(crate) const OFFSET_TS_TYPE_QUERY_TYPE_PARAMETERS: usize =
@@ -16102,10 +15528,8 @@ pub struct TSTypeQueryWithoutExprName<'a, 't>(
 
 impl<'a, 't> TSTypeQueryWithoutExprName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_QUERY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_QUERY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16138,10 +15562,8 @@ pub struct TSTypeQueryWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSTypeQueryWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_QUERY_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_QUERY_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16165,7 +15587,7 @@ impl<'a, 't> GetAddress for TSTypeQueryWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_IMPORT_TYPE_PARENT: usize = offset_of!(TSImportType, parent);
+pub(crate) const OFFSET_TS_IMPORT_TYPE_NODE_ID: usize = offset_of!(TSImportType, node_id);
 pub(crate) const OFFSET_TS_IMPORT_TYPE_SPAN: usize = offset_of!(TSImportType, span);
 pub(crate) const OFFSET_TS_IMPORT_TYPE_IS_TYPE_OF: usize = offset_of!(TSImportType, is_type_of);
 pub(crate) const OFFSET_TS_IMPORT_TYPE_PARAMETER: usize = offset_of!(TSImportType, parameter);
@@ -16183,11 +15605,8 @@ pub struct TSImportTypeWithoutParameter<'a, 't>(
 
 impl<'a, 't> TSImportTypeWithoutParameter<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16241,11 +15660,8 @@ pub struct TSImportTypeWithoutQualifier<'a, 't>(
 
 impl<'a, 't> TSImportTypeWithoutQualifier<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16298,11 +15714,8 @@ pub struct TSImportTypeWithoutAttributes<'a, 't>(
 
 impl<'a, 't> TSImportTypeWithoutAttributes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16355,11 +15768,8 @@ pub struct TSImportTypeWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSImportTypeWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16403,7 +15813,8 @@ impl<'a, 't> GetAddress for TSImportTypeWithoutTypeParameters<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTES_PARENT: usize = offset_of!(TSImportAttributes, parent);
+pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTES_NODE_ID: usize =
+    offset_of!(TSImportAttributes, node_id);
 pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTES_SPAN: usize = offset_of!(TSImportAttributes, span);
 pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTES_ATTRIBUTES_KEYWORD: usize =
     offset_of!(TSImportAttributes, attributes_keyword);
@@ -16419,11 +15830,8 @@ pub struct TSImportAttributesWithoutAttributesKeyword<'a, 't>(
 
 impl<'a, 't> TSImportAttributesWithoutAttributesKeyword<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTES_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTES_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16456,11 +15864,8 @@ pub struct TSImportAttributesWithoutElements<'a, 't>(
 
 impl<'a, 't> TSImportAttributesWithoutElements<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTES_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTES_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16484,7 +15889,7 @@ impl<'a, 't> GetAddress for TSImportAttributesWithoutElements<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTE_PARENT: usize = offset_of!(TSImportAttribute, parent);
+pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTE_NODE_ID: usize = offset_of!(TSImportAttribute, node_id);
 pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTE_SPAN: usize = offset_of!(TSImportAttribute, span);
 pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTE_NAME: usize = offset_of!(TSImportAttribute, name);
 pub(crate) const OFFSET_TS_IMPORT_ATTRIBUTE_VALUE: usize = offset_of!(TSImportAttribute, value);
@@ -16498,11 +15903,8 @@ pub struct TSImportAttributeWithoutName<'a, 't>(
 
 impl<'a, 't> TSImportAttributeWithoutName<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16534,11 +15936,8 @@ pub struct TSImportAttributeWithoutValue<'a, 't>(
 
 impl<'a, 't> TSImportAttributeWithoutValue<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_ATTRIBUTE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16562,7 +15961,7 @@ impl<'a, 't> GetAddress for TSImportAttributeWithoutValue<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_FUNCTION_TYPE_PARENT: usize = offset_of!(TSFunctionType, parent);
+pub(crate) const OFFSET_TS_FUNCTION_TYPE_NODE_ID: usize = offset_of!(TSFunctionType, node_id);
 pub(crate) const OFFSET_TS_FUNCTION_TYPE_SPAN: usize = offset_of!(TSFunctionType, span);
 pub(crate) const OFFSET_TS_FUNCTION_TYPE_TYPE_PARAMETERS: usize =
     offset_of!(TSFunctionType, type_parameters);
@@ -16580,11 +15979,8 @@ pub struct TSFunctionTypeWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSFunctionTypeWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16633,11 +16029,8 @@ pub struct TSFunctionTypeWithoutThisParam<'a, 't>(
 
 impl<'a, 't> TSFunctionTypeWithoutThisParam<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16686,11 +16079,8 @@ pub struct TSFunctionTypeWithoutParams<'a, 't>(
 
 impl<'a, 't> TSFunctionTypeWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16739,11 +16129,8 @@ pub struct TSFunctionTypeWithoutReturnType<'a, 't>(
 
 impl<'a, 't> TSFunctionTypeWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_FUNCTION_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16783,7 +16170,7 @@ impl<'a, 't> GetAddress for TSFunctionTypeWithoutReturnType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_CONSTRUCTOR_TYPE_PARENT: usize = offset_of!(TSConstructorType, parent);
+pub(crate) const OFFSET_TS_CONSTRUCTOR_TYPE_NODE_ID: usize = offset_of!(TSConstructorType, node_id);
 pub(crate) const OFFSET_TS_CONSTRUCTOR_TYPE_SPAN: usize = offset_of!(TSConstructorType, span);
 pub(crate) const OFFSET_TS_CONSTRUCTOR_TYPE_ABSTRACT: usize =
     offset_of!(TSConstructorType, r#abstract);
@@ -16802,11 +16189,8 @@ pub struct TSConstructorTypeWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSConstructorTypeWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16852,11 +16236,8 @@ pub struct TSConstructorTypeWithoutParams<'a, 't>(
 
 impl<'a, 't> TSConstructorTypeWithoutParams<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16902,11 +16283,8 @@ pub struct TSConstructorTypeWithoutReturnType<'a, 't>(
 
 impl<'a, 't> TSConstructorTypeWithoutReturnType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_CONSTRUCTOR_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -16943,7 +16321,7 @@ impl<'a, 't> GetAddress for TSConstructorTypeWithoutReturnType<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_MAPPED_TYPE_PARENT: usize = offset_of!(TSMappedType, parent);
+pub(crate) const OFFSET_TS_MAPPED_TYPE_NODE_ID: usize = offset_of!(TSMappedType, node_id);
 pub(crate) const OFFSET_TS_MAPPED_TYPE_SPAN: usize = offset_of!(TSMappedType, span);
 pub(crate) const OFFSET_TS_MAPPED_TYPE_TYPE_PARAMETER: usize =
     offset_of!(TSMappedType, type_parameter);
@@ -16963,11 +16341,8 @@ pub struct TSMappedTypeWithoutTypeParameter<'a, 't>(
 
 impl<'a, 't> TSMappedTypeWithoutTypeParameter<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17032,11 +16407,8 @@ pub struct TSMappedTypeWithoutNameType<'a, 't>(
 
 impl<'a, 't> TSMappedTypeWithoutNameType<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17101,11 +16473,8 @@ pub struct TSMappedTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSMappedTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_MAPPED_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17161,8 +16530,8 @@ impl<'a, 't> GetAddress for TSMappedTypeWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TEMPLATE_LITERAL_TYPE_PARENT: usize =
-    offset_of!(TSTemplateLiteralType, parent);
+pub(crate) const OFFSET_TS_TEMPLATE_LITERAL_TYPE_NODE_ID: usize =
+    offset_of!(TSTemplateLiteralType, node_id);
 pub(crate) const OFFSET_TS_TEMPLATE_LITERAL_TYPE_SPAN: usize =
     offset_of!(TSTemplateLiteralType, span);
 pub(crate) const OFFSET_TS_TEMPLATE_LITERAL_TYPE_QUASIS: usize =
@@ -17179,10 +16548,9 @@ pub struct TSTemplateLiteralTypeWithoutQuasis<'a, 't>(
 
 impl<'a, 't> TSTemplateLiteralTypeWithoutQuasis<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TEMPLATE_LITERAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TEMPLATE_LITERAL_TYPE_NODE_ID) as *const u32)
         }
     }
 
@@ -17218,10 +16586,9 @@ pub struct TSTemplateLiteralTypeWithoutTypes<'a, 't>(
 
 impl<'a, 't> TSTemplateLiteralTypeWithoutTypes<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TEMPLATE_LITERAL_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_TEMPLATE_LITERAL_TYPE_NODE_ID) as *const u32)
         }
     }
 
@@ -17248,7 +16615,7 @@ impl<'a, 't> GetAddress for TSTemplateLiteralTypeWithoutTypes<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_AS_EXPRESSION_PARENT: usize = offset_of!(TSAsExpression, parent);
+pub(crate) const OFFSET_TS_AS_EXPRESSION_NODE_ID: usize = offset_of!(TSAsExpression, node_id);
 pub(crate) const OFFSET_TS_AS_EXPRESSION_SPAN: usize = offset_of!(TSAsExpression, span);
 pub(crate) const OFFSET_TS_AS_EXPRESSION_EXPRESSION: usize = offset_of!(TSAsExpression, expression);
 pub(crate) const OFFSET_TS_AS_EXPRESSION_TYPE_ANNOTATION: usize =
@@ -17263,11 +16630,8 @@ pub struct TSAsExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSAsExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_AS_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_AS_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17300,11 +16664,8 @@ pub struct TSAsExpressionWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSAsExpressionWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_AS_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_AS_EXPRESSION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17328,8 +16689,8 @@ impl<'a, 't> GetAddress for TSAsExpressionWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_SATISFIES_EXPRESSION_PARENT: usize =
-    offset_of!(TSSatisfiesExpression, parent);
+pub(crate) const OFFSET_TS_SATISFIES_EXPRESSION_NODE_ID: usize =
+    offset_of!(TSSatisfiesExpression, node_id);
 pub(crate) const OFFSET_TS_SATISFIES_EXPRESSION_SPAN: usize =
     offset_of!(TSSatisfiesExpression, span);
 pub(crate) const OFFSET_TS_SATISFIES_EXPRESSION_EXPRESSION: usize =
@@ -17346,10 +16707,9 @@ pub struct TSSatisfiesExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSSatisfiesExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_SATISFIES_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_SATISFIES_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -17383,10 +16743,9 @@ pub struct TSSatisfiesExpressionWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSSatisfiesExpressionWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_SATISFIES_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_SATISFIES_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -17411,7 +16770,7 @@ impl<'a, 't> GetAddress for TSSatisfiesExpressionWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_TYPE_ASSERTION_PARENT: usize = offset_of!(TSTypeAssertion, parent);
+pub(crate) const OFFSET_TS_TYPE_ASSERTION_NODE_ID: usize = offset_of!(TSTypeAssertion, node_id);
 pub(crate) const OFFSET_TS_TYPE_ASSERTION_SPAN: usize = offset_of!(TSTypeAssertion, span);
 pub(crate) const OFFSET_TS_TYPE_ASSERTION_EXPRESSION: usize =
     offset_of!(TSTypeAssertion, expression);
@@ -17427,11 +16786,8 @@ pub struct TSTypeAssertionWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSTypeAssertionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ASSERTION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ASSERTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17464,11 +16820,8 @@ pub struct TSTypeAssertionWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> TSTypeAssertionWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ASSERTION_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_TYPE_ASSERTION_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17492,8 +16845,8 @@ impl<'a, 't> GetAddress for TSTypeAssertionWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_IMPORT_EQUALS_DECLARATION_PARENT: usize =
-    offset_of!(TSImportEqualsDeclaration, parent);
+pub(crate) const OFFSET_TS_IMPORT_EQUALS_DECLARATION_NODE_ID: usize =
+    offset_of!(TSImportEqualsDeclaration, node_id);
 pub(crate) const OFFSET_TS_IMPORT_EQUALS_DECLARATION_SPAN: usize =
     offset_of!(TSImportEqualsDeclaration, span);
 pub(crate) const OFFSET_TS_IMPORT_EQUALS_DECLARATION_ID: usize =
@@ -17512,10 +16865,9 @@ pub struct TSImportEqualsDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSImportEqualsDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_EQUALS_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_EQUALS_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -17559,10 +16911,9 @@ pub struct TSImportEqualsDeclarationWithoutModuleReference<'a, 't>(
 
 impl<'a, 't> TSImportEqualsDeclarationWithoutModuleReference<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_EQUALS_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_IMPORT_EQUALS_DECLARATION_NODE_ID) as *const u32)
         }
     }
 
@@ -17597,8 +16948,8 @@ impl<'a, 't> GetAddress for TSImportEqualsDeclarationWithoutModuleReference<'a, 
     }
 }
 
-pub(crate) const OFFSET_TS_EXTERNAL_MODULE_REFERENCE_PARENT: usize =
-    offset_of!(TSExternalModuleReference, parent);
+pub(crate) const OFFSET_TS_EXTERNAL_MODULE_REFERENCE_NODE_ID: usize =
+    offset_of!(TSExternalModuleReference, node_id);
 pub(crate) const OFFSET_TS_EXTERNAL_MODULE_REFERENCE_SPAN: usize =
     offset_of!(TSExternalModuleReference, span);
 pub(crate) const OFFSET_TS_EXTERNAL_MODULE_REFERENCE_EXPRESSION: usize =
@@ -17613,10 +16964,9 @@ pub struct TSExternalModuleReferenceWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSExternalModuleReferenceWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_EXTERNAL_MODULE_REFERENCE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_EXTERNAL_MODULE_REFERENCE_NODE_ID) as *const u32)
         }
     }
 
@@ -17635,8 +16985,8 @@ impl<'a, 't> GetAddress for TSExternalModuleReferenceWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_NON_NULL_EXPRESSION_PARENT: usize =
-    offset_of!(TSNonNullExpression, parent);
+pub(crate) const OFFSET_TS_NON_NULL_EXPRESSION_NODE_ID: usize =
+    offset_of!(TSNonNullExpression, node_id);
 pub(crate) const OFFSET_TS_NON_NULL_EXPRESSION_SPAN: usize = offset_of!(TSNonNullExpression, span);
 pub(crate) const OFFSET_TS_NON_NULL_EXPRESSION_EXPRESSION: usize =
     offset_of!(TSNonNullExpression, expression);
@@ -17650,10 +17000,9 @@ pub struct TSNonNullExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSNonNullExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_NON_NULL_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_NON_NULL_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -17670,7 +17019,7 @@ impl<'a, 't> GetAddress for TSNonNullExpressionWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_DECORATOR_PARENT: usize = offset_of!(Decorator, parent);
+pub(crate) const OFFSET_DECORATOR_NODE_ID: usize = offset_of!(Decorator, node_id);
 pub(crate) const OFFSET_DECORATOR_SPAN: usize = offset_of!(Decorator, span);
 pub(crate) const OFFSET_DECORATOR_EXPRESSION: usize = offset_of!(Decorator, expression);
 
@@ -17683,10 +17032,8 @@ pub struct DecoratorWithoutExpression<'a, 't>(
 
 impl<'a, 't> DecoratorWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_DECORATOR_PARENT) as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_DECORATOR_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17702,7 +17049,8 @@ impl<'a, 't> GetAddress for DecoratorWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_EXPORT_ASSIGNMENT_PARENT: usize = offset_of!(TSExportAssignment, parent);
+pub(crate) const OFFSET_TS_EXPORT_ASSIGNMENT_NODE_ID: usize =
+    offset_of!(TSExportAssignment, node_id);
 pub(crate) const OFFSET_TS_EXPORT_ASSIGNMENT_SPAN: usize = offset_of!(TSExportAssignment, span);
 pub(crate) const OFFSET_TS_EXPORT_ASSIGNMENT_EXPRESSION: usize =
     offset_of!(TSExportAssignment, expression);
@@ -17716,11 +17064,8 @@ pub struct TSExportAssignmentWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSExportAssignmentWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_EXPORT_ASSIGNMENT_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_TS_EXPORT_ASSIGNMENT_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17736,8 +17081,8 @@ impl<'a, 't> GetAddress for TSExportAssignmentWithoutExpression<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_PARENT: usize =
-    offset_of!(TSNamespaceExportDeclaration, parent);
+pub(crate) const OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_NODE_ID: usize =
+    offset_of!(TSNamespaceExportDeclaration, node_id);
 pub(crate) const OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_SPAN: usize =
     offset_of!(TSNamespaceExportDeclaration, span);
 pub(crate) const OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_ID: usize =
@@ -17752,10 +17097,10 @@ pub struct TSNamespaceExportDeclarationWithoutId<'a, 't>(
 
 impl<'a, 't> TSNamespaceExportDeclarationWithoutId<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_NAMESPACE_EXPORT_DECLARATION_NODE_ID)
+                as *const u32)
         }
     }
 
@@ -17775,8 +17120,8 @@ impl<'a, 't> GetAddress for TSNamespaceExportDeclarationWithoutId<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_TS_INSTANTIATION_EXPRESSION_PARENT: usize =
-    offset_of!(TSInstantiationExpression, parent);
+pub(crate) const OFFSET_TS_INSTANTIATION_EXPRESSION_NODE_ID: usize =
+    offset_of!(TSInstantiationExpression, node_id);
 pub(crate) const OFFSET_TS_INSTANTIATION_EXPRESSION_SPAN: usize =
     offset_of!(TSInstantiationExpression, span);
 pub(crate) const OFFSET_TS_INSTANTIATION_EXPRESSION_EXPRESSION: usize =
@@ -17793,10 +17138,9 @@ pub struct TSInstantiationExpressionWithoutExpression<'a, 't>(
 
 impl<'a, 't> TSInstantiationExpressionWithoutExpression<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INSTANTIATION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INSTANTIATION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -17832,10 +17176,9 @@ pub struct TSInstantiationExpressionWithoutTypeParameters<'a, 't>(
 
 impl<'a, 't> TSInstantiationExpressionWithoutTypeParameters<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_TS_INSTANTIATION_EXPRESSION_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_TS_INSTANTIATION_EXPRESSION_NODE_ID) as *const u32)
         }
     }
 
@@ -17862,7 +17205,8 @@ impl<'a, 't> GetAddress for TSInstantiationExpressionWithoutTypeParameters<'a, '
     }
 }
 
-pub(crate) const OFFSET_JS_DOC_NULLABLE_TYPE_PARENT: usize = offset_of!(JSDocNullableType, parent);
+pub(crate) const OFFSET_JS_DOC_NULLABLE_TYPE_NODE_ID: usize =
+    offset_of!(JSDocNullableType, node_id);
 pub(crate) const OFFSET_JS_DOC_NULLABLE_TYPE_SPAN: usize = offset_of!(JSDocNullableType, span);
 pub(crate) const OFFSET_JS_DOC_NULLABLE_TYPE_TYPE_ANNOTATION: usize =
     offset_of!(JSDocNullableType, type_annotation);
@@ -17878,11 +17222,8 @@ pub struct JSDocNullableTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> JSDocNullableTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
-        unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JS_DOC_NULLABLE_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
-        }
+    pub fn node_id(self) -> &'t u32 {
+        unsafe { &*((self.0 as *const u8).add(OFFSET_JS_DOC_NULLABLE_TYPE_NODE_ID) as *const u32) }
     }
 
     #[inline]
@@ -17903,8 +17244,8 @@ impl<'a, 't> GetAddress for JSDocNullableTypeWithoutTypeAnnotation<'a, 't> {
     }
 }
 
-pub(crate) const OFFSET_JS_DOC_NON_NULLABLE_TYPE_PARENT: usize =
-    offset_of!(JSDocNonNullableType, parent);
+pub(crate) const OFFSET_JS_DOC_NON_NULLABLE_TYPE_NODE_ID: usize =
+    offset_of!(JSDocNonNullableType, node_id);
 pub(crate) const OFFSET_JS_DOC_NON_NULLABLE_TYPE_SPAN: usize =
     offset_of!(JSDocNonNullableType, span);
 pub(crate) const OFFSET_JS_DOC_NON_NULLABLE_TYPE_TYPE_ANNOTATION: usize =
@@ -17921,10 +17262,9 @@ pub struct JSDocNonNullableTypeWithoutTypeAnnotation<'a, 't>(
 
 impl<'a, 't> JSDocNonNullableTypeWithoutTypeAnnotation<'a, 't> {
     #[inline]
-    pub fn parent(self) -> &'t Option<AstKind<'a>> {
+    pub fn node_id(self) -> &'t u32 {
         unsafe {
-            &*((self.0 as *const u8).add(OFFSET_JS_DOC_NON_NULLABLE_TYPE_PARENT)
-                as *const Option<AstKind<'a>>)
+            &*((self.0 as *const u8).add(OFFSET_JS_DOC_NON_NULLABLE_TYPE_NODE_ID) as *const u32)
         }
     }
 

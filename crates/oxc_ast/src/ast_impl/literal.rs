@@ -8,7 +8,7 @@ use oxc_span::cmp::ContentEq;
 
 use crate::ast::*;
 
-impl BooleanLiteral<'_> {
+impl BooleanLiteral {
     /// `"true"` or `"false"` depending on this boolean's value.
     pub fn as_str(&self) -> &'static str {
         if self.value {
@@ -19,14 +19,14 @@ impl BooleanLiteral<'_> {
     }
 }
 
-impl fmt::Display for BooleanLiteral<'_> {
+impl fmt::Display for BooleanLiteral {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         self.as_str().fmt(f)
     }
 }
 
-impl fmt::Display for NullLiteral<'_> {
+impl fmt::Display for NullLiteral {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         "null".fmt(f)

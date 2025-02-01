@@ -48,7 +48,7 @@ fn assert_generated_derives(attrs: &[Attribute]) -> TokenStream {
         .iter()
         .filter(|attr| attr.path().is_ident("generate_derive"))
         .flat_map(parse_attr)
-        .filter(|derive| derive != "GetParent")
+        .filter(|derive| derive != "GetChildren")
         .map(|derive| {
             let (abs_derive, generics) = abs_trait(&derive);
             quote! {{
@@ -78,8 +78,8 @@ fn abs_trait(
         (quote!(::oxc_span::GetSpan), TokenStream::default())
     } else if ident == "GetSpanMut" {
         (quote!(::oxc_span::GetSpanMut), TokenStream::default())
-    } else if ident == "GetParent" {
-        (quote!(::oxc_ast::GetParent), TokenStream::default())
+    } else if ident == "GetChildren" {
+        (quote!(::oxc_ast::GetChildren), TokenStream::default())
     } else if ident == "GetAddress" {
         (quote!(::oxc_allocator::GetAddress), TokenStream::default())
     } else if ident == "ContentEq" {

@@ -14,20 +14,17 @@ use oxc_regular_expression::ast::Pattern;
 use oxc_span::{cmp::ContentEq, Atom, GetSpan, GetSpanMut, Span};
 use oxc_syntax::number::{BigintBase, NumberBase};
 
-use crate::AstKind;
-
 /// Boolean literal
 ///
 /// <https://tc39.es/ecma262/#prod-BooleanLiteral>
 #[ast(visit)]
-#[derive(Debug, Clone)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 #[estree(type = "Literal", via = crate::serialize::ESTreeLiteral, add_ts = "raw: string | null")]
-pub struct BooleanLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+pub struct BooleanLiteral {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The boolean value itself
@@ -38,14 +35,13 @@ pub struct BooleanLiteral<'a> {
 ///
 /// <https://tc39.es/ecma262/#sec-null-literals>
 #[ast(visit)]
-#[derive(Debug, Clone)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 #[estree(type = "Literal", via = crate::serialize::ESTreeLiteral, add_ts = "value: null, raw: \"null\" | null")]
-pub struct NullLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+pub struct NullLiteral {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
 }
@@ -55,13 +51,12 @@ pub struct NullLiteral<'a> {
 /// <https://tc39.es/ecma262/#sec-literals-numeric-literals>
 #[ast(visit)]
 #[derive(Debug, Clone)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ESTree)]
 #[estree(type = "Literal", via = crate::serialize::ESTreeLiteral)]
 pub struct NumericLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The value of the number, converted into base 10
@@ -80,13 +75,12 @@ pub struct NumericLiteral<'a> {
 /// <https://tc39.es/ecma262/#sec-literals-string-literals>
 #[ast(visit)]
 #[derive(Debug, Clone)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ESTree)]
 #[estree(type = "Literal", via = crate::serialize::ESTreeLiteral)]
 pub struct StringLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The value of the string.
@@ -103,13 +97,12 @@ pub struct StringLiteral<'a> {
 /// BigInt literal
 #[ast(visit)]
 #[derive(Debug, Clone)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ESTree)]
 #[estree(type = "Literal", via = crate::serialize::ESTreeLiteral, add_ts = "value: null, bigint: string")]
 pub struct BigIntLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The bigint as it appears in source code
@@ -125,17 +118,16 @@ pub struct BigIntLiteral<'a> {
 /// <https://tc39.es/ecma262/#sec-literals-regular-expression-literals>
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ESTree)]
 #[estree(
 	type = "Literal",
 	via = crate::serialize::ESTreeLiteral,
 	add_ts = "value: {} | null, regex: { pattern: string, flags: string }"
 )]
 pub struct RegExpLiteral<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The parsed regular expression. See [`oxc_regular_expression`] for more

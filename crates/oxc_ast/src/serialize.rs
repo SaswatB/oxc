@@ -30,7 +30,7 @@ pub struct ESTreeLiteral<'a, T> {
     regex: Option<SerRegExpValue>,
 }
 
-impl<'a> From<&'a BooleanLiteral<'a>> for ESTreeLiteral<'a, bool> {
+impl<'a> From<&'a BooleanLiteral> for ESTreeLiteral<'a, bool> {
     fn from(lit: &'a BooleanLiteral) -> Self {
         let raw = if lit.span.is_unspanned() {
             None
@@ -42,7 +42,7 @@ impl<'a> From<&'a BooleanLiteral<'a>> for ESTreeLiteral<'a, bool> {
     }
 }
 
-impl<'a> From<&'a NullLiteral<'a>> for ESTreeLiteral<'a, ()> {
+impl<'a> From<&'a NullLiteral> for ESTreeLiteral<'a, ()> {
     fn from(lit: &'a NullLiteral) -> Self {
         let raw = if lit.span.is_unspanned() { None } else { Some("null") };
         Self { span: lit.span, value: (), raw, bigint: None, regex: None }
@@ -168,7 +168,7 @@ impl Serialize for RegExpFlags {
 }
 
 /// Serialize `ArrayExpressionElement::Elision` variant as `null` in JSON
-impl<'a> Serialize for Elision<'a> {
+impl<'a> Serialize for Elision {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -307,13 +307,13 @@ impl Serialize for JSXElementName<'_> {
         match self {
             Self::Identifier(ident) => ident.serialize(serializer),
             Self::IdentifierReference(ident) => {
-                JSXIdentifier { parent: ident.parent, span: ident.span, name: ident.name }
+                JSXIdentifier { node_id: ident.node_id, span: ident.span, name: ident.name }
                     .serialize(serializer)
             }
             Self::NamespacedName(name) => name.serialize(serializer),
             Self::MemberExpression(expr) => expr.serialize(serializer),
             Self::ThisExpression(expr) => {
-                JSXIdentifier { parent: expr.parent, span: expr.span, name: "this".into() }
+                JSXIdentifier { node_id: expr.node_id, span: expr.span, name: "this".into() }
                     .serialize(serializer)
             }
         }
@@ -324,12 +324,12 @@ impl Serialize for JSXMemberExpressionObject<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             Self::IdentifierReference(ident) => {
-                JSXIdentifier { parent: ident.parent, span: ident.span, name: ident.name }
+                JSXIdentifier { node_id: ident.node_id, span: ident.span, name: ident.name }
                     .serialize(serializer)
             }
             Self::MemberExpression(expr) => expr.serialize(serializer),
             Self::ThisExpression(expr) => {
-                JSXIdentifier { parent: expr.parent, span: expr.span, name: "this".into() }
+                JSXIdentifier { node_id: expr.node_id, span: expr.span, name: "this".into() }
                     .serialize(serializer)
             }
         }

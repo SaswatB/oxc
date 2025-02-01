@@ -8,9 +8,8 @@ use std::ptr;
 
 use oxc_span::{GetSpan, Span};
 
+use super::derive_get_children::GetChildren;
 use crate::ast::*;
-use crate::generated::derive_get_parent::GetChildren;
-use crate::GetParent;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -219,8 +218,8 @@ pub enum AstType {
 #[derive(Debug, Clone, Copy)]
 #[repr(C, u8)]
 pub enum AstKind<'a> {
-    BooleanLiteral(&'a BooleanLiteral<'a>) = AstType::BooleanLiteral as u8,
-    NullLiteral(&'a NullLiteral<'a>) = AstType::NullLiteral as u8,
+    BooleanLiteral(&'a BooleanLiteral) = AstType::BooleanLiteral as u8,
+    NullLiteral(&'a NullLiteral) = AstType::NullLiteral as u8,
     NumericLiteral(&'a NumericLiteral<'a>) = AstType::NumericLiteral as u8,
     StringLiteral(&'a StringLiteral<'a>) = AstType::StringLiteral as u8,
     BigIntLiteral(&'a BigIntLiteral<'a>) = AstType::BigIntLiteral as u8,
@@ -230,10 +229,10 @@ pub enum AstKind<'a> {
     IdentifierReference(&'a IdentifierReference<'a>) = AstType::IdentifierReference as u8,
     BindingIdentifier(&'a BindingIdentifier<'a>) = AstType::BindingIdentifier as u8,
     LabelIdentifier(&'a LabelIdentifier<'a>) = AstType::LabelIdentifier as u8,
-    ThisExpression(&'a ThisExpression<'a>) = AstType::ThisExpression as u8,
+    ThisExpression(&'a ThisExpression) = AstType::ThisExpression as u8,
     ArrayExpression(&'a ArrayExpression<'a>) = AstType::ArrayExpression as u8,
     ArrayExpressionElement(&'a ArrayExpressionElement<'a>) = AstType::ArrayExpressionElement as u8,
-    Elision(&'a Elision<'a>) = AstType::Elision as u8,
+    Elision(&'a Elision) = AstType::Elision as u8,
     ObjectExpression(&'a ObjectExpression<'a>) = AstType::ObjectExpression as u8,
     ObjectProperty(&'a ObjectProperty<'a>) = AstType::ObjectProperty as u8,
     PropertyKey(&'a PropertyKey<'a>) = AstType::PropertyKey as u8,
@@ -272,7 +271,7 @@ pub enum AstKind<'a> {
     AssignmentTargetPropertyProperty(&'a AssignmentTargetPropertyProperty<'a>) =
         AstType::AssignmentTargetPropertyProperty as u8,
     SequenceExpression(&'a SequenceExpression<'a>) = AstType::SequenceExpression as u8,
-    Super(&'a Super<'a>) = AstType::Super as u8,
+    Super(&'a Super) = AstType::Super as u8,
     AwaitExpression(&'a AwaitExpression<'a>) = AstType::AwaitExpression as u8,
     ChainExpression(&'a ChainExpression<'a>) = AstType::ChainExpression as u8,
     ParenthesizedExpression(&'a ParenthesizedExpression<'a>) =
@@ -282,7 +281,7 @@ pub enum AstKind<'a> {
     BlockStatement(&'a BlockStatement<'a>) = AstType::BlockStatement as u8,
     VariableDeclaration(&'a VariableDeclaration<'a>) = AstType::VariableDeclaration as u8,
     VariableDeclarator(&'a VariableDeclarator<'a>) = AstType::VariableDeclarator as u8,
-    EmptyStatement(&'a EmptyStatement<'a>) = AstType::EmptyStatement as u8,
+    EmptyStatement(&'a EmptyStatement) = AstType::EmptyStatement as u8,
     ExpressionStatement(&'a ExpressionStatement<'a>) = AstType::ExpressionStatement as u8,
     IfStatement(&'a IfStatement<'a>) = AstType::IfStatement as u8,
     DoWhileStatement(&'a DoWhileStatement<'a>) = AstType::DoWhileStatement as u8,
@@ -302,7 +301,7 @@ pub enum AstKind<'a> {
     TryStatement(&'a TryStatement<'a>) = AstType::TryStatement as u8,
     CatchClause(&'a CatchClause<'a>) = AstType::CatchClause as u8,
     CatchParameter(&'a CatchParameter<'a>) = AstType::CatchParameter as u8,
-    DebuggerStatement(&'a DebuggerStatement<'a>) = AstType::DebuggerStatement as u8,
+    DebuggerStatement(&'a DebuggerStatement) = AstType::DebuggerStatement as u8,
     BindingPattern(&'a BindingPattern<'a>) = AstType::BindingPattern as u8,
     AssignmentPattern(&'a AssignmentPattern<'a>) = AstType::AssignmentPattern as u8,
     ObjectPattern(&'a ObjectPattern<'a>) = AstType::ObjectPattern as u8,
@@ -353,20 +352,20 @@ pub enum AstKind<'a> {
     TSNamedTupleMember(&'a TSNamedTupleMember<'a>) = AstType::TSNamedTupleMember as u8,
     TSOptionalType(&'a TSOptionalType<'a>) = AstType::TSOptionalType as u8,
     TSRestType(&'a TSRestType<'a>) = AstType::TSRestType as u8,
-    TSAnyKeyword(&'a TSAnyKeyword<'a>) = AstType::TSAnyKeyword as u8,
-    TSStringKeyword(&'a TSStringKeyword<'a>) = AstType::TSStringKeyword as u8,
-    TSBooleanKeyword(&'a TSBooleanKeyword<'a>) = AstType::TSBooleanKeyword as u8,
-    TSNumberKeyword(&'a TSNumberKeyword<'a>) = AstType::TSNumberKeyword as u8,
-    TSNeverKeyword(&'a TSNeverKeyword<'a>) = AstType::TSNeverKeyword as u8,
-    TSIntrinsicKeyword(&'a TSIntrinsicKeyword<'a>) = AstType::TSIntrinsicKeyword as u8,
-    TSUnknownKeyword(&'a TSUnknownKeyword<'a>) = AstType::TSUnknownKeyword as u8,
-    TSNullKeyword(&'a TSNullKeyword<'a>) = AstType::TSNullKeyword as u8,
-    TSUndefinedKeyword(&'a TSUndefinedKeyword<'a>) = AstType::TSUndefinedKeyword as u8,
-    TSVoidKeyword(&'a TSVoidKeyword<'a>) = AstType::TSVoidKeyword as u8,
-    TSSymbolKeyword(&'a TSSymbolKeyword<'a>) = AstType::TSSymbolKeyword as u8,
-    TSThisType(&'a TSThisType<'a>) = AstType::TSThisType as u8,
-    TSObjectKeyword(&'a TSObjectKeyword<'a>) = AstType::TSObjectKeyword as u8,
-    TSBigIntKeyword(&'a TSBigIntKeyword<'a>) = AstType::TSBigIntKeyword as u8,
+    TSAnyKeyword(&'a TSAnyKeyword) = AstType::TSAnyKeyword as u8,
+    TSStringKeyword(&'a TSStringKeyword) = AstType::TSStringKeyword as u8,
+    TSBooleanKeyword(&'a TSBooleanKeyword) = AstType::TSBooleanKeyword as u8,
+    TSNumberKeyword(&'a TSNumberKeyword) = AstType::TSNumberKeyword as u8,
+    TSNeverKeyword(&'a TSNeverKeyword) = AstType::TSNeverKeyword as u8,
+    TSIntrinsicKeyword(&'a TSIntrinsicKeyword) = AstType::TSIntrinsicKeyword as u8,
+    TSUnknownKeyword(&'a TSUnknownKeyword) = AstType::TSUnknownKeyword as u8,
+    TSNullKeyword(&'a TSNullKeyword) = AstType::TSNullKeyword as u8,
+    TSUndefinedKeyword(&'a TSUndefinedKeyword) = AstType::TSUndefinedKeyword as u8,
+    TSVoidKeyword(&'a TSVoidKeyword) = AstType::TSVoidKeyword as u8,
+    TSSymbolKeyword(&'a TSSymbolKeyword) = AstType::TSSymbolKeyword as u8,
+    TSThisType(&'a TSThisType) = AstType::TSThisType as u8,
+    TSObjectKeyword(&'a TSObjectKeyword) = AstType::TSObjectKeyword as u8,
+    TSBigIntKeyword(&'a TSBigIntKeyword) = AstType::TSBigIntKeyword as u8,
     TSTypeReference(&'a TSTypeReference<'a>) = AstType::TSTypeReference as u8,
     TSTypeName(&'a TSTypeName<'a>) = AstType::TSTypeName as u8,
     TSQualifiedName(&'a TSQualifiedName<'a>) = AstType::TSQualifiedName as u8,
@@ -418,7 +417,7 @@ pub enum AstKind<'a> {
         AstType::TSInstantiationExpression as u8,
     JSDocNullableType(&'a JSDocNullableType<'a>) = AstType::JSDocNullableType as u8,
     JSDocNonNullableType(&'a JSDocNonNullableType<'a>) = AstType::JSDocNonNullableType as u8,
-    JSDocUnknownType(&'a JSDocUnknownType<'a>) = AstType::JSDocUnknownType as u8,
+    JSDocUnknownType(&'a JSDocUnknownType) = AstType::JSDocUnknownType as u8,
     JSXElement(&'a JSXElement<'a>) = AstType::JSXElement as u8,
     JSXOpeningElement(&'a JSXOpeningElement<'a>) = AstType::JSXOpeningElement as u8,
     JSXClosingElement(&'a JSXClosingElement<'a>) = AstType::JSXClosingElement as u8,
@@ -429,7 +428,7 @@ pub enum AstKind<'a> {
     JSXMemberExpressionObject(&'a JSXMemberExpressionObject<'a>) =
         AstType::JSXMemberExpressionObject as u8,
     JSXExpressionContainer(&'a JSXExpressionContainer<'a>) = AstType::JSXExpressionContainer as u8,
-    JSXEmptyExpression(&'a JSXEmptyExpression<'a>) = AstType::JSXEmptyExpression as u8,
+    JSXEmptyExpression(&'a JSXEmptyExpression) = AstType::JSXEmptyExpression as u8,
     JSXAttributeItem(&'a JSXAttributeItem<'a>) = AstType::JSXAttributeItem as u8,
     JSXAttribute(&'a JSXAttribute<'a>) = AstType::JSXAttribute as u8,
     JSXSpreadAttribute(&'a JSXSpreadAttribute<'a>) = AstType::JSXSpreadAttribute as u8,
@@ -657,1007 +656,6 @@ impl GetSpan for AstKind<'_> {
 }
 
 impl<'a> AstKind<'a> {
-    pub fn get_parent(&self) -> Option<AstKind<'a>> {
-        match self {
-            Self::BooleanLiteral(it) => it.get_parent(),
-            Self::NullLiteral(it) => it.get_parent(),
-            Self::NumericLiteral(it) => it.get_parent(),
-            Self::StringLiteral(it) => it.get_parent(),
-            Self::BigIntLiteral(it) => it.get_parent(),
-            Self::RegExpLiteral(it) => it.get_parent(),
-            Self::Program(it) => it.get_parent(),
-            Self::IdentifierName(it) => it.get_parent(),
-            Self::IdentifierReference(it) => it.get_parent(),
-            Self::BindingIdentifier(it) => it.get_parent(),
-            Self::LabelIdentifier(it) => it.get_parent(),
-            Self::ThisExpression(it) => it.get_parent(),
-            Self::ArrayExpression(it) => it.get_parent(),
-            Self::ArrayExpressionElement(it) => it.get_parent(),
-            Self::Elision(it) => it.get_parent(),
-            Self::ObjectExpression(it) => it.get_parent(),
-            Self::ObjectProperty(it) => it.get_parent(),
-            Self::PropertyKey(it) => it.get_parent(),
-            Self::TemplateLiteral(it) => it.get_parent(),
-            Self::TaggedTemplateExpression(it) => it.get_parent(),
-            Self::TemplateElement(it) => it.get_parent(),
-            Self::MemberExpression(it) => it.get_parent(),
-            Self::ComputedMemberExpression(it) => it.get_parent(),
-            Self::StaticMemberExpression(it) => it.get_parent(),
-            Self::PrivateFieldExpression(it) => it.get_parent(),
-            Self::CallExpression(it) => it.get_parent(),
-            Self::NewExpression(it) => it.get_parent(),
-            Self::MetaProperty(it) => it.get_parent(),
-            Self::SpreadElement(it) => it.get_parent(),
-            Self::Argument(it) => it.get_parent(),
-            Self::UpdateExpression(it) => it.get_parent(),
-            Self::UnaryExpression(it) => it.get_parent(),
-            Self::BinaryExpression(it) => it.get_parent(),
-            Self::PrivateInExpression(it) => it.get_parent(),
-            Self::LogicalExpression(it) => it.get_parent(),
-            Self::ConditionalExpression(it) => it.get_parent(),
-            Self::AssignmentExpression(it) => it.get_parent(),
-            Self::AssignmentTarget(it) => it.get_parent(),
-            Self::SimpleAssignmentTarget(it) => it.get_parent(),
-            Self::AssignmentTargetPattern(it) => it.get_parent(),
-            Self::ArrayAssignmentTarget(it) => it.get_parent(),
-            Self::ObjectAssignmentTarget(it) => it.get_parent(),
-            Self::AssignmentTargetRest(it) => it.get_parent(),
-            Self::AssignmentTargetWithDefault(it) => it.get_parent(),
-            Self::AssignmentTargetPropertyIdentifier(it) => it.get_parent(),
-            Self::AssignmentTargetPropertyProperty(it) => it.get_parent(),
-            Self::SequenceExpression(it) => it.get_parent(),
-            Self::Super(it) => it.get_parent(),
-            Self::AwaitExpression(it) => it.get_parent(),
-            Self::ChainExpression(it) => it.get_parent(),
-            Self::ParenthesizedExpression(it) => it.get_parent(),
-            Self::Directive(it) => it.get_parent(),
-            Self::Hashbang(it) => it.get_parent(),
-            Self::BlockStatement(it) => it.get_parent(),
-            Self::VariableDeclaration(it) => it.get_parent(),
-            Self::VariableDeclarator(it) => it.get_parent(),
-            Self::EmptyStatement(it) => it.get_parent(),
-            Self::ExpressionStatement(it) => it.get_parent(),
-            Self::IfStatement(it) => it.get_parent(),
-            Self::DoWhileStatement(it) => it.get_parent(),
-            Self::WhileStatement(it) => it.get_parent(),
-            Self::ForStatement(it) => it.get_parent(),
-            Self::ForStatementInit(it) => it.get_parent(),
-            Self::ForInStatement(it) => it.get_parent(),
-            Self::ForOfStatement(it) => it.get_parent(),
-            Self::ContinueStatement(it) => it.get_parent(),
-            Self::BreakStatement(it) => it.get_parent(),
-            Self::ReturnStatement(it) => it.get_parent(),
-            Self::WithStatement(it) => it.get_parent(),
-            Self::SwitchStatement(it) => it.get_parent(),
-            Self::SwitchCase(it) => it.get_parent(),
-            Self::LabeledStatement(it) => it.get_parent(),
-            Self::ThrowStatement(it) => it.get_parent(),
-            Self::TryStatement(it) => it.get_parent(),
-            Self::CatchClause(it) => it.get_parent(),
-            Self::CatchParameter(it) => it.get_parent(),
-            Self::DebuggerStatement(it) => it.get_parent(),
-            Self::BindingPattern(it) => it.get_parent(),
-            Self::AssignmentPattern(it) => it.get_parent(),
-            Self::ObjectPattern(it) => it.get_parent(),
-            Self::BindingProperty(it) => it.get_parent(),
-            Self::ArrayPattern(it) => it.get_parent(),
-            Self::BindingRestElement(it) => it.get_parent(),
-            Self::Function(it) => it.get_parent(),
-            Self::FormalParameters(it) => it.get_parent(),
-            Self::FormalParameter(it) => it.get_parent(),
-            Self::FunctionBody(it) => it.get_parent(),
-            Self::ArrowFunctionExpression(it) => it.get_parent(),
-            Self::YieldExpression(it) => it.get_parent(),
-            Self::Class(it) => it.get_parent(),
-            Self::ClassBody(it) => it.get_parent(),
-            Self::MethodDefinition(it) => it.get_parent(),
-            Self::PropertyDefinition(it) => it.get_parent(),
-            Self::PrivateIdentifier(it) => it.get_parent(),
-            Self::StaticBlock(it) => it.get_parent(),
-            Self::ModuleDeclaration(it) => it.get_parent(),
-            Self::AccessorProperty(it) => it.get_parent(),
-            Self::ImportExpression(it) => it.get_parent(),
-            Self::ImportDeclaration(it) => it.get_parent(),
-            Self::ImportSpecifier(it) => it.get_parent(),
-            Self::ImportDefaultSpecifier(it) => it.get_parent(),
-            Self::ImportNamespaceSpecifier(it) => it.get_parent(),
-            Self::WithClause(it) => it.get_parent(),
-            Self::ImportAttribute(it) => it.get_parent(),
-            Self::ExportNamedDeclaration(it) => it.get_parent(),
-            Self::ExportDefaultDeclaration(it) => it.get_parent(),
-            Self::ExportAllDeclaration(it) => it.get_parent(),
-            Self::ExportSpecifier(it) => it.get_parent(),
-            Self::TSThisParameter(it) => it.get_parent(),
-            Self::TSEnumDeclaration(it) => it.get_parent(),
-            Self::TSEnumMember(it) => it.get_parent(),
-            Self::TSTypeAnnotation(it) => it.get_parent(),
-            Self::TSLiteralType(it) => it.get_parent(),
-            Self::TSConditionalType(it) => it.get_parent(),
-            Self::TSUnionType(it) => it.get_parent(),
-            Self::TSIntersectionType(it) => it.get_parent(),
-            Self::TSParenthesizedType(it) => it.get_parent(),
-            Self::TSTypeOperator(it) => it.get_parent(),
-            Self::TSArrayType(it) => it.get_parent(),
-            Self::TSIndexedAccessType(it) => it.get_parent(),
-            Self::TSTupleType(it) => it.get_parent(),
-            Self::TSNamedTupleMember(it) => it.get_parent(),
-            Self::TSOptionalType(it) => it.get_parent(),
-            Self::TSRestType(it) => it.get_parent(),
-            Self::TSAnyKeyword(it) => it.get_parent(),
-            Self::TSStringKeyword(it) => it.get_parent(),
-            Self::TSBooleanKeyword(it) => it.get_parent(),
-            Self::TSNumberKeyword(it) => it.get_parent(),
-            Self::TSNeverKeyword(it) => it.get_parent(),
-            Self::TSIntrinsicKeyword(it) => it.get_parent(),
-            Self::TSUnknownKeyword(it) => it.get_parent(),
-            Self::TSNullKeyword(it) => it.get_parent(),
-            Self::TSUndefinedKeyword(it) => it.get_parent(),
-            Self::TSVoidKeyword(it) => it.get_parent(),
-            Self::TSSymbolKeyword(it) => it.get_parent(),
-            Self::TSThisType(it) => it.get_parent(),
-            Self::TSObjectKeyword(it) => it.get_parent(),
-            Self::TSBigIntKeyword(it) => it.get_parent(),
-            Self::TSTypeReference(it) => it.get_parent(),
-            Self::TSTypeName(it) => it.get_parent(),
-            Self::TSQualifiedName(it) => it.get_parent(),
-            Self::TSTypeParameterInstantiation(it) => it.get_parent(),
-            Self::TSTypeParameter(it) => it.get_parent(),
-            Self::TSTypeParameterDeclaration(it) => it.get_parent(),
-            Self::TSTypeAliasDeclaration(it) => it.get_parent(),
-            Self::TSClassImplements(it) => it.get_parent(),
-            Self::TSInterfaceDeclaration(it) => it.get_parent(),
-            Self::TSInterfaceBody(it) => it.get_parent(),
-            Self::TSPropertySignature(it) => it.get_parent(),
-            Self::TSIndexSignature(it) => it.get_parent(),
-            Self::TSCallSignatureDeclaration(it) => it.get_parent(),
-            Self::TSMethodSignature(it) => it.get_parent(),
-            Self::TSConstructSignatureDeclaration(it) => it.get_parent(),
-            Self::TSIndexSignatureName(it) => it.get_parent(),
-            Self::TSInterfaceHeritage(it) => it.get_parent(),
-            Self::TSTypePredicate(it) => it.get_parent(),
-            Self::TSModuleDeclaration(it) => it.get_parent(),
-            Self::TSModuleBlock(it) => it.get_parent(),
-            Self::TSTypeLiteral(it) => it.get_parent(),
-            Self::TSInferType(it) => it.get_parent(),
-            Self::TSTypeQuery(it) => it.get_parent(),
-            Self::TSImportType(it) => it.get_parent(),
-            Self::TSImportAttributes(it) => it.get_parent(),
-            Self::TSImportAttribute(it) => it.get_parent(),
-            Self::TSFunctionType(it) => it.get_parent(),
-            Self::TSConstructorType(it) => it.get_parent(),
-            Self::TSMappedType(it) => it.get_parent(),
-            Self::TSTemplateLiteralType(it) => it.get_parent(),
-            Self::TSAsExpression(it) => it.get_parent(),
-            Self::TSSatisfiesExpression(it) => it.get_parent(),
-            Self::TSTypeAssertion(it) => it.get_parent(),
-            Self::TSImportEqualsDeclaration(it) => it.get_parent(),
-            Self::TSModuleReference(it) => it.get_parent(),
-            Self::TSExternalModuleReference(it) => it.get_parent(),
-            Self::TSNonNullExpression(it) => it.get_parent(),
-            Self::Decorator(it) => it.get_parent(),
-            Self::TSExportAssignment(it) => it.get_parent(),
-            Self::TSNamespaceExportDeclaration(it) => it.get_parent(),
-            Self::TSInstantiationExpression(it) => it.get_parent(),
-            Self::JSDocNullableType(it) => it.get_parent(),
-            Self::JSDocNonNullableType(it) => it.get_parent(),
-            Self::JSDocUnknownType(it) => it.get_parent(),
-            Self::JSXElement(it) => it.get_parent(),
-            Self::JSXOpeningElement(it) => it.get_parent(),
-            Self::JSXClosingElement(it) => it.get_parent(),
-            Self::JSXFragment(it) => it.get_parent(),
-            Self::JSXElementName(it) => it.get_parent(),
-            Self::JSXNamespacedName(it) => it.get_parent(),
-            Self::JSXMemberExpression(it) => it.get_parent(),
-            Self::JSXMemberExpressionObject(it) => it.get_parent(),
-            Self::JSXExpressionContainer(it) => it.get_parent(),
-            Self::JSXEmptyExpression(it) => it.get_parent(),
-            Self::JSXAttributeItem(it) => it.get_parent(),
-            Self::JSXAttribute(it) => it.get_parent(),
-            Self::JSXSpreadAttribute(it) => it.get_parent(),
-            Self::JSXIdentifier(it) => it.get_parent(),
-            Self::JSXSpreadChild(it) => it.get_parent(),
-            Self::JSXText(it) => it.get_parent(),
-        }
-    }
-    pub fn set_parent(&mut self, new_parent: AstKind<'a>) {
-        match self {
-            Self::BooleanLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BooleanLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::NullLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut NullLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::NumericLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut NumericLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::StringLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut StringLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BigIntLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BigIntLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::RegExpLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut RegExpLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Program(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Program) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::IdentifierName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut IdentifierName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::IdentifierReference(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut IdentifierReference) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BindingIdentifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BindingIdentifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::LabelIdentifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut LabelIdentifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ThisExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ThisExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ArrayExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ArrayExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ArrayExpressionElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ArrayExpressionElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Elision(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Elision) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ObjectExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ObjectExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ObjectProperty(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ObjectProperty) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::PropertyKey(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut PropertyKey) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TemplateLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TemplateLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TaggedTemplateExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TaggedTemplateExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TemplateElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TemplateElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::MemberExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut MemberExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ComputedMemberExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ComputedMemberExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::StaticMemberExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut StaticMemberExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::PrivateFieldExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut PrivateFieldExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::CallExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut CallExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::NewExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut NewExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::MetaProperty(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut MetaProperty) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::SpreadElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut SpreadElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Argument(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Argument) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::UpdateExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut UpdateExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::UnaryExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut UnaryExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BinaryExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BinaryExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::PrivateInExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut PrivateInExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::LogicalExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut LogicalExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ConditionalExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ConditionalExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTarget(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentTarget) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::SimpleAssignmentTarget(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut SimpleAssignmentTarget) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTargetPattern(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentTargetPattern) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ArrayAssignmentTarget(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ArrayAssignmentTarget) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ObjectAssignmentTarget(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ObjectAssignmentTarget) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTargetRest(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentTargetRest) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTargetWithDefault(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentTargetWithDefault) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTargetPropertyIdentifier(it) => {
-                let it_mut =
-                    unsafe { &mut *(it as *const _ as *mut AssignmentTargetPropertyIdentifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentTargetPropertyProperty(it) => {
-                let it_mut =
-                    unsafe { &mut *(it as *const _ as *mut AssignmentTargetPropertyProperty) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::SequenceExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut SequenceExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Super(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Super) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AwaitExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AwaitExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ChainExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ChainExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ParenthesizedExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ParenthesizedExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Directive(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Directive) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Hashbang(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Hashbang) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BlockStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BlockStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::VariableDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut VariableDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::VariableDeclarator(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut VariableDeclarator) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::EmptyStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut EmptyStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ExpressionStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ExpressionStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::IfStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut IfStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::DoWhileStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut DoWhileStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::WhileStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut WhileStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ForStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ForStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ForStatementInit(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ForStatementInit) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ForInStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ForInStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ForOfStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ForOfStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ContinueStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ContinueStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BreakStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BreakStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ReturnStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ReturnStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::WithStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut WithStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::SwitchStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut SwitchStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::SwitchCase(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut SwitchCase) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::LabeledStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut LabeledStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ThrowStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ThrowStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TryStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TryStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::CatchClause(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut CatchClause) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::CatchParameter(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut CatchParameter) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::DebuggerStatement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut DebuggerStatement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BindingPattern(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BindingPattern) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AssignmentPattern(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AssignmentPattern) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ObjectPattern(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ObjectPattern) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BindingProperty(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BindingProperty) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ArrayPattern(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ArrayPattern) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::BindingRestElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut BindingRestElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Function(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Function) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::FormalParameters(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut FormalParameters) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::FormalParameter(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut FormalParameter) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::FunctionBody(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut FunctionBody) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ArrowFunctionExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ArrowFunctionExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::YieldExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut YieldExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Class(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Class) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ClassBody(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ClassBody) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::MethodDefinition(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut MethodDefinition) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::PropertyDefinition(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut PropertyDefinition) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::PrivateIdentifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut PrivateIdentifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::StaticBlock(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut StaticBlock) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ModuleDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ModuleDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::AccessorProperty(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut AccessorProperty) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportSpecifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportSpecifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportDefaultSpecifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportDefaultSpecifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportNamespaceSpecifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportNamespaceSpecifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::WithClause(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut WithClause) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ImportAttribute(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ImportAttribute) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ExportNamedDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ExportNamedDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ExportDefaultDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ExportDefaultDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ExportAllDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ExportAllDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::ExportSpecifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut ExportSpecifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSThisParameter(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSThisParameter) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSEnumDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSEnumDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSEnumMember(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSEnumMember) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeAnnotation(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeAnnotation) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSLiteralType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSLiteralType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSConditionalType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSConditionalType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSUnionType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSUnionType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSIntersectionType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSIntersectionType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSParenthesizedType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSParenthesizedType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeOperator(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeOperator) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSArrayType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSArrayType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSIndexedAccessType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSIndexedAccessType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTupleType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTupleType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNamedTupleMember(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNamedTupleMember) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSOptionalType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSOptionalType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSRestType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSRestType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSAnyKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSAnyKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSStringKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSStringKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSBooleanKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSBooleanKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNumberKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNumberKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNeverKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNeverKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSIntrinsicKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSIntrinsicKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSUnknownKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSUnknownKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNullKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNullKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSUndefinedKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSUndefinedKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSVoidKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSVoidKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSSymbolKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSSymbolKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSThisType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSThisType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSObjectKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSObjectKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSBigIntKeyword(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSBigIntKeyword) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeReference(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeReference) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSQualifiedName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSQualifiedName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeParameterInstantiation(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeParameterInstantiation) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeParameter(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeParameter) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeParameterDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeParameterDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeAliasDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeAliasDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSClassImplements(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSClassImplements) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSInterfaceDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSInterfaceDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSInterfaceBody(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSInterfaceBody) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSPropertySignature(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSPropertySignature) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSIndexSignature(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSIndexSignature) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSCallSignatureDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSCallSignatureDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSMethodSignature(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSMethodSignature) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSConstructSignatureDeclaration(it) => {
-                let it_mut =
-                    unsafe { &mut *(it as *const _ as *mut TSConstructSignatureDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSIndexSignatureName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSIndexSignatureName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSInterfaceHeritage(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSInterfaceHeritage) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypePredicate(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypePredicate) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSModuleDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSModuleDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSModuleBlock(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSModuleBlock) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeLiteral(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeLiteral) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSInferType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSInferType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeQuery(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeQuery) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSImportType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSImportType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSImportAttributes(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSImportAttributes) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSImportAttribute(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSImportAttribute) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSFunctionType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSFunctionType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSConstructorType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSConstructorType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSMappedType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSMappedType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTemplateLiteralType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTemplateLiteralType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSAsExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSAsExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSSatisfiesExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSSatisfiesExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSTypeAssertion(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSTypeAssertion) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSImportEqualsDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSImportEqualsDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSModuleReference(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSModuleReference) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSExternalModuleReference(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSExternalModuleReference) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNonNullExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNonNullExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::Decorator(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut Decorator) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSExportAssignment(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSExportAssignment) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSNamespaceExportDeclaration(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSNamespaceExportDeclaration) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::TSInstantiationExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut TSInstantiationExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSDocNullableType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocNullableType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSDocNonNullableType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocNonNullableType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSDocUnknownType(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSDocUnknownType) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXOpeningElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXOpeningElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXClosingElement(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXClosingElement) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXFragment(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXFragment) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXElementName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXElementName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXNamespacedName(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXNamespacedName) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXMemberExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXMemberExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXMemberExpressionObject(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXMemberExpressionObject) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXExpressionContainer(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXExpressionContainer) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXEmptyExpression(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXEmptyExpression) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXAttributeItem(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXAttributeItem) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXAttribute(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXAttribute) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXSpreadAttribute(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXSpreadAttribute) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXIdentifier(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXIdentifier) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXSpreadChild(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXSpreadChild) };
-                it_mut.set_parent(new_parent)
-            }
-            Self::JSXText(it) => {
-                let it_mut = unsafe { &mut *(it as *const _ as *mut JSXText) };
-                it_mut.set_parent(new_parent)
-            }
-        }
-    }
     pub fn get_children(&self) -> Vec<AstKind<'a>> {
         match self {
             Self::BooleanLiteral(it) => it.get_children(),
@@ -1864,7 +862,7 @@ impl<'a> AstKind<'a> {
 
 impl<'a> AstKind<'a> {
     #[inline]
-    pub fn as_boolean_literal(self) -> Option<&'a BooleanLiteral<'a>> {
+    pub fn as_boolean_literal(self) -> Option<&'a BooleanLiteral> {
         if let Self::BooleanLiteral(v) = self {
             Some(v)
         } else {
@@ -1873,7 +871,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_null_literal(self) -> Option<&'a NullLiteral<'a>> {
+    pub fn as_null_literal(self) -> Option<&'a NullLiteral> {
         if let Self::NullLiteral(v) = self {
             Some(v)
         } else {
@@ -1963,7 +961,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_this_expression(self) -> Option<&'a ThisExpression<'a>> {
+    pub fn as_this_expression(self) -> Option<&'a ThisExpression> {
         if let Self::ThisExpression(v) = self {
             Some(v)
         } else {
@@ -1990,7 +988,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_elision(self) -> Option<&'a Elision<'a>> {
+    pub fn as_elision(self) -> Option<&'a Elision> {
         if let Self::Elision(v) = self {
             Some(v)
         } else {
@@ -2291,7 +1289,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_super(self) -> Option<&'a Super<'a>> {
+    pub fn as_super(self) -> Option<&'a Super> {
         if let Self::Super(v) = self {
             Some(v)
         } else {
@@ -2372,7 +1370,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_empty_statement(self) -> Option<&'a EmptyStatement<'a>> {
+    pub fn as_empty_statement(self) -> Option<&'a EmptyStatement> {
         if let Self::EmptyStatement(v) = self {
             Some(v)
         } else {
@@ -2552,7 +1550,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_debugger_statement(self) -> Option<&'a DebuggerStatement<'a>> {
+    pub fn as_debugger_statement(self) -> Option<&'a DebuggerStatement> {
         if let Self::DebuggerStatement(v) = self {
             Some(v)
         } else {
@@ -2984,7 +1982,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_any_keyword(self) -> Option<&'a TSAnyKeyword<'a>> {
+    pub fn as_ts_any_keyword(self) -> Option<&'a TSAnyKeyword> {
         if let Self::TSAnyKeyword(v) = self {
             Some(v)
         } else {
@@ -2993,7 +1991,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_string_keyword(self) -> Option<&'a TSStringKeyword<'a>> {
+    pub fn as_ts_string_keyword(self) -> Option<&'a TSStringKeyword> {
         if let Self::TSStringKeyword(v) = self {
             Some(v)
         } else {
@@ -3002,7 +2000,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_boolean_keyword(self) -> Option<&'a TSBooleanKeyword<'a>> {
+    pub fn as_ts_boolean_keyword(self) -> Option<&'a TSBooleanKeyword> {
         if let Self::TSBooleanKeyword(v) = self {
             Some(v)
         } else {
@@ -3011,7 +2009,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_number_keyword(self) -> Option<&'a TSNumberKeyword<'a>> {
+    pub fn as_ts_number_keyword(self) -> Option<&'a TSNumberKeyword> {
         if let Self::TSNumberKeyword(v) = self {
             Some(v)
         } else {
@@ -3020,7 +2018,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_never_keyword(self) -> Option<&'a TSNeverKeyword<'a>> {
+    pub fn as_ts_never_keyword(self) -> Option<&'a TSNeverKeyword> {
         if let Self::TSNeverKeyword(v) = self {
             Some(v)
         } else {
@@ -3029,7 +2027,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_intrinsic_keyword(self) -> Option<&'a TSIntrinsicKeyword<'a>> {
+    pub fn as_ts_intrinsic_keyword(self) -> Option<&'a TSIntrinsicKeyword> {
         if let Self::TSIntrinsicKeyword(v) = self {
             Some(v)
         } else {
@@ -3038,7 +2036,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_unknown_keyword(self) -> Option<&'a TSUnknownKeyword<'a>> {
+    pub fn as_ts_unknown_keyword(self) -> Option<&'a TSUnknownKeyword> {
         if let Self::TSUnknownKeyword(v) = self {
             Some(v)
         } else {
@@ -3047,7 +2045,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_null_keyword(self) -> Option<&'a TSNullKeyword<'a>> {
+    pub fn as_ts_null_keyword(self) -> Option<&'a TSNullKeyword> {
         if let Self::TSNullKeyword(v) = self {
             Some(v)
         } else {
@@ -3056,7 +2054,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_undefined_keyword(self) -> Option<&'a TSUndefinedKeyword<'a>> {
+    pub fn as_ts_undefined_keyword(self) -> Option<&'a TSUndefinedKeyword> {
         if let Self::TSUndefinedKeyword(v) = self {
             Some(v)
         } else {
@@ -3065,7 +2063,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_void_keyword(self) -> Option<&'a TSVoidKeyword<'a>> {
+    pub fn as_ts_void_keyword(self) -> Option<&'a TSVoidKeyword> {
         if let Self::TSVoidKeyword(v) = self {
             Some(v)
         } else {
@@ -3074,7 +2072,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_symbol_keyword(self) -> Option<&'a TSSymbolKeyword<'a>> {
+    pub fn as_ts_symbol_keyword(self) -> Option<&'a TSSymbolKeyword> {
         if let Self::TSSymbolKeyword(v) = self {
             Some(v)
         } else {
@@ -3083,7 +2081,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_this_type(self) -> Option<&'a TSThisType<'a>> {
+    pub fn as_ts_this_type(self) -> Option<&'a TSThisType> {
         if let Self::TSThisType(v) = self {
             Some(v)
         } else {
@@ -3092,7 +2090,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_object_keyword(self) -> Option<&'a TSObjectKeyword<'a>> {
+    pub fn as_ts_object_keyword(self) -> Option<&'a TSObjectKeyword> {
         if let Self::TSObjectKeyword(v) = self {
             Some(v)
         } else {
@@ -3101,7 +2099,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_big_int_keyword(self) -> Option<&'a TSBigIntKeyword<'a>> {
+    pub fn as_ts_big_int_keyword(self) -> Option<&'a TSBigIntKeyword> {
         if let Self::TSBigIntKeyword(v) = self {
             Some(v)
         } else {
@@ -3503,7 +2501,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_js_doc_unknown_type(self) -> Option<&'a JSDocUnknownType<'a>> {
+    pub fn as_js_doc_unknown_type(self) -> Option<&'a JSDocUnknownType> {
         if let Self::JSDocUnknownType(v) = self {
             Some(v)
         } else {
@@ -3593,7 +2591,7 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_jsx_empty_expression(self) -> Option<&'a JSXEmptyExpression<'a>> {
+    pub fn as_jsx_empty_expression(self) -> Option<&'a JSXEmptyExpression> {
         if let Self::JSXEmptyExpression(v) = self {
             Some(v)
         } else {

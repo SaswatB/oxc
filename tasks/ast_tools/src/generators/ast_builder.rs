@@ -59,7 +59,7 @@ impl Generator for AstBuilderGenerator {
                 use crate::ast::*;
 
                 ///@@line_break
-                static COUNTER: AtomicU32 = AtomicU32::new(1);
+                pub static COUNTER: AtomicU32 = AtomicU32::new(1);
 
                 ///@@line_break
                 /// AST builder for creating AST nodes
@@ -140,7 +140,7 @@ fn generate_enum_variant_builder_fn(
 
     let params = get_struct_params(field_def, schema);
     let params =
-        params.into_iter().filter(Param::not_default).filter(|it| !it.parent).collect_vec();
+        params.into_iter().filter(Param::not_default).filter(|it| !it.atomic).collect_vec();
     let fields = params.iter().map(|it| it.ident.clone());
     let (generic_params, where_clause) = get_generic_params(&params);
 

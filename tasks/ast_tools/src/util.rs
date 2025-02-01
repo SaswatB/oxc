@@ -184,7 +184,7 @@ impl TypeExt for Type {
                 }
             }
             Type::Reference(typ) => TypeIdentResult::reference(typ.elem.get_ident()),
-            _ => panic!("Unsupported type."),
+            _ => panic!("Unsupported type: {:?}", self),
         }
     }
 

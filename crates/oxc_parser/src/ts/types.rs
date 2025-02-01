@@ -647,7 +647,7 @@ impl<'a> ParserImpl<'a> {
         Ok(self.ast.ts_type_type_query(self.end_span(span), entity_name, type_arguments))
     }
 
-    fn parse_this_type_predicate(&mut self, this_ty: TSThisType<'a>) -> Result<TSType<'a>> {
+    fn parse_this_type_predicate(&mut self, this_ty: TSThisType) -> Result<TSType<'a>> {
         let span = this_ty.span;
         self.bump_any(); // bump `is`
                          // TODO: this should go through the ast builder.
@@ -663,7 +663,7 @@ impl<'a> ParserImpl<'a> {
         ))
     }
 
-    fn parse_this_type_node(&mut self) -> TSThisType<'a> {
+    fn parse_this_type_node(&mut self) -> TSThisType {
         let span = self.start_span();
         self.bump_any(); // bump `this`
         self.ast.ts_this_type(self.end_span(span))

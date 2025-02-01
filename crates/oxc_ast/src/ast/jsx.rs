@@ -9,8 +9,6 @@ use oxc_ast_macros::ast;
 use oxc_estree::ESTree;
 use oxc_span::{cmp::ContentEq, Atom, GetSpan, GetSpanMut, Span};
 
-use crate::AstKind;
-
 use super::{inherit_variants, js::*, literal::*, ts::*};
 
 // 1.2 JSX Elements
@@ -34,12 +32,11 @@ use super::{inherit_variants, js::*, literal::*, ts::*};
 /// See: [JSX Syntax](https://facebook.github.io/jsx/)
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXElement<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// Opening tag of the element.
@@ -67,12 +64,11 @@ pub struct JSXElement<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXOpeningElement<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// Is this tag self-closing?
@@ -105,12 +101,11 @@ pub struct JSXOpeningElement<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXClosingElement<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The tag name, e.g. `Foo` in `</Foo>`.
@@ -127,18 +122,17 @@ pub struct JSXClosingElement<'a> {
 /// See: [`React.Fragment`](https://react.dev/reference/react/Fragment)
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXFragment<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// `<>`
-    pub opening_fragment: JSXOpeningFragment<'a>,
+    pub opening_fragment: JSXOpeningFragment,
     /// `</>`
-    pub closing_fragment: JSXClosingFragment<'a>,
+    pub closing_fragment: JSXClosingFragment,
     /// Elements inside the fragment.
     pub children: Vec<'a, JSXChild<'a>>,
 }
@@ -146,12 +140,11 @@ pub struct JSXFragment<'a> {
 /// JSX Opening Fragment (`<>`)
 #[ast]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct JSXOpeningFragment<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct JSXOpeningFragment {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
 }
@@ -159,12 +152,11 @@ pub struct JSXOpeningFragment<'a> {
 /// JSX Closing Fragment (`</>`)
 #[ast]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct JSXClosingFragment<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct JSXClosingFragment {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
 }
@@ -172,7 +164,7 @@ pub struct JSXClosingFragment<'a> {
 /// JSX Element Name
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq)]
 pub enum JSXElementName<'a> {
     /// `<div />`
     Identifier(Box<'a, JSXIdentifier<'a>>) = 0,
@@ -183,7 +175,7 @@ pub enum JSXElementName<'a> {
     /// `<Apple.Orange />`
     MemberExpression(Box<'a, JSXMemberExpression<'a>>) = 3,
     /// `<this />`
-    ThisExpression(Box<'a, ThisExpression<'a>>) = 4,
+    ThisExpression(Box<'a, ThisExpression>) = 4,
 }
 
 /// JSX Namespaced Name
@@ -195,12 +187,11 @@ pub enum JSXElementName<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXNamespacedName<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// Namespace portion of the name, e.g. `Apple` in `<Apple:Orange />`
@@ -226,12 +217,11 @@ pub struct JSXNamespacedName<'a> {
 /// [`member expression`]: JSXMemberExpressionObject::MemberExpression
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXMemberExpression<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The object being accessed. This is everything before the last `.`.
@@ -258,14 +248,14 @@ pub struct JSXMemberExpression<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq)]
 pub enum JSXMemberExpressionObject<'a> {
     /// `<Apple.Orange />`
     IdentifierReference(Box<'a, IdentifierReference<'a>>) = 0,
     /// `<Apple.Orange.Banana />`
     MemberExpression(Box<'a, JSXMemberExpression<'a>>) = 1,
     /// `<this.Orange />`
-    ThisExpression(Box<'a, ThisExpression<'a>>) = 2,
+    ThisExpression(Box<'a, ThisExpression>) = 2,
 }
 
 /// JSX Expression Container
@@ -283,12 +273,11 @@ pub enum JSXMemberExpressionObject<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXExpressionContainer<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The expression inside the container.
@@ -304,7 +293,7 @@ inherit_variants! {
 /// [`ast` module docs]: `super`
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub enum JSXExpression<'a> {
     /// An empty expression
     ///
@@ -313,7 +302,7 @@ pub enum JSXExpression<'a> {
     /// <Foo bar={} />
     /// //       ^^
     /// ```
-    EmptyExpression(JSXEmptyExpression<'a>) = 64,
+    EmptyExpression(JSXEmptyExpression) = 64,
     // `Expression` variants added here by `inherit_variants!` macro
     @inherit Expression
 }
@@ -321,13 +310,12 @@ pub enum JSXExpression<'a> {
 
 /// An empty JSX expression (`{}`)
 #[ast(visit)]
-#[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct JSXEmptyExpression<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+#[derive(Debug, Clone)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct JSXEmptyExpression {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
 }
@@ -345,7 +333,7 @@ pub struct JSXEmptyExpression<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum JSXAttributeItem<'a> {
     /// A `key="value"` attribute
     Attribute(Box<'a, JSXAttribute<'a>>) = 0,
@@ -366,12 +354,11 @@ pub enum JSXAttributeItem<'a> {
 /// //                 name ^^^ ^^^^ value
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXAttribute<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The name of the attribute. This is a prop in React-like applications.
@@ -391,12 +378,11 @@ pub struct JSXAttribute<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXSpreadAttribute<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The expression being spread.
@@ -420,7 +406,7 @@ pub struct JSXSpreadAttribute<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum JSXAttributeName<'a> {
     /// An attribute name without a namespace prefix, e.g. `foo` in `foo="bar"`.
     Identifier(Box<'a, JSXIdentifier<'a>>) = 0,
@@ -448,7 +434,7 @@ pub enum JSXAttributeName<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum JSXAttributeValue<'a> {
     /// `<Component foo="bar" />`
     StringLiteral(Box<'a, StringLiteral<'a>>) = 0,
@@ -467,12 +453,11 @@ pub enum JSXAttributeValue<'a> {
 /// [`IdentifierName`]: super::IdentifierName
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXIdentifier<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The name of the identifier.
@@ -486,7 +471,7 @@ pub struct JSXIdentifier<'a> {
 /// Part of a [`JSXElement`].
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum JSXChild<'a> {
     /// `<Foo>Some Text</Foo>`
     Text(Box<'a, JSXText<'a>>) = 0,
@@ -505,12 +490,11 @@ pub enum JSXChild<'a> {
 /// Variant of [`JSXChild`] that represents an object spread (`{...expression}`).
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXSpreadChild<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The expression being spread.
@@ -529,12 +513,11 @@ pub struct JSXSpreadChild<'a> {
 /// ```
 #[ast(visit)]
 #[derive(Debug)]
-#[generate_derive(CloneIn, GetParent, GetSpan, GetSpanMut, ContentEq, ESTree)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXText<'a> {
-    /// Parent node within the AST tree
-    #[estree(skip)]
-    #[clone_in(default)]
-    pub parent: Option<AstKind<'a>>,
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
     /// Node location in source code
     pub span: Span,
     /// The text content.

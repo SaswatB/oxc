@@ -266,7 +266,7 @@ impl<'a> ParserImpl<'a> {
         }
     }
 
-    pub(crate) fn parse_literal_boolean(&mut self) -> Result<BooleanLiteral<'a>> {
+    pub(crate) fn parse_literal_boolean(&mut self) -> Result<BooleanLiteral> {
         let span = self.start_span();
         let value = match self.cur_kind() {
             Kind::True => true,
@@ -277,7 +277,7 @@ impl<'a> ParserImpl<'a> {
         Ok(self.ast.boolean_literal(self.end_span(span), value))
     }
 
-    pub(crate) fn parse_literal_null(&mut self) -> NullLiteral<'a> {
+    pub(crate) fn parse_literal_null(&mut self) -> NullLiteral {
         let span = self.start_span();
         self.bump_any(); // bump `null`
         self.ast.null_literal(self.end_span(span))

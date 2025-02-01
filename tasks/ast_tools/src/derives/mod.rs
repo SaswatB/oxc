@@ -15,14 +15,14 @@ mod clone_in;
 mod content_eq;
 mod estree;
 mod get_address;
-mod get_parent;
+mod get_children;
 mod get_span;
 
 pub use clone_in::DeriveCloneIn;
 pub use content_eq::DeriveContentEq;
 pub use estree::DeriveESTree;
 pub use get_address::DeriveGetAddress;
-pub use get_parent::DeriveGetParent;
+pub use get_children::DeriveGetChildren;
 pub use get_span::{DeriveGetSpan, DeriveGetSpanMut};
 
 pub trait Derive {

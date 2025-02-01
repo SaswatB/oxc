@@ -67,7 +67,7 @@ mod generated {
     #[cfg(feature = "serialize")]
     pub mod derive_estree;
     pub mod derive_get_address;
-    pub mod derive_get_parent;
+    pub mod derive_get_children;
     pub mod derive_get_span;
     pub mod derive_get_span_mut;
     pub mod get_id;
@@ -143,10 +143,8 @@ fn lifetime_variance() {
     }
 }
 
-/// Get the parent for an AST node
-pub trait GetParent<'a> {
-    /// Get the [`Parent`] for an AST node
-    fn get_parent(&self) -> Option<AstKind<'a>>;
-    /// Set the [`Parent`] for an AST node
-    fn set_parent(&mut self, parent: AstKind<'a>);
+/// Get the children for an AST node
+pub trait GetChildren<'a> {
+    /// Get the children for an AST node
+    fn get_children(&'a self) -> Vec<AstKind<'a>>;
 }
