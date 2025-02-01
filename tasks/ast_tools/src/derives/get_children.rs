@@ -224,6 +224,13 @@ fn generate_enum_get_children_fn(def: &EnumDef, schema: &Schema) -> TokenStream 
         }
     });
 
+    let matches3 = def.all_variants().map(|variant| {
+        let var_ident = variant.ident();
+        quote! {
+            Self::#var_ident(e) => e.node_id,
+        }
+    });
+
     quote! {
         impl<'a> GetChildren<'a> for #target_type {
             #[allow(unused_variables, clippy::match_same_arms)]
@@ -236,6 +243,12 @@ fn generate_enum_get_children_fn(def: &EnumDef, schema: &Schema) -> TokenStream 
             fn to_ast_kind(&'a self) -> AstKind<'a> {
                 match self {
                     #(#matches2)*
+                }
+            }
+
+            fn get_node_id(&'a self) -> u32 {
+                match self {
+                    #(#matches3)*
                 }
             }
         }
@@ -278,6 +291,9 @@ fn generate_struct_get_children_fn(def: &StructDef, schema: &Schema) -> TokenStr
                 fn to_ast_kind(&'a self) -> AstKind<'a> {
                     AstKind::#type_ident(self)
                 }
+                fn get_node_id(&'a self) -> u32 {
+                    self.node_id
+                }
             }
         }
     } else {
@@ -298,6 +314,9 @@ fn generate_struct_get_children_fn(def: &StructDef, schema: &Schema) -> TokenStr
                 }
                 fn to_ast_kind(&'a self) -> AstKind<'a> {
                     AstKind::#type_ident(self)
+                }
+                fn get_node_id(&'a self) -> u32 {
+                    self.node_id
                 }
             }
         }

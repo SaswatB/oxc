@@ -150,4 +150,7 @@ pub trait GetChildren<'a> {
 
     /// Convert the AST node to an [`AstKind`]
     fn to_ast_kind(&'a self) -> AstKind<'a>;
+
+    /// Get the node id for an AST node
+    fn get_node_id(&'a self) -> u32;
 }

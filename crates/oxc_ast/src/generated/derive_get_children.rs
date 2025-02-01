@@ -22,6 +22,9 @@ impl<'a> GetChildren<'a> for BooleanLiteral {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BooleanLiteral(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for NullLiteral {
@@ -30,6 +33,9 @@ impl<'a> GetChildren<'a> for NullLiteral {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::NullLiteral(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -40,6 +46,9 @@ impl<'a> GetChildren<'a> for NumericLiteral<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::NumericLiteral(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for StringLiteral<'a> {
@@ -48,6 +57,9 @@ impl<'a> GetChildren<'a> for StringLiteral<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::StringLiteral(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -58,6 +70,9 @@ impl<'a> GetChildren<'a> for BigIntLiteral<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BigIntLiteral(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for RegExpLiteral<'a> {
@@ -66,6 +81,9 @@ impl<'a> GetChildren<'a> for RegExpLiteral<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::RegExpLiteral(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -85,6 +103,9 @@ impl<'a> GetChildren<'a> for Program<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Program(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -182,6 +203,52 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for IdentifierName<'a> {
@@ -190,6 +257,9 @@ impl<'a> GetChildren<'a> for IdentifierName<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::IdentifierName(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -200,6 +270,9 @@ impl<'a> GetChildren<'a> for IdentifierReference<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::IdentifierReference(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingIdentifier<'a> {
@@ -208,6 +281,9 @@ impl<'a> GetChildren<'a> for BindingIdentifier<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BindingIdentifier(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -218,6 +294,9 @@ impl<'a> GetChildren<'a> for LabelIdentifier<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::LabelIdentifier(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ThisExpression {
@@ -226,6 +305,9 @@ impl<'a> GetChildren<'a> for ThisExpression {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ThisExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -239,6 +321,9 @@ impl<'a> GetChildren<'a> for ArrayExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ArrayExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -340,6 +425,54 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::SpreadElement(e) => e.node_id,
+            Self::Elision(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for Elision {
@@ -348,6 +481,9 @@ impl<'a> GetChildren<'a> for Elision {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Elision(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -361,6 +497,9 @@ impl<'a> GetChildren<'a> for ObjectExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ObjectExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -378,6 +517,12 @@ impl<'a> GetChildren<'a> for ObjectPropertyKind<'a> {
             Self::SpreadProperty(e) => AstKind::SpreadElement(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ObjectProperty(e) => e.node_id,
+            Self::SpreadProperty(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ObjectProperty<'a> {
@@ -389,6 +534,9 @@ impl<'a> GetChildren<'a> for ObjectProperty<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ObjectProperty(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -490,6 +638,54 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::StaticIdentifier(e) => e.node_id,
+            Self::PrivateIdentifier(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
@@ -506,6 +702,9 @@ impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TemplateLiteral(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TaggedTemplateExpression<'a> {
@@ -521,6 +720,9 @@ impl<'a> GetChildren<'a> for TaggedTemplateExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TaggedTemplateExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TemplateElement<'a> {
@@ -529,6 +731,9 @@ impl<'a> GetChildren<'a> for TemplateElement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TemplateElement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -548,6 +753,13 @@ impl<'a> GetChildren<'a> for MemberExpression<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
@@ -559,6 +771,9 @@ impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ComputedMemberExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -572,6 +787,9 @@ impl<'a> GetChildren<'a> for StaticMemberExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::StaticMemberExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for PrivateFieldExpression<'a> {
@@ -583,6 +801,9 @@ impl<'a> GetChildren<'a> for PrivateFieldExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::PrivateFieldExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -601,6 +822,9 @@ impl<'a> GetChildren<'a> for CallExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::CallExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for NewExpression<'a> {
@@ -618,6 +842,9 @@ impl<'a> GetChildren<'a> for NewExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::NewExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for MetaProperty<'a> {
@@ -630,6 +857,9 @@ impl<'a> GetChildren<'a> for MetaProperty<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::MetaProperty(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for SpreadElement<'a> {
@@ -640,6 +870,9 @@ impl<'a> GetChildren<'a> for SpreadElement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::SpreadElement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -739,6 +972,53 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::SpreadElement(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for UpdateExpression<'a> {
@@ -750,6 +1030,9 @@ impl<'a> GetChildren<'a> for UpdateExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::UpdateExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for UnaryExpression<'a> {
@@ -760,6 +1043,9 @@ impl<'a> GetChildren<'a> for UnaryExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::UnaryExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -773,6 +1059,9 @@ impl<'a> GetChildren<'a> for BinaryExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BinaryExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for PrivateInExpression<'a> {
@@ -785,6 +1074,9 @@ impl<'a> GetChildren<'a> for PrivateInExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::PrivateInExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for LogicalExpression<'a> {
@@ -796,6 +1088,9 @@ impl<'a> GetChildren<'a> for LogicalExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::LogicalExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -810,6 +1105,9 @@ impl<'a> GetChildren<'a> for ConditionalExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ConditionalExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentExpression<'a> {
@@ -821,6 +1119,9 @@ impl<'a> GetChildren<'a> for AssignmentExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -856,6 +1157,21 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::AssignmentTargetIdentifier(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+            Self::ArrayAssignmentTarget(e) => e.node_id,
+            Self::ObjectAssignmentTarget(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
@@ -886,6 +1202,19 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::AssignmentTargetIdentifier(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
@@ -900,6 +1229,12 @@ impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
         match self {
             Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ArrayAssignmentTarget(e) => e.node_id,
+            Self::ObjectAssignmentTarget(e) => e.node_id,
         }
     }
 }
@@ -920,6 +1255,9 @@ impl<'a> GetChildren<'a> for ArrayAssignmentTarget<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ArrayAssignmentTarget(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ObjectAssignmentTarget<'a> {
@@ -936,6 +1274,9 @@ impl<'a> GetChildren<'a> for ObjectAssignmentTarget<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ObjectAssignmentTarget(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetRest<'a> {
@@ -946,6 +1287,9 @@ impl<'a> GetChildren<'a> for AssignmentTargetRest<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentTargetRest(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -983,6 +1327,22 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::AssignmentTargetWithDefault(e) => e.node_id,
+            Self::AssignmentTargetIdentifier(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+            Self::ArrayAssignmentTarget(e) => e.node_id,
+            Self::ObjectAssignmentTarget(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetWithDefault<'a> {
@@ -994,6 +1354,9 @@ impl<'a> GetChildren<'a> for AssignmentTargetWithDefault<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentTargetWithDefault(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1015,6 +1378,12 @@ impl<'a> GetChildren<'a> for AssignmentTargetProperty<'a> {
             }
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::AssignmentTargetPropertyIdentifier(e) => e.node_id,
+            Self::AssignmentTargetPropertyProperty(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPropertyIdentifier<'a> {
@@ -1029,6 +1398,9 @@ impl<'a> GetChildren<'a> for AssignmentTargetPropertyIdentifier<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentTargetPropertyIdentifier(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPropertyProperty<'a> {
@@ -1040,6 +1412,9 @@ impl<'a> GetChildren<'a> for AssignmentTargetPropertyProperty<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentTargetPropertyProperty(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1054,6 +1429,9 @@ impl<'a> GetChildren<'a> for SequenceExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::SequenceExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for Super {
@@ -1062,6 +1440,9 @@ impl<'a> GetChildren<'a> for Super {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Super(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1074,6 +1455,9 @@ impl<'a> GetChildren<'a> for AwaitExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AwaitExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ChainExpression<'a> {
@@ -1084,6 +1468,9 @@ impl<'a> GetChildren<'a> for ChainExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ChainExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1107,6 +1494,15 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::CallExpression(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ParenthesizedExpression<'a> {
@@ -1117,6 +1513,9 @@ impl<'a> GetChildren<'a> for ParenthesizedExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ParenthesizedExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1194,6 +1593,42 @@ impl<'a> GetChildren<'a> for Statement<'a> {
             Self::TSNamespaceExportDeclaration(e) => AstKind::TSNamespaceExportDeclaration(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::BlockStatement(e) => e.node_id,
+            Self::BreakStatement(e) => e.node_id,
+            Self::ContinueStatement(e) => e.node_id,
+            Self::DebuggerStatement(e) => e.node_id,
+            Self::DoWhileStatement(e) => e.node_id,
+            Self::EmptyStatement(e) => e.node_id,
+            Self::ExpressionStatement(e) => e.node_id,
+            Self::ForInStatement(e) => e.node_id,
+            Self::ForOfStatement(e) => e.node_id,
+            Self::ForStatement(e) => e.node_id,
+            Self::IfStatement(e) => e.node_id,
+            Self::LabeledStatement(e) => e.node_id,
+            Self::ReturnStatement(e) => e.node_id,
+            Self::SwitchStatement(e) => e.node_id,
+            Self::ThrowStatement(e) => e.node_id,
+            Self::TryStatement(e) => e.node_id,
+            Self::WhileStatement(e) => e.node_id,
+            Self::WithStatement(e) => e.node_id,
+            Self::VariableDeclaration(e) => e.node_id,
+            Self::FunctionDeclaration(e) => e.node_id,
+            Self::ClassDeclaration(e) => e.node_id,
+            Self::TSTypeAliasDeclaration(e) => e.node_id,
+            Self::TSInterfaceDeclaration(e) => e.node_id,
+            Self::TSEnumDeclaration(e) => e.node_id,
+            Self::TSModuleDeclaration(e) => e.node_id,
+            Self::TSImportEqualsDeclaration(e) => e.node_id,
+            Self::ImportDeclaration(e) => e.node_id,
+            Self::ExportAllDeclaration(e) => e.node_id,
+            Self::ExportDefaultDeclaration(e) => e.node_id,
+            Self::ExportNamedDeclaration(e) => e.node_id,
+            Self::TSExportAssignment(e) => e.node_id,
+            Self::TSNamespaceExportDeclaration(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for Directive<'a> {
@@ -1205,6 +1640,9 @@ impl<'a> GetChildren<'a> for Directive<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Directive(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for Hashbang<'a> {
@@ -1213,6 +1651,9 @@ impl<'a> GetChildren<'a> for Hashbang<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Hashbang(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1226,6 +1667,9 @@ impl<'a> GetChildren<'a> for BlockStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BlockStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1255,6 +1699,18 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
             Self::TSImportEqualsDeclaration(e) => AstKind::TSImportEqualsDeclaration(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::VariableDeclaration(e) => e.node_id,
+            Self::FunctionDeclaration(e) => e.node_id,
+            Self::ClassDeclaration(e) => e.node_id,
+            Self::TSTypeAliasDeclaration(e) => e.node_id,
+            Self::TSInterfaceDeclaration(e) => e.node_id,
+            Self::TSEnumDeclaration(e) => e.node_id,
+            Self::TSModuleDeclaration(e) => e.node_id,
+            Self::TSImportEqualsDeclaration(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
@@ -1267,6 +1723,9 @@ impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::VariableDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1282,6 +1741,9 @@ impl<'a> GetChildren<'a> for VariableDeclarator<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::VariableDeclarator(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for EmptyStatement {
@@ -1290,6 +1752,9 @@ impl<'a> GetChildren<'a> for EmptyStatement {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::EmptyStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1301,6 +1766,9 @@ impl<'a> GetChildren<'a> for ExpressionStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ExpressionStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1317,6 +1785,9 @@ impl<'a> GetChildren<'a> for IfStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::IfStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for DoWhileStatement<'a> {
@@ -1329,6 +1800,9 @@ impl<'a> GetChildren<'a> for DoWhileStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::DoWhileStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for WhileStatement<'a> {
@@ -1340,6 +1814,9 @@ impl<'a> GetChildren<'a> for WhileStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::WhileStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1360,6 +1837,9 @@ impl<'a> GetChildren<'a> for ForStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ForStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1459,6 +1939,53 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::VariableDeclaration(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ForInStatement<'a> {
@@ -1471,6 +1998,9 @@ impl<'a> GetChildren<'a> for ForInStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ForInStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1508,6 +2038,22 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::VariableDeclaration(e) => e.node_id,
+            Self::AssignmentTargetIdentifier(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+            Self::ArrayAssignmentTarget(e) => e.node_id,
+            Self::ObjectAssignmentTarget(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ForOfStatement<'a> {
@@ -1520,6 +2066,9 @@ impl<'a> GetChildren<'a> for ForOfStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ForOfStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1534,6 +2083,9 @@ impl<'a> GetChildren<'a> for ContinueStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ContinueStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for BreakStatement<'a> {
@@ -1546,6 +2098,9 @@ impl<'a> GetChildren<'a> for BreakStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BreakStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1560,6 +2115,9 @@ impl<'a> GetChildren<'a> for ReturnStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ReturnStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for WithStatement<'a> {
@@ -1571,6 +2129,9 @@ impl<'a> GetChildren<'a> for WithStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::WithStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1585,6 +2146,9 @@ impl<'a> GetChildren<'a> for SwitchStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::SwitchStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1602,6 +2166,9 @@ impl<'a> GetChildren<'a> for SwitchCase<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::SwitchCase(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for LabeledStatement<'a> {
@@ -1614,6 +2181,9 @@ impl<'a> GetChildren<'a> for LabeledStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::LabeledStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ThrowStatement<'a> {
@@ -1624,6 +2194,9 @@ impl<'a> GetChildren<'a> for ThrowStatement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ThrowStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1642,6 +2215,9 @@ impl<'a> GetChildren<'a> for TryStatement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TryStatement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for CatchClause<'a> {
@@ -1656,6 +2232,9 @@ impl<'a> GetChildren<'a> for CatchClause<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::CatchClause(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for CatchParameter<'a> {
@@ -1667,6 +2246,9 @@ impl<'a> GetChildren<'a> for CatchParameter<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::CatchParameter(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for DebuggerStatement {
@@ -1675,6 +2257,9 @@ impl<'a> GetChildren<'a> for DebuggerStatement {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::DebuggerStatement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1689,6 +2274,9 @@ impl<'a> GetChildren<'a> for BindingPattern<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BindingPattern(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1710,6 +2298,14 @@ impl<'a> GetChildren<'a> for BindingPatternKind<'a> {
             Self::AssignmentPattern(e) => AstKind::AssignmentPattern(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::BindingIdentifier(e) => e.node_id,
+            Self::ObjectPattern(e) => e.node_id,
+            Self::ArrayPattern(e) => e.node_id,
+            Self::AssignmentPattern(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentPattern<'a> {
@@ -1721,6 +2317,9 @@ impl<'a> GetChildren<'a> for AssignmentPattern<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AssignmentPattern(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1738,6 +2337,9 @@ impl<'a> GetChildren<'a> for ObjectPattern<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ObjectPattern(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingProperty<'a> {
@@ -1749,6 +2351,9 @@ impl<'a> GetChildren<'a> for BindingProperty<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BindingProperty(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1768,6 +2373,9 @@ impl<'a> GetChildren<'a> for ArrayPattern<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ArrayPattern(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingRestElement<'a> {
@@ -1778,6 +2386,9 @@ impl<'a> GetChildren<'a> for BindingRestElement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::BindingRestElement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1805,6 +2416,9 @@ impl<'a> GetChildren<'a> for Function<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Function(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for FormalParameters<'a> {
@@ -1821,6 +2435,9 @@ impl<'a> GetChildren<'a> for FormalParameters<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::FormalParameters(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for FormalParameter<'a> {
@@ -1834,6 +2451,9 @@ impl<'a> GetChildren<'a> for FormalParameter<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::FormalParameter(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1850,6 +2470,9 @@ impl<'a> GetChildren<'a> for FunctionBody<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::FunctionBody(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1869,6 +2492,9 @@ impl<'a> GetChildren<'a> for ArrowFunctionExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ArrowFunctionExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for YieldExpression<'a> {
@@ -1881,6 +2507,9 @@ impl<'a> GetChildren<'a> for YieldExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::YieldExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1913,6 +2542,9 @@ impl<'a> GetChildren<'a> for Class<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Class(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ClassBody<'a> {
@@ -1925,6 +2557,9 @@ impl<'a> GetChildren<'a> for ClassBody<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ClassBody(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1948,6 +2583,15 @@ impl<'a> GetChildren<'a> for ClassElement<'a> {
             Self::TSIndexSignature(e) => AstKind::TSIndexSignature(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::StaticBlock(e) => e.node_id,
+            Self::MethodDefinition(e) => e.node_id,
+            Self::PropertyDefinition(e) => e.node_id,
+            Self::AccessorProperty(e) => e.node_id,
+            Self::TSIndexSignature(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for MethodDefinition<'a> {
@@ -1962,6 +2606,9 @@ impl<'a> GetChildren<'a> for MethodDefinition<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::MethodDefinition(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -1983,6 +2630,9 @@ impl<'a> GetChildren<'a> for PropertyDefinition<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::PropertyDefinition(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for PrivateIdentifier<'a> {
@@ -1991,6 +2641,9 @@ impl<'a> GetChildren<'a> for PrivateIdentifier<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::PrivateIdentifier(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2004,6 +2657,9 @@ impl<'a> GetChildren<'a> for StaticBlock<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::StaticBlock(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2029,6 +2685,16 @@ impl<'a> GetChildren<'a> for ModuleDeclaration<'a> {
             Self::TSNamespaceExportDeclaration(e) => AstKind::TSNamespaceExportDeclaration(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ImportDeclaration(e) => e.node_id,
+            Self::ExportAllDeclaration(e) => e.node_id,
+            Self::ExportDefaultDeclaration(e) => e.node_id,
+            Self::ExportNamedDeclaration(e) => e.node_id,
+            Self::TSExportAssignment(e) => e.node_id,
+            Self::TSNamespaceExportDeclaration(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AccessorProperty<'a> {
@@ -2049,6 +2715,9 @@ impl<'a> GetChildren<'a> for AccessorProperty<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::AccessorProperty(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportExpression<'a> {
@@ -2062,6 +2731,9 @@ impl<'a> GetChildren<'a> for ImportExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2082,6 +2754,9 @@ impl<'a> GetChildren<'a> for ImportDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportDeclarationSpecifier<'a> {
@@ -2100,6 +2775,13 @@ impl<'a> GetChildren<'a> for ImportDeclarationSpecifier<'a> {
             Self::ImportNamespaceSpecifier(e) => AstKind::ImportNamespaceSpecifier(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ImportSpecifier(e) => e.node_id,
+            Self::ImportDefaultSpecifier(e) => e.node_id,
+            Self::ImportNamespaceSpecifier(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportSpecifier<'a> {
@@ -2112,6 +2794,9 @@ impl<'a> GetChildren<'a> for ImportSpecifier<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportSpecifier(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportDefaultSpecifier<'a> {
@@ -2123,6 +2808,9 @@ impl<'a> GetChildren<'a> for ImportDefaultSpecifier<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportDefaultSpecifier(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportNamespaceSpecifier<'a> {
@@ -2133,6 +2821,9 @@ impl<'a> GetChildren<'a> for ImportNamespaceSpecifier<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportNamespaceSpecifier(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2148,6 +2839,9 @@ impl<'a> GetChildren<'a> for WithClause<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::WithClause(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportAttribute<'a> {
@@ -2159,6 +2853,9 @@ impl<'a> GetChildren<'a> for ImportAttribute<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ImportAttribute(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2174,6 +2871,12 @@ impl<'a> GetChildren<'a> for ImportAttributeKey<'a> {
         match self {
             Self::Identifier(e) => AstKind::IdentifierName(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
         }
     }
 }
@@ -2198,6 +2901,9 @@ impl<'a> GetChildren<'a> for ExportNamedDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ExportNamedDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ExportDefaultDeclaration<'a> {
@@ -2209,6 +2915,9 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ExportDefaultDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2227,6 +2936,9 @@ impl<'a> GetChildren<'a> for ExportAllDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ExportAllDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for ExportSpecifier<'a> {
@@ -2238,6 +2950,9 @@ impl<'a> GetChildren<'a> for ExportSpecifier<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ExportSpecifier(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2341,6 +3056,55 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::FunctionDeclaration(e) => e.node_id,
+            Self::ClassDeclaration(e) => e.node_id,
+            Self::TSInterfaceDeclaration(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ModuleExportName<'a> {
@@ -2359,6 +3123,13 @@ impl<'a> GetChildren<'a> for ModuleExportName<'a> {
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::IdentifierName(e) => e.node_id,
+            Self::IdentifierReference(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSThisParameter<'a> {
@@ -2371,6 +3142,9 @@ impl<'a> GetChildren<'a> for TSThisParameter<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSThisParameter(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2386,6 +3160,9 @@ impl<'a> GetChildren<'a> for TSEnumDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSEnumDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSEnumMember<'a> {
@@ -2399,6 +3176,9 @@ impl<'a> GetChildren<'a> for TSEnumMember<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSEnumMember(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2416,6 +3196,12 @@ impl<'a> GetChildren<'a> for TSEnumMemberName<'a> {
             Self::String(e) => AstKind::StringLiteral(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::String(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeAnnotation<'a> {
@@ -2427,6 +3213,9 @@ impl<'a> GetChildren<'a> for TSTypeAnnotation<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeAnnotation(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSLiteralType<'a> {
@@ -2437,6 +3226,9 @@ impl<'a> GetChildren<'a> for TSLiteralType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSLiteralType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2464,6 +3256,18 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
             Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
             Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
         }
     }
 }
@@ -2554,6 +3358,48 @@ impl<'a> GetChildren<'a> for TSType<'a> {
             Self::JSDocUnknownType(e) => AstKind::JSDocUnknownType(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::TSAnyKeyword(e) => e.node_id,
+            Self::TSBigIntKeyword(e) => e.node_id,
+            Self::TSBooleanKeyword(e) => e.node_id,
+            Self::TSIntrinsicKeyword(e) => e.node_id,
+            Self::TSNeverKeyword(e) => e.node_id,
+            Self::TSNullKeyword(e) => e.node_id,
+            Self::TSNumberKeyword(e) => e.node_id,
+            Self::TSObjectKeyword(e) => e.node_id,
+            Self::TSStringKeyword(e) => e.node_id,
+            Self::TSSymbolKeyword(e) => e.node_id,
+            Self::TSUndefinedKeyword(e) => e.node_id,
+            Self::TSUnknownKeyword(e) => e.node_id,
+            Self::TSVoidKeyword(e) => e.node_id,
+            Self::TSArrayType(e) => e.node_id,
+            Self::TSConditionalType(e) => e.node_id,
+            Self::TSConstructorType(e) => e.node_id,
+            Self::TSFunctionType(e) => e.node_id,
+            Self::TSImportType(e) => e.node_id,
+            Self::TSIndexedAccessType(e) => e.node_id,
+            Self::TSInferType(e) => e.node_id,
+            Self::TSIntersectionType(e) => e.node_id,
+            Self::TSLiteralType(e) => e.node_id,
+            Self::TSMappedType(e) => e.node_id,
+            Self::TSNamedTupleMember(e) => e.node_id,
+            Self::TSQualifiedName(e) => e.node_id,
+            Self::TSTemplateLiteralType(e) => e.node_id,
+            Self::TSThisType(e) => e.node_id,
+            Self::TSTupleType(e) => e.node_id,
+            Self::TSTypeLiteral(e) => e.node_id,
+            Self::TSTypeOperatorType(e) => e.node_id,
+            Self::TSTypePredicate(e) => e.node_id,
+            Self::TSTypeQuery(e) => e.node_id,
+            Self::TSTypeReference(e) => e.node_id,
+            Self::TSUnionType(e) => e.node_id,
+            Self::TSParenthesizedType(e) => e.node_id,
+            Self::JSDocNullableType(e) => e.node_id,
+            Self::JSDocNonNullableType(e) => e.node_id,
+            Self::JSDocUnknownType(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSConditionalType<'a> {
@@ -2568,6 +3414,9 @@ impl<'a> GetChildren<'a> for TSConditionalType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSConditionalType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSUnionType<'a> {
@@ -2580,6 +3429,9 @@ impl<'a> GetChildren<'a> for TSUnionType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSUnionType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2594,6 +3446,9 @@ impl<'a> GetChildren<'a> for TSIntersectionType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSIntersectionType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSParenthesizedType<'a> {
@@ -2604,6 +3459,9 @@ impl<'a> GetChildren<'a> for TSParenthesizedType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSParenthesizedType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2616,6 +3474,9 @@ impl<'a> GetChildren<'a> for TSTypeOperator<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeOperator(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSArrayType<'a> {
@@ -2626,6 +3487,9 @@ impl<'a> GetChildren<'a> for TSArrayType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSArrayType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2638,6 +3502,9 @@ impl<'a> GetChildren<'a> for TSIndexedAccessType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSIndexedAccessType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2652,6 +3519,9 @@ impl<'a> GetChildren<'a> for TSTupleType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTupleType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSNamedTupleMember<'a> {
@@ -2664,6 +3534,9 @@ impl<'a> GetChildren<'a> for TSNamedTupleMember<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNamedTupleMember(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSOptionalType<'a> {
@@ -2675,6 +3548,9 @@ impl<'a> GetChildren<'a> for TSOptionalType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSOptionalType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSRestType<'a> {
@@ -2685,6 +3561,9 @@ impl<'a> GetChildren<'a> for TSRestType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSRestType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2778,6 +3657,50 @@ impl<'a> GetChildren<'a> for TSTupleElement<'a> {
             Self::JSDocUnknownType(e) => AstKind::JSDocUnknownType(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::TSOptionalType(e) => e.node_id,
+            Self::TSRestType(e) => e.node_id,
+            Self::TSAnyKeyword(e) => e.node_id,
+            Self::TSBigIntKeyword(e) => e.node_id,
+            Self::TSBooleanKeyword(e) => e.node_id,
+            Self::TSIntrinsicKeyword(e) => e.node_id,
+            Self::TSNeverKeyword(e) => e.node_id,
+            Self::TSNullKeyword(e) => e.node_id,
+            Self::TSNumberKeyword(e) => e.node_id,
+            Self::TSObjectKeyword(e) => e.node_id,
+            Self::TSStringKeyword(e) => e.node_id,
+            Self::TSSymbolKeyword(e) => e.node_id,
+            Self::TSUndefinedKeyword(e) => e.node_id,
+            Self::TSUnknownKeyword(e) => e.node_id,
+            Self::TSVoidKeyword(e) => e.node_id,
+            Self::TSArrayType(e) => e.node_id,
+            Self::TSConditionalType(e) => e.node_id,
+            Self::TSConstructorType(e) => e.node_id,
+            Self::TSFunctionType(e) => e.node_id,
+            Self::TSImportType(e) => e.node_id,
+            Self::TSIndexedAccessType(e) => e.node_id,
+            Self::TSInferType(e) => e.node_id,
+            Self::TSIntersectionType(e) => e.node_id,
+            Self::TSLiteralType(e) => e.node_id,
+            Self::TSMappedType(e) => e.node_id,
+            Self::TSNamedTupleMember(e) => e.node_id,
+            Self::TSQualifiedName(e) => e.node_id,
+            Self::TSTemplateLiteralType(e) => e.node_id,
+            Self::TSThisType(e) => e.node_id,
+            Self::TSTupleType(e) => e.node_id,
+            Self::TSTypeLiteral(e) => e.node_id,
+            Self::TSTypeOperatorType(e) => e.node_id,
+            Self::TSTypePredicate(e) => e.node_id,
+            Self::TSTypeQuery(e) => e.node_id,
+            Self::TSTypeReference(e) => e.node_id,
+            Self::TSUnionType(e) => e.node_id,
+            Self::TSParenthesizedType(e) => e.node_id,
+            Self::JSDocNullableType(e) => e.node_id,
+            Self::JSDocNonNullableType(e) => e.node_id,
+            Self::JSDocUnknownType(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSAnyKeyword {
@@ -2786,6 +3709,9 @@ impl<'a> GetChildren<'a> for TSAnyKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSAnyKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2796,6 +3722,9 @@ impl<'a> GetChildren<'a> for TSStringKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSStringKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSBooleanKeyword {
@@ -2804,6 +3733,9 @@ impl<'a> GetChildren<'a> for TSBooleanKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSBooleanKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2814,6 +3746,9 @@ impl<'a> GetChildren<'a> for TSNumberKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNumberKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSNeverKeyword {
@@ -2822,6 +3757,9 @@ impl<'a> GetChildren<'a> for TSNeverKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNeverKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2832,6 +3770,9 @@ impl<'a> GetChildren<'a> for TSIntrinsicKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSIntrinsicKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSUnknownKeyword {
@@ -2840,6 +3781,9 @@ impl<'a> GetChildren<'a> for TSUnknownKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSUnknownKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2850,6 +3794,9 @@ impl<'a> GetChildren<'a> for TSNullKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNullKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSUndefinedKeyword {
@@ -2858,6 +3805,9 @@ impl<'a> GetChildren<'a> for TSUndefinedKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSUndefinedKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2868,6 +3818,9 @@ impl<'a> GetChildren<'a> for TSVoidKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSVoidKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSSymbolKeyword {
@@ -2876,6 +3829,9 @@ impl<'a> GetChildren<'a> for TSSymbolKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSSymbolKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2886,6 +3842,9 @@ impl<'a> GetChildren<'a> for TSThisType {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSThisType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSObjectKeyword {
@@ -2895,6 +3854,9 @@ impl<'a> GetChildren<'a> for TSObjectKeyword {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSObjectKeyword(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSBigIntKeyword {
@@ -2903,6 +3865,9 @@ impl<'a> GetChildren<'a> for TSBigIntKeyword {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSBigIntKeyword(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2917,6 +3882,9 @@ impl<'a> GetChildren<'a> for TSTypeReference<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeReference(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2934,6 +3902,12 @@ impl<'a> GetChildren<'a> for TSTypeName<'a> {
             Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::IdentifierReference(e) => e.node_id,
+            Self::QualifiedName(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSQualifiedName<'a> {
@@ -2945,6 +3919,9 @@ impl<'a> GetChildren<'a> for TSQualifiedName<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSQualifiedName(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2958,6 +3935,9 @@ impl<'a> GetChildren<'a> for TSTypeParameterInstantiation<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeParameterInstantiation(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -2976,6 +3956,9 @@ impl<'a> GetChildren<'a> for TSTypeParameter<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeParameter(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
@@ -2988,6 +3971,9 @@ impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeParameterDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3004,6 +3990,9 @@ impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeAliasDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSClassImplements<'a> {
@@ -3017,6 +4006,9 @@ impl<'a> GetChildren<'a> for TSClassImplements<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSClassImplements(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3038,6 +4030,9 @@ impl<'a> GetChildren<'a> for TSInterfaceDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSInterfaceDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSInterfaceBody<'a> {
@@ -3050,6 +4045,9 @@ impl<'a> GetChildren<'a> for TSInterfaceBody<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSInterfaceBody(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3064,6 +4062,9 @@ impl<'a> GetChildren<'a> for TSPropertySignature<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSPropertySignature(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3087,6 +4088,15 @@ impl<'a> GetChildren<'a> for TSSignature<'a> {
             Self::TSMethodSignature(e) => AstKind::TSMethodSignature(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::TSIndexSignature(e) => e.node_id,
+            Self::TSPropertySignature(e) => e.node_id,
+            Self::TSCallSignatureDeclaration(e) => e.node_id,
+            Self::TSConstructSignatureDeclaration(e) => e.node_id,
+            Self::TSMethodSignature(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSIndexSignature<'a> {
@@ -3100,6 +4110,9 @@ impl<'a> GetChildren<'a> for TSIndexSignature<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSIndexSignature(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3120,6 +4133,9 @@ impl<'a> GetChildren<'a> for TSCallSignatureDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSCallSignatureDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3142,6 +4158,9 @@ impl<'a> GetChildren<'a> for TSMethodSignature<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSMethodSignature(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSConstructSignatureDeclaration<'a> {
@@ -3159,6 +4178,9 @@ impl<'a> GetChildren<'a> for TSConstructSignatureDeclaration<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSConstructSignatureDeclaration(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
@@ -3169,6 +4191,9 @@ impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSIndexSignatureName(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3184,6 +4209,9 @@ impl<'a> GetChildren<'a> for TSInterfaceHeritage<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSInterfaceHeritage(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypePredicate<'a> {
@@ -3197,6 +4225,9 @@ impl<'a> GetChildren<'a> for TSTypePredicate<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypePredicate(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3214,6 +4245,12 @@ impl<'a> GetChildren<'a> for TSTypePredicateName<'a> {
             Self::This(e) => AstKind::TSThisType(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::This(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSModuleDeclaration<'a> {
@@ -3227,6 +4264,9 @@ impl<'a> GetChildren<'a> for TSModuleDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSModuleDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3242,6 +4282,12 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationName<'a> {
         match self {
             Self::Identifier(e) => AstKind::BindingIdentifier(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
         }
     }
 }
@@ -3260,6 +4306,12 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationBody<'a> {
             Self::TSModuleBlock(e) => AstKind::TSModuleBlock(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::TSModuleDeclaration(e) => e.node_id,
+            Self::TSModuleBlock(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSModuleBlock<'a> {
@@ -3276,6 +4328,9 @@ impl<'a> GetChildren<'a> for TSModuleBlock<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSModuleBlock(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeLiteral<'a> {
@@ -3289,6 +4344,9 @@ impl<'a> GetChildren<'a> for TSTypeLiteral<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeLiteral(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSInferType<'a> {
@@ -3299,6 +4357,9 @@ impl<'a> GetChildren<'a> for TSInferType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSInferType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3313,6 +4374,9 @@ impl<'a> GetChildren<'a> for TSTypeQuery<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeQuery(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3330,6 +4394,13 @@ impl<'a> GetChildren<'a> for TSTypeQueryExprName<'a> {
             Self::TSImportType(e) => AstKind::TSImportType(e),
             Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
             Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::TSImportType(e) => e.node_id,
+            Self::IdentifierReference(e) => e.node_id,
+            Self::QualifiedName(e) => e.node_id,
         }
     }
 }
@@ -3352,6 +4423,9 @@ impl<'a> GetChildren<'a> for TSImportType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSImportType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSImportAttributes<'a> {
@@ -3366,6 +4440,9 @@ impl<'a> GetChildren<'a> for TSImportAttributes<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSImportAttributes(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSImportAttribute<'a> {
@@ -3377,6 +4454,9 @@ impl<'a> GetChildren<'a> for TSImportAttribute<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSImportAttribute(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3392,6 +4472,12 @@ impl<'a> GetChildren<'a> for TSImportAttributeName<'a> {
         match self {
             Self::Identifier(e) => AstKind::IdentifierName(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
         }
     }
 }
@@ -3412,6 +4498,9 @@ impl<'a> GetChildren<'a> for TSFunctionType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSFunctionType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSConstructorType<'a> {
@@ -3426,6 +4515,9 @@ impl<'a> GetChildren<'a> for TSConstructorType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSConstructorType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3444,6 +4536,9 @@ impl<'a> GetChildren<'a> for TSMappedType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSMappedType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTemplateLiteralType<'a> {
@@ -3460,6 +4555,9 @@ impl<'a> GetChildren<'a> for TSTemplateLiteralType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTemplateLiteralType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSAsExpression<'a> {
@@ -3471,6 +4569,9 @@ impl<'a> GetChildren<'a> for TSAsExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSAsExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3484,6 +4585,9 @@ impl<'a> GetChildren<'a> for TSSatisfiesExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSSatisfiesExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeAssertion<'a> {
@@ -3496,6 +4600,9 @@ impl<'a> GetChildren<'a> for TSTypeAssertion<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSTypeAssertion(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSImportEqualsDeclaration<'a> {
@@ -3507,6 +4614,9 @@ impl<'a> GetChildren<'a> for TSImportEqualsDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSImportEqualsDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3526,6 +4636,13 @@ impl<'a> GetChildren<'a> for TSModuleReference<'a> {
             Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::ExternalModuleReference(e) => e.node_id,
+            Self::IdentifierReference(e) => e.node_id,
+            Self::QualifiedName(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSExternalModuleReference<'a> {
@@ -3536,6 +4653,9 @@ impl<'a> GetChildren<'a> for TSExternalModuleReference<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSExternalModuleReference(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3548,6 +4668,9 @@ impl<'a> GetChildren<'a> for TSNonNullExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNonNullExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for Decorator<'a> {
@@ -3558,6 +4681,9 @@ impl<'a> GetChildren<'a> for Decorator<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::Decorator(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3570,6 +4696,9 @@ impl<'a> GetChildren<'a> for TSExportAssignment<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSExportAssignment(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for TSNamespaceExportDeclaration<'a> {
@@ -3580,6 +4709,9 @@ impl<'a> GetChildren<'a> for TSNamespaceExportDeclaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSNamespaceExportDeclaration(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3593,6 +4725,9 @@ impl<'a> GetChildren<'a> for TSInstantiationExpression<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::TSInstantiationExpression(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSDocNullableType<'a> {
@@ -3603,6 +4738,9 @@ impl<'a> GetChildren<'a> for JSDocNullableType<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSDocNullableType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3615,6 +4753,9 @@ impl<'a> GetChildren<'a> for JSDocNonNullableType<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSDocNonNullableType(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSDocUnknownType {
@@ -3623,6 +4764,9 @@ impl<'a> GetChildren<'a> for JSDocUnknownType {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSDocUnknownType(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3641,6 +4785,9 @@ impl<'a> GetChildren<'a> for JSXElement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXElement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXOpeningElement<'a> {
@@ -3658,6 +4805,9 @@ impl<'a> GetChildren<'a> for JSXOpeningElement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXOpeningElement(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXClosingElement<'a> {
@@ -3668,6 +4818,9 @@ impl<'a> GetChildren<'a> for JSXClosingElement<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXClosingElement(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3684,6 +4837,9 @@ impl<'a> GetChildren<'a> for JSXFragment<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXFragment(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXOpeningFragment {
@@ -3693,6 +4849,9 @@ impl<'a> GetChildren<'a> for JSXOpeningFragment {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXOpeningFragment(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXClosingFragment {
@@ -3701,6 +4860,9 @@ impl<'a> GetChildren<'a> for JSXClosingFragment {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXClosingFragment(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3724,6 +4886,15 @@ impl<'a> GetChildren<'a> for JSXElementName<'a> {
             Self::ThisExpression(e) => AstKind::ThisExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::IdentifierReference(e) => e.node_id,
+            Self::NamespacedName(e) => e.node_id,
+            Self::MemberExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXNamespacedName<'a> {
@@ -3736,6 +4907,9 @@ impl<'a> GetChildren<'a> for JSXNamespacedName<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXNamespacedName(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXMemberExpression<'a> {
@@ -3747,6 +4921,9 @@ impl<'a> GetChildren<'a> for JSXMemberExpression<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXMemberExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3766,6 +4943,13 @@ impl<'a> GetChildren<'a> for JSXMemberExpressionObject<'a> {
             Self::ThisExpression(e) => AstKind::ThisExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::IdentifierReference(e) => e.node_id,
+            Self::MemberExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXExpressionContainer<'a> {
@@ -3776,6 +4960,9 @@ impl<'a> GetChildren<'a> for JSXExpressionContainer<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXExpressionContainer(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3875,6 +5062,53 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::EmptyExpression(e) => e.node_id,
+            Self::BooleanLiteral(e) => e.node_id,
+            Self::NullLiteral(e) => e.node_id,
+            Self::NumericLiteral(e) => e.node_id,
+            Self::BigIntLiteral(e) => e.node_id,
+            Self::RegExpLiteral(e) => e.node_id,
+            Self::StringLiteral(e) => e.node_id,
+            Self::TemplateLiteral(e) => e.node_id,
+            Self::Identifier(e) => e.node_id,
+            Self::MetaProperty(e) => e.node_id,
+            Self::Super(e) => e.node_id,
+            Self::ArrayExpression(e) => e.node_id,
+            Self::ArrowFunctionExpression(e) => e.node_id,
+            Self::AssignmentExpression(e) => e.node_id,
+            Self::AwaitExpression(e) => e.node_id,
+            Self::BinaryExpression(e) => e.node_id,
+            Self::CallExpression(e) => e.node_id,
+            Self::ChainExpression(e) => e.node_id,
+            Self::ClassExpression(e) => e.node_id,
+            Self::ConditionalExpression(e) => e.node_id,
+            Self::FunctionExpression(e) => e.node_id,
+            Self::ImportExpression(e) => e.node_id,
+            Self::LogicalExpression(e) => e.node_id,
+            Self::NewExpression(e) => e.node_id,
+            Self::ObjectExpression(e) => e.node_id,
+            Self::ParenthesizedExpression(e) => e.node_id,
+            Self::SequenceExpression(e) => e.node_id,
+            Self::TaggedTemplateExpression(e) => e.node_id,
+            Self::ThisExpression(e) => e.node_id,
+            Self::UnaryExpression(e) => e.node_id,
+            Self::UpdateExpression(e) => e.node_id,
+            Self::YieldExpression(e) => e.node_id,
+            Self::PrivateInExpression(e) => e.node_id,
+            Self::JSXElement(e) => e.node_id,
+            Self::JSXFragment(e) => e.node_id,
+            Self::TSAsExpression(e) => e.node_id,
+            Self::TSSatisfiesExpression(e) => e.node_id,
+            Self::TSTypeAssertion(e) => e.node_id,
+            Self::TSNonNullExpression(e) => e.node_id,
+            Self::TSInstantiationExpression(e) => e.node_id,
+            Self::ComputedMemberExpression(e) => e.node_id,
+            Self::StaticMemberExpression(e) => e.node_id,
+            Self::PrivateFieldExpression(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXEmptyExpression {
@@ -3883,6 +5117,9 @@ impl<'a> GetChildren<'a> for JSXEmptyExpression {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXEmptyExpression(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3900,6 +5137,12 @@ impl<'a> GetChildren<'a> for JSXAttributeItem<'a> {
             Self::SpreadAttribute(e) => AstKind::JSXSpreadAttribute(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Attribute(e) => e.node_id,
+            Self::SpreadAttribute(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXAttribute<'a> {
@@ -3914,6 +5157,9 @@ impl<'a> GetChildren<'a> for JSXAttribute<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXAttribute(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXSpreadAttribute<'a> {
@@ -3924,6 +5170,9 @@ impl<'a> GetChildren<'a> for JSXSpreadAttribute<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXSpreadAttribute(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3939,6 +5188,12 @@ impl<'a> GetChildren<'a> for JSXAttributeName<'a> {
         match self {
             Self::Identifier(e) => AstKind::JSXIdentifier(e),
             Self::NamespacedName(e) => AstKind::JSXNamespacedName(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Identifier(e) => e.node_id,
+            Self::NamespacedName(e) => e.node_id,
         }
     }
 }
@@ -3961,6 +5216,14 @@ impl<'a> GetChildren<'a> for JSXAttributeValue<'a> {
             Self::Fragment(e) => AstKind::JSXFragment(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::StringLiteral(e) => e.node_id,
+            Self::ExpressionContainer(e) => e.node_id,
+            Self::Element(e) => e.node_id,
+            Self::Fragment(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXIdentifier<'a> {
@@ -3969,6 +5232,9 @@ impl<'a> GetChildren<'a> for JSXIdentifier<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXIdentifier(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }
 
@@ -3992,6 +5258,15 @@ impl<'a> GetChildren<'a> for JSXChild<'a> {
             Self::Spread(e) => AstKind::JSXSpreadChild(e),
         }
     }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Text(e) => e.node_id,
+            Self::Element(e) => e.node_id,
+            Self::Fragment(e) => e.node_id,
+            Self::ExpressionContainer(e) => e.node_id,
+            Self::Spread(e) => e.node_id,
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXSpreadChild<'a> {
@@ -4003,6 +5278,9 @@ impl<'a> GetChildren<'a> for JSXSpreadChild<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXSpreadChild(self)
     }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXText<'a> {
@@ -4011,5 +5289,8 @@ impl<'a> GetChildren<'a> for JSXText<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::JSXText(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
     }
 }

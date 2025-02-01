@@ -60,7 +60,7 @@ impl Generator for AstKindGenerator {
 
         let get_node_id_matches: Vec<Arm> = have_kinds
             .iter()
-            .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.node_id))
+            .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_node_id()))
             .collect_vec();
 
         let as_ast_kind_impls: Vec<ImplItemFn> = have_kinds
