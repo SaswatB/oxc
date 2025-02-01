@@ -58,6 +58,7 @@ impl Parse for VisitArgs {
 pub struct VisitMarkers {
     pub visit_args: Option<VisitArgs>,
     pub enter_before: bool,
+    #[allow(dead_code)]
     pub ignore: bool,
 }
 

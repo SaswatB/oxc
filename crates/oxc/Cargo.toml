@@ -32,43 +32,43 @@ oxc_parser = { workspace = true }
 oxc_regular_expression = { workspace = true }
 
 oxc_cfg = { workspace = true, optional = true }
-oxc_codegen = { workspace = true, optional = true }
+# oxc_codegen = { workspace = true, optional = true }
 oxc_diagnostics = { workspace = true }
-oxc_isolated_declarations = { workspace = true, optional = true }
-oxc_mangler = { workspace = true, optional = true }
-oxc_minifier = { workspace = true, optional = true }
-oxc_semantic = { workspace = true, optional = true }
+# oxc_isolated_declarations = { workspace = true, optional = true }
+# oxc_mangler = { workspace = true, optional = true }
+# oxc_minifier = { workspace = true, optional = true }
+# oxc_semantic = { workspace = true, optional = true }
 oxc_span = { workspace = true }
 oxc_syntax = { workspace = true }
-oxc_transformer = { workspace = true, optional = true }
+# oxc_transformer = { workspace = true, optional = true }
 
 [features]
 full = [
-  "codegen",
-  "mangler",
-  "minifier",
-  "semantic",
-  "transformer",
-  "isolated_declarations",
+#   "codegen",
+#   "mangler",
+#   "minifier",
+#   "semantic",
+#   "transformer",
+#   "isolated_declarations",
   "cfg",
 ]
 
-semantic = ["oxc_semantic"]
-transformer = ["oxc_transformer"]
-minifier = ["oxc_mangler", "oxc_minifier"]
-codegen = ["oxc_codegen"]
-mangler = ["oxc_mangler"]
+# semantic = ["oxc_semantic"]
+# transformer = ["oxc_transformer"]
+# minifier = ["oxc_mangler", "oxc_minifier"]
+# codegen = ["oxc_codegen"]
+# mangler = ["oxc_mangler"]
 cfg = ["oxc_cfg"]
-isolated_declarations = ["oxc_isolated_declarations"]
+# isolated_declarations = ["oxc_isolated_declarations"]
 
 serialize = [
   "oxc_ast/serialize",
-  "oxc_semantic?/serialize",
+#   "oxc_semantic?/serialize",
   "oxc_span/serialize",
   "oxc_syntax/serialize",
 ]
 
-wasm = ["oxc_transformer/wasm"]
+# wasm = ["oxc_transformer/wasm"]
 
 [package.metadata.docs.rs]
 all-features = true

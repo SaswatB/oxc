@@ -138,7 +138,7 @@ pub struct JSXFragment<'a> {
 }
 
 /// JSX Opening Fragment (`<>`)
-#[ast]
+#[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXOpeningFragment {
@@ -150,7 +150,7 @@ pub struct JSXOpeningFragment {
 }
 
 /// JSX Closing Fragment (`</>`)
-#[ast]
+#[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 pub struct JSXClosingFragment {

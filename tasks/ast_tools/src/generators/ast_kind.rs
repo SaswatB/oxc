@@ -6,7 +6,7 @@ use syn::{parse_quote, Arm, ImplItemFn, LitInt};
 
 use crate::{
     output::{output_path, Output},
-    schema::{GetIdent, Schema, ToType},
+    schema::{GetIdent, Schema, ToType, TypeDef},
     Generator,
 };
 
@@ -16,37 +16,7 @@ pub struct AstKindGenerator;
 
 define_generator!(AstKindGenerator);
 
-pub const BLACK_LIST: [&str; 29] = [
-    "Span",
-    "Expression",
-    "ObjectPropertyKind",
-    "AssignmentTargetMaybeDefault",
-    "AssignmentTargetProperty",
-    "ChainElement",
-    "Statement",
-    "Declaration",
-    "ForStatementLeft",
-    "BindingPatternKind",
-    "ClassElement",
-    "ImportDeclarationSpecifier",
-    "ImportAttributeKey",
-    "ExportDefaultDeclarationKind",
-    "ModuleExportName",
-    "TSEnumMemberName",
-    "TSLiteral",
-    "TSType",
-    "TSTupleElement",
-    "TSSignature",
-    "TSTypePredicateName",
-    "TSModuleDeclarationName",
-    "TSModuleDeclarationBody",
-    "TSTypeQueryExprName",
-    "TSImportAttributeName",
-    "JSXExpression",
-    "JSXAttributeName",
-    "JSXAttributeValue",
-    "JSXChild",
-];
+pub const BLACK_LIST: [&str; 1] = ["Span"];
 
 impl Generator for AstKindGenerator {
     fn generate(&mut self, schema: &Schema) -> Output {
@@ -54,9 +24,10 @@ impl Generator for AstKindGenerator {
             .defs
             .iter()
             .filter(|def| {
+                let is_enum = matches!(def, TypeDef::Enum(_));
                 let is_visitable = def.is_visitable();
                 let is_blacklisted = BLACK_LIST.contains(&def.name());
-                is_visitable && !is_blacklisted
+                !is_enum && is_visitable && !is_blacklisted
             })
             .map(|def| {
                 let ident = def.ident();
@@ -85,6 +56,11 @@ impl Generator for AstKindGenerator {
         let get_children_matches: Vec<Arm> = have_kinds
             .iter()
             .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.get_children()))
+            .collect_vec();
+
+        let get_node_id_matches: Vec<Arm> = have_kinds
+            .iter()
+            .map(|(ident, _)| parse_quote!(Self :: #ident(it) => it.node_id))
             .collect_vec();
 
         let as_ast_kind_impls: Vec<ImplItemFn> = have_kinds
@@ -164,6 +140,12 @@ impl Generator for AstKindGenerator {
                     pub fn get_children(&self) -> Vec<AstKind<'a>> {
                         match self {
                             #(#get_children_matches),*,
+                        }
+                    }
+
+                    pub fn get_node_id(&self) -> u32 {
+                        match self {
+                            #(#get_node_id_matches),*,
                         }
                     }
                 }

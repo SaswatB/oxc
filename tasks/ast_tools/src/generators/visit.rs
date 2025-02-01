@@ -359,12 +359,12 @@ impl<'a> VisitBuilder<'a> {
             if KIND_BLACK_LIST.contains(&ident.to_string().as_str()) {
                 tk
             } else {
-                let kind = self.kind_type(&ident);
+                // let kind = self.kind_type(&ident);
                 quote! {
-                    let kind = #kind;
-                    visitor.enter_node(kind);
+                    // let kind = #kind;
+                    // visitor.enter_node(kind);
                     #tk
-                    visitor.leave_node(kind);
+                    // visitor.leave_node(kind);
                 }
             }
         };

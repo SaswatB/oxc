@@ -335,21 +335,21 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Create an [`JSXOpeningElement`].
-    #[inline]
-    pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment {
-        JSXOpeningFragment {
-            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
-            span,
-        }
-    }
+    // /// Create an [`JSXOpeningElement`].
+    // #[inline]
+    // pub fn jsx_opening_fragment(self, span: Span) -> JSXOpeningFragment {
+    //     JSXOpeningFragment {
+    //         node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+    //         span,
+    //     }
+    // }
 
-    /// Create an [`JSXClosingElement`].
-    #[inline]
-    pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment {
-        JSXClosingFragment {
-            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
-            span,
-        }
-    }
+    // /// Create an [`JSXClosingElement`].
+    // #[inline]
+    // pub fn jsx_closing_fragment(self, span: Span) -> JSXClosingFragment {
+    //     JSXClosingFragment {
+    //         node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+    //         span,
+    //     }
+    // }
 }

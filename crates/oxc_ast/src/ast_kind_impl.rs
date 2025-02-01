@@ -19,9 +19,11 @@ impl<'a> AstKind<'a> {
     pub fn is_declaration(self) -> bool {
         matches!(self, Self::Function(func) if func.is_declaration())
         || matches!(self, Self::Class(class) if class.is_declaration())
-        || matches!(self, Self::ModuleDeclaration(_) | Self::TSEnumDeclaration(_) | Self::TSModuleDeclaration(_)
-            | Self::VariableDeclaration(_) | Self::TSInterfaceDeclaration(_)
-            | Self::TSTypeAliasDeclaration(_) | Self::TSImportEqualsDeclaration(_) | Self::PropertyDefinition(_)
+        || matches!(self, Self::ImportDeclaration(_) | Self::ExportAllDeclaration(_) | Self::ExportDefaultDeclaration(_)
+            | Self::ExportNamedDeclaration(_) | Self::TSExportAssignment(_) | Self::TSNamespaceExportDeclaration(_)
+            | Self::TSEnumDeclaration(_) | Self::TSModuleDeclaration(_) | Self::VariableDeclaration(_)
+            | Self::TSInterfaceDeclaration(_) | Self::TSTypeAliasDeclaration(_) | Self::TSImportEqualsDeclaration(_)
+            | Self::PropertyDefinition(_)
         )
     }
 
@@ -80,9 +82,12 @@ impl<'a> AstKind<'a> {
             self,
             Self::JSXElement(_)
                 | Self::JSXOpeningElement(_)
-                | Self::JSXElementName(_)
+                | Self::JSXIdentifier(_)
+                | Self::JSXNamespacedName(_)
+                | Self::JSXMemberExpression(_)
                 | Self::JSXFragment(_)
-                | Self::JSXAttributeItem(_)
+                | Self::JSXAttribute(_)
+                | Self::JSXSpreadAttribute(_)
                 | Self::JSXText(_)
                 | Self::JSXExpressionContainer(_)
         )
@@ -147,9 +152,9 @@ impl<'a> AstKind<'a> {
             Expression::FunctionExpression(e) => Self::Function(e),
             Expression::ImportExpression(e) => Self::ImportExpression(e),
             Expression::LogicalExpression(e) => Self::LogicalExpression(e),
-            match_member_expression!(Expression) => {
-                Self::MemberExpression(e.to_member_expression())
-            }
+            Expression::ComputedMemberExpression(e) => Self::ComputedMemberExpression(e),
+            Expression::StaticMemberExpression(e) => Self::StaticMemberExpression(e),
+            Expression::PrivateFieldExpression(e) => Self::PrivateFieldExpression(e),
             Expression::NewExpression(e) => Self::NewExpression(e),
             Expression::ObjectExpression(e) => Self::ObjectExpression(e),
             Expression::ParenthesizedExpression(e) => Self::ParenthesizedExpression(e),
@@ -219,6 +224,19 @@ impl<'a> AstKind<'a> {
             Declaration::TSEnumDeclaration(d) => Self::TSEnumDeclaration(d),
             Declaration::TSModuleDeclaration(d) => Self::TSModuleDeclaration(d),
             Declaration::TSImportEqualsDeclaration(d) => Self::TSImportEqualsDeclaration(d),
+        }
+    }
+
+    pub fn from_module_declaration(m: &'a ModuleDeclaration<'a>) -> Self {
+        match m {
+            ModuleDeclaration::ImportDeclaration(m) => Self::ImportDeclaration(m),
+            ModuleDeclaration::ExportAllDeclaration(m) => Self::ExportAllDeclaration(m),
+            ModuleDeclaration::ExportDefaultDeclaration(m) => Self::ExportDefaultDeclaration(m),
+            ModuleDeclaration::ExportNamedDeclaration(m) => Self::ExportNamedDeclaration(m),
+            ModuleDeclaration::TSExportAssignment(m) => Self::TSExportAssignment(m),
+            ModuleDeclaration::TSNamespaceExportDeclaration(m) => {
+                Self::TSNamespaceExportDeclaration(m)
+            }
         }
     }
 
@@ -493,6 +511,13 @@ impl<'a> AstKind<'a> {
         }
     }
 
+    pub fn from_jsx_attribute_item(j: &'a JSXAttributeItem<'a>) -> Self {
+        match j {
+            JSXAttributeItem::Attribute(j) => Self::JSXAttribute(j),
+            JSXAttributeItem::SpreadAttribute(j) => Self::JSXSpreadAttribute(j),
+        }
+    }
+
     pub fn from_ts_type(t: &'a TSType<'a>) -> Self {
         match t {
             TSType::TSAnyKeyword(t) => Self::TSAnyKeyword(t),
@@ -661,6 +686,7 @@ impl AstKind<'_> {
         use std::borrow::Cow;
 
         const COMPUTED: Cow<'static, str> = Cow::Borrowed("<computed>");
+        #[allow(dead_code)]
         const UNKNOWN: Cow<'static, str> = Cow::Borrowed("<unknown>");
         const ANONYMOUS: Cow<'static, str> = Cow::Borrowed("<anonymous>");
         const DESTRUCTURE: Cow<'static, str> = Cow::Borrowed("<destructure>");
@@ -686,7 +712,6 @@ impl AstKind<'_> {
             Self::ForInStatement(_) => "ForInStatement".into(),
             Self::ForOfStatement(_) => "ForOfStatement".into(),
             Self::ForStatement(_) => "ForStatement".into(),
-            Self::ForStatementInit(_) => "ForStatementInit".into(),
             Self::IfStatement(_) => "IfStatement".into(),
             Self::LabeledStatement(l) => format!("LabeledStatement({})", l.label.name).into(),
             Self::ReturnStatement(_) => "ReturnStatement".into(),
@@ -740,7 +765,6 @@ impl AstKind<'_> {
             Self::ChainExpression(_) => "ChainExpression".into(),
             Self::ConditionalExpression(_) => "ConditionalExpression".into(),
             Self::LogicalExpression(_) => "LogicalExpression".into(),
-            Self::MemberExpression(_) => "MemberExpression".into(),
             Self::NewExpression(n) => {
                 let callee = match &n.callee {
                     Expression::Identifier(id) => Some(id.name.as_str()),
@@ -765,17 +789,9 @@ impl AstKind<'_> {
             Self::ObjectProperty(p) => {
                 format!("ObjectProperty({})", p.key.name().unwrap_or(COMPUTED)).into()
             }
-            Self::PropertyKey(p) => format!("PropertyKey({})", p.name().unwrap_or(COMPUTED)).into(),
             Self::ComputedMemberExpression(_) => "ComputedMemberExpression".into(),
             Self::StaticMemberExpression(_) => "StaticMemberExpression".into(),
             Self::PrivateFieldExpression(_) => "PrivateFieldExpression".into(),
-            Self::Argument(_) => "Argument".into(),
-            Self::ArrayExpressionElement(_) => "ArrayExpressionElement".into(),
-            Self::AssignmentTarget(_) => "AssignmentTarget".into(),
-            Self::SimpleAssignmentTarget(a) => {
-                format!("SimpleAssignmentTarget({})", a.get_identifier().unwrap_or(&UNKNOWN)).into()
-            }
-            Self::AssignmentTargetPattern(_) => "AssignmentTargetPattern".into(),
             Self::ArrayAssignmentTarget(_) => "ArrayAssignmentTarget".into(),
             Self::ObjectAssignmentTarget(_) => "ObjectAssignmentTarget".into(),
             Self::AssignmentTargetWithDefault(_) => "AssignmentTargetWithDefault".into(),
@@ -806,7 +822,6 @@ impl AstKind<'_> {
 
             Self::Decorator(_) => "Decorator".into(),
 
-            Self::ModuleDeclaration(_) => "ModuleDeclaration".into(),
             Self::ImportDeclaration(_) => "ImportDeclaration".into(),
             Self::ImportSpecifier(i) => format!("ImportSpecifier({})", i.local.name).into(),
             Self::ExportSpecifier(e) => format!("ExportSpecifier({})", e.local.name()).into(),
@@ -817,17 +832,16 @@ impl AstKind<'_> {
             Self::ExportAllDeclaration(_) => "ExportAllDeclaration".into(),
             Self::JSXOpeningElement(_) => "JSXOpeningElement".into(),
             Self::JSXClosingElement(_) => "JSXClosingElement".into(),
-            Self::JSXElementName(n) => format!("JSXElementName({n})").into(),
             Self::JSXElement(_) => "JSXElement".into(),
+            Self::JSXOpeningFragment(_) => "JSXOpeningFragment".into(),
+            Self::JSXClosingFragment(_) => "JSXClosingFragment".into(),
             Self::JSXFragment(_) => "JSXFragment".into(),
-            Self::JSXAttributeItem(_) => "JSXAttributeItem".into(),
             Self::JSXSpreadAttribute(_) => "JSXSpreadAttribute".into(),
             Self::JSXText(_) => "JSXText".into(),
             Self::JSXExpressionContainer(_) => "JSXExpressionContainer".into(),
             Self::JSXEmptyExpression(_) => "JSXEmptyExpression".into(),
             Self::JSXIdentifier(id) => format!("JSXIdentifier({id})").into(),
             Self::JSXMemberExpression(_) => "JSXMemberExpression".into(),
-            Self::JSXMemberExpressionObject(_) => "JSXMemberExpressionObject".into(),
             Self::JSXNamespacedName(_) => "JSXNamespacedName".into(),
 
             Self::TSModuleBlock(_) => "TSModuleBlock".into(),
@@ -876,7 +890,6 @@ impl AstKind<'_> {
             Self::TSEnumMember(_) => "TSEnumMember".into(),
 
             Self::TSImportEqualsDeclaration(_) => "TSImportEqualsDeclaration".into(),
-            Self::TSTypeName(n) => format!("TSTypeName({n})").into(),
             Self::TSExternalModuleReference(_) => "TSExternalModuleReference".into(),
             Self::TSQualifiedName(n) => format!("TSQualifiedName({n})").into(),
             Self::TSInterfaceDeclaration(_) => "TSInterfaceDeclaration".into(),
@@ -898,7 +911,6 @@ impl AstKind<'_> {
             Self::TSConditionalType(_) => "TSConditionalType".into(),
             Self::TSMappedType(_) => "TSMappedType".into(),
             Self::TSConstructSignatureDeclaration(_) => "TSConstructSignatureDeclaration".into(),
-            Self::TSModuleReference(_) => "TSModuleReference".into(),
             Self::TSExportAssignment(_) => "TSExportAssignment".into(),
             Self::JSDocNullableType(_) => "JSDocNullableType".into(),
             Self::JSDocNonNullableType(_) => "JSDocNonNullableType".into(),

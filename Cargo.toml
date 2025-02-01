@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", "napi/*", "tasks/*", "wasm/*"]
+members = ["crates/*", "tasks/*"]
 exclude = [
     "tasks/lint_rules",
     "tasks/benchmark",
@@ -12,6 +12,19 @@ exclude = [
     "crates/oxc_wasm",
     "crates/oxc_linter",
     "crates/oxc_prettier",
+    "crates/oxc_semantic",
+    "crates/oxc_mangler",
+    "crates/oxc_codegen",
+    "crates/oxc_isolated_declarations",
+    "crates/oxc_transformer",
+    "crates/oxc_minifier",
+    "crates/oxc_traverse",
+    "tasks/compat_data",
+    "tasks/minsize",
+    "tasks/transform_checker",
+    "tasks/transform_conformance",
+    "tasks/rulegen",
+    "crates/oxc",
 ]
 
 [workspace.package]
@@ -228,7 +241,7 @@ oxc_macros.opt-level = 1
 oxc_ast_macros.opt-level = 1
 # Compile insta and its dependencies in release mode for faster snapshot tests
 # See: https://insta.rs/docs/quickstart/#optional-faster-runs
-insta.opt-level = 3
+# insta.opt-level = 3
 similar.opt-level = 3
 
 # [profile.release.package.oxc_wasm]

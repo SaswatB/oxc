@@ -51,6 +51,7 @@ impl TypeName {
         }
     }
 
+    #[allow(dead_code)]
     pub fn as_name(&self) -> Option<&str> {
         if let Self::Ident(it) = self {
             Some(it)

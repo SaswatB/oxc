@@ -147,4 +147,7 @@ fn lifetime_variance() {
 pub trait GetChildren<'a> {
     /// Get the children for an AST node
     fn get_children(&'a self) -> Vec<AstKind<'a>>;
+
+    /// Convert the AST node to an [`AstKind`]
+    fn to_ast_kind(&'a self) -> AstKind<'a>;
 }

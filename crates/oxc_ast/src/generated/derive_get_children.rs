@@ -19,11 +19,17 @@ impl<'a> GetChildren<'a> for BooleanLiteral {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BooleanLiteral(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for NullLiteral {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::NullLiteral(self)
     }
 }
 
@@ -31,11 +37,17 @@ impl<'a> GetChildren<'a> for NumericLiteral<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::NumericLiteral(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for StringLiteral<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::StringLiteral(self)
     }
 }
 
@@ -43,11 +55,17 @@ impl<'a> GetChildren<'a> for BigIntLiteral<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BigIntLiteral(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for RegExpLiteral<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::RegExpLiteral(self)
     }
 }
 
@@ -61,9 +79,12 @@ impl<'a> GetChildren<'a> for Program<'a> {
             children.push(AstKind::Directive(item));
         }
         for item in &self.body {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Program(self)
     }
 }
 
@@ -115,11 +136,60 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for IdentifierName<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::IdentifierName(self)
     }
 }
 
@@ -127,11 +197,17 @@ impl<'a> GetChildren<'a> for IdentifierReference<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::IdentifierReference(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingIdentifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BindingIdentifier(self)
     }
 }
 
@@ -139,11 +215,17 @@ impl<'a> GetChildren<'a> for LabelIdentifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::LabelIdentifier(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ThisExpression {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ThisExpression(self)
     }
 }
 
@@ -151,9 +233,12 @@ impl<'a> GetChildren<'a> for ArrayExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.elements {
-            children.push(AstKind::ArrayExpressionElement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ArrayExpression(self)
     }
 }
 
@@ -207,11 +292,62 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::SpreadElement(e) => AstKind::SpreadElement(e),
+            Self::Elision(e) => AstKind::Elision(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for Elision {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Elision(self)
     }
 }
 
@@ -219,9 +355,12 @@ impl<'a> GetChildren<'a> for ObjectExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.properties {
-            children.push(AstKind::from_object_property_kind(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ObjectExpression(self)
     }
 }
 
@@ -233,14 +372,23 @@ impl<'a> GetChildren<'a> for ObjectPropertyKind<'a> {
             Self::SpreadProperty(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ObjectProperty(e) => AstKind::ObjectProperty(e),
+            Self::SpreadProperty(e) => AstKind::SpreadElement(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ObjectProperty<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::PropertyKey(&self.key));
-        children.push(AstKind::from_expression(&self.value));
+        children.push((*&self.key).to_ast_kind());
+        children.push((*&self.value).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ObjectProperty(self)
     }
 }
 
@@ -294,6 +442,54 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::StaticIdentifier(e) => AstKind::IdentifierName(e),
+            Self::PrivateIdentifier(e) => AstKind::PrivateIdentifier(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
@@ -303,27 +499,36 @@ impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
             children.push(AstKind::TemplateElement(item));
         }
         for item in &self.expressions {
-            children.push(AstKind::from_expression(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TemplateLiteral(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TaggedTemplateExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.tag));
+        children.push((*&self.tag).to_ast_kind());
         children.push(AstKind::TemplateLiteral(&self.quasi));
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TaggedTemplateExpression(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TemplateElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TemplateElement(self)
     }
 }
 
@@ -336,60 +541,82 @@ impl<'a> GetChildren<'a> for MemberExpression<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.object));
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.object).to_ast_kind());
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ComputedMemberExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for StaticMemberExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.object));
+        children.push((*&self.object).to_ast_kind());
         children.push(AstKind::IdentifierName(&self.property));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::StaticMemberExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for PrivateFieldExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.object));
+        children.push((*&self.object).to_ast_kind());
         children.push(AstKind::PrivateIdentifier(&self.field));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::PrivateFieldExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for CallExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.callee));
+        children.push((*&self.callee).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         for item in &self.arguments {
-            children.push(AstKind::Argument(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::CallExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for NewExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.callee));
+        children.push((*&self.callee).to_ast_kind());
         for item in &self.arguments {
-            children.push(AstKind::Argument(item));
+            children.push((*item).to_ast_kind());
         }
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::NewExpression(self)
     }
 }
 
@@ -400,13 +627,19 @@ impl<'a> GetChildren<'a> for MetaProperty<'a> {
         children.push(AstKind::IdentifierName(&self.property));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::MetaProperty(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for SpreadElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::SpreadElement(self)
     }
 }
 
@@ -459,30 +692,86 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::SpreadElement(e) => AstKind::SpreadElement(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for UpdateExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::SimpleAssignmentTarget(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::UpdateExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for UnaryExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::UnaryExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for BinaryExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.left));
-        children.push(AstKind::from_expression(&self.right));
+        children.push((*&self.left).to_ast_kind());
+        children.push((*&self.right).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BinaryExpression(self)
     }
 }
 
@@ -490,36 +779,48 @@ impl<'a> GetChildren<'a> for PrivateInExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push(AstKind::PrivateIdentifier(&self.left));
-        children.push(AstKind::from_expression(&self.right));
+        children.push((*&self.right).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::PrivateInExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for LogicalExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.left));
-        children.push(AstKind::from_expression(&self.right));
+        children.push((*&self.left).to_ast_kind());
+        children.push((*&self.right).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::LogicalExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for ConditionalExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.test));
-        children.push(AstKind::from_expression(&self.consequent));
-        children.push(AstKind::from_expression(&self.alternate));
+        children.push((*&self.test).to_ast_kind());
+        children.push((*&self.consequent).to_ast_kind());
+        children.push((*&self.alternate).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ConditionalExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for AssignmentExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::AssignmentTarget(&self.left));
-        children.push(AstKind::from_expression(&self.right));
+        children.push((*&self.left).to_ast_kind());
+        children.push((*&self.right).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentExpression(self)
     }
 }
 
@@ -540,6 +841,21 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
             Self::ObjectAssignmentTarget(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::AssignmentTargetIdentifier(e) => AstKind::IdentifierReference(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+            Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
+            Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
@@ -557,6 +873,19 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::AssignmentTargetIdentifier(e) => AstKind::IdentifierReference(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
@@ -567,6 +896,12 @@ impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
             Self::ObjectAssignmentTarget(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
+            Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ArrayAssignmentTarget<'a> {
@@ -574,7 +909,7 @@ impl<'a> GetChildren<'a> for ArrayAssignmentTarget<'a> {
         let mut children = Vec::new();
         for opt_item in &self.elements {
             if let Some(item) = opt_item {
-                children.push(AstKind::from_assignment_target_maybe_default(item));
+                children.push((*item).to_ast_kind());
             }
         }
         if let Some(field) = &self.rest {
@@ -582,26 +917,35 @@ impl<'a> GetChildren<'a> for ArrayAssignmentTarget<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ArrayAssignmentTarget(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ObjectAssignmentTarget<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.properties {
-            children.push(AstKind::from_assignment_target_property(item));
+            children.push((*item).to_ast_kind());
         }
         if let Some(field) = &self.rest {
             children.push(AstKind::AssignmentTargetRest(field));
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ObjectAssignmentTarget(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetRest<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::AssignmentTarget(&self.target));
+        children.push((*&self.target).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentTargetRest(self)
     }
 }
 
@@ -623,14 +967,33 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
             Self::ObjectAssignmentTarget(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::AssignmentTargetWithDefault(e) => AstKind::AssignmentTargetWithDefault(e),
+            Self::AssignmentTargetIdentifier(e) => AstKind::IdentifierReference(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+            Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
+            Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetWithDefault<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::AssignmentTarget(&self.binding));
-        children.push(AstKind::from_expression(&self.init));
+        children.push((*&self.binding).to_ast_kind());
+        children.push((*&self.init).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentTargetWithDefault(self)
     }
 }
 
@@ -642,6 +1005,16 @@ impl<'a> GetChildren<'a> for AssignmentTargetProperty<'a> {
             Self::AssignmentTargetPropertyProperty(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::AssignmentTargetPropertyIdentifier(e) => {
+                AstKind::AssignmentTargetPropertyIdentifier(e)
+            }
+            Self::AssignmentTargetPropertyProperty(e) => {
+                AstKind::AssignmentTargetPropertyProperty(e)
+            }
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPropertyIdentifier<'a> {
@@ -649,18 +1022,24 @@ impl<'a> GetChildren<'a> for AssignmentTargetPropertyIdentifier<'a> {
         let mut children = Vec::new();
         children.push(AstKind::IdentifierReference(&self.binding));
         if let Some(field) = &self.init {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentTargetPropertyIdentifier(self)
     }
 }
 
 impl<'a> GetChildren<'a> for AssignmentTargetPropertyProperty<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::PropertyKey(&self.name));
-        children.push(AstKind::from_assignment_target_maybe_default(&self.binding));
+        children.push((*&self.name).to_ast_kind());
+        children.push((*&self.binding).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentTargetPropertyProperty(self)
     }
 }
 
@@ -668,9 +1047,12 @@ impl<'a> GetChildren<'a> for SequenceExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.expressions {
-            children.push(AstKind::from_expression(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::SequenceExpression(self)
     }
 }
 
@@ -678,21 +1060,30 @@ impl<'a> GetChildren<'a> for Super {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Super(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for AwaitExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AwaitExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for ChainExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_chain_element(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ChainExpression(self)
     }
 }
 
@@ -707,13 +1098,25 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ParenthesizedExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ParenthesizedExpression(self)
     }
 }
 
@@ -755,6 +1158,42 @@ impl<'a> GetChildren<'a> for Statement<'a> {
             Self::TSNamespaceExportDeclaration(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::BlockStatement(e) => AstKind::BlockStatement(e),
+            Self::BreakStatement(e) => AstKind::BreakStatement(e),
+            Self::ContinueStatement(e) => AstKind::ContinueStatement(e),
+            Self::DebuggerStatement(e) => AstKind::DebuggerStatement(e),
+            Self::DoWhileStatement(e) => AstKind::DoWhileStatement(e),
+            Self::EmptyStatement(e) => AstKind::EmptyStatement(e),
+            Self::ExpressionStatement(e) => AstKind::ExpressionStatement(e),
+            Self::ForInStatement(e) => AstKind::ForInStatement(e),
+            Self::ForOfStatement(e) => AstKind::ForOfStatement(e),
+            Self::ForStatement(e) => AstKind::ForStatement(e),
+            Self::IfStatement(e) => AstKind::IfStatement(e),
+            Self::LabeledStatement(e) => AstKind::LabeledStatement(e),
+            Self::ReturnStatement(e) => AstKind::ReturnStatement(e),
+            Self::SwitchStatement(e) => AstKind::SwitchStatement(e),
+            Self::ThrowStatement(e) => AstKind::ThrowStatement(e),
+            Self::TryStatement(e) => AstKind::TryStatement(e),
+            Self::WhileStatement(e) => AstKind::WhileStatement(e),
+            Self::WithStatement(e) => AstKind::WithStatement(e),
+            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::FunctionDeclaration(e) => AstKind::Function(e),
+            Self::ClassDeclaration(e) => AstKind::Class(e),
+            Self::TSTypeAliasDeclaration(e) => AstKind::TSTypeAliasDeclaration(e),
+            Self::TSInterfaceDeclaration(e) => AstKind::TSInterfaceDeclaration(e),
+            Self::TSEnumDeclaration(e) => AstKind::TSEnumDeclaration(e),
+            Self::TSModuleDeclaration(e) => AstKind::TSModuleDeclaration(e),
+            Self::TSImportEqualsDeclaration(e) => AstKind::TSImportEqualsDeclaration(e),
+            Self::ImportDeclaration(e) => AstKind::ImportDeclaration(e),
+            Self::ExportAllDeclaration(e) => AstKind::ExportAllDeclaration(e),
+            Self::ExportDefaultDeclaration(e) => AstKind::ExportDefaultDeclaration(e),
+            Self::ExportNamedDeclaration(e) => AstKind::ExportNamedDeclaration(e),
+            Self::TSExportAssignment(e) => AstKind::TSExportAssignment(e),
+            Self::TSNamespaceExportDeclaration(e) => AstKind::TSNamespaceExportDeclaration(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for Directive<'a> {
@@ -763,11 +1202,17 @@ impl<'a> GetChildren<'a> for Directive<'a> {
         children.push(AstKind::StringLiteral(&self.expression));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Directive(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for Hashbang<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Hashbang(self)
     }
 }
 
@@ -775,9 +1220,12 @@ impl<'a> GetChildren<'a> for BlockStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.body {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BlockStatement(self)
     }
 }
 
@@ -795,6 +1243,18 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
             Self::TSImportEqualsDeclaration(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::FunctionDeclaration(e) => AstKind::Function(e),
+            Self::ClassDeclaration(e) => AstKind::Class(e),
+            Self::TSTypeAliasDeclaration(e) => AstKind::TSTypeAliasDeclaration(e),
+            Self::TSInterfaceDeclaration(e) => AstKind::TSInterfaceDeclaration(e),
+            Self::TSEnumDeclaration(e) => AstKind::TSEnumDeclaration(e),
+            Self::TSModuleDeclaration(e) => AstKind::TSModuleDeclaration(e),
+            Self::TSImportEqualsDeclaration(e) => AstKind::TSImportEqualsDeclaration(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
@@ -805,6 +1265,9 @@ impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::VariableDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for VariableDeclarator<'a> {
@@ -812,9 +1275,12 @@ impl<'a> GetChildren<'a> for VariableDeclarator<'a> {
         let mut children = Vec::new();
         children.push(AstKind::BindingPattern(&self.id));
         if let Some(field) = &self.init {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::VariableDeclarator(self)
     }
 }
 
@@ -822,43 +1288,58 @@ impl<'a> GetChildren<'a> for EmptyStatement {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::EmptyStatement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ExpressionStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExpressionStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for IfStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.test));
-        children.push(AstKind::from_statement(&self.consequent));
+        children.push((*&self.test).to_ast_kind());
+        children.push((*&self.consequent).to_ast_kind());
         if let Some(field) = &self.alternate {
-            children.push(AstKind::from_statement(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::IfStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for DoWhileStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_statement(&self.body));
-        children.push(AstKind::from_expression(&self.test));
+        children.push((*&self.body).to_ast_kind());
+        children.push((*&self.test).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::DoWhileStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for WhileStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.test));
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.test).to_ast_kind());
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::WhileStatement(self)
     }
 }
 
@@ -866,16 +1347,19 @@ impl<'a> GetChildren<'a> for ForStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.init {
-            children.push(AstKind::ForStatementInit(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.test {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.update {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ForStatement(self)
     }
 }
 
@@ -928,15 +1412,65 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ForInStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_for_statement_left(&self.left));
-        children.push(AstKind::from_expression(&self.right));
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.left).to_ast_kind());
+        children.push((*&self.right).to_ast_kind());
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ForInStatement(self)
     }
 }
 
@@ -958,15 +1492,34 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
             Self::ObjectAssignmentTarget(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::AssignmentTargetIdentifier(e) => AstKind::IdentifierReference(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+            Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
+            Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ForOfStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_for_statement_left(&self.left));
-        children.push(AstKind::from_expression(&self.right));
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.left).to_ast_kind());
+        children.push((*&self.right).to_ast_kind());
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ForOfStatement(self)
     }
 }
 
@@ -978,6 +1531,9 @@ impl<'a> GetChildren<'a> for ContinueStatement<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ContinueStatement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for BreakStatement<'a> {
@@ -988,35 +1544,47 @@ impl<'a> GetChildren<'a> for BreakStatement<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BreakStatement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ReturnStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.argument {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ReturnStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for WithStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.object));
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.object).to_ast_kind());
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::WithStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for SwitchStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.discriminant));
+        children.push((*&self.discriminant).to_ast_kind());
         for item in &self.cases {
             children.push(AstKind::SwitchCase(item));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::SwitchStatement(self)
     }
 }
 
@@ -1024,12 +1592,15 @@ impl<'a> GetChildren<'a> for SwitchCase<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.test {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         for item in &self.consequent {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::SwitchCase(self)
     }
 }
 
@@ -1037,16 +1608,22 @@ impl<'a> GetChildren<'a> for LabeledStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push(AstKind::LabelIdentifier(&self.label));
-        children.push(AstKind::from_statement(&self.body));
+        children.push((*&self.body).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::LabeledStatement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for ThrowStatement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ThrowStatement(self)
     }
 }
 
@@ -1062,6 +1639,9 @@ impl<'a> GetChildren<'a> for TryStatement<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TryStatement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for CatchClause<'a> {
@@ -1073,6 +1653,9 @@ impl<'a> GetChildren<'a> for CatchClause<'a> {
         children.push(AstKind::BlockStatement(&*self.body));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::CatchClause(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for CatchParameter<'a> {
@@ -1081,22 +1664,31 @@ impl<'a> GetChildren<'a> for CatchParameter<'a> {
         children.push(AstKind::BindingPattern(&self.pattern));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::CatchParameter(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for DebuggerStatement {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::DebuggerStatement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingPattern<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_binding_pattern_kind(&self.kind));
+        children.push((*&self.kind).to_ast_kind());
         if let Some(field) = &self.type_annotation {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BindingPattern(self)
     }
 }
 
@@ -1110,14 +1702,25 @@ impl<'a> GetChildren<'a> for BindingPatternKind<'a> {
             Self::AssignmentPattern(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::BindingIdentifier(e) => AstKind::BindingIdentifier(e),
+            Self::ObjectPattern(e) => AstKind::ObjectPattern(e),
+            Self::ArrayPattern(e) => AstKind::ArrayPattern(e),
+            Self::AssignmentPattern(e) => AstKind::AssignmentPattern(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AssignmentPattern<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push(AstKind::BindingPattern(&self.left));
-        children.push(AstKind::from_expression(&self.right));
+        children.push((*&self.right).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AssignmentPattern(self)
     }
 }
 
@@ -1132,14 +1735,20 @@ impl<'a> GetChildren<'a> for ObjectPattern<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ObjectPattern(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingProperty<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         children.push(AstKind::BindingPattern(&self.value));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BindingProperty(self)
     }
 }
 
@@ -1156,6 +1765,9 @@ impl<'a> GetChildren<'a> for ArrayPattern<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ArrayPattern(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for BindingRestElement<'a> {
@@ -1163,6 +1775,9 @@ impl<'a> GetChildren<'a> for BindingRestElement<'a> {
         let mut children = Vec::new();
         children.push(AstKind::BindingPattern(&self.argument));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::BindingRestElement(self)
     }
 }
 
@@ -1187,6 +1802,9 @@ impl<'a> GetChildren<'a> for Function<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Function(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for FormalParameters<'a> {
@@ -1200,6 +1818,9 @@ impl<'a> GetChildren<'a> for FormalParameters<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::FormalParameters(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for FormalParameter<'a> {
@@ -1211,6 +1832,9 @@ impl<'a> GetChildren<'a> for FormalParameter<'a> {
         children.push(AstKind::BindingPattern(&self.pattern));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::FormalParameter(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for FunctionBody<'a> {
@@ -1220,9 +1844,12 @@ impl<'a> GetChildren<'a> for FunctionBody<'a> {
             children.push(AstKind::Directive(item));
         }
         for item in &self.statements {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::FunctionBody(self)
     }
 }
 
@@ -1239,15 +1866,21 @@ impl<'a> GetChildren<'a> for ArrowFunctionExpression<'a> {
         children.push(AstKind::FunctionBody(&*self.body));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ArrowFunctionExpression(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for YieldExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.argument {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::YieldExpression(self)
     }
 }
 
@@ -1264,7 +1897,7 @@ impl<'a> GetChildren<'a> for Class<'a> {
             children.push(AstKind::TSTypeParameterDeclaration(field));
         }
         if let Some(field) = &self.super_class {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.super_type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
@@ -1277,15 +1910,21 @@ impl<'a> GetChildren<'a> for Class<'a> {
         children.push(AstKind::ClassBody(&*self.body));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Class(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ClassBody<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.body {
-            children.push(AstKind::from_class_element(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ClassBody(self)
     }
 }
 
@@ -1300,6 +1939,15 @@ impl<'a> GetChildren<'a> for ClassElement<'a> {
             Self::TSIndexSignature(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::StaticBlock(e) => AstKind::StaticBlock(e),
+            Self::MethodDefinition(e) => AstKind::MethodDefinition(e),
+            Self::PropertyDefinition(e) => AstKind::PropertyDefinition(e),
+            Self::AccessorProperty(e) => AstKind::AccessorProperty(e),
+            Self::TSIndexSignature(e) => AstKind::TSIndexSignature(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for MethodDefinition<'a> {
@@ -1308,9 +1956,12 @@ impl<'a> GetChildren<'a> for MethodDefinition<'a> {
         for item in &self.decorators {
             children.push(AstKind::Decorator(item));
         }
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         children.push(AstKind::Function(&*self.value));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::MethodDefinition(self)
     }
 }
 
@@ -1320,14 +1971,17 @@ impl<'a> GetChildren<'a> for PropertyDefinition<'a> {
         for item in &self.decorators {
             children.push(AstKind::Decorator(item));
         }
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         if let Some(field) = &self.value {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.type_annotation {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::PropertyDefinition(self)
     }
 }
 
@@ -1335,15 +1989,21 @@ impl<'a> GetChildren<'a> for PrivateIdentifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::PrivateIdentifier(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for StaticBlock<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.body {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::StaticBlock(self)
     }
 }
 
@@ -1359,6 +2019,16 @@ impl<'a> GetChildren<'a> for ModuleDeclaration<'a> {
             Self::TSNamespaceExportDeclaration(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ImportDeclaration(e) => AstKind::ImportDeclaration(e),
+            Self::ExportAllDeclaration(e) => AstKind::ExportAllDeclaration(e),
+            Self::ExportDefaultDeclaration(e) => AstKind::ExportDefaultDeclaration(e),
+            Self::ExportNamedDeclaration(e) => AstKind::ExportNamedDeclaration(e),
+            Self::TSExportAssignment(e) => AstKind::TSExportAssignment(e),
+            Self::TSNamespaceExportDeclaration(e) => AstKind::TSNamespaceExportDeclaration(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for AccessorProperty<'a> {
@@ -1367,25 +2037,31 @@ impl<'a> GetChildren<'a> for AccessorProperty<'a> {
         for item in &self.decorators {
             children.push(AstKind::Decorator(item));
         }
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         if let Some(field) = &self.value {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.type_annotation {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::AccessorProperty(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.source));
+        children.push((*&self.source).to_ast_kind());
         for item in &self.arguments {
-            children.push(AstKind::from_expression(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportExpression(self)
     }
 }
 
@@ -1394,7 +2070,7 @@ impl<'a> GetChildren<'a> for ImportDeclaration<'a> {
         let mut children = Vec::new();
         if let Some(vec) = &self.specifiers {
             for item in vec {
-                children.push(AstKind::from_import_declaration_specifier(item));
+                children.push((*item).to_ast_kind());
             }
         }
         children.push(AstKind::StringLiteral(&self.source));
@@ -1402,6 +2078,9 @@ impl<'a> GetChildren<'a> for ImportDeclaration<'a> {
             children.push(AstKind::WithClause(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportDeclaration(self)
     }
 }
 
@@ -1414,14 +2093,24 @@ impl<'a> GetChildren<'a> for ImportDeclarationSpecifier<'a> {
             Self::ImportNamespaceSpecifier(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ImportSpecifier(e) => AstKind::ImportSpecifier(e),
+            Self::ImportDefaultSpecifier(e) => AstKind::ImportDefaultSpecifier(e),
+            Self::ImportNamespaceSpecifier(e) => AstKind::ImportNamespaceSpecifier(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportSpecifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_module_export_name(&self.imported));
+        children.push((*&self.imported).to_ast_kind());
         children.push(AstKind::BindingIdentifier(&self.local));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportSpecifier(self)
     }
 }
 
@@ -1431,6 +2120,9 @@ impl<'a> GetChildren<'a> for ImportDefaultSpecifier<'a> {
         children.push(AstKind::BindingIdentifier(&self.local));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportDefaultSpecifier(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportNamespaceSpecifier<'a> {
@@ -1438,6 +2130,9 @@ impl<'a> GetChildren<'a> for ImportNamespaceSpecifier<'a> {
         let mut children = Vec::new();
         children.push(AstKind::BindingIdentifier(&self.local));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportNamespaceSpecifier(self)
     }
 }
 
@@ -1450,14 +2145,20 @@ impl<'a> GetChildren<'a> for WithClause<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::WithClause(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ImportAttribute<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_import_attribute_key(&self.key));
+        children.push((*&self.key).to_ast_kind());
         children.push(AstKind::StringLiteral(&self.value));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ImportAttribute(self)
     }
 }
 
@@ -1469,13 +2170,19 @@ impl<'a> GetChildren<'a> for ImportAttributeKey<'a> {
             Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::IdentifierName(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ExportNamedDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.declaration {
-            children.push(AstKind::from_declaration(field));
+            children.push((*field).to_ast_kind());
         }
         for item in &self.specifiers {
             children.push(AstKind::ExportSpecifier(item));
@@ -1488,14 +2195,20 @@ impl<'a> GetChildren<'a> for ExportNamedDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExportNamedDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ExportDefaultDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_export_default_declaration_kind(&self.declaration));
-        children.push(AstKind::from_module_export_name(&self.exported));
+        children.push((*&self.declaration).to_ast_kind());
+        children.push((*&self.exported).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExportDefaultDeclaration(self)
     }
 }
 
@@ -1503,7 +2216,7 @@ impl<'a> GetChildren<'a> for ExportAllDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.exported {
-            children.push(AstKind::from_module_export_name(field));
+            children.push((*field).to_ast_kind());
         }
         children.push(AstKind::StringLiteral(&self.source));
         if let Some(field) = &self.with_clause {
@@ -1511,14 +2224,20 @@ impl<'a> GetChildren<'a> for ExportAllDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExportAllDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for ExportSpecifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_module_export_name(&self.local));
-        children.push(AstKind::from_module_export_name(&self.exported));
+        children.push((*&self.local).to_ast_kind());
+        children.push((*&self.exported).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExportSpecifier(self)
     }
 }
 
@@ -1573,6 +2292,55 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::FunctionDeclaration(e) => AstKind::Function(e),
+            Self::ClassDeclaration(e) => AstKind::Class(e),
+            Self::TSInterfaceDeclaration(e) => AstKind::TSInterfaceDeclaration(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for ModuleExportName<'a> {
@@ -1582,6 +2350,13 @@ impl<'a> GetChildren<'a> for ModuleExportName<'a> {
             Self::IdentifierName(child) => vec![AstKind::IdentifierName(child)],
             Self::IdentifierReference(child) => vec![AstKind::IdentifierReference(child)],
             Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::IdentifierName(e) => AstKind::IdentifierName(e),
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
         }
     }
 }
@@ -1594,6 +2369,9 @@ impl<'a> GetChildren<'a> for TSThisParameter<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSThisParameter(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSEnumDeclaration<'a> {
@@ -1605,16 +2383,22 @@ impl<'a> GetChildren<'a> for TSEnumDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSEnumDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSEnumMember<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_enum_member_name(&self.id));
+        children.push((*&self.id).to_ast_kind());
         if let Some(field) = &self.initializer {
-            children.push(AstKind::from_expression(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSEnumMember(self)
     }
 }
 
@@ -1626,21 +2410,33 @@ impl<'a> GetChildren<'a> for TSEnumMemberName<'a> {
             Self::String(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::IdentifierName(e),
+            Self::String(e) => AstKind::StringLiteral(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeAnnotation<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeAnnotation(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSLiteralType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_literal(&self.literal));
+        children.push((*&self.literal).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSLiteralType(self)
     }
 }
 
@@ -1656,6 +2452,18 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
             Self::StringLiteral(_) => vec![],
             Self::TemplateLiteral(_) => vec![],
             Self::UnaryExpression(_) => vec![],
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
         }
     }
 }
@@ -1704,16 +2512,61 @@ impl<'a> GetChildren<'a> for TSType<'a> {
             Self::JSDocUnknownType(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::TSAnyKeyword(e) => AstKind::TSAnyKeyword(e),
+            Self::TSBigIntKeyword(e) => AstKind::TSBigIntKeyword(e),
+            Self::TSBooleanKeyword(e) => AstKind::TSBooleanKeyword(e),
+            Self::TSIntrinsicKeyword(e) => AstKind::TSIntrinsicKeyword(e),
+            Self::TSNeverKeyword(e) => AstKind::TSNeverKeyword(e),
+            Self::TSNullKeyword(e) => AstKind::TSNullKeyword(e),
+            Self::TSNumberKeyword(e) => AstKind::TSNumberKeyword(e),
+            Self::TSObjectKeyword(e) => AstKind::TSObjectKeyword(e),
+            Self::TSStringKeyword(e) => AstKind::TSStringKeyword(e),
+            Self::TSSymbolKeyword(e) => AstKind::TSSymbolKeyword(e),
+            Self::TSUndefinedKeyword(e) => AstKind::TSUndefinedKeyword(e),
+            Self::TSUnknownKeyword(e) => AstKind::TSUnknownKeyword(e),
+            Self::TSVoidKeyword(e) => AstKind::TSVoidKeyword(e),
+            Self::TSArrayType(e) => AstKind::TSArrayType(e),
+            Self::TSConditionalType(e) => AstKind::TSConditionalType(e),
+            Self::TSConstructorType(e) => AstKind::TSConstructorType(e),
+            Self::TSFunctionType(e) => AstKind::TSFunctionType(e),
+            Self::TSImportType(e) => AstKind::TSImportType(e),
+            Self::TSIndexedAccessType(e) => AstKind::TSIndexedAccessType(e),
+            Self::TSInferType(e) => AstKind::TSInferType(e),
+            Self::TSIntersectionType(e) => AstKind::TSIntersectionType(e),
+            Self::TSLiteralType(e) => AstKind::TSLiteralType(e),
+            Self::TSMappedType(e) => AstKind::TSMappedType(e),
+            Self::TSNamedTupleMember(e) => AstKind::TSNamedTupleMember(e),
+            Self::TSQualifiedName(e) => AstKind::TSQualifiedName(e),
+            Self::TSTemplateLiteralType(e) => AstKind::TSTemplateLiteralType(e),
+            Self::TSThisType(e) => AstKind::TSThisType(e),
+            Self::TSTupleType(e) => AstKind::TSTupleType(e),
+            Self::TSTypeLiteral(e) => AstKind::TSTypeLiteral(e),
+            Self::TSTypeOperatorType(e) => AstKind::TSTypeOperator(e),
+            Self::TSTypePredicate(e) => AstKind::TSTypePredicate(e),
+            Self::TSTypeQuery(e) => AstKind::TSTypeQuery(e),
+            Self::TSTypeReference(e) => AstKind::TSTypeReference(e),
+            Self::TSUnionType(e) => AstKind::TSUnionType(e),
+            Self::TSParenthesizedType(e) => AstKind::TSParenthesizedType(e),
+            Self::JSDocNullableType(e) => AstKind::JSDocNullableType(e),
+            Self::JSDocNonNullableType(e) => AstKind::JSDocNonNullableType(e),
+            Self::JSDocUnknownType(e) => AstKind::JSDocUnknownType(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSConditionalType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.check_type));
-        children.push(AstKind::from_ts_type(&self.extends_type));
-        children.push(AstKind::from_ts_type(&self.true_type));
-        children.push(AstKind::from_ts_type(&self.false_type));
+        children.push((*&self.check_type).to_ast_kind());
+        children.push((*&self.extends_type).to_ast_kind());
+        children.push((*&self.true_type).to_ast_kind());
+        children.push((*&self.false_type).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSConditionalType(self)
     }
 }
 
@@ -1721,9 +2574,12 @@ impl<'a> GetChildren<'a> for TSUnionType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.types {
-            children.push(AstKind::from_ts_type(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSUnionType(self)
     }
 }
 
@@ -1731,42 +2587,57 @@ impl<'a> GetChildren<'a> for TSIntersectionType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.types {
-            children.push(AstKind::from_ts_type(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSIntersectionType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSParenthesizedType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSParenthesizedType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSTypeOperator<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeOperator(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSArrayType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.element_type));
+        children.push((*&self.element_type).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSArrayType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSIndexedAccessType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.object_type));
-        children.push(AstKind::from_ts_type(&self.index_type));
+        children.push((*&self.object_type).to_ast_kind());
+        children.push((*&self.index_type).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSIndexedAccessType(self)
     }
 }
 
@@ -1774,34 +2645,46 @@ impl<'a> GetChildren<'a> for TSTupleType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.element_types {
-            children.push(AstKind::from_ts_tuple_element(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTupleType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSNamedTupleMember<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_tuple_element(&self.element_type));
+        children.push((*&self.element_type).to_ast_kind());
         children.push(AstKind::IdentifierName(&self.label));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNamedTupleMember(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSOptionalType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSOptionalType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSRestType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSRestType(self)
     }
 }
 
@@ -1851,11 +2734,58 @@ impl<'a> GetChildren<'a> for TSTupleElement<'a> {
             Self::JSDocUnknownType(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::TSOptionalType(e) => AstKind::TSOptionalType(e),
+            Self::TSRestType(e) => AstKind::TSRestType(e),
+            Self::TSAnyKeyword(e) => AstKind::TSAnyKeyword(e),
+            Self::TSBigIntKeyword(e) => AstKind::TSBigIntKeyword(e),
+            Self::TSBooleanKeyword(e) => AstKind::TSBooleanKeyword(e),
+            Self::TSIntrinsicKeyword(e) => AstKind::TSIntrinsicKeyword(e),
+            Self::TSNeverKeyword(e) => AstKind::TSNeverKeyword(e),
+            Self::TSNullKeyword(e) => AstKind::TSNullKeyword(e),
+            Self::TSNumberKeyword(e) => AstKind::TSNumberKeyword(e),
+            Self::TSObjectKeyword(e) => AstKind::TSObjectKeyword(e),
+            Self::TSStringKeyword(e) => AstKind::TSStringKeyword(e),
+            Self::TSSymbolKeyword(e) => AstKind::TSSymbolKeyword(e),
+            Self::TSUndefinedKeyword(e) => AstKind::TSUndefinedKeyword(e),
+            Self::TSUnknownKeyword(e) => AstKind::TSUnknownKeyword(e),
+            Self::TSVoidKeyword(e) => AstKind::TSVoidKeyword(e),
+            Self::TSArrayType(e) => AstKind::TSArrayType(e),
+            Self::TSConditionalType(e) => AstKind::TSConditionalType(e),
+            Self::TSConstructorType(e) => AstKind::TSConstructorType(e),
+            Self::TSFunctionType(e) => AstKind::TSFunctionType(e),
+            Self::TSImportType(e) => AstKind::TSImportType(e),
+            Self::TSIndexedAccessType(e) => AstKind::TSIndexedAccessType(e),
+            Self::TSInferType(e) => AstKind::TSInferType(e),
+            Self::TSIntersectionType(e) => AstKind::TSIntersectionType(e),
+            Self::TSLiteralType(e) => AstKind::TSLiteralType(e),
+            Self::TSMappedType(e) => AstKind::TSMappedType(e),
+            Self::TSNamedTupleMember(e) => AstKind::TSNamedTupleMember(e),
+            Self::TSQualifiedName(e) => AstKind::TSQualifiedName(e),
+            Self::TSTemplateLiteralType(e) => AstKind::TSTemplateLiteralType(e),
+            Self::TSThisType(e) => AstKind::TSThisType(e),
+            Self::TSTupleType(e) => AstKind::TSTupleType(e),
+            Self::TSTypeLiteral(e) => AstKind::TSTypeLiteral(e),
+            Self::TSTypeOperatorType(e) => AstKind::TSTypeOperator(e),
+            Self::TSTypePredicate(e) => AstKind::TSTypePredicate(e),
+            Self::TSTypeQuery(e) => AstKind::TSTypeQuery(e),
+            Self::TSTypeReference(e) => AstKind::TSTypeReference(e),
+            Self::TSUnionType(e) => AstKind::TSUnionType(e),
+            Self::TSParenthesizedType(e) => AstKind::TSParenthesizedType(e),
+            Self::JSDocNullableType(e) => AstKind::JSDocNullableType(e),
+            Self::JSDocNonNullableType(e) => AstKind::JSDocNonNullableType(e),
+            Self::JSDocUnknownType(e) => AstKind::JSDocUnknownType(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSAnyKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSAnyKeyword(self)
     }
 }
 
@@ -1863,11 +2793,17 @@ impl<'a> GetChildren<'a> for TSStringKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSStringKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSBooleanKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSBooleanKeyword(self)
     }
 }
 
@@ -1875,11 +2811,17 @@ impl<'a> GetChildren<'a> for TSNumberKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNumberKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSNeverKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNeverKeyword(self)
     }
 }
 
@@ -1887,11 +2829,17 @@ impl<'a> GetChildren<'a> for TSIntrinsicKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSIntrinsicKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSUnknownKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSUnknownKeyword(self)
     }
 }
 
@@ -1899,11 +2847,17 @@ impl<'a> GetChildren<'a> for TSNullKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNullKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSUndefinedKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSUndefinedKeyword(self)
     }
 }
 
@@ -1911,11 +2865,17 @@ impl<'a> GetChildren<'a> for TSVoidKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSVoidKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSSymbolKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSSymbolKeyword(self)
     }
 }
 
@@ -1923,11 +2883,17 @@ impl<'a> GetChildren<'a> for TSThisType {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSThisType(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSObjectKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSObjectKeyword(self)
     }
 }
 
@@ -1935,16 +2901,22 @@ impl<'a> GetChildren<'a> for TSBigIntKeyword {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSBigIntKeyword(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeReference<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::TSTypeName(&self.type_name));
+        children.push((*&self.type_name).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeReference(self)
     }
 }
 
@@ -1956,14 +2928,23 @@ impl<'a> GetChildren<'a> for TSTypeName<'a> {
             Self::QualifiedName(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSQualifiedName<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::TSTypeName(&self.left));
+        children.push((*&self.left).to_ast_kind());
         children.push(AstKind::IdentifierName(&self.right));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSQualifiedName(self)
     }
 }
 
@@ -1971,9 +2952,12 @@ impl<'a> GetChildren<'a> for TSTypeParameterInstantiation<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.params {
-            children.push(AstKind::from_ts_type(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeParameterInstantiation(self)
     }
 }
 
@@ -1982,12 +2966,15 @@ impl<'a> GetChildren<'a> for TSTypeParameter<'a> {
         let mut children = Vec::new();
         children.push(AstKind::BindingIdentifier(&self.name));
         if let Some(field) = &self.constraint {
-            children.push(AstKind::from_ts_type(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.default {
-            children.push(AstKind::from_ts_type(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeParameter(self)
     }
 }
 
@@ -1999,6 +2986,9 @@ impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeParameterDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
@@ -2008,19 +2998,25 @@ impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterDeclaration(field));
         }
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeAliasDeclaration(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSClassImplements<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::TSTypeName(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSClassImplements(self)
     }
 }
 
@@ -2039,26 +3035,35 @@ impl<'a> GetChildren<'a> for TSInterfaceDeclaration<'a> {
         children.push(AstKind::TSInterfaceBody(&*self.body));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSInterfaceDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSInterfaceBody<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.body {
-            children.push(AstKind::from_ts_signature(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSInterfaceBody(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSPropertySignature<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         if let Some(field) = &self.type_annotation {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSPropertySignature(self)
     }
 }
 
@@ -2073,6 +3078,15 @@ impl<'a> GetChildren<'a> for TSSignature<'a> {
             Self::TSMethodSignature(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::TSIndexSignature(e) => AstKind::TSIndexSignature(e),
+            Self::TSPropertySignature(e) => AstKind::TSPropertySignature(e),
+            Self::TSCallSignatureDeclaration(e) => AstKind::TSCallSignatureDeclaration(e),
+            Self::TSConstructSignatureDeclaration(e) => AstKind::TSConstructSignatureDeclaration(e),
+            Self::TSMethodSignature(e) => AstKind::TSMethodSignature(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSIndexSignature<'a> {
@@ -2083,6 +3097,9 @@ impl<'a> GetChildren<'a> for TSIndexSignature<'a> {
         }
         children.push(AstKind::TSTypeAnnotation(&*self.type_annotation));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSIndexSignature(self)
     }
 }
 
@@ -2101,12 +3118,15 @@ impl<'a> GetChildren<'a> for TSCallSignatureDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSCallSignatureDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSMethodSignature<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::PropertyKey(&self.key));
+        children.push((*&self.key).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterDeclaration(field));
         }
@@ -2118,6 +3138,9 @@ impl<'a> GetChildren<'a> for TSMethodSignature<'a> {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSMethodSignature(self)
     }
 }
 
@@ -2133,6 +3156,9 @@ impl<'a> GetChildren<'a> for TSConstructSignatureDeclaration<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSConstructSignatureDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
@@ -2141,27 +3167,36 @@ impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
         children.push(AstKind::TSTypeAnnotation(&*self.type_annotation));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSIndexSignatureName(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSInterfaceHeritage<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSInterfaceHeritage(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSTypePredicate<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type_predicate_name(&self.parameter_name));
+        children.push((*&self.parameter_name).to_ast_kind());
         if let Some(field) = &self.type_annotation {
             children.push(AstKind::TSTypeAnnotation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypePredicate(self)
     }
 }
 
@@ -2173,16 +3208,25 @@ impl<'a> GetChildren<'a> for TSTypePredicateName<'a> {
             Self::This(child) => vec![AstKind::TSThisType(child)],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::IdentifierName(e),
+            Self::This(e) => AstKind::TSThisType(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSModuleDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_module_declaration_name(&self.id));
+        children.push((*&self.id).to_ast_kind());
         if let Some(field) = &self.body {
-            children.push(AstKind::from_ts_module_declaration_body(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSModuleDeclaration(self)
     }
 }
 
@@ -2192,6 +3236,12 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationName<'a> {
         match self {
             Self::Identifier(child) => vec![AstKind::BindingIdentifier(child)],
             Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::BindingIdentifier(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
         }
     }
 }
@@ -2204,6 +3254,12 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationBody<'a> {
             Self::TSModuleBlock(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::TSModuleDeclaration(e) => AstKind::TSModuleDeclaration(e),
+            Self::TSModuleBlock(e) => AstKind::TSModuleBlock(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSModuleBlock<'a> {
@@ -2213,9 +3269,12 @@ impl<'a> GetChildren<'a> for TSModuleBlock<'a> {
             children.push(AstKind::Directive(item));
         }
         for item in &self.body {
-            children.push(AstKind::from_statement(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSModuleBlock(self)
     }
 }
 
@@ -2223,9 +3282,12 @@ impl<'a> GetChildren<'a> for TSTypeLiteral<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.members {
-            children.push(AstKind::from_ts_signature(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeLiteral(self)
     }
 }
 
@@ -2235,16 +3297,22 @@ impl<'a> GetChildren<'a> for TSInferType<'a> {
         children.push(AstKind::TSTypeParameter(&*self.type_parameter));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSInferType(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSTypeQuery<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type_query_expr_name(&self.expr_name));
+        children.push((*&self.expr_name).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeQuery(self)
     }
 }
 
@@ -2257,14 +3325,21 @@ impl<'a> GetChildren<'a> for TSTypeQueryExprName<'a> {
             Self::QualifiedName(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::TSImportType(e) => AstKind::TSImportType(e),
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSImportType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.parameter));
+        children.push((*&self.parameter).to_ast_kind());
         if let Some(field) = &self.qualifier {
-            children.push(AstKind::TSTypeName(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.attributes {
             children.push(AstKind::TSImportAttributes(field));
@@ -2273,6 +3348,9 @@ impl<'a> GetChildren<'a> for TSImportType<'a> {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSImportType(self)
     }
 }
 
@@ -2285,14 +3363,20 @@ impl<'a> GetChildren<'a> for TSImportAttributes<'a> {
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSImportAttributes(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSImportAttribute<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_import_attribute_name(&self.name));
-        children.push(AstKind::from_expression(&self.value));
+        children.push((*&self.name).to_ast_kind());
+        children.push((*&self.value).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSImportAttribute(self)
     }
 }
 
@@ -2302,6 +3386,12 @@ impl<'a> GetChildren<'a> for TSImportAttributeName<'a> {
         match self {
             Self::Identifier(child) => vec![AstKind::IdentifierName(child)],
             Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::IdentifierName(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
         }
     }
 }
@@ -2319,6 +3409,9 @@ impl<'a> GetChildren<'a> for TSFunctionType<'a> {
         children.push(AstKind::TSTypeAnnotation(&*self.return_type));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSFunctionType(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSConstructorType<'a> {
@@ -2331,6 +3424,9 @@ impl<'a> GetChildren<'a> for TSConstructorType<'a> {
         children.push(AstKind::TSTypeAnnotation(&*self.return_type));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSConstructorType(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSMappedType<'a> {
@@ -2338,12 +3434,15 @@ impl<'a> GetChildren<'a> for TSMappedType<'a> {
         let mut children = Vec::new();
         children.push(AstKind::TSTypeParameter(&*self.type_parameter));
         if let Some(field) = &self.name_type {
-            children.push(AstKind::from_ts_type(field));
+            children.push((*field).to_ast_kind());
         }
         if let Some(field) = &self.type_annotation {
-            children.push(AstKind::from_ts_type(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSMappedType(self)
     }
 }
 
@@ -2354,36 +3453,48 @@ impl<'a> GetChildren<'a> for TSTemplateLiteralType<'a> {
             children.push(AstKind::TemplateElement(item));
         }
         for item in &self.types {
-            children.push(AstKind::from_ts_type(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTemplateLiteralType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSAsExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.expression).to_ast_kind());
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSAsExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSSatisfiesExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.expression).to_ast_kind());
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSSatisfiesExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSTypeAssertion<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.expression).to_ast_kind());
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSTypeAssertion(self)
     }
 }
 
@@ -2391,8 +3502,11 @@ impl<'a> GetChildren<'a> for TSImportEqualsDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push(AstKind::BindingIdentifier(&self.id));
-        children.push(AstKind::TSModuleReference(&self.module_reference));
+        children.push((*&self.module_reference).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSImportEqualsDeclaration(self)
     }
 }
 
@@ -2405,6 +3519,13 @@ impl<'a> GetChildren<'a> for TSModuleReference<'a> {
             Self::QualifiedName(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::ExternalModuleReference(e) => AstKind::TSExternalModuleReference(e),
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::QualifiedName(e) => AstKind::TSQualifiedName(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for TSExternalModuleReference<'a> {
@@ -2413,29 +3534,41 @@ impl<'a> GetChildren<'a> for TSExternalModuleReference<'a> {
         children.push(AstKind::StringLiteral(&self.expression));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSExternalModuleReference(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSNonNullExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNonNullExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for Decorator<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::Decorator(self)
     }
 }
 
 impl<'a> GetChildren<'a> for TSExportAssignment<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSExportAssignment(self)
     }
 }
 
@@ -2445,36 +3578,51 @@ impl<'a> GetChildren<'a> for TSNamespaceExportDeclaration<'a> {
         children.push(AstKind::IdentifierName(&self.id));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSNamespaceExportDeclaration(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for TSInstantiationExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children.push(AstKind::TSTypeParameterInstantiation(&*self.type_parameters));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::TSInstantiationExpression(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSDocNullableType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSDocNullableType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSDocNonNullableType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_ts_type(&self.type_annotation));
+        children.push((*&self.type_annotation).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSDocNonNullableType(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSDocUnknownType {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSDocUnknownType(self)
     }
 }
 
@@ -2486,41 +3634,55 @@ impl<'a> GetChildren<'a> for JSXElement<'a> {
             children.push(AstKind::JSXClosingElement(field));
         }
         for item in &self.children {
-            children.push(AstKind::from_jsx_child(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXElement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSXOpeningElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::JSXElementName(&self.name));
+        children.push((*&self.name).to_ast_kind());
         for item in &self.attributes {
-            children.push(AstKind::JSXAttributeItem(item));
+            children.push((*item).to_ast_kind());
         }
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXOpeningElement(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXClosingElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::JSXElementName(&self.name));
+        children.push((*&self.name).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXClosingElement(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSXFragment<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
+        children.push(AstKind::JSXOpeningFragment(&self.opening_fragment));
+        children.push(AstKind::JSXClosingFragment(&self.closing_fragment));
         for item in &self.children {
-            children.push(AstKind::from_jsx_child(item));
+            children.push((*item).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXFragment(self)
     }
 }
 
@@ -2528,11 +3690,17 @@ impl<'a> GetChildren<'a> for JSXOpeningFragment {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXOpeningFragment(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXClosingFragment {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXClosingFragment(self)
     }
 }
 
@@ -2547,6 +3715,15 @@ impl<'a> GetChildren<'a> for JSXElementName<'a> {
             Self::ThisExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::JSXIdentifier(e),
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::NamespacedName(e) => AstKind::JSXNamespacedName(e),
+            Self::MemberExpression(e) => AstKind::JSXMemberExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXNamespacedName<'a> {
@@ -2556,14 +3733,20 @@ impl<'a> GetChildren<'a> for JSXNamespacedName<'a> {
         children.push(AstKind::JSXIdentifier(&self.property));
         children
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXNamespacedName(self)
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXMemberExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::JSXMemberExpressionObject(&self.object));
+        children.push((*&self.object).to_ast_kind());
         children.push(AstKind::JSXIdentifier(&self.property));
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXMemberExpression(self)
     }
 }
 
@@ -2576,13 +3759,23 @@ impl<'a> GetChildren<'a> for JSXMemberExpressionObject<'a> {
             Self::ThisExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::IdentifierReference(e) => AstKind::IdentifierReference(e),
+            Self::MemberExpression(e) => AstKind::JSXMemberExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXExpressionContainer<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_jsx_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXExpressionContainer(self)
     }
 }
 
@@ -2635,11 +3828,61 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::EmptyExpression(e) => AstKind::JSXEmptyExpression(e),
+            Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
+            Self::NullLiteral(e) => AstKind::NullLiteral(e),
+            Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
+            Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
+            Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::Identifier(e) => AstKind::IdentifierReference(e),
+            Self::MetaProperty(e) => AstKind::MetaProperty(e),
+            Self::Super(e) => AstKind::Super(e),
+            Self::ArrayExpression(e) => AstKind::ArrayExpression(e),
+            Self::ArrowFunctionExpression(e) => AstKind::ArrowFunctionExpression(e),
+            Self::AssignmentExpression(e) => AstKind::AssignmentExpression(e),
+            Self::AwaitExpression(e) => AstKind::AwaitExpression(e),
+            Self::BinaryExpression(e) => AstKind::BinaryExpression(e),
+            Self::CallExpression(e) => AstKind::CallExpression(e),
+            Self::ChainExpression(e) => AstKind::ChainExpression(e),
+            Self::ClassExpression(e) => AstKind::Class(e),
+            Self::ConditionalExpression(e) => AstKind::ConditionalExpression(e),
+            Self::FunctionExpression(e) => AstKind::Function(e),
+            Self::ImportExpression(e) => AstKind::ImportExpression(e),
+            Self::LogicalExpression(e) => AstKind::LogicalExpression(e),
+            Self::NewExpression(e) => AstKind::NewExpression(e),
+            Self::ObjectExpression(e) => AstKind::ObjectExpression(e),
+            Self::ParenthesizedExpression(e) => AstKind::ParenthesizedExpression(e),
+            Self::SequenceExpression(e) => AstKind::SequenceExpression(e),
+            Self::TaggedTemplateExpression(e) => AstKind::TaggedTemplateExpression(e),
+            Self::ThisExpression(e) => AstKind::ThisExpression(e),
+            Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
+            Self::UpdateExpression(e) => AstKind::UpdateExpression(e),
+            Self::YieldExpression(e) => AstKind::YieldExpression(e),
+            Self::PrivateInExpression(e) => AstKind::PrivateInExpression(e),
+            Self::JSXElement(e) => AstKind::JSXElement(e),
+            Self::JSXFragment(e) => AstKind::JSXFragment(e),
+            Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
+            Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
+            Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
+            Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
+            Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
+            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
+            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXEmptyExpression {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXEmptyExpression(self)
     }
 }
 
@@ -2651,24 +3894,36 @@ impl<'a> GetChildren<'a> for JSXAttributeItem<'a> {
             Self::SpreadAttribute(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Attribute(e) => AstKind::JSXAttribute(e),
+            Self::SpreadAttribute(e) => AstKind::JSXSpreadAttribute(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXAttribute<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_jsx_attribute_name(&self.name));
+        children.push((*&self.name).to_ast_kind());
         if let Some(field) = &self.value {
-            children.push(AstKind::from_jsx_attribute_value(field));
+            children.push((*field).to_ast_kind());
         }
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXAttribute(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSXSpreadAttribute<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.argument));
+        children.push((*&self.argument).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXSpreadAttribute(self)
     }
 }
 
@@ -2678,6 +3933,12 @@ impl<'a> GetChildren<'a> for JSXAttributeName<'a> {
         match self {
             Self::Identifier(_) => vec![],
             Self::NamespacedName(_) => vec![],
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Identifier(e) => AstKind::JSXIdentifier(e),
+            Self::NamespacedName(e) => AstKind::JSXNamespacedName(e),
         }
     }
 }
@@ -2692,11 +3953,22 @@ impl<'a> GetChildren<'a> for JSXAttributeValue<'a> {
             Self::Fragment(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::StringLiteral(e) => AstKind::StringLiteral(e),
+            Self::ExpressionContainer(e) => AstKind::JSXExpressionContainer(e),
+            Self::Element(e) => AstKind::JSXElement(e),
+            Self::Fragment(e) => AstKind::JSXFragment(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXIdentifier<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXIdentifier(self)
     }
 }
 
@@ -2711,18 +3983,33 @@ impl<'a> GetChildren<'a> for JSXChild<'a> {
             Self::Spread(_) => vec![],
         }
     }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Text(e) => AstKind::JSXText(e),
+            Self::Element(e) => AstKind::JSXElement(e),
+            Self::Fragment(e) => AstKind::JSXFragment(e),
+            Self::ExpressionContainer(e) => AstKind::JSXExpressionContainer(e),
+            Self::Spread(e) => AstKind::JSXSpreadChild(e),
+        }
+    }
 }
 
 impl<'a> GetChildren<'a> for JSXSpreadChild<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::from_expression(&self.expression));
+        children.push((*&self.expression).to_ast_kind());
         children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXSpreadChild(self)
     }
 }
 
 impl<'a> GetChildren<'a> for JSXText<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::JSXText(self)
     }
 }
