@@ -3,7 +3,7 @@ resolver = "2"
 members = ["crates/*", "tasks/*"]
 exclude = [
     "tasks/lint_rules",
-    "tasks/benchmark",
+    # "tasks/benchmark",
     "tasks/coverage",
     "tasks/prettier_conformance",
     "tasks/e2e",
