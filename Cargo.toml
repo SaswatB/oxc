@@ -1,31 +1,7 @@
 [workspace]
 resolver = "2"
 members = ["crates/*", "tasks/*"]
-exclude = [
-    "tasks/lint_rules",
-    # "tasks/benchmark",
-    "tasks/coverage",
-    "tasks/prettier_conformance",
-    "tasks/e2e",
-    "tasks/website",
-    "crates/oxc_language_server",
-    "crates/oxc_wasm",
-    "crates/oxc_linter",
-    "crates/oxc_prettier",
-    "crates/oxc_semantic",
-    "crates/oxc_mangler",
-    "crates/oxc_codegen",
-    "crates/oxc_isolated_declarations",
-    "crates/oxc_transformer",
-    "crates/oxc_minifier",
-    "crates/oxc_traverse",
-    "tasks/compat_data",
-    "tasks/minsize",
-    "tasks/transform_checker",
-    "tasks/transform_conformance",
-    "tasks/rulegen",
-    "crates/oxc",
-]
+exclude = []
 
 [workspace.package]
 authors = ["Boshen <boshenc@gmail.com>", "Oxc contributors"]
