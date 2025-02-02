@@ -55,8 +55,8 @@ impl GetAddress for Expression<'_> {
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -119,8 +119,8 @@ impl GetAddress for PropertyKey<'_> {
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -131,8 +131,8 @@ impl GetAddress for MemberExpression<'_> {
     #[inline]
     fn address(&self) -> Address {
         match self {
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -183,8 +183,8 @@ impl GetAddress for Argument<'_> {
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -201,8 +201,8 @@ impl GetAddress for AssignmentTarget<'_> {
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
             Self::ArrayAssignmentTarget(it) => GetAddress::address(it),
             Self::ObjectAssignmentTarget(it) => GetAddress::address(it),
@@ -221,8 +221,8 @@ impl GetAddress for SimpleAssignmentTarget<'_> {
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -251,8 +251,8 @@ impl GetAddress for AssignmentTargetMaybeDefault<'_> {
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
             Self::ArrayAssignmentTarget(it) => GetAddress::address(it),
             Self::ObjectAssignmentTarget(it) => GetAddress::address(it),
@@ -278,8 +278,8 @@ impl GetAddress for ChainElement<'_> {
         match self {
             Self::CallExpression(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -388,8 +388,8 @@ impl GetAddress for ForStatementInit<'_> {
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }
@@ -407,8 +407,8 @@ impl GetAddress for ForStatementLeft<'_> {
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
             Self::ArrayAssignmentTarget(it) => GetAddress::address(it),
             Self::ObjectAssignmentTarget(it) => GetAddress::address(it),
@@ -517,8 +517,8 @@ impl GetAddress for ExportDefaultDeclarationKind<'_> {
             Self::TSTypeAssertion(it) => GetAddress::address(it),
             Self::TSNonNullExpression(it) => GetAddress::address(it),
             Self::TSInstantiationExpression(it) => GetAddress::address(it),
-            Self::ComputedMemberExpression(it) => GetAddress::address(it),
-            Self::StaticMemberExpression(it) => GetAddress::address(it),
+            Self::ElementAccessExpression(it) => GetAddress::address(it),
+            Self::PropertyAccessExpression(it) => GetAddress::address(it),
             Self::PrivateFieldExpression(it) => GetAddress::address(it),
         }
     }

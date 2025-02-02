@@ -23,8 +23,8 @@
 //! }
 //!
 //! pub enum MemberExpression<'a> {
-//!     ComputedMemberExpression(Box<'a, ComputedMemberExpression<'a>>),
-//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>),
+//!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>),
+//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>),
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>),
 //! }
 //! ```
@@ -44,8 +44,8 @@
 //!
 //! #[repr(C, u8)]
 //! pub enum MemberExpression<'a> {
-//!     ComputedMemberExpression(Box<'a, ComputedMemberExpression<'a>>) = 48,
-//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
+//!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
+//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 //! }
 //! ```
@@ -60,8 +60,8 @@
 //!     // ...more variants
 //!
 //!     // Inherited from `MemberExpression`
-//!     ComputedMemberExpression(Box<'a, ComputedMemberExpression<'a>>) = 48,
-//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
+//!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
+//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 //! }
 //!
@@ -71,7 +71,7 @@
 //!     into_member_expression,
 //!     as_member_expression, as_member_expression_mut,
 //!     to_member_expression, to_member_expression_mut,
-//!     [ComputedMemberExpression, StaticMemberExpression, PrivateFieldExpression]
+//!     [ElementAccessExpression, PropertyAccessExpression, PrivateFieldExpression]
 //! )
 //! ```
 //!
@@ -85,11 +85,11 @@
 //! ```
 //! // Old
 //! let expr = Expression::MemberExpression(
-//!   MemberExpression::ComputedMemberExpression(computed_member_expr)
+//!   MemberExpression::ElementAccessExpression(computed_member_expr)
 //! );
 //!
 //! // New
-//! let expr = Expression::ComputedMemberExpression(computed_member_expr);
+//! let expr = Expression::ElementAccessExpression(computed_member_expr);
 //! ```
 //!
 //! #### Conversion
@@ -160,7 +160,7 @@
 //! and "inheritee" enums.
 //!
 //! The discriminants and "payloads" match between the 2 types for the inherited variants.
-//! Therefore `MemberExpression::ComputedMemberExpression` and `Expression::ComputedMemberExpression`
+//! Therefore `MemberExpression::ElementAccessExpression` and `Expression::ElementAccessExpression`
 //! have identical representations in memory, and a `MemberExpression` can be converted to an
 //! `Expression` with a zero-cost transmute.
 //!

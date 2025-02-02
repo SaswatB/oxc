@@ -224,11 +224,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for Expression<'_> {
             Self::TSInstantiationExpression(it) => {
                 Expression::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                Expression::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                Expression::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                Expression::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                Expression::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 Expression::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -428,11 +428,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayExpressionElement<'_> {
             Self::TSInstantiationExpression(it) => {
                 ArrayExpressionElement::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                ArrayExpressionElement::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                ArrayExpressionElement::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                ArrayExpressionElement::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                ArrayExpressionElement::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 ArrayExpressionElement::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -600,11 +600,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for PropertyKey<'_> {
             Self::TSInstantiationExpression(it) => {
                 PropertyKey::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                PropertyKey::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                PropertyKey::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                PropertyKey::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                PropertyKey::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 PropertyKey::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -675,11 +675,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for MemberExpression<'_> {
     type Cloned = MemberExpression<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         match self {
-            Self::ComputedMemberExpression(it) => {
-                MemberExpression::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                MemberExpression::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                MemberExpression::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                MemberExpression::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 MemberExpression::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -688,10 +688,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for MemberExpression<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for ComputedMemberExpression<'_> {
-    type Cloned = ComputedMemberExpression<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for ElementAccessExpression<'_> {
+    type Cloned = ElementAccessExpression<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        ComputedMemberExpression {
+        ElementAccessExpression {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             object: CloneIn::clone_in(&self.object, allocator),
@@ -701,10 +701,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for ComputedMemberExpression<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for StaticMemberExpression<'_> {
-    type Cloned = StaticMemberExpression<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for PropertyAccessExpression<'_> {
+    type Cloned = PropertyAccessExpression<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        StaticMemberExpression {
+        PropertyAccessExpression {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             object: CloneIn::clone_in(&self.object, allocator),
@@ -869,11 +869,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for Argument<'_> {
             Self::TSInstantiationExpression(it) => {
                 Argument::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                Argument::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                Argument::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                Argument::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                Argument::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 Argument::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -994,11 +994,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for AssignmentTarget<'_> {
             Self::TSInstantiationExpression(it) => {
                 AssignmentTarget::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                AssignmentTarget::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                AssignmentTarget::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                AssignmentTarget::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                AssignmentTarget::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 AssignmentTarget::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -1035,11 +1035,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for SimpleAssignmentTarget<'_> {
             Self::TSInstantiationExpression(it) => {
                 SimpleAssignmentTarget::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                SimpleAssignmentTarget::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                SimpleAssignmentTarget::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                SimpleAssignmentTarget::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                SimpleAssignmentTarget::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 SimpleAssignmentTarget::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -1129,13 +1129,13 @@ impl<'new_alloc> CloneIn<'new_alloc> for AssignmentTargetMaybeDefault<'_> {
                     it, allocator,
                 ))
             }
-            Self::ComputedMemberExpression(it) => {
-                AssignmentTargetMaybeDefault::ComputedMemberExpression(CloneIn::clone_in(
+            Self::ElementAccessExpression(it) => {
+                AssignmentTargetMaybeDefault::ElementAccessExpression(CloneIn::clone_in(
                     it, allocator,
                 ))
             }
-            Self::StaticMemberExpression(it) => {
-                AssignmentTargetMaybeDefault::StaticMemberExpression(CloneIn::clone_in(
+            Self::PropertyAccessExpression(it) => {
+                AssignmentTargetMaybeDefault::PropertyAccessExpression(CloneIn::clone_in(
                     it, allocator,
                 ))
             }
@@ -1264,11 +1264,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for ChainElement<'_> {
             Self::TSNonNullExpression(it) => {
                 ChainElement::TSNonNullExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                ChainElement::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                ChainElement::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                ChainElement::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                ChainElement::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 ChainElement::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -1668,11 +1668,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementInit<'_> {
             Self::TSInstantiationExpression(it) => {
                 ForStatementInit::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                ForStatementInit::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                ForStatementInit::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                ForStatementInit::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                ForStatementInit::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 ForStatementInit::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -1720,11 +1720,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementLeft<'_> {
             Self::TSInstantiationExpression(it) => {
                 ForStatementLeft::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                ForStatementLeft::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                ForStatementLeft::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                ForStatementLeft::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                ForStatementLeft::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 ForStatementLeft::PrivateFieldExpression(CloneIn::clone_in(it, allocator))
@@ -2643,13 +2643,13 @@ impl<'new_alloc> CloneIn<'new_alloc> for ExportDefaultDeclarationKind<'_> {
                     it, allocator,
                 ))
             }
-            Self::ComputedMemberExpression(it) => {
-                ExportDefaultDeclarationKind::ComputedMemberExpression(CloneIn::clone_in(
+            Self::ElementAccessExpression(it) => {
+                ExportDefaultDeclarationKind::ElementAccessExpression(CloneIn::clone_in(
                     it, allocator,
                 ))
             }
-            Self::StaticMemberExpression(it) => {
-                ExportDefaultDeclarationKind::StaticMemberExpression(CloneIn::clone_in(
+            Self::PropertyAccessExpression(it) => {
+                ExportDefaultDeclarationKind::PropertyAccessExpression(CloneIn::clone_in(
                     it, allocator,
                 ))
             }
@@ -4209,11 +4209,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for JSXExpression<'_> {
             Self::TSInstantiationExpression(it) => {
                 JSXExpression::TSInstantiationExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::ComputedMemberExpression(it) => {
-                JSXExpression::ComputedMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::ElementAccessExpression(it) => {
+                JSXExpression::ElementAccessExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::StaticMemberExpression(it) => {
-                JSXExpression::StaticMemberExpression(CloneIn::clone_in(it, allocator))
+            Self::PropertyAccessExpression(it) => {
+                JSXExpression::PropertyAccessExpression(CloneIn::clone_in(it, allocator))
             }
             Self::PrivateFieldExpression(it) => {
                 JSXExpression::PrivateFieldExpression(CloneIn::clone_in(it, allocator))

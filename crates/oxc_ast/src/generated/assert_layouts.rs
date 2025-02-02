@@ -175,21 +175,21 @@ const _: () = {
     assert!(size_of::<MemberExpression>() == 16usize);
     assert!(align_of::<MemberExpression>() == 8usize);
 
-    assert!(size_of::<ComputedMemberExpression>() == 56usize);
-    assert!(align_of::<ComputedMemberExpression>() == 8usize);
-    assert!(offset_of!(ComputedMemberExpression, node_id) == 0usize);
-    assert!(offset_of!(ComputedMemberExpression, span) == 8usize);
-    assert!(offset_of!(ComputedMemberExpression, object) == 16usize);
-    assert!(offset_of!(ComputedMemberExpression, expression) == 32usize);
-    assert!(offset_of!(ComputedMemberExpression, optional) == 48usize);
+    assert!(size_of::<ElementAccessExpression>() == 56usize);
+    assert!(align_of::<ElementAccessExpression>() == 8usize);
+    assert!(offset_of!(ElementAccessExpression, node_id) == 0usize);
+    assert!(offset_of!(ElementAccessExpression, span) == 8usize);
+    assert!(offset_of!(ElementAccessExpression, object) == 16usize);
+    assert!(offset_of!(ElementAccessExpression, expression) == 32usize);
+    assert!(offset_of!(ElementAccessExpression, optional) == 48usize);
 
-    assert!(size_of::<StaticMemberExpression>() == 72usize);
-    assert!(align_of::<StaticMemberExpression>() == 8usize);
-    assert!(offset_of!(StaticMemberExpression, node_id) == 0usize);
-    assert!(offset_of!(StaticMemberExpression, span) == 8usize);
-    assert!(offset_of!(StaticMemberExpression, object) == 16usize);
-    assert!(offset_of!(StaticMemberExpression, property) == 32usize);
-    assert!(offset_of!(StaticMemberExpression, optional) == 64usize);
+    assert!(size_of::<PropertyAccessExpression>() == 72usize);
+    assert!(align_of::<PropertyAccessExpression>() == 8usize);
+    assert!(offset_of!(PropertyAccessExpression, node_id) == 0usize);
+    assert!(offset_of!(PropertyAccessExpression, span) == 8usize);
+    assert!(offset_of!(PropertyAccessExpression, object) == 16usize);
+    assert!(offset_of!(PropertyAccessExpression, property) == 32usize);
+    assert!(offset_of!(PropertyAccessExpression, optional) == 64usize);
 
     assert!(size_of::<PrivateFieldExpression>() == 72usize);
     assert!(align_of::<PrivateFieldExpression>() == 8usize);
@@ -1924,21 +1924,21 @@ const _: () = {
     assert!(size_of::<MemberExpression>() == 8usize);
     assert!(align_of::<MemberExpression>() == 4usize);
 
-    assert!(size_of::<ComputedMemberExpression>() == 32usize);
-    assert!(align_of::<ComputedMemberExpression>() == 4usize);
-    assert!(offset_of!(ComputedMemberExpression, node_id) == 0usize);
-    assert!(offset_of!(ComputedMemberExpression, span) == 4usize);
-    assert!(offset_of!(ComputedMemberExpression, object) == 12usize);
-    assert!(offset_of!(ComputedMemberExpression, expression) == 20usize);
-    assert!(offset_of!(ComputedMemberExpression, optional) == 28usize);
+    assert!(size_of::<ElementAccessExpression>() == 32usize);
+    assert!(align_of::<ElementAccessExpression>() == 4usize);
+    assert!(offset_of!(ElementAccessExpression, node_id) == 0usize);
+    assert!(offset_of!(ElementAccessExpression, span) == 4usize);
+    assert!(offset_of!(ElementAccessExpression, object) == 12usize);
+    assert!(offset_of!(ElementAccessExpression, expression) == 20usize);
+    assert!(offset_of!(ElementAccessExpression, optional) == 28usize);
 
-    assert!(size_of::<StaticMemberExpression>() == 44usize);
-    assert!(align_of::<StaticMemberExpression>() == 4usize);
-    assert!(offset_of!(StaticMemberExpression, node_id) == 0usize);
-    assert!(offset_of!(StaticMemberExpression, span) == 4usize);
-    assert!(offset_of!(StaticMemberExpression, object) == 12usize);
-    assert!(offset_of!(StaticMemberExpression, property) == 20usize);
-    assert!(offset_of!(StaticMemberExpression, optional) == 40usize);
+    assert!(size_of::<PropertyAccessExpression>() == 44usize);
+    assert!(align_of::<PropertyAccessExpression>() == 4usize);
+    assert!(offset_of!(PropertyAccessExpression, node_id) == 0usize);
+    assert!(offset_of!(PropertyAccessExpression, span) == 4usize);
+    assert!(offset_of!(PropertyAccessExpression, object) == 12usize);
+    assert!(offset_of!(PropertyAccessExpression, property) == 20usize);
+    assert!(offset_of!(PropertyAccessExpression, optional) == 40usize);
 
     assert!(size_of::<PrivateFieldExpression>() == 44usize);
     assert!(align_of::<PrivateFieldExpression>() == 4usize);

@@ -33,8 +33,8 @@ pub enum AstType {
     TemplateLiteral = 16,
     TaggedTemplateExpression = 17,
     TemplateElement = 18,
-    ComputedMemberExpression = 19,
-    StaticMemberExpression = 20,
+    ElementAccessExpression = 19,
+    PropertyAccessExpression = 20,
     PrivateFieldExpression = 21,
     CallExpression = 22,
     NewExpression = 23,
@@ -226,9 +226,10 @@ pub enum AstKind<'a> {
     TaggedTemplateExpression(&'a TaggedTemplateExpression<'a>) =
         AstType::TaggedTemplateExpression as u8,
     TemplateElement(&'a TemplateElement<'a>) = AstType::TemplateElement as u8,
-    ComputedMemberExpression(&'a ComputedMemberExpression<'a>) =
-        AstType::ComputedMemberExpression as u8,
-    StaticMemberExpression(&'a StaticMemberExpression<'a>) = AstType::StaticMemberExpression as u8,
+    ElementAccessExpression(&'a ElementAccessExpression<'a>) =
+        AstType::ElementAccessExpression as u8,
+    PropertyAccessExpression(&'a PropertyAccessExpression<'a>) =
+        AstType::PropertyAccessExpression as u8,
     PrivateFieldExpression(&'a PrivateFieldExpression<'a>) = AstType::PrivateFieldExpression as u8,
     CallExpression(&'a CallExpression<'a>) = AstType::CallExpression as u8,
     NewExpression(&'a NewExpression<'a>) = AstType::NewExpression as u8,
@@ -446,8 +447,8 @@ impl GetSpan for AstKind<'_> {
             Self::TemplateLiteral(it) => it.span(),
             Self::TaggedTemplateExpression(it) => it.span(),
             Self::TemplateElement(it) => it.span(),
-            Self::ComputedMemberExpression(it) => it.span(),
-            Self::StaticMemberExpression(it) => it.span(),
+            Self::ElementAccessExpression(it) => it.span(),
+            Self::PropertyAccessExpression(it) => it.span(),
             Self::PrivateFieldExpression(it) => it.span(),
             Self::CallExpression(it) => it.span(),
             Self::NewExpression(it) => it.span(),
@@ -639,8 +640,8 @@ impl<'a> AstKind<'a> {
             Self::TemplateLiteral(it) => it.get_children(),
             Self::TaggedTemplateExpression(it) => it.get_children(),
             Self::TemplateElement(it) => it.get_children(),
-            Self::ComputedMemberExpression(it) => it.get_children(),
-            Self::StaticMemberExpression(it) => it.get_children(),
+            Self::ElementAccessExpression(it) => it.get_children(),
+            Self::PropertyAccessExpression(it) => it.get_children(),
             Self::PrivateFieldExpression(it) => it.get_children(),
             Self::CallExpression(it) => it.get_children(),
             Self::NewExpression(it) => it.get_children(),
@@ -829,8 +830,8 @@ impl<'a> AstKind<'a> {
             Self::TemplateLiteral(it) => it.get_node_id(),
             Self::TaggedTemplateExpression(it) => it.get_node_id(),
             Self::TemplateElement(it) => it.get_node_id(),
-            Self::ComputedMemberExpression(it) => it.get_node_id(),
-            Self::StaticMemberExpression(it) => it.get_node_id(),
+            Self::ElementAccessExpression(it) => it.get_node_id(),
+            Self::PropertyAccessExpression(it) => it.get_node_id(),
             Self::PrivateFieldExpression(it) => it.get_node_id(),
             Self::CallExpression(it) => it.get_node_id(),
             Self::NewExpression(it) => it.get_node_id(),
@@ -1173,8 +1174,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_computed_member_expression(self) -> Option<&'a ComputedMemberExpression<'a>> {
-        if let Self::ComputedMemberExpression(v) = self {
+    pub fn as_element_access_expression(self) -> Option<&'a ElementAccessExpression<'a>> {
+        if let Self::ElementAccessExpression(v) = self {
             Some(v)
         } else {
             None
@@ -1182,8 +1183,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_static_member_expression(self) -> Option<&'a StaticMemberExpression<'a>> {
-        if let Self::StaticMemberExpression(v) = self {
+    pub fn as_property_access_expression(self) -> Option<&'a PropertyAccessExpression<'a>> {
+        if let Self::PropertyAccessExpression(v) = self {
             Some(v)
         } else {
             None

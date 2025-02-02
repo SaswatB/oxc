@@ -152,8 +152,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -198,8 +198,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -244,8 +244,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -372,8 +372,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -420,8 +420,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -468,8 +468,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -585,8 +585,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -633,8 +633,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -681,8 +681,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -741,28 +741,28 @@ impl<'a> GetChildren<'a> for MemberExpression<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         match self {
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
     fn get_node_id(&'a self) -> u32 {
         match self {
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
 }
 
-impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
+impl<'a> GetChildren<'a> for ElementAccessExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.object).to_ast_kind());
@@ -770,14 +770,14 @@ impl<'a> GetChildren<'a> for ComputedMemberExpression<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::ComputedMemberExpression(self)
+        AstKind::ElementAccessExpression(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
     }
 }
 
-impl<'a> GetChildren<'a> for StaticMemberExpression<'a> {
+impl<'a> GetChildren<'a> for PropertyAccessExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.object).to_ast_kind());
@@ -785,7 +785,7 @@ impl<'a> GetChildren<'a> for StaticMemberExpression<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::StaticMemberExpression(self)
+        AstKind::PropertyAccessExpression(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
@@ -920,8 +920,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -967,8 +967,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -1014,8 +1014,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -1135,8 +1135,8 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
             Self::TSNonNullExpression(_) => vec![],
             Self::TSTypeAssertion(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
             Self::ArrayAssignmentTarget(_) => vec![],
             Self::ObjectAssignmentTarget(_) => vec![],
@@ -1150,8 +1150,8 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
             Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
@@ -1165,8 +1165,8 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
             Self::ArrayAssignmentTarget(e) => e.node_id,
             Self::ObjectAssignmentTarget(e) => e.node_id,
@@ -1184,8 +1184,8 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
             Self::TSNonNullExpression(_) => vec![],
             Self::TSTypeAssertion(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -1197,8 +1197,8 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -1210,8 +1210,8 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -1304,8 +1304,8 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
             Self::TSNonNullExpression(_) => vec![],
             Self::TSTypeAssertion(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
             Self::ArrayAssignmentTarget(_) => vec![],
             Self::ObjectAssignmentTarget(_) => vec![],
@@ -1320,8 +1320,8 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
             Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
@@ -1336,8 +1336,8 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
             Self::ArrayAssignmentTarget(e) => e.node_id,
             Self::ObjectAssignmentTarget(e) => e.node_id,
@@ -1480,8 +1480,8 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
         match self {
             Self::CallExpression(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -1489,8 +1489,8 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
         match self {
             Self::CallExpression(e) => AstKind::CallExpression(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -1498,8 +1498,8 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
         match self {
             Self::CallExpression(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -1887,8 +1887,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -1934,8 +1934,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -1981,8 +1981,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -2015,8 +2015,8 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
             Self::TSNonNullExpression(_) => vec![],
             Self::TSTypeAssertion(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
             Self::ArrayAssignmentTarget(_) => vec![],
             Self::ObjectAssignmentTarget(_) => vec![],
@@ -2031,8 +2031,8 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
             Self::ArrayAssignmentTarget(e) => AstKind::ArrayAssignmentTarget(e),
             Self::ObjectAssignmentTarget(e) => AstKind::ObjectAssignmentTarget(e),
@@ -2047,8 +2047,8 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
             Self::ArrayAssignmentTarget(e) => e.node_id,
             Self::ObjectAssignmentTarget(e) => e.node_id,
@@ -3002,8 +3002,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -3051,8 +3051,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -3100,8 +3100,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }
@@ -5010,8 +5010,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::TSTypeAssertion(_) => vec![],
             Self::TSNonNullExpression(_) => vec![],
             Self::TSInstantiationExpression(_) => vec![],
-            Self::ComputedMemberExpression(_) => vec![],
-            Self::StaticMemberExpression(_) => vec![],
+            Self::ElementAccessExpression(_) => vec![],
+            Self::PropertyAccessExpression(_) => vec![],
             Self::PrivateFieldExpression(_) => vec![],
         }
     }
@@ -5057,8 +5057,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::TSTypeAssertion(e) => AstKind::TSTypeAssertion(e),
             Self::TSNonNullExpression(e) => AstKind::TSNonNullExpression(e),
             Self::TSInstantiationExpression(e) => AstKind::TSInstantiationExpression(e),
-            Self::ComputedMemberExpression(e) => AstKind::ComputedMemberExpression(e),
-            Self::StaticMemberExpression(e) => AstKind::StaticMemberExpression(e),
+            Self::ElementAccessExpression(e) => AstKind::ElementAccessExpression(e),
+            Self::PropertyAccessExpression(e) => AstKind::PropertyAccessExpression(e),
             Self::PrivateFieldExpression(e) => AstKind::PrivateFieldExpression(e),
         }
     }
@@ -5104,8 +5104,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::TSTypeAssertion(e) => e.node_id,
             Self::TSNonNullExpression(e) => e.node_id,
             Self::TSInstantiationExpression(e) => e.node_id,
-            Self::ComputedMemberExpression(e) => e.node_id,
-            Self::StaticMemberExpression(e) => e.node_id,
+            Self::ElementAccessExpression(e) => e.node_id,
+            Self::PropertyAccessExpression(e) => e.node_id,
             Self::PrivateFieldExpression(e) => e.node_id,
         }
     }

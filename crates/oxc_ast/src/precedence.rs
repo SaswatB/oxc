@@ -3,10 +3,10 @@ use oxc_syntax::precedence::{GetPrecedence, Precedence};
 
 use crate::ast::{
     match_member_expression, AssignmentExpression, AwaitExpression, BinaryExpression,
-    CallExpression, ChainExpression, ComputedMemberExpression, ConditionalExpression, Expression,
+    CallExpression, ChainExpression, ConditionalExpression, ElementAccessExpression, Expression,
     ImportExpression, LogicalExpression, MemberExpression, NewExpression, PrivateFieldExpression,
-    SequenceExpression, StaticMemberExpression, TSTypeAssertion, UnaryExpression, UpdateExpression,
-    YieldExpression,
+    PropertyAccessExpression, SequenceExpression, TSTypeAssertion, UnaryExpression,
+    UpdateExpression, YieldExpression,
 };
 
 impl GetPrecedence for Expression<'_> {
@@ -117,13 +117,13 @@ impl GetPrecedence for MemberExpression<'_> {
     }
 }
 
-impl GetPrecedence for ComputedMemberExpression<'_> {
+impl GetPrecedence for ElementAccessExpression<'_> {
     fn precedence(&self) -> Precedence {
         Precedence::Member
     }
 }
 
-impl GetPrecedence for StaticMemberExpression<'_> {
+impl GetPrecedence for PropertyAccessExpression<'_> {
     fn precedence(&self) -> Precedence {
         Precedence::Member
     }

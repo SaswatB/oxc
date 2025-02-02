@@ -228,8 +228,8 @@ macro_rules! inherit_variants {
                 TSTypeAssertion,
                 TSNonNullExpression,
                 TSInstantiationExpression,
-                ComputedMemberExpression,
-                StaticMemberExpression,
+                ElementAccessExpression,
+                PropertyAccessExpression,
                 PrivateFieldExpression,
             ]
         );
@@ -252,11 +252,11 @@ macro_rules! inherit_variants {
                 /// Inherited from [`MemberExpression`].
                 ///
                 /// `MemberExpression[?Yield, ?Await] [ Expression[+In, ?Yield, ?Await] ]`
-                ComputedMemberExpression(Box<'a, ComputedMemberExpression<'a>>) = 48,
+                ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
                 /// Inherited from [`MemberExpression`].
                 ///
                 /// `MemberExpression[?Yield, ?Await] . IdentifierName`
-                StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
+                PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
                 /// Inherited from [`MemberExpression`].
                 ///
                 /// `MemberExpression[?Yield, ?Await] . PrivateIdentifier`
@@ -275,7 +275,7 @@ macro_rules! inherit_variants {
             as_member_expression_mut,
             to_member_expression,
             to_member_expression_mut,
-            [ComputedMemberExpression, StaticMemberExpression, PrivateFieldExpression]
+            [ElementAccessExpression, PropertyAccessExpression, PrivateFieldExpression]
         );
     };
 
@@ -311,8 +311,8 @@ macro_rules! inherit_variants {
             to_assignment_target_mut,
             [
                 AssignmentTargetIdentifier,
-                ComputedMemberExpression,
-                StaticMemberExpression,
+                ElementAccessExpression,
+                PropertyAccessExpression,
                 PrivateFieldExpression,
                 TSAsExpression,
                 TSSatisfiesExpression,
@@ -371,8 +371,8 @@ macro_rules! inherit_variants {
             to_simple_assignment_target_mut,
             [
                 AssignmentTargetIdentifier,
-                ComputedMemberExpression,
-                StaticMemberExpression,
+                ElementAccessExpression,
+                PropertyAccessExpression,
                 PrivateFieldExpression,
                 TSAsExpression,
                 TSSatisfiesExpression,

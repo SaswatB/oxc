@@ -192,8 +192,8 @@ macro_rules! match_expression {
             | $ty::TSTypeAssertion(_)
             | $ty::TSNonNullExpression(_)
             | $ty::TSInstantiationExpression(_)
-            | $ty::ComputedMemberExpression(_)
-            | $ty::StaticMemberExpression(_)
+            | $ty::ElementAccessExpression(_)
+            | $ty::PropertyAccessExpression(_)
             | $ty::PrivateFieldExpression(_)
     };
 }
@@ -504,9 +504,9 @@ pub struct TemplateElementValue<'a> {
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum MemberExpression<'a> {
     /// `ar[0]` in `const ar = [1, 2]; ar[0];`
-    ComputedMemberExpression(Box<'a, ComputedMemberExpression<'a>>) = 48,
+    ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
     /// `console.log` in `console.log('Hello, World!');`
-    StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
+    PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
     /// `c.#a` in `class C { #a = 1; }; const c = new C(); c.#a;`
     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 }
@@ -515,8 +515,8 @@ pub enum MemberExpression<'a> {
 #[macro_export]
 macro_rules! match_member_expression {
     ($ty:ident) => {
-        $ty::ComputedMemberExpression(_)
-            | $ty::StaticMemberExpression(_)
+        $ty::ElementAccessExpression(_)
+            | $ty::PropertyAccessExpression(_)
             | $ty::PrivateFieldExpression(_)
     };
 }
@@ -528,7 +528,7 @@ pub use match_member_expression;
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct ComputedMemberExpression<'a> {
+pub struct ElementAccessExpression<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
@@ -544,7 +544,7 @@ pub struct ComputedMemberExpression<'a> {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct StaticMemberExpression<'a> {
+pub struct PropertyAccessExpression<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
@@ -830,8 +830,8 @@ pub enum SimpleAssignmentTarget<'a> {
 macro_rules! match_assignment_target {
     ($ty:ident) => {
         $ty::AssignmentTargetIdentifier(_)
-            | $ty::ComputedMemberExpression(_)
-            | $ty::StaticMemberExpression(_)
+            | $ty::ElementAccessExpression(_)
+            | $ty::PropertyAccessExpression(_)
             | $ty::PrivateFieldExpression(_)
             | $ty::TSAsExpression(_)
             | $ty::TSSatisfiesExpression(_)
@@ -850,8 +850,8 @@ pub use match_assignment_target;
 macro_rules! match_simple_assignment_target {
     ($ty:ident) => {
         $ty::AssignmentTargetIdentifier(_)
-            | $ty::ComputedMemberExpression(_)
-            | $ty::StaticMemberExpression(_)
+            | $ty::ElementAccessExpression(_)
+            | $ty::PropertyAccessExpression(_)
             | $ty::PrivateFieldExpression(_)
             | $ty::TSAsExpression(_)
             | $ty::TSSatisfiesExpression(_)

@@ -183,8 +183,8 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
             Expression::StringLiteral(lit) => {
                 Some(ConstantValue::String(Cow::Borrowed(lit.value.as_str())))
             }
-            Expression::StaticMemberExpression(e) => self.eval_static_member_expression(e),
-            Expression::ComputedMemberExpression(e) => self.eval_computed_member_expression(e),
+            Expression::PropertyAccessExpression(e) => self.eval_static_member_expression(e),
+            Expression::ElementAccessExpression(e) => self.eval_computed_member_expression(e),
             _ => None,
         }
     }
@@ -416,7 +416,7 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
 
     fn eval_static_member_expression(
         &self,
-        expr: &StaticMemberExpression<'a>,
+        expr: &PropertyAccessExpression<'a>,
     ) -> Option<ConstantValue<'a>> {
         match expr.property.name.as_str() {
             "length" => {
@@ -439,7 +439,7 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
 
     fn eval_computed_member_expression(
         &self,
-        expr: &ComputedMemberExpression<'a>,
+        expr: &ElementAccessExpression<'a>,
     ) -> Option<ConstantValue<'a>> {
         match &expr.expression {
             Expression::StringLiteral(s) if s.value == "length" => {

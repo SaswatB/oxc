@@ -458,14 +458,14 @@ impl<'a> TemplateLiteral<'a> {
 impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn is_computed(&self) -> bool {
-        matches!(self, MemberExpression::ComputedMemberExpression(_))
+        matches!(self, MemberExpression::ElementAccessExpression(_))
     }
 
     #[allow(missing_docs)]
     pub fn optional(&self) -> bool {
         match self {
-            MemberExpression::ComputedMemberExpression(expr) => expr.optional,
-            MemberExpression::StaticMemberExpression(expr) => expr.optional,
+            MemberExpression::ElementAccessExpression(expr) => expr.optional,
+            MemberExpression::PropertyAccessExpression(expr) => expr.optional,
             MemberExpression::PrivateFieldExpression(expr) => expr.optional,
         }
     }
@@ -473,8 +473,8 @@ impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn object(&self) -> &Expression<'a> {
         match self {
-            MemberExpression::ComputedMemberExpression(expr) => &expr.object,
-            MemberExpression::StaticMemberExpression(expr) => &expr.object,
+            MemberExpression::ElementAccessExpression(expr) => &expr.object,
+            MemberExpression::PropertyAccessExpression(expr) => &expr.object,
             MemberExpression::PrivateFieldExpression(expr) => &expr.object,
         }
     }
@@ -482,8 +482,8 @@ impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn object_mut(&mut self) -> &mut Expression<'a> {
         match self {
-            MemberExpression::ComputedMemberExpression(expr) => &mut expr.object,
-            MemberExpression::StaticMemberExpression(expr) => &mut expr.object,
+            MemberExpression::ElementAccessExpression(expr) => &mut expr.object,
+            MemberExpression::PropertyAccessExpression(expr) => &mut expr.object,
             MemberExpression::PrivateFieldExpression(expr) => &mut expr.object,
         }
     }
@@ -491,10 +491,10 @@ impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn static_property_name(&self) -> Option<&'a str> {
         match self {
-            MemberExpression::ComputedMemberExpression(expr) => {
+            MemberExpression::ElementAccessExpression(expr) => {
                 expr.static_property_name().map(|name| name.as_str())
             }
-            MemberExpression::StaticMemberExpression(expr) => Some(expr.property.name.as_str()),
+            MemberExpression::PropertyAccessExpression(expr) => Some(expr.property.name.as_str()),
             MemberExpression::PrivateFieldExpression(_) => None,
         }
     }
@@ -502,7 +502,7 @@ impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn static_property_info(&self) -> Option<(Span, &'a str)> {
         match self {
-            MemberExpression::ComputedMemberExpression(expr) => match &expr.expression {
+            MemberExpression::ElementAccessExpression(expr) => match &expr.expression {
                 Expression::StringLiteral(lit) => Some((lit.span, lit.value.as_str())),
                 Expression::TemplateLiteral(lit) => {
                     if lit.expressions.is_empty() && lit.quasis.len() == 1 {
@@ -513,7 +513,7 @@ impl<'a> MemberExpression<'a> {
                 }
                 _ => None,
             },
-            MemberExpression::StaticMemberExpression(expr) => {
+            MemberExpression::PropertyAccessExpression(expr) => {
                 Some((expr.property.span, expr.property.name.as_str()))
             }
             MemberExpression::PrivateFieldExpression(_) => None,
@@ -544,7 +544,7 @@ impl<'a> MemberExpression<'a> {
     }
 }
 
-impl<'a> ComputedMemberExpression<'a> {
+impl<'a> ElementAccessExpression<'a> {
     #[allow(missing_docs)]
     pub fn static_property_name(&self) -> Option<Atom<'a>> {
         match &self.expression {
@@ -560,18 +560,18 @@ impl<'a> ComputedMemberExpression<'a> {
     }
 }
 
-impl<'a> StaticMemberExpression<'a> {
+impl<'a> PropertyAccessExpression<'a> {
     #[allow(missing_docs)]
     pub fn get_first_object(&self) -> &Expression<'a> {
         let mut object = &self.object;
         loop {
             match object {
-                Expression::StaticMemberExpression(member) => {
+                Expression::PropertyAccessExpression(member) => {
                     object = &member.object;
                     continue;
                 }
                 Expression::ChainExpression(chain) => {
-                    if let ChainElement::StaticMemberExpression(member) = &chain.expression {
+                    if let ChainElement::PropertyAccessExpression(member) = &chain.expression {
                         object = &member.object;
                         continue;
                     }

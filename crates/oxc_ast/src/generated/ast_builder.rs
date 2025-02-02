@@ -1897,9 +1897,9 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.template_element(span, tail, value), self.allocator)
     }
 
-    /// Build a [`MemberExpression::ComputedMemberExpression`]
+    /// Build a [`MemberExpression::ElementAccessExpression`]
     ///
-    /// This node contains a [`ComputedMemberExpression`] that will be stored in the memory arena.
+    /// This node contains an [`ElementAccessExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -1907,21 +1907,21 @@ impl<'a> AstBuilder<'a> {
     /// - expression
     /// - optional
     #[inline]
-    pub fn member_expression_computed(
+    pub fn member_expression_element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
-        MemberExpression::ComputedMemberExpression(
-            self.alloc_computed_member_expression(span, object, expression, optional),
+        MemberExpression::ElementAccessExpression(
+            self.alloc_element_access_expression(span, object, expression, optional),
         )
     }
 
-    /// Build a [`MemberExpression::StaticMemberExpression`]
+    /// Build a [`MemberExpression::PropertyAccessExpression`]
     ///
-    /// This node contains a [`StaticMemberExpression`] that will be stored in the memory arena.
+    /// This node contains a [`PropertyAccessExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -1929,15 +1929,15 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn member_expression_static(
+    pub fn member_expression_property_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
-        MemberExpression::StaticMemberExpression(
-            self.alloc_static_member_expression(span, object, property, optional),
+        MemberExpression::PropertyAccessExpression(
+            self.alloc_property_access_expression(span, object, property, optional),
         )
     }
 
@@ -1963,9 +1963,9 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Build a [`ComputedMemberExpression`].
+    /// Build an [`ElementAccessExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_computed_member_expression`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_element_access_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -1973,14 +1973,14 @@ impl<'a> AstBuilder<'a> {
     /// - expression
     /// - optional
     #[inline]
-    pub fn computed_member_expression(
+    pub fn element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
-    ) -> ComputedMemberExpression<'a> {
-        ComputedMemberExpression {
+    ) -> ElementAccessExpression<'a> {
+        ElementAccessExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             object,
@@ -1989,9 +1989,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`ComputedMemberExpression`], and store it in the memory arena.
+    /// Build an [`ElementAccessExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::computed_member_expression`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::element_access_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -1999,22 +1999,22 @@ impl<'a> AstBuilder<'a> {
     /// - expression
     /// - optional
     #[inline]
-    pub fn alloc_computed_member_expression(
+    pub fn alloc_element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         expression: Expression<'a>,
         optional: bool,
-    ) -> Box<'a, ComputedMemberExpression<'a>> {
+    ) -> Box<'a, ElementAccessExpression<'a>> {
         Box::new_in(
-            self.computed_member_expression(span, object, expression, optional),
+            self.element_access_expression(span, object, expression, optional),
             self.allocator,
         )
     }
 
-    /// Build a [`StaticMemberExpression`].
+    /// Build a [`PropertyAccessExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_static_member_expression`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_property_access_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2022,14 +2022,14 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn static_member_expression(
+    pub fn property_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
-    ) -> StaticMemberExpression<'a> {
-        StaticMemberExpression {
+    ) -> PropertyAccessExpression<'a> {
+        PropertyAccessExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             object,
@@ -2038,9 +2038,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`StaticMemberExpression`], and store it in the memory arena.
+    /// Build a [`PropertyAccessExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::static_member_expression`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::property_access_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2048,14 +2048,17 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn alloc_static_member_expression(
+    pub fn alloc_property_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
-    ) -> Box<'a, StaticMemberExpression<'a>> {
-        Box::new_in(self.static_member_expression(span, object, property, optional), self.allocator)
+    ) -> Box<'a, PropertyAccessExpression<'a>> {
+        Box::new_in(
+            self.property_access_expression(span, object, property, optional),
+            self.allocator,
+        )
     }
 
     /// Build a [`PrivateFieldExpression`].

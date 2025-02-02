@@ -741,7 +741,12 @@ impl<'a> ParserImpl<'a> {
             ))
         } else {
             let ident = self.parse_identifier_name()?;
-            Ok(self.ast.member_expression_static(self.end_span(lhs_span), lhs, ident, optional))
+            Ok(self.ast.member_expression_property_access_expression(
+                self.end_span(lhs_span),
+                lhs,
+                ident,
+                optional,
+            ))
         }
         .map(Expression::from)
     }
@@ -760,7 +765,12 @@ impl<'a> ParserImpl<'a> {
         self.expect(Kind::RBrack)?;
         Ok(self
             .ast
-            .member_expression_computed(self.end_span(lhs_span), lhs, property, optional)
+            .member_expression_element_access_expression(
+                self.end_span(lhs_span),
+                lhs,
+                property,
+                optional,
+            )
             .into())
     }
 

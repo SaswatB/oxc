@@ -101,8 +101,8 @@ export type Expression =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export interface IdentifierName extends Span {
@@ -201,8 +201,8 @@ export type PropertyKey =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export type PropertyKind = 'init' | 'get' | 'set';
@@ -234,18 +234,18 @@ export interface TemplateElementValue {
   cooked: string | null;
 }
 
-export type MemberExpression = ComputedMemberExpression | StaticMemberExpression | PrivateFieldExpression;
+export type MemberExpression = ElementAccessExpression | PropertyAccessExpression | PrivateFieldExpression;
 
-export interface ComputedMemberExpression extends Span {
-  type: 'ComputedMemberExpression';
+export interface ElementAccessExpression extends Span {
+  type: 'ElementAccessExpression';
   nodeId: number;
   object: Expression;
   expression: Expression;
   optional: boolean;
 }
 
-export interface StaticMemberExpression extends Span {
-  type: 'StaticMemberExpression';
+export interface PropertyAccessExpression extends Span {
+  type: 'PropertyAccessExpression';
   nodeId: number;
   object: Expression;
   property: IdentifierName;
@@ -331,8 +331,8 @@ export type Argument =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export interface UpdateExpression extends Span {
@@ -397,8 +397,8 @@ export type AssignmentTarget =
   | TSNonNullExpression
   | TSTypeAssertion
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression
   | ArrayAssignmentTarget
   | ObjectAssignmentTarget;
@@ -410,8 +410,8 @@ export type SimpleAssignmentTarget =
   | TSNonNullExpression
   | TSTypeAssertion
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export type AssignmentTargetPattern = ArrayAssignmentTarget | ObjectAssignmentTarget;
@@ -442,8 +442,8 @@ export type AssignmentTargetMaybeDefault =
   | TSNonNullExpression
   | TSTypeAssertion
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression
   | ArrayAssignmentTarget
   | ObjectAssignmentTarget;
@@ -498,8 +498,8 @@ export interface ChainExpression extends Span {
 export type ChainElement =
   | CallExpression
   | TSNonNullExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export interface ParenthesizedExpression extends Span {
@@ -672,8 +672,8 @@ export type ForStatementInit =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export interface ForInStatement extends Span {
@@ -692,8 +692,8 @@ export type ForStatementLeft =
   | TSNonNullExpression
   | TSTypeAssertion
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression
   | ArrayAssignmentTarget
   | ObjectAssignmentTarget;
@@ -1124,8 +1124,8 @@ export type ExportDefaultDeclarationKind =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export type ModuleExportName = IdentifierName | IdentifierReference | StringLiteral;
@@ -1854,8 +1854,8 @@ export type JSXExpression =
   | TSTypeAssertion
   | TSNonNullExpression
   | TSInstantiationExpression
-  | ComputedMemberExpression
-  | StaticMemberExpression
+  | ElementAccessExpression
+  | PropertyAccessExpression
   | PrivateFieldExpression;
 
 export interface JSXEmptyExpression extends Span {

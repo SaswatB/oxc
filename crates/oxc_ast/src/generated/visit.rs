@@ -690,13 +690,13 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_computed_member_expression(&mut self, it: &ComputedMemberExpression<'a>) {
-        walk_computed_member_expression(self, it);
+    fn visit_element_access_expression(&mut self, it: &ElementAccessExpression<'a>) {
+        walk_element_access_expression(self, it);
     }
 
     #[inline]
-    fn visit_static_member_expression(&mut self, it: &StaticMemberExpression<'a>) {
-        walk_static_member_expression(self, it);
+    fn visit_property_access_expression(&mut self, it: &PropertyAccessExpression<'a>) {
+        walk_property_access_expression(self, it);
     }
 
     #[inline]
@@ -2815,11 +2815,11 @@ pub mod walk {
     #[inline]
     pub fn walk_member_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &MemberExpression<'a>) {
         match it {
-            MemberExpression::ComputedMemberExpression(it) => {
-                visitor.visit_computed_member_expression(it)
+            MemberExpression::ElementAccessExpression(it) => {
+                visitor.visit_element_access_expression(it)
             }
-            MemberExpression::StaticMemberExpression(it) => {
-                visitor.visit_static_member_expression(it)
+            MemberExpression::PropertyAccessExpression(it) => {
+                visitor.visit_property_access_expression(it)
             }
             MemberExpression::PrivateFieldExpression(it) => {
                 visitor.visit_private_field_expression(it)
@@ -2828,11 +2828,11 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_computed_member_expression<'a, V: Visit<'a>>(
+    pub fn walk_element_access_expression<'a, V: Visit<'a>>(
         visitor: &mut V,
-        it: &ComputedMemberExpression<'a>,
+        it: &ElementAccessExpression<'a>,
     ) {
-        let kind = AstKind::ComputedMemberExpression(visitor.alloc(it));
+        let kind = AstKind::ElementAccessExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.object);
@@ -2841,11 +2841,11 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_static_member_expression<'a, V: Visit<'a>>(
+    pub fn walk_property_access_expression<'a, V: Visit<'a>>(
         visitor: &mut V,
-        it: &StaticMemberExpression<'a>,
+        it: &PropertyAccessExpression<'a>,
     ) {
-        let kind = AstKind::StaticMemberExpression(visitor.alloc(it));
+        let kind = AstKind::PropertyAccessExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.object);

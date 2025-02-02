@@ -104,8 +104,8 @@ impl GetSpan for Expression<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -197,8 +197,8 @@ impl GetSpan for ArrayExpressionElement<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -278,8 +278,8 @@ impl GetSpan for PropertyKey<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -309,21 +309,21 @@ impl GetSpan for TemplateElement<'_> {
 impl GetSpan for MemberExpression<'_> {
     fn span(&self) -> Span {
         match self {
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
 }
 
-impl GetSpan for ComputedMemberExpression<'_> {
+impl GetSpan for ElementAccessExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
     }
 }
 
-impl GetSpan for StaticMemberExpression<'_> {
+impl GetSpan for PropertyAccessExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -408,8 +408,8 @@ impl GetSpan for Argument<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -473,8 +473,8 @@ impl GetSpan for AssignmentTarget<'_> {
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
             Self::ArrayAssignmentTarget(it) => GetSpan::span(it.as_ref()),
             Self::ObjectAssignmentTarget(it) => GetSpan::span(it.as_ref()),
@@ -491,8 +491,8 @@ impl GetSpan for SimpleAssignmentTarget<'_> {
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -538,8 +538,8 @@ impl GetSpan for AssignmentTargetMaybeDefault<'_> {
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
             Self::ArrayAssignmentTarget(it) => GetSpan::span(it.as_ref()),
             Self::ObjectAssignmentTarget(it) => GetSpan::span(it.as_ref()),
@@ -610,8 +610,8 @@ impl GetSpan for ChainElement<'_> {
         match self {
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -798,8 +798,8 @@ impl GetSpan for ForStatementInit<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -822,8 +822,8 @@ impl GetSpan for ForStatementLeft<'_> {
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
             Self::ArrayAssignmentTarget(it) => GetSpan::span(it.as_ref()),
             Self::ObjectAssignmentTarget(it) => GetSpan::span(it.as_ref()),
@@ -1232,8 +1232,8 @@ impl GetSpan for ExportDefaultDeclarationKind<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -2074,8 +2074,8 @@ impl GetSpan for JSXExpression<'_> {
             Self::TSTypeAssertion(it) => GetSpan::span(it.as_ref()),
             Self::TSNonNullExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSInstantiationExpression(it) => GetSpan::span(it.as_ref()),
-            Self::ComputedMemberExpression(it) => GetSpan::span(it.as_ref()),
-            Self::StaticMemberExpression(it) => GetSpan::span(it.as_ref()),
+            Self::ElementAccessExpression(it) => GetSpan::span(it.as_ref()),
+            Self::PropertyAccessExpression(it) => GetSpan::span(it.as_ref()),
             Self::PrivateFieldExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
