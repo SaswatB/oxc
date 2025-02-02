@@ -29,7 +29,7 @@ use super::{macros::inherit_variants, *};
 )]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct Program<'a> {
+pub struct SourceFile<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,

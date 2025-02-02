@@ -55,7 +55,7 @@ impl GetSpanMut for RegExpLiteral<'_> {
     }
 }
 
-impl GetSpanMut for Program<'_> {
+impl GetSpanMut for SourceFile<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span

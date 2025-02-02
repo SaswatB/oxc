@@ -106,10 +106,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for RegExpPattern<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for Program<'_> {
-    type Cloned = Program<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for SourceFile<'_> {
+    type Cloned = SourceFile<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        Program {
+        SourceFile {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             source_type: CloneIn::clone_in(&self.source_type, allocator),

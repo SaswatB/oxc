@@ -35,7 +35,7 @@ impl ContentEq for RegExp<'_> {
     }
 }
 
-impl ContentEq for Program<'_> {
+impl ContentEq for SourceFile<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.source_type, &other.source_type)

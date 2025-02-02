@@ -55,7 +55,7 @@ impl GetSpan for RegExpLiteral<'_> {
     }
 }
 
-impl GetSpan for Program<'_> {
+impl GetSpan for SourceFile<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span

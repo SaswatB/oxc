@@ -2,7 +2,7 @@
 
 use oxc_span::Span;
 
-use crate::{ast::Program, visit::VisitMut};
+use crate::{ast::SourceFile, visit::VisitMut};
 
 /// Convert UTF-8 span offsets to UTF-16.
 pub struct Utf8ToUtf16 {
@@ -29,14 +29,14 @@ impl Utf8ToUtf16 {
     }
 
     /// Convert all spans in the AST to UTF-16.
-    pub fn convert(mut self, program: &mut Program<'_>) {
-        self.build_table(program.source_text);
+    pub fn convert(mut self, source_file: &mut SourceFile<'_>) {
+        self.build_table(source_file.source_text);
         // Skip if source is entirely ASCII
         if self.translations.len() == 1 {
             return;
         }
-        self.visit_program(program);
-        for comment in &mut program.comments {
+        self.visit_source_file(source_file);
+        for comment in &mut source_file.comments {
             self.convert_span(&mut comment.span);
         }
     }
@@ -118,7 +118,7 @@ mod test {
         let allocator = Allocator::new();
         let ast = AstBuilder::new(&allocator);
 
-        let mut program = ast.program(
+        let mut source_file = ast.source_file(
             Span::new(0, 15),
             SourceType::default(),
             ";'🤨' // 🤨",
@@ -134,13 +134,15 @@ mod test {
             ]),
         );
 
-        Utf8ToUtf16::new().convert(&mut program);
-        assert_eq!(program.span, Span::new(0, 11));
-        assert_eq!(program.body[1].span(), Span::new(1, 5));
-        let Statement::ExpressionStatement(expr_stmt) = &program.body[1] else { unreachable!() };
+        Utf8ToUtf16::new().convert(&mut source_file);
+        assert_eq!(source_file.span, Span::new(0, 11));
+        assert_eq!(source_file.body[1].span(), Span::new(1, 5));
+        let Statement::ExpressionStatement(expr_stmt) = &source_file.body[1] else {
+            unreachable!()
+        };
         let Expression::StringLiteral(s) = &expr_stmt.expression else { unreachable!() };
         assert_eq!(s.span, Span::new(1, 5));
-        assert_eq!(program.comments[0].span, Span::new(6, 11));
+        assert_eq!(source_file.comments[0].span, Span::new(6, 11));
     }
 
     #[test]

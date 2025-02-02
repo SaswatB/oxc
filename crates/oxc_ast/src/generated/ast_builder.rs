@@ -247,9 +247,9 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.reg_exp_literal(span, regex, raw), self.allocator)
     }
 
-    /// Build a [`Program`].
+    /// Build a [`SourceFile`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_program`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_source_file`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -260,7 +260,7 @@ impl<'a> AstBuilder<'a> {
     /// - directives
     /// - body
     #[inline]
-    pub fn program<S>(
+    pub fn source_file<S>(
         self,
         span: Span,
         source_type: SourceType,
@@ -269,11 +269,11 @@ impl<'a> AstBuilder<'a> {
         hashbang: Option<Hashbang<'a>>,
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
-    ) -> Program<'a>
+    ) -> SourceFile<'a>
     where
         S: IntoIn<'a, &'a str>,
     {
-        Program {
+        SourceFile {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             source_type,
@@ -286,9 +286,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`Program`], and store it in the memory arena.
+    /// Build a [`SourceFile`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::program`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::source_file`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -299,7 +299,7 @@ impl<'a> AstBuilder<'a> {
     /// - directives
     /// - body
     #[inline]
-    pub fn alloc_program<S>(
+    pub fn alloc_source_file<S>(
         self,
         span: Span,
         source_type: SourceType,
@@ -308,19 +308,19 @@ impl<'a> AstBuilder<'a> {
         hashbang: Option<Hashbang<'a>>,
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
-    ) -> Box<'a, Program<'a>>
+    ) -> Box<'a, SourceFile<'a>>
     where
         S: IntoIn<'a, &'a str>,
     {
         Box::new_in(
-            self.program(span, source_type, source_text, comments, hashbang, directives, body),
+            self.source_file(span, source_type, source_text, comments, hashbang, directives, body),
             self.allocator,
         )
     }
 
-    /// Build a [`Program`] with `ScopeId`.
+    /// Build a [`SourceFile`] with `ScopeId`.
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_program_with_scope_id`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_source_file_with_scope_id`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -332,7 +332,7 @@ impl<'a> AstBuilder<'a> {
     /// - body
     /// - scope_id
     #[inline]
-    pub fn program_with_scope_id<S>(
+    pub fn source_file_with_scope_id<S>(
         self,
         span: Span,
         source_type: SourceType,
@@ -342,11 +342,11 @@ impl<'a> AstBuilder<'a> {
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
-    ) -> Program<'a>
+    ) -> SourceFile<'a>
     where
         S: IntoIn<'a, &'a str>,
     {
-        Program {
+        SourceFile {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             source_type,
@@ -359,9 +359,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`Program`] with `ScopeId`, and store it in the memory arena.
+    /// Build a [`SourceFile`] with `ScopeId`, and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::program_with_scope_id`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::source_file_with_scope_id`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -373,7 +373,7 @@ impl<'a> AstBuilder<'a> {
     /// - body
     /// - scope_id
     #[inline]
-    pub fn alloc_program_with_scope_id<S>(
+    pub fn alloc_source_file_with_scope_id<S>(
         self,
         span: Span,
         source_type: SourceType,
@@ -383,12 +383,12 @@ impl<'a> AstBuilder<'a> {
         directives: Vec<'a, Directive<'a>>,
         body: Vec<'a, Statement<'a>>,
         scope_id: ScopeId,
-    ) -> Box<'a, Program<'a>>
+    ) -> Box<'a, SourceFile<'a>>
     where
         S: IntoIn<'a, &'a str>,
     {
         Box::new_in(
-            self.program_with_scope_id(
+            self.source_file_with_scope_id(
                 span,
                 source_type,
                 source_text,

@@ -105,7 +105,7 @@ impl<'a> AstKind<'a> {
     /// Will always be none if semantic analysis has not been run.
     pub fn get_container_scope_id(self) -> Option<ScopeId> {
         match self {
-            Self::Program(p) => Some(p.scope_id()),
+            Self::SourceFile(p) => Some(p.scope_id()),
             Self::BlockStatement(b) => Some(b.scope_id()),
             Self::ForStatement(f) => Some(f.scope_id()),
             Self::ForInStatement(f) => Some(f.scope_id()),
@@ -697,7 +697,7 @@ impl AstKind<'_> {
         }
 
         match self {
-            Self::Program(_) => "Program".into(),
+            Self::SourceFile(_) => "SourceFile".into(),
             Self::Directive(d) => d.directive.as_ref().into(),
             Self::Hashbang(_) => "Hashbang".into(),
 

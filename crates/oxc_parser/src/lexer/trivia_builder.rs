@@ -142,7 +142,7 @@ mod test {
         let allocator = Allocator::default();
         let source_type = SourceType::default();
         let ret = Parser::new(&allocator, source_text, source_type).parse();
-        ret.program.comments.iter().copied().collect::<Vec<_>>()
+        ret.source_file.comments.iter().copied().collect::<Vec<_>>()
     }
 
     #[test]

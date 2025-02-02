@@ -28,11 +28,11 @@ fn main() -> Result<(), String> {
     let ret = Parser::new(&allocator, &source_text, source_type)
         .with_options(ParseOptions { parse_regular_expression: true, ..ParseOptions::default() })
         .parse();
-    let mut program = ret.program;
+    let mut source_file = ret.source_file;
 
     if show_comments {
         println!("Comments:");
-        for comment in &program.comments {
+        for comment in &source_file.comments {
             let s = comment.content_span().source_text(&source_text);
             println!("{s}");
         }
@@ -41,9 +41,9 @@ fn main() -> Result<(), String> {
     if show_ast || show_estree {
         println!("AST:");
         if show_estree {
-            Utf8ToUtf16::new().convert(&mut program);
+            Utf8ToUtf16::new().convert(&mut source_file);
         }
-        println!("{}", serde_json::to_string_pretty(&program).unwrap());
+        println!("{}", serde_json::to_string_pretty(&source_file).unwrap());
     }
 
     if ret.errors.is_empty() {

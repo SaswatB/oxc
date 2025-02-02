@@ -29,10 +29,10 @@ fn main() -> std::io::Result<()> {
         println!("{error:?}");
     }
 
-    let program = ret.program;
+    let source_file = ret.source_file;
 
     let mut ast_pass = CountASTNodes::default();
-    ast_pass.visit_program(&program);
+    ast_pass.visit_source_file(&source_file);
     println!("{ast_pass:?}");
 
     Ok(())

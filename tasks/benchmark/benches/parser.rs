@@ -40,17 +40,17 @@ fn bench_estree(criterion: &mut Criterion) {
         group.bench_function(id, |b| {
             b.iter_with_setup_wrapper(|runner| {
                 allocator.reset();
-                let mut program = Parser::new(&allocator, source_text, source_type)
+                let mut source_file = Parser::new(&allocator, source_text, source_type)
                     .with_options(ParseOptions {
                         parse_regular_expression: true,
                         ..ParseOptions::default()
                     })
                     .parse()
-                    .program;
+                    .source_file;
                 runner.run(|| {
-                    Utf8ToUtf16::new().convert(&mut program);
-                    program.to_json();
-                    program
+                    Utf8ToUtf16::new().convert(&mut source_file);
+                    source_file.to_json();
+                    source_file
                 });
             });
         });

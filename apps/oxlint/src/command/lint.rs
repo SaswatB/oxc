@@ -129,7 +129,7 @@ pub struct FixOptions {
     /// Fix as many issues as possible. Only unfixed issues are reported in the output
     #[bpaf(switch, hide_usage)]
     pub fix: bool,
-    /// Apply auto-fixable suggestions. May change program behavior.
+    /// Apply auto-fixable suggestions. May change source_file behavior.
     #[bpaf(switch, hide_usage)]
     pub fix_suggestions: bool,
 

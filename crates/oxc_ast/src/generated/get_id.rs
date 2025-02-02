@@ -5,8 +5,8 @@ use oxc_syntax::{reference::ReferenceId, scope::ScopeId, symbol::SymbolId};
 
 use crate::ast::*;
 
-impl Program<'_> {
-    /// Get [`ScopeId`] of [`Program`].
+impl SourceFile<'_> {
+    /// Get [`ScopeId`] of [`SourceFile`].
     ///
     /// Only use this method on a post-semantic AST where [`ScopeId`]s are always defined.
     ///
@@ -17,7 +17,7 @@ impl Program<'_> {
         self.scope_id.get().unwrap()
     }
 
-    /// Set [`ScopeId`] of [`Program`].
+    /// Set [`ScopeId`] of [`SourceFile`].
     #[inline]
     pub fn set_scope_id(&self, scope_id: ScopeId) {
         self.scope_id.set(Some(scope_id));

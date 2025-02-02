@@ -47,8 +47,8 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_program(&mut self, it: &Program<'a>) {
-        walk_program(self, it);
+    fn visit_source_file(&mut self, it: &SourceFile<'a>) {
+        walk_source_file(self, it);
     }
 
     #[inline]
@@ -1348,8 +1348,8 @@ pub mod walk {
     use super::*;
 
     #[inline]
-    pub fn walk_program<'a, V: Visit<'a>>(visitor: &mut V, it: &Program<'a>) {
-        let kind = AstKind::Program(visitor.alloc(it));
+    pub fn walk_source_file<'a, V: Visit<'a>>(visitor: &mut V, it: &SourceFile<'a>) {
+        let kind = AstKind::SourceFile(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.enter_scope(
             {

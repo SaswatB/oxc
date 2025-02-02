@@ -39,8 +39,8 @@ pub trait VisitMut<'a>: Sized {
     fn leave_scope(&mut self) {}
 
     #[inline]
-    fn visit_program(&mut self, it: &mut Program<'a>) {
-        walk_program(self, it);
+    fn visit_source_file(&mut self, it: &mut SourceFile<'a>) {
+        walk_source_file(self, it);
     }
 
     #[inline]
@@ -1343,8 +1343,8 @@ pub mod walk_mut {
     use super::*;
 
     #[inline]
-    pub fn walk_program<'a, V: VisitMut<'a>>(visitor: &mut V, it: &mut Program<'a>) {
-        let kind = AstType::Program;
+    pub fn walk_source_file<'a, V: VisitMut<'a>>(visitor: &mut V, it: &mut SourceFile<'a>) {
+        let kind = AstType::SourceFile;
         visitor.enter_node(kind);
         visitor.enter_scope(
             {

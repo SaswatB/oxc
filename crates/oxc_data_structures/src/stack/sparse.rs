@@ -10,8 +10,8 @@ use super::{NonEmptyStack, Stack};
 /// [`SparseStack`]'s advantage over [`NonEmptyStack`] is less memory usage for empty entries (`None`).
 ///
 /// Stack is initialized with a single entry which can never be popped off.
-/// If `Program` has a entry on the stack, can use this initial entry for it. Get value for `Program`
-/// in `exit_program` visitor with [`take_last`] instead of [`pop`].
+/// If `SourceFile` has a entry on the stack, can use this initial entry for it. Get value for `SourceFile`
+/// in `exit_source_file` visitor with [`take_last`] instead of [`pop`].
 ///
 /// The stack is stored as 2 arrays:
 /// 1. `has_values` - Records whether an entry on the stack has a value or not (`Some` or `None`).

@@ -250,8 +250,8 @@ mod test {
 
     #[test]
     fn lifetime_variance() {
-        fn _assert_box_variant_lifetime<'a: 'b, 'b, T>(program: Box<'a, T>) -> Box<'b, T> {
-            program
+        fn _assert_box_variant_lifetime<'a: 'b, 'b, T>(source_file: Box<'a, T>) -> Box<'b, T> {
+            source_file
         }
     }
 }

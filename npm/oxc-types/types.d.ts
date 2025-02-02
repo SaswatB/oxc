@@ -52,8 +52,8 @@ export interface RegExp {
 
 export type RegExpPattern = string | string | Pattern;
 
-export interface Program extends Span {
-  type: 'Program';
+export interface SourceFile extends Span {
+  type: 'SourceFile';
   nodeId: number;
   sourceType: SourceType;
   hashbang: Hashbang | null;

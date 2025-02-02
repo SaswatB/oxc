@@ -27,14 +27,14 @@ export const Counter: React.FC = () => {
     let source_type = SourceType::from_path("Counter.tsx").unwrap();
 
     let ParserReturn {
-        program,  // AST
-        errors,   // Syntax errors
-        panicked, // Parser encountered an error it couldn't recover from
+        source_file, // AST
+        errors,      // Syntax errors
+        panicked,    // Parser encountered an error it couldn't recover from
         ..
     } = Parser::new(&allocator, source_text, source_type).parse();
 
     assert!(!panicked);
     assert!(errors.is_empty());
-    assert!(!program.body.is_empty());
-    assert_eq!(program.comments.len(), 1);
+    assert!(!source_file.body.is_empty());
+    assert_eq!(source_file.comments.len(), 1);
 }

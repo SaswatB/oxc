@@ -335,8 +335,8 @@ mod test {
 
     #[test]
     fn lifetime_variance() {
-        fn _assert_vec_variant_lifetime<'a: 'b, 'b, T>(program: Vec<'a, T>) -> Vec<'b, T> {
-            program
+        fn _assert_vec_variant_lifetime<'a: 'b, 'b, T>(source_file: Vec<'a, T>) -> Vec<'b, T> {
+            source_file
         }
     }
 

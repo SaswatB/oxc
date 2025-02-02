@@ -87,7 +87,7 @@ impl<'a> GetChildren<'a> for RegExpLiteral<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for Program<'a> {
+impl<'a> GetChildren<'a> for SourceFile<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.hashbang {
@@ -102,7 +102,7 @@ impl<'a> GetChildren<'a> for Program<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::Program(self)
+        AstKind::SourceFile(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id

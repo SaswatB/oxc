@@ -91,10 +91,10 @@ impl SourceCleaner {
         let source_text = self.source_text.clone();
         let parser_ret = Parser::new(allocator, &source_text, source_type).parse();
         assert!(parser_ret.errors.is_empty());
-        let program = parser_ret.program;
+        let source_file = parser_ret.source_file;
 
         // Visit AST and compile list of replacements
-        self.visit_program(&program);
+        self.visit_source_file(&source_file);
 
         // Make replacements
         self.replacements.sort_unstable_by_key(|replacement| replacement.span);

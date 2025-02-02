@@ -87,7 +87,7 @@ pub mod lexer;
 
 use oxc_allocator::{Allocator, Box as ArenaBox};
 use oxc_ast::{
-    ast::{Expression, Program},
+    ast::{Expression, SourceFile},
     AstBuilder,
 };
 use oxc_diagnostics::{OxcDiagnostic, Result};
@@ -119,7 +119,7 @@ pub(crate) const MAX_LEN: usize = if std::mem::size_of::<usize>() >= 8 {
 ///
 /// ## AST Validity
 ///
-/// [`program`] will always contain a structurally valid AST, even if there are syntax errors.
+/// [`source_file`] will always contain a structurally valid AST, even if there are syntax errors.
 /// However, the AST may be semantically invalid. To ensure a valid AST,
 /// 1. Check that [`errors`] is empty
 /// 2. Run semantic analysis with [syntax error checking
@@ -129,13 +129,13 @@ pub(crate) const MAX_LEN: usize = if std::mem::size_of::<usize>() >= 8 {
 /// Oxc's [`Parser`] is able to recover from some syntax errors and continue parsing. When this
 /// happens,
 /// 1. [`errors`] will be non-empty
-/// 2. [`program`] will contain a full AST
+/// 2. [`source_file`] will contain a full AST
 /// 3. [`panicked`] will be false
 ///
-/// When the parser cannot recover, it will abort and terminate parsing early. [`program`] will
+/// When the parser cannot recover, it will abort and terminate parsing early. [`source_file`] will
 /// be empty and [`panicked`] will be `true`.
 ///
-/// [`program`]: ParserReturn::program
+/// [`source_file`]: ParserReturn::source_file
 /// [`errors`]: ParserReturn::errors
 /// [`panicked`]: ParserReturn::panicked
 #[non_exhaustive]
@@ -151,7 +151,7 @@ pub struct ParserReturn<'a> {
     ///
     /// To ensure a valid AST, check that [`errors`](ParserReturn::errors) is empty. Then, run
     /// semantic analysis with syntax error checking enabled.
-    pub program: Program<'a>,
+    pub source_file: SourceFile<'a>,
 
     /// See <https://tc39.es/ecma262/#sec-abstract-module-records>
     pub module_record: ModuleRecord<'a>,
@@ -169,10 +169,10 @@ pub struct ParserReturn<'a> {
     /// Whether the parser panicked and terminated early.
     ///
     /// This will be `false` if parsing was successful, or if parsing was able to recover from a
-    /// syntax error. When `true`, [`program`] will be empty and [`errors`] will contain at least
+    /// syntax error. When `true`, [`source_file`] will be empty and [`errors`] will contain at least
     /// one error.
     ///
-    /// [`program`]: ParserReturn::program
+    /// [`source_file`]: ParserReturn::source_file
     /// [`errors`]: ParserReturn::errors
     pub panicked: bool,
 
@@ -287,7 +287,7 @@ mod parser_parse {
     impl<'a> Parser<'a> {
         /// Main entry point
         ///
-        /// Returns an empty `Program` on unrecoverable error,
+        /// Returns an empty `SourceFile` on unrecoverable error,
         /// Recoverable errors are stored inside `errors`.
         ///
         /// See the [module-level documentation](crate) for examples and more information.
@@ -407,15 +407,15 @@ impl<'a> ParserImpl<'a> {
 
     /// Main entry point
     ///
-    /// Returns an empty `Program` on unrecoverable error,
+    /// Returns an empty `SourceFile` on unrecoverable error,
     /// Recoverable errors are stored inside `errors`.
     #[inline]
     pub fn parse(mut self) -> ParserReturn<'a> {
-        let (mut program, panicked) = match self.parse_program() {
-            Ok(program) => (program, false),
+        let (mut source_file, panicked) = match self.parse_source_file() {
+            Ok(source_file) => (source_file, false),
             Err(error) => {
                 self.error(self.overlong_error().unwrap_or(error));
-                let program = self.ast.program(
+                let source_file = self.ast.source_file(
                     Span::default(),
                     self.source_type,
                     self.source_text,
@@ -424,7 +424,7 @@ impl<'a> ParserImpl<'a> {
                     self.ast.vec(),
                     self.ast.vec(),
                 );
-                (program, true)
+                (source_file, true)
             }
         };
 
@@ -451,9 +451,9 @@ impl<'a> ParserImpl<'a> {
         let irregular_whitespaces =
             self.lexer.trivia_builder.irregular_whitespaces.into_boxed_slice();
 
-        let source_type = program.source_type;
+        let source_type = source_file.source_type;
         if source_type.is_unambiguous() {
-            program.source_type = if module_record.has_module_syntax {
+            source_file.source_type = if module_record.has_module_syntax {
                 source_type.with_module(true)
             } else {
                 source_type.with_script(true)
@@ -461,7 +461,7 @@ impl<'a> ParserImpl<'a> {
         }
 
         ParserReturn {
-            program,
+            source_file,
             module_record,
             errors,
             irregular_whitespaces,
@@ -483,7 +483,7 @@ impl<'a> ParserImpl<'a> {
     }
 
     #[allow(clippy::cast_possible_truncation)]
-    fn parse_program(&mut self) -> Result<Program<'a>> {
+    fn parse_source_file(&mut self) -> Result<SourceFile<'a>> {
         // initialize cur_token and prev_token by moving onto the first token
         self.bump_any();
 
@@ -493,7 +493,7 @@ impl<'a> ParserImpl<'a> {
 
         let span = Span::new(0, self.source_text.len() as u32);
         let comments = self.ast.vec_from_iter(self.lexer.trivia_builder.comments.iter().copied());
-        Ok(self.ast.program(
+        Ok(self.ast.source_file(
             span,
             self.source_type,
             self.source_text,
@@ -587,12 +587,12 @@ mod test {
     use super::*;
 
     #[test]
-    fn parse_program_smoke_test() {
+    fn parse_source_file_smoke_test() {
         let allocator = Allocator::default();
         let source_type = SourceType::default();
         let source = "";
         let ret = Parser::new(&allocator, source, source_type).parse();
-        assert!(ret.program.is_empty());
+        assert!(ret.source_file.is_empty());
         assert!(ret.errors.is_empty());
         assert!(!ret.is_flow_language);
     }
@@ -648,8 +648,8 @@ mod test {
         ];
         for (source, body_length) in sources {
             let ret = Parser::new(&allocator, source, source_type).parse();
-            assert!(ret.program.directives.is_empty(), "{source}");
-            assert_eq!(ret.program.body.len(), body_length, "{source}");
+            assert!(ret.source_file.directives.is_empty(), "{source}");
+            assert_eq!(ret.source_file.body.len(), body_length, "{source}");
         }
     }
 
@@ -667,7 +667,7 @@ mod test {
         ];
         for (source, kind) in sources {
             let ret = Parser::new(&allocator, source, source_type).parse();
-            let comments = &ret.program.comments;
+            let comments = &ret.source_file.comments;
             assert_eq!(comments.len(), 1, "{source}");
             assert_eq!(comments.first().unwrap().kind, kind, "{source}");
         }
@@ -679,7 +679,7 @@ mod test {
         let source_type = SourceType::default();
         let source = "#!/usr/bin/node\n;";
         let ret = Parser::new(&allocator, source, source_type).parse();
-        assert_eq!(ret.program.hashbang.unwrap().value.as_str(), "/usr/bin/node");
+        assert_eq!(ret.source_file.hashbang.unwrap().value.as_str(), "/usr/bin/node");
     }
 
     #[test]
@@ -690,13 +690,13 @@ mod test {
         let sources = ["import x from 'foo';", "export {x} from 'foo';", "import.meta"];
         for source in sources {
             let ret = Parser::new(&allocator, source, source_type).parse();
-            assert!(ret.program.source_type.is_module());
+            assert!(ret.source_file.source_type.is_module());
         }
 
         let sources = ["", "import('foo')"];
         for source in sources {
             let ret = Parser::new(&allocator, source, source_type).parse();
-            assert!(ret.program.source_type.is_script());
+            assert!(ret.source_file.source_type.is_script());
         }
     }
 
@@ -707,7 +707,7 @@ mod test {
         let sources = ["2n", ";'1234567890123456789012345678901234567890'"];
         for source in sources {
             let ret = Parser::new(&allocator, source, source_type).parse();
-            assert!(!ret.program.body.is_empty());
+            assert!(!ret.source_file.body.is_empty());
         }
     }
 
@@ -733,7 +733,7 @@ mod test {
 
         let allocator = Allocator::default();
         let ret = Parser::new(&allocator, &source, SourceType::default()).parse();
-        assert!(ret.program.is_empty());
+        assert!(ret.source_file.is_empty());
         assert!(ret.panicked);
         assert_eq!(ret.errors.len(), 1);
         assert_eq!(ret.errors.first().unwrap().to_string(), "Source length exceeds 4 GiB limit");
@@ -757,6 +757,6 @@ mod test {
         let ret = Parser::new(&allocator, &source, SourceType::default()).parse();
         assert!(!ret.panicked);
         assert!(ret.errors.is_empty());
-        assert_eq!(ret.program.body.len(), 2);
+        assert_eq!(ret.source_file.body.len(), 2);
     }
 }

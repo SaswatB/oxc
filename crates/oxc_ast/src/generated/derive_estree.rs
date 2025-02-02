@@ -68,10 +68,10 @@ impl Serialize for RegExpPattern<'_> {
     }
 }
 
-impl Serialize for Program<'_> {
+impl Serialize for SourceFile<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "Program")?;
+        map.serialize_entry("type", "SourceFile")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("sourceType", &self.source_type)?;

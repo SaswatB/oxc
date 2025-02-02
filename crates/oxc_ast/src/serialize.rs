@@ -13,8 +13,8 @@ use oxc_syntax::number::BigintBase;
 use crate::ast::{
     BigIntLiteral, BindingPatternKind, BooleanLiteral, Directive, Elision, FormalParameter,
     FormalParameterKind, FormalParameters, JSXElementName, JSXIdentifier,
-    JSXMemberExpressionObject, NullLiteral, NumericLiteral, Program, RegExpFlags, RegExpLiteral,
-    RegExpPattern, Statement, StringLiteral, TSModuleBlock, TSTypeAnnotation,
+    JSXMemberExpressionObject, NullLiteral, NumericLiteral, RegExpFlags, RegExpLiteral,
+    RegExpPattern, SourceFile, Statement, StringLiteral, TSModuleBlock, TSTypeAnnotation,
 };
 
 #[derive(Serialize)]
@@ -142,7 +142,7 @@ impl serde_json::ser::Formatter for EcmaFormatter {
     }
 }
 
-impl Program<'_> {
+impl SourceFile<'_> {
     /// # Panics
     pub fn to_json(&self) -> String {
         let ser = self.serializer();

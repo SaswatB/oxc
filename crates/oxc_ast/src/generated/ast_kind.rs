@@ -20,7 +20,7 @@ pub enum AstType {
     StringLiteral = 3,
     BigIntLiteral = 4,
     RegExpLiteral = 5,
-    Program = 6,
+    SourceFile = 6,
     IdentifierName = 7,
     IdentifierReference = 8,
     BindingIdentifier = 9,
@@ -212,7 +212,7 @@ pub enum AstKind<'a> {
     StringLiteral(&'a StringLiteral<'a>) = AstType::StringLiteral as u8,
     BigIntLiteral(&'a BigIntLiteral<'a>) = AstType::BigIntLiteral as u8,
     RegExpLiteral(&'a RegExpLiteral<'a>) = AstType::RegExpLiteral as u8,
-    Program(&'a Program<'a>) = AstType::Program as u8,
+    SourceFile(&'a SourceFile<'a>) = AstType::SourceFile as u8,
     IdentifierName(&'a IdentifierName<'a>) = AstType::IdentifierName as u8,
     IdentifierReference(&'a IdentifierReference<'a>) = AstType::IdentifierReference as u8,
     BindingIdentifier(&'a BindingIdentifier<'a>) = AstType::BindingIdentifier as u8,
@@ -433,7 +433,7 @@ impl GetSpan for AstKind<'_> {
             Self::StringLiteral(it) => it.span(),
             Self::BigIntLiteral(it) => it.span(),
             Self::RegExpLiteral(it) => it.span(),
-            Self::Program(it) => it.span(),
+            Self::SourceFile(it) => it.span(),
             Self::IdentifierName(it) => it.span(),
             Self::IdentifierReference(it) => it.span(),
             Self::BindingIdentifier(it) => it.span(),
@@ -626,7 +626,7 @@ impl<'a> AstKind<'a> {
             Self::StringLiteral(it) => it.get_children(),
             Self::BigIntLiteral(it) => it.get_children(),
             Self::RegExpLiteral(it) => it.get_children(),
-            Self::Program(it) => it.get_children(),
+            Self::SourceFile(it) => it.get_children(),
             Self::IdentifierName(it) => it.get_children(),
             Self::IdentifierReference(it) => it.get_children(),
             Self::BindingIdentifier(it) => it.get_children(),
@@ -816,7 +816,7 @@ impl<'a> AstKind<'a> {
             Self::StringLiteral(it) => it.get_node_id(),
             Self::BigIntLiteral(it) => it.get_node_id(),
             Self::RegExpLiteral(it) => it.get_node_id(),
-            Self::Program(it) => it.get_node_id(),
+            Self::SourceFile(it) => it.get_node_id(),
             Self::IdentifierName(it) => it.get_node_id(),
             Self::IdentifierReference(it) => it.get_node_id(),
             Self::BindingIdentifier(it) => it.get_node_id(),
@@ -1056,8 +1056,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_program(self) -> Option<&'a Program<'a>> {
-        if let Self::Program(v) = self {
+    pub fn as_source_file(self) -> Option<&'a SourceFile<'a>> {
+        if let Self::SourceFile(v) = self {
             Some(v)
         } else {
             None

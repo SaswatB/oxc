@@ -138,8 +138,10 @@ fn size_asserts() {
 fn lifetime_variance() {
     use crate::ast;
 
-    fn _assert_program_variant_lifetime<'a: 'b, 'b>(program: ast::Program<'a>) -> ast::Program<'b> {
-        program
+    fn _assert_source_file_variant_lifetime<'a: 'b, 'b>(
+        source_file: ast::SourceFile<'a>,
+    ) -> ast::SourceFile<'b> {
+        source_file
     }
 }
 

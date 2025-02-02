@@ -145,15 +145,15 @@ impl<'a> VisitBuilder<'a> {
     }
 
     fn build(mut self) -> (/* visits */ Vec<TokenStream>, /* walks */ Vec<TokenStream>) {
-        let program = self
+        let source_file = self
             .schema
             .defs
             .iter()
             .filter(|it| it.is_visitable())
-            .find(|it| it.name() == "Program")
-            .expect("Couldn't find the `Program` type!");
+            .find(|it| it.name() == "SourceFile")
+            .expect("Couldn't find the `SourceFile` type!");
 
-        self.get_visitor(program, false);
+        self.get_visitor(source_file, false);
         (self.visits, self.walks)
     }
 

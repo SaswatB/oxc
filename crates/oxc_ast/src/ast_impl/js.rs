@@ -8,13 +8,13 @@ use oxc_syntax::{operator::UnaryOperator, scope::ScopeFlags, symbol::SymbolId};
 
 use crate::ast::*;
 
-impl Program<'_> {
-    /// Returns `true` if this program has no statements or directives.
+impl SourceFile<'_> {
+    /// Returns `true` if this source_file has no statements or directives.
     pub fn is_empty(&self) -> bool {
         self.body.is_empty() && self.directives.is_empty()
     }
 
-    /// Returns `true` if this program has a `"use strict"` directive.
+    /// Returns `true` if this source_file has a `"use strict"` directive.
     pub fn has_use_strict_directive(&self) -> bool {
         self.directives.iter().any(Directive::is_use_strict)
     }
