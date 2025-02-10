@@ -513,14 +513,21 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
+    /// - no_substitution_template
     #[inline]
     pub fn expression_template_literal(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
+        no_substitution_template: bool,
     ) -> Expression<'a> {
-        Expression::TemplateLiteral(self.alloc_template_literal(span, quasis, expressions))
+        Expression::TemplateLiteral(self.alloc_template_literal(
+            span,
+            quasis,
+            expressions,
+            no_substitution_template,
+        ))
     }
 
     /// Build an [`Expression::Identifier`]
@@ -1768,18 +1775,21 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
+    /// - no_substitution_template
     #[inline]
     pub fn template_literal(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
+        no_substitution_template: bool,
     ) -> TemplateLiteral<'a> {
         TemplateLiteral {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             quasis,
             expressions,
+            no_substitution_template,
         }
     }
 
@@ -1791,14 +1801,19 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
+    /// - no_substitution_template
     #[inline]
     pub fn alloc_template_literal(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
+        no_substitution_template: bool,
     ) -> Box<'a, TemplateLiteral<'a>> {
-        Box::new_in(self.template_literal(span, quasis, expressions), self.allocator)
+        Box::new_in(
+            self.template_literal(span, quasis, expressions, no_substitution_template),
+            self.allocator,
+        )
     }
 
     /// Build a [`TaggedTemplateExpression`].
@@ -8467,14 +8482,21 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
+    /// - no_substitution_template
     #[inline]
     pub fn ts_literal_template_literal(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
+        no_substitution_template: bool,
     ) -> TSLiteral<'a> {
-        TSLiteral::TemplateLiteral(self.alloc_template_literal(span, quasis, expressions))
+        TSLiteral::TemplateLiteral(self.alloc_template_literal(
+            span,
+            quasis,
+            expressions,
+            no_substitution_template,
+        ))
     }
 
     /// Build a [`TSLiteral::UnaryExpression`]

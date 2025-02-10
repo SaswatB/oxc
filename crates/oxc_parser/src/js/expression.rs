@@ -451,9 +451,11 @@ impl<'a> ParserImpl<'a> {
         let span = self.start_span();
         let mut expressions = self.ast.vec();
         let mut quasis = self.ast.vec();
+        let mut no_substitution_template = false;
         match self.cur_kind() {
             Kind::NoSubstitutionTemplate => {
                 quasis.push(self.parse_template_element(tagged));
+                no_substitution_template = true;
             }
             Kind::TemplateHead => {
                 quasis.push(self.parse_template_element(tagged));
@@ -483,7 +485,12 @@ impl<'a> ParserImpl<'a> {
             }
             _ => unreachable!("parse_template_literal"),
         }
-        Ok(self.ast.template_literal(self.end_span(span), quasis, expressions))
+        Ok(self.ast.template_literal(
+            self.end_span(span),
+            quasis,
+            expressions,
+            no_substitution_template,
+        ))
     }
 
     pub(crate) fn parse_template_literal_expression(

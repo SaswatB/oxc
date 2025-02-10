@@ -632,6 +632,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for TemplateLiteral<'_> {
             span: CloneIn::clone_in(&self.span, allocator),
             quasis: CloneIn::clone_in(&self.quasis, allocator),
             expressions: CloneIn::clone_in(&self.expressions, allocator),
+            no_substitution_template: CloneIn::clone_in(&self.no_substitution_template, allocator),
         }
     }
 }

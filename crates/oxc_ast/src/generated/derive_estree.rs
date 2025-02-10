@@ -366,6 +366,7 @@ impl Serialize for TemplateLiteral<'_> {
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("quasis", &self.quasis)?;
         map.serialize_entry("expressions", &self.expressions)?;
+        map.serialize_entry("noSubstitutionTemplate", &self.no_substitution_template)?;
         map.end()
     }
 }

@@ -310,6 +310,10 @@ impl ContentEq for TemplateLiteral<'_> {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.quasis, &other.quasis)
             && ContentEq::content_eq(&self.expressions, &other.expressions)
+            && ContentEq::content_eq(
+                &self.no_substitution_template,
+                &other.no_substitution_template,
+            )
     }
 }
 

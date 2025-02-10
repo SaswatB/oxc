@@ -212,6 +212,7 @@ export interface TemplateLiteral extends Span {
   nodeId: number;
   quasis: Array<TemplateElement>;
   expressions: Array<Expression>;
+  noSubstitutionTemplate: boolean;
 }
 
 export interface TaggedTemplateExpression extends Span {

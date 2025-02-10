@@ -445,6 +445,7 @@ pub struct TemplateLiteral<'a> {
     pub span: Span,
     pub quasis: Vec<'a, TemplateElement<'a>>,
     pub expressions: Vec<'a, Expression<'a>>,
+    pub no_substitution_template: bool,
 }
 
 /// `` foo`Hello, ${name}` `` in `` const foo = foo`Hello, ${name}` ``

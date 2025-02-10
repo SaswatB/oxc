@@ -145,20 +145,21 @@ const _: () = {
     assert!(size_of::<PropertyKind>() == 1usize);
     assert!(align_of::<PropertyKind>() == 1usize);
 
-    assert!(size_of::<TemplateLiteral>() == 80usize);
+    assert!(size_of::<TemplateLiteral>() == 88usize);
     assert!(align_of::<TemplateLiteral>() == 8usize);
     assert!(offset_of!(TemplateLiteral, node_id) == 0usize);
     assert!(offset_of!(TemplateLiteral, span) == 8usize);
     assert!(offset_of!(TemplateLiteral, quasis) == 16usize);
     assert!(offset_of!(TemplateLiteral, expressions) == 48usize);
+    assert!(offset_of!(TemplateLiteral, no_substitution_template) == 80usize);
 
-    assert!(size_of::<TaggedTemplateExpression>() == 120usize);
+    assert!(size_of::<TaggedTemplateExpression>() == 128usize);
     assert!(align_of::<TaggedTemplateExpression>() == 8usize);
     assert!(offset_of!(TaggedTemplateExpression, node_id) == 0usize);
     assert!(offset_of!(TaggedTemplateExpression, span) == 8usize);
     assert!(offset_of!(TaggedTemplateExpression, tag) == 16usize);
     assert!(offset_of!(TaggedTemplateExpression, quasi) == 32usize);
-    assert!(offset_of!(TaggedTemplateExpression, type_parameters) == 112usize);
+    assert!(offset_of!(TaggedTemplateExpression, type_parameters) == 120usize);
 
     assert!(size_of::<TemplateElement>() == 56usize);
     assert!(align_of::<TemplateElement>() == 8usize);
@@ -1894,20 +1895,21 @@ const _: () = {
     assert!(size_of::<PropertyKind>() == 1usize);
     assert!(align_of::<PropertyKind>() == 1usize);
 
-    assert!(size_of::<TemplateLiteral>() == 44usize);
+    assert!(size_of::<TemplateLiteral>() == 48usize);
     assert!(align_of::<TemplateLiteral>() == 4usize);
     assert!(offset_of!(TemplateLiteral, node_id) == 0usize);
     assert!(offset_of!(TemplateLiteral, span) == 4usize);
     assert!(offset_of!(TemplateLiteral, quasis) == 12usize);
     assert!(offset_of!(TemplateLiteral, expressions) == 28usize);
+    assert!(offset_of!(TemplateLiteral, no_substitution_template) == 44usize);
 
-    assert!(size_of::<TaggedTemplateExpression>() == 68usize);
+    assert!(size_of::<TaggedTemplateExpression>() == 72usize);
     assert!(align_of::<TaggedTemplateExpression>() == 4usize);
     assert!(offset_of!(TaggedTemplateExpression, node_id) == 0usize);
     assert!(offset_of!(TaggedTemplateExpression, span) == 4usize);
     assert!(offset_of!(TaggedTemplateExpression, tag) == 12usize);
     assert!(offset_of!(TaggedTemplateExpression, quasi) == 20usize);
-    assert!(offset_of!(TaggedTemplateExpression, type_parameters) == 64usize);
+    assert!(offset_of!(TaggedTemplateExpression, type_parameters) == 68usize);
 
     assert!(size_of::<TemplateElement>() == 32usize);
     assert!(align_of::<TemplateElement>() == 4usize);
