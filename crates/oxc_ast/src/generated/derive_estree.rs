@@ -916,7 +916,7 @@ impl Serialize for Statement<'_> {
             Statement::TryStatement(x) => Serialize::serialize(x, serializer),
             Statement::WhileStatement(x) => Serialize::serialize(x, serializer),
             Statement::WithStatement(x) => Serialize::serialize(x, serializer),
-            Statement::VariableDeclaration(x) => Serialize::serialize(x, serializer),
+            Statement::VariableDeclarationList(x) => Serialize::serialize(x, serializer),
             Statement::FunctionDeclaration(x) => Serialize::serialize(x, serializer),
             Statement::ClassDeclaration(x) => Serialize::serialize(x, serializer),
             Statement::TSTypeAliasDeclaration(x) => Serialize::serialize(x, serializer),
@@ -971,7 +971,7 @@ impl Serialize for BlockStatement<'_> {
 impl Serialize for Declaration<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
-            Declaration::VariableDeclaration(x) => Serialize::serialize(x, serializer),
+            Declaration::VariableDeclarationList(x) => Serialize::serialize(x, serializer),
             Declaration::FunctionDeclaration(x) => Serialize::serialize(x, serializer),
             Declaration::ClassDeclaration(x) => Serialize::serialize(x, serializer),
             Declaration::TSTypeAliasDeclaration(x) => Serialize::serialize(x, serializer),
@@ -983,10 +983,10 @@ impl Serialize for Declaration<'_> {
     }
 }
 
-impl Serialize for VariableDeclaration<'_> {
+impl Serialize for VariableDeclarationList<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "VariableDeclaration")?;
+        map.serialize_entry("type", "VariableDeclarationList")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("kind", &self.kind)?;
@@ -1106,7 +1106,7 @@ impl Serialize for ForStatement<'_> {
 impl Serialize for ForStatementInit<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
-            ForStatementInit::VariableDeclaration(x) => Serialize::serialize(x, serializer),
+            ForStatementInit::VariableDeclarationList(x) => Serialize::serialize(x, serializer),
             ForStatementInit::BooleanLiteral(x) => Serialize::serialize(x, serializer),
             ForStatementInit::NullLiteral(x) => Serialize::serialize(x, serializer),
             ForStatementInit::NumericLiteral(x) => Serialize::serialize(x, serializer),
@@ -1169,7 +1169,7 @@ impl Serialize for ForInStatement<'_> {
 impl Serialize for ForStatementLeft<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
-            ForStatementLeft::VariableDeclaration(x) => Serialize::serialize(x, serializer),
+            ForStatementLeft::VariableDeclarationList(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::AssignmentTargetIdentifier(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::TSAsExpression(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::TSSatisfiesExpression(x) => Serialize::serialize(x, serializer),

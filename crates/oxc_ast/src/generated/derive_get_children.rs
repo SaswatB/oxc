@@ -1541,7 +1541,7 @@ impl<'a> GetChildren<'a> for Statement<'a> {
             Self::TryStatement(_) => vec![],
             Self::WhileStatement(_) => vec![],
             Self::WithStatement(_) => vec![],
-            Self::VariableDeclaration(_) => vec![],
+            Self::VariableDeclarationList(_) => vec![],
             Self::FunctionDeclaration(_) => vec![],
             Self::ClassDeclaration(_) => vec![],
             Self::TSTypeAliasDeclaration(_) => vec![],
@@ -1577,7 +1577,7 @@ impl<'a> GetChildren<'a> for Statement<'a> {
             Self::TryStatement(e) => AstKind::TryStatement(e),
             Self::WhileStatement(e) => AstKind::WhileStatement(e),
             Self::WithStatement(e) => AstKind::WithStatement(e),
-            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::VariableDeclarationList(e) => AstKind::VariableDeclarationList(e),
             Self::FunctionDeclaration(e) => AstKind::Function(e),
             Self::ClassDeclaration(e) => AstKind::Class(e),
             Self::TSTypeAliasDeclaration(e) => AstKind::TSTypeAliasDeclaration(e),
@@ -1613,7 +1613,7 @@ impl<'a> GetChildren<'a> for Statement<'a> {
             Self::TryStatement(e) => e.node_id,
             Self::WhileStatement(e) => e.node_id,
             Self::WithStatement(e) => e.node_id,
-            Self::VariableDeclaration(e) => e.node_id,
+            Self::VariableDeclarationList(e) => e.node_id,
             Self::FunctionDeclaration(e) => e.node_id,
             Self::ClassDeclaration(e) => e.node_id,
             Self::TSTypeAliasDeclaration(e) => e.node_id,
@@ -1677,7 +1677,7 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclaration(_) => vec![],
+            Self::VariableDeclarationList(_) => vec![],
             Self::FunctionDeclaration(_) => vec![],
             Self::ClassDeclaration(_) => vec![],
             Self::TSTypeAliasDeclaration(_) => vec![],
@@ -1689,7 +1689,7 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         match self {
-            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::VariableDeclarationList(e) => AstKind::VariableDeclarationList(e),
             Self::FunctionDeclaration(e) => AstKind::Function(e),
             Self::ClassDeclaration(e) => AstKind::Class(e),
             Self::TSTypeAliasDeclaration(e) => AstKind::TSTypeAliasDeclaration(e),
@@ -1701,7 +1701,7 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
     }
     fn get_node_id(&'a self) -> u32 {
         match self {
-            Self::VariableDeclaration(e) => e.node_id,
+            Self::VariableDeclarationList(e) => e.node_id,
             Self::FunctionDeclaration(e) => e.node_id,
             Self::ClassDeclaration(e) => e.node_id,
             Self::TSTypeAliasDeclaration(e) => e.node_id,
@@ -1713,7 +1713,7 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
+impl<'a> GetChildren<'a> for VariableDeclarationList<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.declarations {
@@ -1722,7 +1722,7 @@ impl<'a> GetChildren<'a> for VariableDeclaration<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::VariableDeclaration(self)
+        AstKind::VariableDeclarationList(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
@@ -1847,7 +1847,7 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclaration(_) => vec![],
+            Self::VariableDeclarationList(_) => vec![],
             Self::BooleanLiteral(_) => vec![],
             Self::NullLiteral(_) => vec![],
             Self::NumericLiteral(_) => vec![],
@@ -1894,7 +1894,7 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         match self {
-            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::VariableDeclarationList(e) => AstKind::VariableDeclarationList(e),
             Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
             Self::NullLiteral(e) => AstKind::NullLiteral(e),
             Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
@@ -1941,7 +1941,7 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
     }
     fn get_node_id(&'a self) -> u32 {
         match self {
-            Self::VariableDeclaration(e) => e.node_id,
+            Self::VariableDeclarationList(e) => e.node_id,
             Self::BooleanLiteral(e) => e.node_id,
             Self::NullLiteral(e) => e.node_id,
             Self::NumericLiteral(e) => e.node_id,
@@ -2008,7 +2008,7 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclaration(_) => vec![],
+            Self::VariableDeclarationList(_) => vec![],
             Self::AssignmentTargetIdentifier(_) => vec![],
             Self::TSAsExpression(_) => vec![],
             Self::TSSatisfiesExpression(_) => vec![],
@@ -2024,7 +2024,7 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         match self {
-            Self::VariableDeclaration(e) => AstKind::VariableDeclaration(e),
+            Self::VariableDeclarationList(e) => AstKind::VariableDeclarationList(e),
             Self::AssignmentTargetIdentifier(e) => AstKind::IdentifierReference(e),
             Self::TSAsExpression(e) => AstKind::TSAsExpression(e),
             Self::TSSatisfiesExpression(e) => AstKind::TSSatisfiesExpression(e),
@@ -2040,7 +2040,7 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
     }
     fn get_node_id(&'a self) -> u32 {
         match self {
-            Self::VariableDeclaration(e) => e.node_id,
+            Self::VariableDeclarationList(e) => e.node_id,
             Self::AssignmentTargetIdentifier(e) => e.node_id,
             Self::TSAsExpression(e) => e.node_id,
             Self::TSSatisfiesExpression(e) => e.node_id,

@@ -404,13 +404,13 @@ const _: () = {
     assert!(size_of::<Declaration>() == 16usize);
     assert!(align_of::<Declaration>() == 8usize);
 
-    assert!(size_of::<VariableDeclaration>() == 64usize);
-    assert!(align_of::<VariableDeclaration>() == 8usize);
-    assert!(offset_of!(VariableDeclaration, node_id) == 0usize);
-    assert!(offset_of!(VariableDeclaration, span) == 8usize);
-    assert!(offset_of!(VariableDeclaration, kind) == 16usize);
-    assert!(offset_of!(VariableDeclaration, declarations) == 24usize);
-    assert!(offset_of!(VariableDeclaration, declare) == 56usize);
+    assert!(size_of::<VariableDeclarationList>() == 64usize);
+    assert!(align_of::<VariableDeclarationList>() == 8usize);
+    assert!(offset_of!(VariableDeclarationList, node_id) == 0usize);
+    assert!(offset_of!(VariableDeclarationList, span) == 8usize);
+    assert!(offset_of!(VariableDeclarationList, kind) == 16usize);
+    assert!(offset_of!(VariableDeclarationList, declarations) == 24usize);
+    assert!(offset_of!(VariableDeclarationList, declare) == 56usize);
 
     assert!(size_of::<VariableDeclarationKind>() == 1usize);
     assert!(align_of::<VariableDeclarationKind>() == 1usize);
@@ -2154,13 +2154,13 @@ const _: () = {
     assert!(size_of::<Declaration>() == 8usize);
     assert!(align_of::<Declaration>() == 4usize);
 
-    assert!(size_of::<VariableDeclaration>() == 36usize);
-    assert!(align_of::<VariableDeclaration>() == 4usize);
-    assert!(offset_of!(VariableDeclaration, node_id) == 0usize);
-    assert!(offset_of!(VariableDeclaration, span) == 4usize);
-    assert!(offset_of!(VariableDeclaration, kind) == 12usize);
-    assert!(offset_of!(VariableDeclaration, declarations) == 16usize);
-    assert!(offset_of!(VariableDeclaration, declare) == 32usize);
+    assert!(size_of::<VariableDeclarationList>() == 36usize);
+    assert!(align_of::<VariableDeclarationList>() == 4usize);
+    assert!(offset_of!(VariableDeclarationList, node_id) == 0usize);
+    assert!(offset_of!(VariableDeclarationList, span) == 4usize);
+    assert!(offset_of!(VariableDeclarationList, kind) == 12usize);
+    assert!(offset_of!(VariableDeclarationList, declarations) == 16usize);
+    assert!(offset_of!(VariableDeclarationList, declare) == 32usize);
 
     assert!(size_of::<VariableDeclarationKind>() == 1usize);
     assert!(align_of::<VariableDeclarationKind>() == 1usize);

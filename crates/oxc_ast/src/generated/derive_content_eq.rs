@@ -763,7 +763,7 @@ impl ContentEq for Statement<'_> {
             (Self::TryStatement(a), Self::TryStatement(b)) => a.content_eq(b),
             (Self::WhileStatement(a), Self::WhileStatement(b)) => a.content_eq(b),
             (Self::WithStatement(a), Self::WithStatement(b)) => a.content_eq(b),
-            (Self::VariableDeclaration(a), Self::VariableDeclaration(b)) => a.content_eq(b),
+            (Self::VariableDeclarationList(a), Self::VariableDeclarationList(b)) => a.content_eq(b),
             (Self::FunctionDeclaration(a), Self::FunctionDeclaration(b)) => a.content_eq(b),
             (Self::ClassDeclaration(a), Self::ClassDeclaration(b)) => a.content_eq(b),
             (Self::TSTypeAliasDeclaration(a), Self::TSTypeAliasDeclaration(b)) => a.content_eq(b),
@@ -814,7 +814,7 @@ impl ContentEq for Declaration<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         #[allow(clippy::match_same_arms)]
         match (self, other) {
-            (Self::VariableDeclaration(a), Self::VariableDeclaration(b)) => a.content_eq(b),
+            (Self::VariableDeclarationList(a), Self::VariableDeclarationList(b)) => a.content_eq(b),
             (Self::FunctionDeclaration(a), Self::FunctionDeclaration(b)) => a.content_eq(b),
             (Self::ClassDeclaration(a), Self::ClassDeclaration(b)) => a.content_eq(b),
             (Self::TSTypeAliasDeclaration(a), Self::TSTypeAliasDeclaration(b)) => a.content_eq(b),
@@ -829,7 +829,7 @@ impl ContentEq for Declaration<'_> {
     }
 }
 
-impl ContentEq for VariableDeclaration<'_> {
+impl ContentEq for VariableDeclarationList<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.kind, &other.kind)
@@ -906,7 +906,7 @@ impl ContentEq for ForStatementInit<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         #[allow(clippy::match_same_arms)]
         match (self, other) {
-            (Self::VariableDeclaration(a), Self::VariableDeclaration(b)) => a.content_eq(b),
+            (Self::VariableDeclarationList(a), Self::VariableDeclarationList(b)) => a.content_eq(b),
             (Self::BooleanLiteral(a), Self::BooleanLiteral(b)) => a.content_eq(b),
             (Self::NullLiteral(a), Self::NullLiteral(b)) => a.content_eq(b),
             (Self::NumericLiteral(a), Self::NumericLiteral(b)) => a.content_eq(b),
@@ -973,7 +973,7 @@ impl ContentEq for ForStatementLeft<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         #[allow(clippy::match_same_arms)]
         match (self, other) {
-            (Self::VariableDeclaration(a), Self::VariableDeclaration(b)) => a.content_eq(b),
+            (Self::VariableDeclarationList(a), Self::VariableDeclarationList(b)) => a.content_eq(b),
             (Self::AssignmentTargetIdentifier(a), Self::AssignmentTargetIdentifier(b)) => {
                 a.content_eq(b)
             }

@@ -42,7 +42,7 @@
 ///         BreakStatement(Box<'a, BreakStatement<'a>>) = 1,
 ///
 ///         // Inherited from `Declaration`
-///         VariableDeclaration(Box<'a, VariableDeclaration<'a>>) = 32,
+///         VariableDeclarationList(Box<'a, VariableDeclarationList<'a>>) = 32,
 ///         FunctionDeclaration(Box<'a, Function<'a>>) = 33,
 ///         // ...and many more
 ///
@@ -59,7 +59,7 @@
 ///     into_declaration,
 ///     as_declaration, as_declaration_mut,
 ///     to_declaration, to_declaration_mut,
-///     [VariableDeclaration, FunctionDeclaration, ...more]
+///     [VariableDeclarationList, FunctionDeclaration, ...more]
 /// )
 ///
 /// shared_enum_variants!(
@@ -434,7 +434,7 @@ macro_rules! inherit_variants {
                 $($(#[$variant_attr])* $variant_name($variant_type) = $variant_discrim,)*
 
                 /// Inherited from [`Declaration`]
-                VariableDeclaration(Box<'a, VariableDeclaration<'a>>) = 32,
+                VariableDeclarationList(Box<'a, VariableDeclarationList<'a>>) = 32,
                 /// Inherited from [`Declaration`]
                 FunctionDeclaration(Box<'a, Function<'a>>) = 33,
                 /// Inherited from [`Declaration`]
@@ -465,7 +465,7 @@ macro_rules! inherit_variants {
             to_declaration,
             to_declaration_mut,
             [
-                VariableDeclaration,
+                VariableDeclarationList,
                 FunctionDeclaration,
                 ClassDeclaration,
                 TSTypeAliasDeclaration,
@@ -754,7 +754,7 @@ pub(crate) use inherit_variants;
 ///     into_declaration,
 ///     as_declaration, as_declaration_mut,
 ///     to_declaration, to_declaration_mut,
-///     [VariableDeclaration, FunctionDeclaration]
+///     [VariableDeclarationList, FunctionDeclaration]
 /// )
 /// ```
 ///
@@ -762,7 +762,7 @@ pub(crate) use inherit_variants;
 ///
 /// ```
 /// const _: () = {
-///     assert!(discriminant!(Statement::VariableDeclaration) == discriminant!(Declaration::VariableDeclaration));
+///     assert!(discriminant!(Statement::VariableDeclarationList) == discriminant!(Declaration::VariableDeclarationList));
 ///     assert!(discriminant!(Statement::FunctionDeclaration) == discriminant!(Declaration::FunctionDeclaration));
 /// };
 ///
@@ -771,7 +771,7 @@ pub(crate) use inherit_variants;
 ///     #[inline]
 ///     pub fn is_declaration(&self) -> bool {
 ///         match self {
-///             Self::VariableDeclaration(_) | Self::FunctionDeclaration(_) => true,
+///             Self::VariableDeclarationList(_) | Self::FunctionDeclaration(_) => true,
 ///             _ => false,
 ///         }
 ///     }
@@ -828,7 +828,7 @@ pub(crate) use inherit_variants;
 ///     #[inline]
 ///     fn try_from(value: Statement<'a>) -> Result<Self, Self::Error> {
 ///         match value {
-///             Statement::VariableDeclaration(o) => Ok(Declaration::VariableDeclaration(o)),
+///             Statement::VariableDeclarationList(o) => Ok(Declaration::VariableDeclarationList(o)),
 ///             Statement::FunctionDeclaration(o) => Ok(Declaration::FunctionDeclaration(o)),
 ///             _ => Err(()),
 ///         }
@@ -840,7 +840,7 @@ pub(crate) use inherit_variants;
 ///     #[inline]
 ///     fn from(value: Declaration<'a>) -> Self {
 ///         match value {
-///             Declaration::VariableDeclaration(o) => Statement::VariableDeclaration(o),
+///             Declaration::VariableDeclarationList(o) => Statement::VariableDeclarationList(o),
 ///             Declaration::FunctionDeclaration(o) => Statement::FunctionDeclaration(o),
 ///         }
 ///     }

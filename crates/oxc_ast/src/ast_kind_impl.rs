@@ -12,7 +12,7 @@ impl<'a> AstKind<'a> {
                     | Self::DebuggerStatement(_) | Self::EmptyStatement(_) | Self::ExpressionStatement(_)
                     | Self::LabeledStatement(_) | Self::ReturnStatement(_) | Self::SwitchStatement(_)
                     | Self::ThrowStatement(_) | Self::TryStatement(_) | Self::WithStatement(_)
-                    | Self::IfStatement(_) | Self::VariableDeclaration(_) | Self::ExportDefaultDeclaration(_))
+                    | Self::IfStatement(_) | Self::VariableDeclarationList(_) | Self::ExportDefaultDeclaration(_))
     }
 
     #[rustfmt::skip]
@@ -21,7 +21,7 @@ impl<'a> AstKind<'a> {
         || matches!(self, Self::Class(class) if class.is_declaration())
         || matches!(self, Self::ImportDeclaration(_) | Self::ExportAllDeclaration(_) | Self::ExportDefaultDeclaration(_)
             | Self::ExportNamedDeclaration(_) | Self::TSExportAssignment(_) | Self::TSNamespaceExportDeclaration(_)
-            | Self::TSEnumDeclaration(_) | Self::TSModuleDeclaration(_) | Self::VariableDeclaration(_)
+            | Self::TSEnumDeclaration(_) | Self::TSModuleDeclaration(_) | Self::VariableDeclarationList(_)
             | Self::TSInterfaceDeclaration(_) | Self::TSTypeAliasDeclaration(_) | Self::TSImportEqualsDeclaration(_)
             | Self::PropertyDefinition(_)
         )
@@ -196,7 +196,7 @@ impl<'a> AstKind<'a> {
             Statement::WhileStatement(s) => Self::WhileStatement(s),
             Statement::WithStatement(s) => Self::WithStatement(s),
 
-            Statement::VariableDeclaration(s) => Self::VariableDeclaration(s),
+            Statement::VariableDeclarationList(s) => Self::VariableDeclarationList(s),
             Statement::FunctionDeclaration(s) => Self::Function(s),
             Statement::ClassDeclaration(s) => Self::Class(s),
             Statement::TSTypeAliasDeclaration(s) => Self::TSTypeAliasDeclaration(s),
@@ -216,7 +216,7 @@ impl<'a> AstKind<'a> {
 
     pub fn from_declaration(d: &'a Declaration<'a>) -> Self {
         match d {
-            Declaration::VariableDeclaration(d) => Self::VariableDeclaration(d),
+            Declaration::VariableDeclarationList(d) => Self::VariableDeclarationList(d),
             Declaration::FunctionDeclaration(d) => Self::Function(d),
             Declaration::ClassDeclaration(d) => Self::Class(d),
             Declaration::TSTypeAliasDeclaration(d) => Self::TSTypeAliasDeclaration(d),
@@ -315,7 +315,7 @@ impl<'a> AstKind<'a> {
 
     pub fn from_for_statement_left(f: &'a ForStatementLeft<'a>) -> Self {
         match f {
-            ForStatementLeft::VariableDeclaration(f) => Self::VariableDeclaration(f),
+            ForStatementLeft::VariableDeclarationList(f) => Self::VariableDeclarationList(f),
 
             ForStatementLeft::AssignmentTargetIdentifier(a) => Self::IdentifierReference(a),
             ForStatementLeft::TSAsExpression(a) => Self::TSAsExpression(a),
@@ -724,7 +724,7 @@ impl AstKind<'_> {
             Self::SwitchCase(_) => "SwitchCase".into(),
             Self::CatchClause(_) => "CatchClause".into(),
 
-            Self::VariableDeclaration(_) => "VariableDeclaration".into(),
+            Self::VariableDeclarationList(_) => "VariableDeclarationList".into(),
             Self::VariableDeclarator(v) => format!(
                 "VariableDeclarator({})",
                 v.id.get_identifier().unwrap_or(Atom::from(DESTRUCTURE.as_ref()))

@@ -172,7 +172,7 @@ impl<'a> ParserImpl<'a> {
         stmt_ctx: StatementContext,
     ) -> Result<Statement<'a>> {
         let start_span = self.start_span();
-        let decl = self.parse_variable_declaration(
+        let decl = self.parse_variable_declaration_list(
             start_span,
             VariableDeclarationParent::Statement,
             &Modifiers::empty(),
@@ -182,7 +182,7 @@ impl<'a> ParserImpl<'a> {
             self.error(diagnostics::lexical_declaration_single_statement(decl.span));
         }
 
-        Ok(Statement::VariableDeclaration(decl))
+        Ok(Statement::VariableDeclarationList(decl))
     }
 
     /// Section 14.4 Empty Statement
@@ -264,7 +264,7 @@ impl<'a> ParserImpl<'a> {
             || self.at(Kind::Var)
             || (self.at(Kind::Let) && self.peek_kind().is_after_let())
         {
-            return self.parse_variable_declaration_for_statement(span, r#await);
+            return self.parse_variable_declaration_list_for_statement(span, r#await);
         }
 
         if (self.cur_kind() == Kind::Await && self.peek_kind() == Kind::Using)
@@ -302,7 +302,7 @@ impl<'a> ParserImpl<'a> {
         self.parse_for_loop(span, Some(ForStatementInit::from(init_expression)), r#await)
     }
 
-    fn parse_variable_declaration_for_statement(
+    fn parse_variable_declaration_list_for_statement(
         &mut self,
         span: Span,
         r#await: bool,
@@ -310,16 +310,16 @@ impl<'a> ParserImpl<'a> {
         let start_span = self.start_span();
         let init_declaration = self.context(Context::empty(), Context::In, |p| {
             let decl_ctx = VariableDeclarationParent::For;
-            p.parse_variable_declaration(start_span, decl_ctx, &Modifiers::empty())
+            p.parse_variable_declaration_list(start_span, decl_ctx, &Modifiers::empty())
         })?;
 
         // for (.. a in) for (.. a of)
         if matches!(self.cur_kind(), Kind::In | Kind::Of) {
-            let init = ForStatementLeft::VariableDeclaration(init_declaration);
+            let init = ForStatementLeft::VariableDeclarationList(init_declaration);
             return self.parse_for_in_or_of_loop(span, r#await, init);
         }
 
-        let init = Some(ForStatementInit::VariableDeclaration(init_declaration));
+        let init = Some(ForStatementInit::VariableDeclarationList(init_declaration));
         self.parse_for_loop(span, init, r#await)
     }
 
@@ -343,11 +343,11 @@ impl<'a> ParserImpl<'a> {
         }
 
         if matches!(self.cur_kind(), Kind::In | Kind::Of) {
-            let init = ForStatementLeft::VariableDeclaration(self.alloc(using_decl));
+            let init = ForStatementLeft::VariableDeclarationList(self.alloc(using_decl));
             return self.parse_for_in_or_of_loop(span, r#await, init);
         }
 
-        let init = Some(ForStatementInit::VariableDeclaration(self.alloc(using_decl)));
+        let init = Some(ForStatementInit::VariableDeclarationList(self.alloc(using_decl)));
         self.parse_for_loop(span, init, r#await)
     }
 
@@ -358,7 +358,7 @@ impl<'a> ParserImpl<'a> {
         r#await: bool,
     ) -> Result<Statement<'a>> {
         self.expect(Kind::Semicolon)?;
-        if let Some(ForStatementInit::VariableDeclaration(decl)) = &init {
+        if let Some(ForStatementInit::VariableDeclarationList(decl)) = &init {
             for d in &decl.declarations {
                 self.check_missing_initializer(d);
             }

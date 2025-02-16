@@ -300,7 +300,7 @@ impl Kind {
     }
 
     #[inline]
-    pub fn is_variable_declaration(self) -> bool {
+    pub fn is_variable_declaration_list(self) -> bool {
         matches!(self, Var | Let | Const)
     }
 

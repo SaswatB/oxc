@@ -2,7 +2,7 @@ use oxc_ast::ast::{
     ArrayPattern, AssignmentPattern, BindingIdentifier, BindingPattern, BindingPatternKind,
     BindingRestElement, Class, Declaration, ExportNamedDeclaration, FormalParameter,
     FormalParameters, Function, ImportDeclaration, ImportDeclarationSpecifier, ModuleDeclaration,
-    ObjectPattern, VariableDeclaration,
+    ObjectPattern, VariableDeclarationList,
 };
 
 /// [`BoundName`](https://tc39.es/ecma262/#sec-static-semantics-boundnames)
@@ -79,7 +79,7 @@ impl<'a> BoundNames<'a> for FormalParameters<'a> {
 impl<'a> BoundNames<'a> for Declaration<'a> {
     fn bound_names<F: FnMut(&BindingIdentifier<'a>)>(&self, f: &mut F) {
         match self {
-            Declaration::VariableDeclaration(decl) => decl.bound_names(f),
+            Declaration::VariableDeclarationList(decl) => decl.bound_names(f),
             Declaration::FunctionDeclaration(func) => func.bound_names(f),
             Declaration::ClassDeclaration(decl) => decl.bound_names(f),
             _ => {}
@@ -87,7 +87,7 @@ impl<'a> BoundNames<'a> for Declaration<'a> {
     }
 }
 
-impl<'a> BoundNames<'a> for VariableDeclaration<'a> {
+impl<'a> BoundNames<'a> for VariableDeclarationList<'a> {
     fn bound_names<F: FnMut(&BindingIdentifier<'a>)>(&self, f: &mut F) {
         for declarator in &self.declarations {
             declarator.id.bound_names(f);

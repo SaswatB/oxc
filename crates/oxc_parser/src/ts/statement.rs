@@ -382,13 +382,13 @@ impl<'a> ParserImpl<'a> {
                 self.bump_any();
                 self.parse_ts_import_equals_declaration(start_span)
             }
-            kind if kind.is_variable_declaration() => self
-                .parse_variable_declaration(
+            kind if kind.is_variable_declaration_list() => self
+                .parse_variable_declaration_list(
                     start_span,
                     VariableDeclarationParent::Statement,
                     modifiers,
                 )
-                .map(Declaration::VariableDeclaration),
+                .map(Declaration::VariableDeclarationList),
             _ if self.at_function_with_async() => {
                 let declare = modifiers.contains(ModifierKind::Declare);
                 if declare {

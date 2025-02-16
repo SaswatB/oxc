@@ -39,15 +39,15 @@ impl<'a> ParserImpl<'a> {
 
         self.asi()?;
 
-        Ok(Statement::VariableDeclaration(self.alloc(using_decl)))
+        Ok(Statement::VariableDeclarationList(self.alloc(using_decl)))
     }
 
-    pub(crate) fn parse_variable_declaration(
+    pub(crate) fn parse_variable_declaration_list(
         &mut self,
         start_span: Span,
         decl_parent: VariableDeclarationParent,
         modifiers: &Modifiers<'a>,
-    ) -> Result<Box<'a, VariableDeclaration<'a>>> {
+    ) -> Result<Box<'a, VariableDeclarationList<'a>>> {
         let kind = match self.cur_kind() {
             Kind::Var => VariableDeclarationKind::Var,
             Kind::Const => VariableDeclarationKind::Const,
@@ -75,7 +75,7 @@ impl<'a> ParserImpl<'a> {
             diagnostics::modifier_cannot_be_used_here,
         );
 
-        Ok(self.ast.alloc_variable_declaration(
+        Ok(self.ast.alloc_variable_declaration_list(
             self.end_span(start_span),
             kind,
             declarations,
@@ -138,7 +138,7 @@ impl<'a> ParserImpl<'a> {
     pub(crate) fn parse_using_declaration(
         &mut self,
         statement_ctx: StatementContext,
-    ) -> Result<VariableDeclaration<'a>> {
+    ) -> Result<VariableDeclarationList<'a>> {
         let span = self.start_span();
 
         let is_await = self.eat(Kind::Await);
@@ -193,6 +193,6 @@ impl<'a> ParserImpl<'a> {
         } else {
             VariableDeclarationKind::Using
         };
-        Ok(self.ast.variable_declaration(self.end_span(span), kind, declarations, false))
+        Ok(self.ast.variable_declaration_list(self.end_span(span), kind, declarations, false))
     }
 }

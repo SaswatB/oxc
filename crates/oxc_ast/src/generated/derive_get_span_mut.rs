@@ -645,7 +645,7 @@ impl GetSpanMut for Statement<'_> {
             Self::TryStatement(it) => GetSpanMut::span_mut(&mut **it),
             Self::WhileStatement(it) => GetSpanMut::span_mut(&mut **it),
             Self::WithStatement(it) => GetSpanMut::span_mut(&mut **it),
-            Self::VariableDeclaration(it) => GetSpanMut::span_mut(&mut **it),
+            Self::VariableDeclarationList(it) => GetSpanMut::span_mut(&mut **it),
             Self::FunctionDeclaration(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassDeclaration(it) => GetSpanMut::span_mut(&mut **it),
             Self::TSTypeAliasDeclaration(it) => GetSpanMut::span_mut(&mut **it),
@@ -687,7 +687,7 @@ impl GetSpanMut for BlockStatement<'_> {
 impl GetSpanMut for Declaration<'_> {
     fn span_mut(&mut self) -> &mut Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpanMut::span_mut(&mut **it),
+            Self::VariableDeclarationList(it) => GetSpanMut::span_mut(&mut **it),
             Self::FunctionDeclaration(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassDeclaration(it) => GetSpanMut::span_mut(&mut **it),
             Self::TSTypeAliasDeclaration(it) => GetSpanMut::span_mut(&mut **it),
@@ -699,7 +699,7 @@ impl GetSpanMut for Declaration<'_> {
     }
 }
 
-impl GetSpanMut for VariableDeclaration<'_> {
+impl GetSpanMut for VariableDeclarationList<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -758,7 +758,7 @@ impl GetSpanMut for ForStatement<'_> {
 impl GetSpanMut for ForStatementInit<'_> {
     fn span_mut(&mut self) -> &mut Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpanMut::span_mut(&mut **it),
+            Self::VariableDeclarationList(it) => GetSpanMut::span_mut(&mut **it),
             Self::BooleanLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::NullLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::NumericLiteral(it) => GetSpanMut::span_mut(&mut **it),
@@ -815,7 +815,7 @@ impl GetSpanMut for ForInStatement<'_> {
 impl GetSpanMut for ForStatementLeft<'_> {
     fn span_mut(&mut self) -> &mut Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpanMut::span_mut(&mut **it),
+            Self::VariableDeclarationList(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentTargetIdentifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::TSAsExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::TSSatisfiesExpression(it) => GetSpanMut::span_mut(&mut **it),

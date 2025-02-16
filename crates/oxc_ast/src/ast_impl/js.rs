@@ -817,7 +817,7 @@ impl<'a> Declaration<'a> {
     #[allow(missing_docs)]
     pub fn is_typescript_syntax(&self) -> bool {
         match self {
-            Self::VariableDeclaration(decl) => decl.is_typescript_syntax(),
+            Self::VariableDeclarationList(decl) => decl.is_typescript_syntax(),
             Self::FunctionDeclaration(func) => func.is_typescript_syntax(),
             Self::ClassDeclaration(class) => class.is_typescript_syntax(),
             _ => true,
@@ -847,7 +847,7 @@ impl<'a> Declaration<'a> {
     #[allow(missing_docs)]
     pub fn declare(&self) -> bool {
         match self {
-            Declaration::VariableDeclaration(decl) => decl.declare,
+            Declaration::VariableDeclarationList(decl) => decl.declare,
             Declaration::FunctionDeclaration(decl) => decl.declare,
             Declaration::ClassDeclaration(decl) => decl.declare,
             Declaration::TSEnumDeclaration(decl) => decl.declare,
@@ -859,7 +859,7 @@ impl<'a> Declaration<'a> {
     }
 }
 
-impl VariableDeclaration<'_> {
+impl VariableDeclarationList<'_> {
     #[allow(missing_docs)]
     pub fn is_typescript_syntax(&self) -> bool {
         self.declare
@@ -914,13 +914,13 @@ impl fmt::Display for VariableDeclarationKind {
 impl ForStatementInit<'_> {
     /// Is `var` declaration
     pub fn is_var_declaration(&self) -> bool {
-        matches!(self, Self::VariableDeclaration(decl) if decl.kind.is_var())
+        matches!(self, Self::VariableDeclarationList(decl) if decl.kind.is_var())
     }
 
     /// LexicalDeclaration[In, Yield, Await] :
     ///   LetOrConst BindingList[?In, ?Yield, ?Await] ;
     pub fn is_lexical_declaration(&self) -> bool {
-        matches!(self, Self::VariableDeclaration(decl) if decl.kind.is_lexical())
+        matches!(self, Self::VariableDeclarationList(decl) if decl.kind.is_lexical())
     }
 }
 
@@ -928,7 +928,7 @@ impl ForStatementLeft<'_> {
     /// LexicalDeclaration[In, Yield, Await] :
     ///   LetOrConst BindingList[?In, ?Yield, ?Await] ;
     pub fn is_lexical_declaration(&self) -> bool {
-        matches!(self, Self::VariableDeclaration(decl) if decl.kind.is_lexical())
+        matches!(self, Self::VariableDeclarationList(decl) if decl.kind.is_lexical())
     }
 }
 

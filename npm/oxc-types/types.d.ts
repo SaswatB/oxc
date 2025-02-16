@@ -528,7 +528,7 @@ export type Statement =
   | TryStatement
   | WhileStatement
   | WithStatement
-  | VariableDeclaration
+  | VariableDeclarationList
   | Function
   | Class
   | TSTypeAliasDeclaration
@@ -563,7 +563,7 @@ export interface BlockStatement extends Span {
 }
 
 export type Declaration =
-  | VariableDeclaration
+  | VariableDeclarationList
   | Function
   | Class
   | TSTypeAliasDeclaration
@@ -572,8 +572,8 @@ export type Declaration =
   | TSModuleDeclaration
   | TSImportEqualsDeclaration;
 
-export interface VariableDeclaration extends Span {
-  type: 'VariableDeclaration';
+export interface VariableDeclarationList extends Span {
+  type: 'VariableDeclarationList';
   nodeId: number;
   kind: VariableDeclarationKind;
   declarations: Array<VariableDeclarator>;
@@ -633,7 +633,7 @@ export interface ForStatement extends Span {
 }
 
 export type ForStatementInit =
-  | VariableDeclaration
+  | VariableDeclarationList
   | BooleanLiteral
   | NullLiteral
   | NumericLiteral
@@ -686,7 +686,7 @@ export interface ForInStatement extends Span {
 }
 
 export type ForStatementLeft =
-  | VariableDeclaration
+  | VariableDeclarationList
   | IdentifierReference
   | TSAsExpression
   | TSSatisfiesExpression

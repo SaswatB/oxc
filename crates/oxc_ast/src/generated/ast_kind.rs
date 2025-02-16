@@ -61,7 +61,7 @@ pub enum AstType {
     Directive = 44,
     Hashbang = 45,
     BlockStatement = 46,
-    VariableDeclaration = 47,
+    VariableDeclarationList = 47,
     VariableDeclarator = 48,
     EmptyStatement = 49,
     ExpressionStatement = 50,
@@ -260,7 +260,8 @@ pub enum AstKind<'a> {
     Directive(&'a Directive<'a>) = AstType::Directive as u8,
     Hashbang(&'a Hashbang<'a>) = AstType::Hashbang as u8,
     BlockStatement(&'a BlockStatement<'a>) = AstType::BlockStatement as u8,
-    VariableDeclaration(&'a VariableDeclaration<'a>) = AstType::VariableDeclaration as u8,
+    VariableDeclarationList(&'a VariableDeclarationList<'a>) =
+        AstType::VariableDeclarationList as u8,
     VariableDeclarator(&'a VariableDeclarator<'a>) = AstType::VariableDeclarator as u8,
     EmptyStatement(&'a EmptyStatement) = AstType::EmptyStatement as u8,
     ExpressionStatement(&'a ExpressionStatement<'a>) = AstType::ExpressionStatement as u8,
@@ -475,7 +476,7 @@ impl GetSpan for AstKind<'_> {
             Self::Directive(it) => it.span(),
             Self::Hashbang(it) => it.span(),
             Self::BlockStatement(it) => it.span(),
-            Self::VariableDeclaration(it) => it.span(),
+            Self::VariableDeclarationList(it) => it.span(),
             Self::VariableDeclarator(it) => it.span(),
             Self::EmptyStatement(it) => it.span(),
             Self::ExpressionStatement(it) => it.span(),
@@ -668,7 +669,7 @@ impl<'a> AstKind<'a> {
             Self::Directive(it) => it.get_children(),
             Self::Hashbang(it) => it.get_children(),
             Self::BlockStatement(it) => it.get_children(),
-            Self::VariableDeclaration(it) => it.get_children(),
+            Self::VariableDeclarationList(it) => it.get_children(),
             Self::VariableDeclarator(it) => it.get_children(),
             Self::EmptyStatement(it) => it.get_children(),
             Self::ExpressionStatement(it) => it.get_children(),
@@ -858,7 +859,7 @@ impl<'a> AstKind<'a> {
             Self::Directive(it) => it.get_node_id(),
             Self::Hashbang(it) => it.get_node_id(),
             Self::BlockStatement(it) => it.get_node_id(),
-            Self::VariableDeclaration(it) => it.get_node_id(),
+            Self::VariableDeclarationList(it) => it.get_node_id(),
             Self::VariableDeclarator(it) => it.get_node_id(),
             Self::EmptyStatement(it) => it.get_node_id(),
             Self::ExpressionStatement(it) => it.get_node_id(),
@@ -1430,8 +1431,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_variable_declaration(self) -> Option<&'a VariableDeclaration<'a>> {
-        if let Self::VariableDeclaration(v) = self {
+    pub fn as_variable_declaration_list(self) -> Option<&'a VariableDeclarationList<'a>> {
+        if let Self::VariableDeclarationList(v) = self {
             Some(v)
         } else {
             None

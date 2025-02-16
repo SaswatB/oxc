@@ -645,7 +645,7 @@ impl GetSpan for Statement<'_> {
             Self::TryStatement(it) => GetSpan::span(it.as_ref()),
             Self::WhileStatement(it) => GetSpan::span(it.as_ref()),
             Self::WithStatement(it) => GetSpan::span(it.as_ref()),
-            Self::VariableDeclaration(it) => GetSpan::span(it.as_ref()),
+            Self::VariableDeclarationList(it) => GetSpan::span(it.as_ref()),
             Self::FunctionDeclaration(it) => GetSpan::span(it.as_ref()),
             Self::ClassDeclaration(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAliasDeclaration(it) => GetSpan::span(it.as_ref()),
@@ -687,7 +687,7 @@ impl GetSpan for BlockStatement<'_> {
 impl GetSpan for Declaration<'_> {
     fn span(&self) -> Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpan::span(it.as_ref()),
+            Self::VariableDeclarationList(it) => GetSpan::span(it.as_ref()),
             Self::FunctionDeclaration(it) => GetSpan::span(it.as_ref()),
             Self::ClassDeclaration(it) => GetSpan::span(it.as_ref()),
             Self::TSTypeAliasDeclaration(it) => GetSpan::span(it.as_ref()),
@@ -699,7 +699,7 @@ impl GetSpan for Declaration<'_> {
     }
 }
 
-impl GetSpan for VariableDeclaration<'_> {
+impl GetSpan for VariableDeclarationList<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -758,7 +758,7 @@ impl GetSpan for ForStatement<'_> {
 impl GetSpan for ForStatementInit<'_> {
     fn span(&self) -> Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpan::span(it.as_ref()),
+            Self::VariableDeclarationList(it) => GetSpan::span(it.as_ref()),
             Self::BooleanLiteral(it) => GetSpan::span(it.as_ref()),
             Self::NullLiteral(it) => GetSpan::span(it.as_ref()),
             Self::NumericLiteral(it) => GetSpan::span(it.as_ref()),
@@ -815,7 +815,7 @@ impl GetSpan for ForInStatement<'_> {
 impl GetSpan for ForStatementLeft<'_> {
     fn span(&self) -> Span {
         match self {
-            Self::VariableDeclaration(it) => GetSpan::span(it.as_ref()),
+            Self::VariableDeclarationList(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentTargetIdentifier(it) => GetSpan::span(it.as_ref()),
             Self::TSAsExpression(it) => GetSpan::span(it.as_ref()),
             Self::TSSatisfiesExpression(it) => GetSpan::span(it.as_ref()),

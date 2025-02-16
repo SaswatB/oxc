@@ -1061,8 +1061,8 @@ pub trait VisitMut<'a>: Sized {
     }
 
     #[inline]
-    fn visit_variable_declaration(&mut self, it: &mut VariableDeclaration<'a>) {
-        walk_variable_declaration(self, it);
+    fn visit_variable_declaration_list(&mut self, it: &mut VariableDeclarationList<'a>) {
+        walk_variable_declaration_list(self, it);
     }
 
     #[inline]
@@ -3896,7 +3896,9 @@ pub mod walk_mut {
         it: &mut ForStatementLeft<'a>,
     ) {
         match it {
-            ForStatementLeft::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            ForStatementLeft::VariableDeclarationList(it) => {
+                visitor.visit_variable_declaration_list(it)
+            }
             match_assignment_target!(ForStatementLeft) => {
                 visitor.visit_assignment_target(it.to_assignment_target_mut())
             }
@@ -3904,11 +3906,11 @@ pub mod walk_mut {
     }
 
     #[inline]
-    pub fn walk_variable_declaration<'a, V: VisitMut<'a>>(
+    pub fn walk_variable_declaration_list<'a, V: VisitMut<'a>>(
         visitor: &mut V,
-        it: &mut VariableDeclaration<'a>,
+        it: &mut VariableDeclarationList<'a>,
     ) {
-        let kind = AstType::VariableDeclaration;
+        let kind = AstType::VariableDeclarationList;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_variable_declarators(&mut it.declarations);
@@ -3982,7 +3984,9 @@ pub mod walk_mut {
         it: &mut ForStatementInit<'a>,
     ) {
         match it {
-            ForStatementInit::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            ForStatementInit::VariableDeclarationList(it) => {
+                visitor.visit_variable_declaration_list(it)
+            }
             match_expression!(ForStatementInit) => visitor.visit_expression(it.to_expression_mut()),
         }
     }
@@ -4133,7 +4137,7 @@ pub mod walk_mut {
 
     pub fn walk_declaration<'a, V: VisitMut<'a>>(visitor: &mut V, it: &mut Declaration<'a>) {
         match it {
-            Declaration::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            Declaration::VariableDeclarationList(it) => visitor.visit_variable_declaration_list(it),
             Declaration::FunctionDeclaration(it) => {
                 let flags = ScopeFlags::Function;
                 visitor.visit_function(it, flags)

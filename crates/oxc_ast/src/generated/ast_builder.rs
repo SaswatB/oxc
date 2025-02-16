@@ -3787,9 +3787,9 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.block_statement_with_scope_id(span, body, scope_id), self.allocator)
     }
 
-    /// Build a [`Declaration::VariableDeclaration`]
+    /// Build a [`Declaration::VariableDeclarationList`]
     ///
-    /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
+    /// This node contains a [`VariableDeclarationList`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -3797,14 +3797,14 @@ impl<'a> AstBuilder<'a> {
     /// - declarations
     /// - declare
     #[inline]
-    pub fn declaration_variable(
+    pub fn declaration_variable_declaration_list(
         self,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> Declaration<'a> {
-        Declaration::VariableDeclaration(self.alloc_variable_declaration(
+        Declaration::VariableDeclarationList(self.alloc_variable_declaration_list(
             span,
             kind,
             declarations,
@@ -4055,9 +4055,9 @@ impl<'a> AstBuilder<'a> {
         ))
     }
 
-    /// Build a [`VariableDeclaration`].
+    /// Build a [`VariableDeclarationList`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_variable_declaration`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_variable_declaration_list`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -4065,14 +4065,14 @@ impl<'a> AstBuilder<'a> {
     /// - declarations
     /// - declare
     #[inline]
-    pub fn variable_declaration(
+    pub fn variable_declaration_list(
         self,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
-    ) -> VariableDeclaration<'a> {
-        VariableDeclaration {
+    ) -> VariableDeclarationList<'a> {
+        VariableDeclarationList {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             kind,
@@ -4081,9 +4081,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`VariableDeclaration`], and store it in the memory arena.
+    /// Build a [`VariableDeclarationList`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::variable_declaration`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::variable_declaration_list`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -4091,14 +4091,17 @@ impl<'a> AstBuilder<'a> {
     /// - declarations
     /// - declare
     #[inline]
-    pub fn alloc_variable_declaration(
+    pub fn alloc_variable_declaration_list(
         self,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
-    ) -> Box<'a, VariableDeclaration<'a>> {
-        Box::new_in(self.variable_declaration(span, kind, declarations, declare), self.allocator)
+    ) -> Box<'a, VariableDeclarationList<'a>> {
+        Box::new_in(
+            self.variable_declaration_list(span, kind, declarations, declare),
+            self.allocator,
+        )
     }
 
     /// Build a [`VariableDeclarator`].
@@ -4449,9 +4452,9 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Build a [`ForStatementInit::VariableDeclaration`]
+    /// Build a [`ForStatementInit::VariableDeclarationList`]
     ///
-    /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
+    /// This node contains a [`VariableDeclarationList`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -4459,14 +4462,14 @@ impl<'a> AstBuilder<'a> {
     /// - declarations
     /// - declare
     #[inline]
-    pub fn for_statement_init_variable_declaration(
+    pub fn for_statement_init_variable_declaration_list(
         self,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> ForStatementInit<'a> {
-        ForStatementInit::VariableDeclaration(self.alloc_variable_declaration(
+        ForStatementInit::VariableDeclarationList(self.alloc_variable_declaration_list(
             span,
             kind,
             declarations,
@@ -4575,9 +4578,9 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Build a [`ForStatementLeft::VariableDeclaration`]
+    /// Build a [`ForStatementLeft::VariableDeclarationList`]
     ///
-    /// This node contains a [`VariableDeclaration`] that will be stored in the memory arena.
+    /// This node contains a [`VariableDeclarationList`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -4585,14 +4588,14 @@ impl<'a> AstBuilder<'a> {
     /// - declarations
     /// - declare
     #[inline]
-    pub fn for_statement_left_variable_declaration(
+    pub fn for_statement_left_variable_declaration_list(
         self,
         span: Span,
         kind: VariableDeclarationKind,
         declarations: Vec<'a, VariableDeclarator<'a>>,
         declare: bool,
     ) -> ForStatementLeft<'a> {
-        ForStatementLeft::VariableDeclaration(self.alloc_variable_declaration(
+        ForStatementLeft::VariableDeclarationList(self.alloc_variable_declaration_list(
             span,
             kind,
             declarations,

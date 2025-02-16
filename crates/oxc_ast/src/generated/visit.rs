@@ -1066,8 +1066,8 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_variable_declaration(&mut self, it: &VariableDeclaration<'a>) {
-        walk_variable_declaration(self, it);
+    fn visit_variable_declaration_list(&mut self, it: &VariableDeclarationList<'a>) {
+        walk_variable_declaration_list(self, it);
     }
 
     #[inline]
@@ -3702,7 +3702,9 @@ pub mod walk {
     #[inline]
     pub fn walk_for_statement_left<'a, V: Visit<'a>>(visitor: &mut V, it: &ForStatementLeft<'a>) {
         match it {
-            ForStatementLeft::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            ForStatementLeft::VariableDeclarationList(it) => {
+                visitor.visit_variable_declaration_list(it)
+            }
             match_assignment_target!(ForStatementLeft) => {
                 visitor.visit_assignment_target(it.to_assignment_target())
             }
@@ -3710,11 +3712,11 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_variable_declaration<'a, V: Visit<'a>>(
+    pub fn walk_variable_declaration_list<'a, V: Visit<'a>>(
         visitor: &mut V,
-        it: &VariableDeclaration<'a>,
+        it: &VariableDeclarationList<'a>,
     ) {
-        let kind = AstKind::VariableDeclaration(visitor.alloc(it));
+        let kind = AstKind::VariableDeclarationList(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_variable_declarators(&it.declarations);
@@ -3782,7 +3784,9 @@ pub mod walk {
     #[inline]
     pub fn walk_for_statement_init<'a, V: Visit<'a>>(visitor: &mut V, it: &ForStatementInit<'a>) {
         match it {
-            ForStatementInit::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            ForStatementInit::VariableDeclarationList(it) => {
+                visitor.visit_variable_declaration_list(it)
+            }
             match_expression!(ForStatementInit) => visitor.visit_expression(it.to_expression()),
         }
     }
@@ -3921,7 +3925,7 @@ pub mod walk {
 
     pub fn walk_declaration<'a, V: Visit<'a>>(visitor: &mut V, it: &Declaration<'a>) {
         match it {
-            Declaration::VariableDeclaration(it) => visitor.visit_variable_declaration(it),
+            Declaration::VariableDeclarationList(it) => visitor.visit_variable_declaration_list(it),
             Declaration::FunctionDeclaration(it) => {
                 let flags = ScopeFlags::Function;
                 visitor.visit_function(it, flags)

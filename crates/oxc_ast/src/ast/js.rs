@@ -1176,7 +1176,7 @@ pub struct BlockStatement<'a> {
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum Declaration<'a> {
-    VariableDeclaration(Box<'a, VariableDeclaration<'a>>) = 32,
+    VariableDeclarationList(Box<'a, VariableDeclarationList<'a>>) = 32,
     #[visit(args(flags = ScopeFlags::Function))]
     FunctionDeclaration(Box<'a, Function<'a>>) = 33,
     ClassDeclaration(Box<'a, Class<'a>>) = 34,
@@ -1192,7 +1192,7 @@ pub enum Declaration<'a> {
 #[macro_export]
 macro_rules! match_declaration {
     ($ty:ident) => {
-        $ty::VariableDeclaration(_)
+        $ty::VariableDeclarationList(_)
             | $ty::FunctionDeclaration(_)
             | $ty::ClassDeclaration(_)
             | $ty::TSTypeAliasDeclaration(_)
@@ -1210,7 +1210,7 @@ pub use match_declaration;
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct VariableDeclaration<'a> {
+pub struct VariableDeclarationList<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
@@ -1233,7 +1233,7 @@ pub enum VariableDeclarationKind {
     AwaitUsing = 4,
 }
 
-/// A single variable declaration in a list of [variable declarations](VariableDeclaration).
+/// A single variable declaration in a list of [variable declarations](VariableDeclarationList).
 ///
 /// ## Examples
 /// ```ts
@@ -1349,7 +1349,7 @@ inherit_variants! {
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum ForStatementInit<'a> {
-    VariableDeclaration(Box<'a, VariableDeclaration<'a>>) = 64,
+    VariableDeclarationList(Box<'a, VariableDeclarationList<'a>>) = 64,
     // `Expression` variants added here by `inherit_variants!` macro
     @inherit Expression
 }
@@ -1383,7 +1383,7 @@ inherit_variants! {
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
 pub enum ForStatementLeft<'a> {
-    VariableDeclaration(Box<'a, VariableDeclaration<'a>>) = 16,
+    VariableDeclarationList(Box<'a, VariableDeclarationList<'a>>) = 16,
     // `AssignmentTarget` variants added here by `inherit_variants!` macro
     @inherit AssignmentTarget
 }

@@ -1325,8 +1325,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for Statement<'_> {
             Self::TryStatement(it) => Statement::TryStatement(CloneIn::clone_in(it, allocator)),
             Self::WhileStatement(it) => Statement::WhileStatement(CloneIn::clone_in(it, allocator)),
             Self::WithStatement(it) => Statement::WithStatement(CloneIn::clone_in(it, allocator)),
-            Self::VariableDeclaration(it) => {
-                Statement::VariableDeclaration(CloneIn::clone_in(it, allocator))
+            Self::VariableDeclarationList(it) => {
+                Statement::VariableDeclarationList(CloneIn::clone_in(it, allocator))
             }
             Self::FunctionDeclaration(it) => {
                 Statement::FunctionDeclaration(CloneIn::clone_in(it, allocator))
@@ -1410,8 +1410,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for Declaration<'_> {
     type Cloned = Declaration<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         match self {
-            Self::VariableDeclaration(it) => {
-                Declaration::VariableDeclaration(CloneIn::clone_in(it, allocator))
+            Self::VariableDeclarationList(it) => {
+                Declaration::VariableDeclarationList(CloneIn::clone_in(it, allocator))
             }
             Self::FunctionDeclaration(it) => {
                 Declaration::FunctionDeclaration(CloneIn::clone_in(it, allocator))
@@ -1438,10 +1438,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for Declaration<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for VariableDeclaration<'_> {
-    type Cloned = VariableDeclaration<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for VariableDeclarationList<'_> {
+    type Cloned = VariableDeclarationList<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        VariableDeclaration {
+        VariableDeclarationList {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             kind: CloneIn::clone_in(&self.kind, allocator),
@@ -1555,8 +1555,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementInit<'_> {
     type Cloned = ForStatementInit<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         match self {
-            Self::VariableDeclaration(it) => {
-                ForStatementInit::VariableDeclaration(CloneIn::clone_in(it, allocator))
+            Self::VariableDeclarationList(it) => {
+                ForStatementInit::VariableDeclarationList(CloneIn::clone_in(it, allocator))
             }
             Self::BooleanLiteral(it) => {
                 ForStatementInit::BooleanLiteral(CloneIn::clone_in(it, allocator))
@@ -1700,8 +1700,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementLeft<'_> {
     type Cloned = ForStatementLeft<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         match self {
-            Self::VariableDeclaration(it) => {
-                ForStatementLeft::VariableDeclaration(CloneIn::clone_in(it, allocator))
+            Self::VariableDeclarationList(it) => {
+                ForStatementLeft::VariableDeclarationList(CloneIn::clone_in(it, allocator))
             }
             Self::AssignmentTargetIdentifier(it) => {
                 ForStatementLeft::AssignmentTargetIdentifier(CloneIn::clone_in(it, allocator))

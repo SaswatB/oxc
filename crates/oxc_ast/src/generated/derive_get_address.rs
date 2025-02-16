@@ -308,7 +308,7 @@ impl GetAddress for Statement<'_> {
             Self::TryStatement(it) => GetAddress::address(it),
             Self::WhileStatement(it) => GetAddress::address(it),
             Self::WithStatement(it) => GetAddress::address(it),
-            Self::VariableDeclaration(it) => GetAddress::address(it),
+            Self::VariableDeclarationList(it) => GetAddress::address(it),
             Self::FunctionDeclaration(it) => GetAddress::address(it),
             Self::ClassDeclaration(it) => GetAddress::address(it),
             Self::TSTypeAliasDeclaration(it) => GetAddress::address(it),
@@ -331,7 +331,7 @@ impl GetAddress for Declaration<'_> {
     #[inline]
     fn address(&self) -> Address {
         match self {
-            Self::VariableDeclaration(it) => GetAddress::address(it),
+            Self::VariableDeclarationList(it) => GetAddress::address(it),
             Self::FunctionDeclaration(it) => GetAddress::address(it),
             Self::ClassDeclaration(it) => GetAddress::address(it),
             Self::TSTypeAliasDeclaration(it) => GetAddress::address(it),
@@ -348,7 +348,7 @@ impl GetAddress for ForStatementInit<'_> {
     #[inline]
     fn address(&self) -> Address {
         match self {
-            Self::VariableDeclaration(it) => GetAddress::address(it),
+            Self::VariableDeclarationList(it) => GetAddress::address(it),
             Self::BooleanLiteral(it) => GetAddress::address(it),
             Self::NullLiteral(it) => GetAddress::address(it),
             Self::NumericLiteral(it) => GetAddress::address(it),
@@ -400,7 +400,7 @@ impl GetAddress for ForStatementLeft<'_> {
     #[inline]
     fn address(&self) -> Address {
         match self {
-            Self::VariableDeclaration(it) => GetAddress::address(it),
+            Self::VariableDeclarationList(it) => GetAddress::address(it),
             Self::AssignmentTargetIdentifier(it) => GetAddress::address(it),
             Self::TSAsExpression(it) => GetAddress::address(it),
             Self::TSSatisfiesExpression(it) => GetAddress::address(it),

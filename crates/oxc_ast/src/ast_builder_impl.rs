@@ -140,22 +140,26 @@ impl<'a> AstBuilder<'a> {
         mem::replace(key, null_expr)
     }
 
-    /// Move a declaration out by replacing it with an empty [`Declaration::VariableDeclaration`].
+    /// Move a declaration out by replacing it with an empty [`Declaration::VariableDeclarationList`].
     #[inline]
     pub fn move_declaration(self, decl: &mut Declaration<'a>) -> Declaration<'a> {
-        let empty_decl =
-            self.declaration_variable(SPAN, VariableDeclarationKind::Var, self.vec(), false);
+        let empty_decl = self.declaration_variable_declaration_list(
+            SPAN,
+            VariableDeclarationKind::Var,
+            self.vec(),
+            false,
+        );
         mem::replace(decl, empty_decl)
     }
 
-    /// Move a variable declaration out by replacing it with an empty [`VariableDeclaration`].
+    /// Move a variable declaration out by replacing it with an empty [`VariableDeclarationList`].
     #[inline]
-    pub fn move_variable_declaration(
+    pub fn move_variable_declaration_list(
         self,
-        decl: &mut VariableDeclaration<'a>,
-    ) -> VariableDeclaration<'a> {
+        decl: &mut VariableDeclarationList<'a>,
+    ) -> VariableDeclarationList<'a> {
         let empty_decl =
-            self.variable_declaration(SPAN, VariableDeclarationKind::Var, self.vec(), false);
+            self.variable_declaration_list(SPAN, VariableDeclarationKind::Var, self.vec(), false);
         mem::replace(decl, empty_decl)
     }
 
