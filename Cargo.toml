@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/*", "tasks/*"]
+members = ["crates/*", "tasks/*", "apps/oxc-parser-runner"]
 exclude = []
 
 [workspace.package]
