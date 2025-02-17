@@ -128,7 +128,9 @@ impl<'a> ParserImpl<'a> {
         }
         if matches!(self.cur_kind(), Kind::LBrack | Kind::LCurly) {
             let errors_count = self.errors_count();
-            if self.parse_binding_pattern_kind().is_ok() && errors_count == self.errors_count() {
+            if self.parse_destructure_binding_pattern_kind().is_ok()
+                && errors_count == self.errors_count()
+            {
                 return true;
             }
         }

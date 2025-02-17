@@ -1337,7 +1337,7 @@ impl Serialize for DebuggerStatement {
     }
 }
 
-impl Serialize for BindingPattern<'_> {
+impl Serialize for DestructureBindingPattern<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("nodeId", &self.node_id)?;
@@ -1348,13 +1348,17 @@ impl Serialize for BindingPattern<'_> {
     }
 }
 
-impl Serialize for BindingPatternKind<'_> {
+impl Serialize for DestructureBindingPatternKind<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
-            BindingPatternKind::BindingIdentifier(x) => Serialize::serialize(x, serializer),
-            BindingPatternKind::ObjectPattern(x) => Serialize::serialize(x, serializer),
-            BindingPatternKind::ArrayPattern(x) => Serialize::serialize(x, serializer),
-            BindingPatternKind::AssignmentPattern(x) => Serialize::serialize(x, serializer),
+            DestructureBindingPatternKind::BindingIdentifier(x) => {
+                Serialize::serialize(x, serializer)
+            }
+            DestructureBindingPatternKind::ObjectPattern(x) => Serialize::serialize(x, serializer),
+            DestructureBindingPatternKind::ArrayPattern(x) => Serialize::serialize(x, serializer),
+            DestructureBindingPatternKind::AssignmentPattern(x) => {
+                Serialize::serialize(x, serializer)
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 use oxc_ast::ast::{
-    ArrayPattern, AssignmentPattern, BindingIdentifier, BindingPattern, BindingPatternKind,
+    ArrayPattern, AssignmentPattern, BindingIdentifier, DestructureBindingPattern, DestructureBindingPatternKind,
     BindingRestElement, Class, Declaration, ExportNamedDeclaration, FormalParameter,
     FormalParameters, Function, ImportDeclaration, ImportDeclarationSpecifier, ModuleDeclaration,
     ObjectPattern, VariableDeclarationList,
@@ -14,13 +14,13 @@ pub trait BoundNames<'a> {
     fn bound_names<F: FnMut(&BindingIdentifier<'a>)>(&self, f: &mut F);
 }
 
-impl<'a> BoundNames<'a> for BindingPattern<'a> {
+impl<'a> BoundNames<'a> for DestructureBindingPattern<'a> {
     fn bound_names<F: FnMut(&BindingIdentifier<'a>)>(&self, f: &mut F) {
         match &self.kind {
-            BindingPatternKind::BindingIdentifier(ident) => ident.bound_names(f),
-            BindingPatternKind::ArrayPattern(array) => array.bound_names(f),
-            BindingPatternKind::ObjectPattern(object) => object.bound_names(f),
-            BindingPatternKind::AssignmentPattern(assignment) => assignment.bound_names(f),
+            DestructureBindingPatternKind::BindingIdentifier(ident) => ident.bound_names(f),
+            DestructureBindingPatternKind::ArrayPattern(array) => array.bound_names(f),
+            DestructureBindingPatternKind::ObjectPattern(object) => object.bound_names(f),
+            DestructureBindingPatternKind::AssignmentPattern(assignment) => assignment.bound_names(f),
         }
     }
 }

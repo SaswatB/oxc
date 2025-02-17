@@ -240,12 +240,12 @@ impl<'a> AstKind<'a> {
         }
     }
 
-    pub fn from_binding_pattern_kind(b: &'a BindingPatternKind<'a>) -> Self {
+    pub fn from_destructure_binding_pattern_kind(b: &'a DestructureBindingPatternKind<'a>) -> Self {
         match b {
-            BindingPatternKind::BindingIdentifier(b) => Self::BindingIdentifier(b),
-            BindingPatternKind::ObjectPattern(b) => Self::ObjectPattern(b),
-            BindingPatternKind::ArrayPattern(b) => Self::ArrayPattern(b),
-            BindingPatternKind::AssignmentPattern(b) => Self::AssignmentPattern(b),
+            DestructureBindingPatternKind::BindingIdentifier(b) => Self::BindingIdentifier(b),
+            DestructureBindingPatternKind::ObjectPattern(b) => Self::ObjectPattern(b),
+            DestructureBindingPatternKind::ArrayPattern(b) => Self::ArrayPattern(b),
+            DestructureBindingPatternKind::AssignmentPattern(b) => Self::AssignmentPattern(b),
         }
     }
 
@@ -705,7 +705,7 @@ impl AstKind<'_> {
             Self::BreakStatement(_) => "BreakStatement".into(),
             Self::ContinueStatement(_) => "ContinueStatement".into(),
             Self::DebuggerStatement(_) => "DebuggerStatement".into(),
-            Self::BindingPattern(_) => "BindingPattern".into(),
+            Self::DestructureBindingPattern(_) => "DestructureBindingPattern".into(),
             Self::DoWhileStatement(_) => "DoWhileStatement".into(),
             Self::EmptyStatement(_) => "EmptyStatement".into(),
             Self::ExpressionStatement(_) => "ExpressionStatement".into(),

@@ -339,13 +339,16 @@ pub trait VisitMut<'a>: Sized {
     }
 
     #[inline]
-    fn visit_binding_pattern(&mut self, it: &mut BindingPattern<'a>) {
-        walk_binding_pattern(self, it);
+    fn visit_destructure_binding_pattern(&mut self, it: &mut DestructureBindingPattern<'a>) {
+        walk_destructure_binding_pattern(self, it);
     }
 
     #[inline]
-    fn visit_binding_pattern_kind(&mut self, it: &mut BindingPatternKind<'a>) {
-        walk_binding_pattern_kind(self, it);
+    fn visit_destructure_binding_pattern_kind(
+        &mut self,
+        it: &mut DestructureBindingPatternKind<'a>,
+    ) {
+        walk_destructure_binding_pattern_kind(self, it);
     }
 
     #[inline]
@@ -2055,7 +2058,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_decorators(&mut it.decorators);
-        visitor.visit_binding_pattern(&mut it.pattern);
+        visitor.visit_destructure_binding_pattern(&mut it.pattern);
         visitor.leave_node(kind);
     }
 
@@ -2076,10 +2079,13 @@ pub mod walk_mut {
     }
 
     #[inline]
-    pub fn walk_binding_pattern<'a, V: VisitMut<'a>>(visitor: &mut V, it: &mut BindingPattern<'a>) {
-        let kind = AstType::BindingPattern;
+    pub fn walk_destructure_binding_pattern<'a, V: VisitMut<'a>>(
+        visitor: &mut V,
+        it: &mut DestructureBindingPattern<'a>,
+    ) {
+        let kind = AstType::DestructureBindingPattern;
         visitor.enter_node(kind);
-        visitor.visit_binding_pattern_kind(&mut it.kind);
+        visitor.visit_destructure_binding_pattern_kind(&mut it.kind);
         if let Some(type_annotation) = &mut it.type_annotation {
             visitor.visit_ts_type_annotation(type_annotation);
         }
@@ -2087,15 +2093,19 @@ pub mod walk_mut {
     }
 
     #[inline]
-    pub fn walk_binding_pattern_kind<'a, V: VisitMut<'a>>(
+    pub fn walk_destructure_binding_pattern_kind<'a, V: VisitMut<'a>>(
         visitor: &mut V,
-        it: &mut BindingPatternKind<'a>,
+        it: &mut DestructureBindingPatternKind<'a>,
     ) {
         match it {
-            BindingPatternKind::BindingIdentifier(it) => visitor.visit_binding_identifier(it),
-            BindingPatternKind::ObjectPattern(it) => visitor.visit_object_pattern(it),
-            BindingPatternKind::ArrayPattern(it) => visitor.visit_array_pattern(it),
-            BindingPatternKind::AssignmentPattern(it) => visitor.visit_assignment_pattern(it),
+            DestructureBindingPatternKind::BindingIdentifier(it) => {
+                visitor.visit_binding_identifier(it)
+            }
+            DestructureBindingPatternKind::ObjectPattern(it) => visitor.visit_object_pattern(it),
+            DestructureBindingPatternKind::ArrayPattern(it) => visitor.visit_array_pattern(it),
+            DestructureBindingPatternKind::AssignmentPattern(it) => {
+                visitor.visit_assignment_pattern(it)
+            }
         }
     }
 
@@ -2130,7 +2140,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_property_key(&mut it.key);
-        visitor.visit_binding_pattern(&mut it.value);
+        visitor.visit_destructure_binding_pattern(&mut it.value);
         visitor.leave_node(kind);
     }
 
@@ -2162,7 +2172,7 @@ pub mod walk_mut {
         let kind = AstType::BindingRestElement;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
-        visitor.visit_binding_pattern(&mut it.argument);
+        visitor.visit_destructure_binding_pattern(&mut it.argument);
         visitor.leave_node(kind);
     }
 
@@ -2172,7 +2182,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         for elements in it.elements.iter_mut().flatten() {
-            visitor.visit_binding_pattern(elements);
+            visitor.visit_destructure_binding_pattern(elements);
         }
         if let Some(rest) = &mut it.rest {
             visitor.visit_binding_rest_element(rest);
@@ -2188,7 +2198,7 @@ pub mod walk_mut {
         let kind = AstType::AssignmentPattern;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
-        visitor.visit_binding_pattern(&mut it.left);
+        visitor.visit_destructure_binding_pattern(&mut it.left);
         visitor.visit_expression(&mut it.right);
         visitor.leave_node(kind);
     }
@@ -3935,7 +3945,7 @@ pub mod walk_mut {
         let kind = AstType::VariableDeclarator;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
-        visitor.visit_binding_pattern(&mut it.id);
+        visitor.visit_destructure_binding_pattern(&mut it.id);
         if let Some(init) = &mut it.init {
             visitor.visit_expression(init);
         }
@@ -4111,7 +4121,7 @@ pub mod walk_mut {
         let kind = AstType::CatchParameter;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
-        visitor.visit_binding_pattern(&mut it.pattern);
+        visitor.visit_destructure_binding_pattern(&mut it.pattern);
         visitor.leave_node(kind);
     }
 

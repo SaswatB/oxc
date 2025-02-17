@@ -1096,7 +1096,7 @@ impl ContentEq for DebuggerStatement {
     }
 }
 
-impl ContentEq for BindingPattern<'_> {
+impl ContentEq for DestructureBindingPattern<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.kind, &other.kind)
@@ -1105,7 +1105,7 @@ impl ContentEq for BindingPattern<'_> {
     }
 }
 
-impl ContentEq for BindingPatternKind<'_> {
+impl ContentEq for DestructureBindingPatternKind<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         #[allow(clippy::match_same_arms)]
         match (self, other) {

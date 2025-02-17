@@ -922,14 +922,14 @@ impl GetSpan for DebuggerStatement {
     }
 }
 
-impl GetSpan for BindingPattern<'_> {
+impl GetSpan for DestructureBindingPattern<'_> {
     #[inline]
     fn span(&self) -> Span {
         GetSpan::span(&self.kind)
     }
 }
 
-impl GetSpan for BindingPatternKind<'_> {
+impl GetSpan for DestructureBindingPatternKind<'_> {
     fn span(&self) -> Span {
         match self {
             Self::BindingIdentifier(it) => GetSpan::span(it.as_ref()),

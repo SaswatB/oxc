@@ -248,7 +248,7 @@ impl<'a> AstBuilder<'a> {
     pub fn plain_formal_parameter(
         self,
         span: Span,
-        pattern: BindingPattern<'a>,
+        pattern: DestructureBindingPattern<'a>,
     ) -> FormalParameter<'a> {
         self.formal_parameter(span, self.vec(), pattern, None, false, false)
     }

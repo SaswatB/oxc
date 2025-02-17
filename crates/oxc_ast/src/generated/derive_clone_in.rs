@@ -1895,10 +1895,10 @@ impl<'alloc> CloneIn<'alloc> for DebuggerStatement {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for BindingPattern<'_> {
-    type Cloned = BindingPattern<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for DestructureBindingPattern<'_> {
+    type Cloned = DestructureBindingPattern<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        BindingPattern {
+        DestructureBindingPattern {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             kind: CloneIn::clone_in(&self.kind, allocator),
             type_annotation: CloneIn::clone_in(&self.type_annotation, allocator),
@@ -1907,21 +1907,21 @@ impl<'new_alloc> CloneIn<'new_alloc> for BindingPattern<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for BindingPatternKind<'_> {
-    type Cloned = BindingPatternKind<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for DestructureBindingPatternKind<'_> {
+    type Cloned = DestructureBindingPatternKind<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         match self {
             Self::BindingIdentifier(it) => {
-                BindingPatternKind::BindingIdentifier(CloneIn::clone_in(it, allocator))
+                DestructureBindingPatternKind::BindingIdentifier(CloneIn::clone_in(it, allocator))
             }
             Self::ObjectPattern(it) => {
-                BindingPatternKind::ObjectPattern(CloneIn::clone_in(it, allocator))
+                DestructureBindingPatternKind::ObjectPattern(CloneIn::clone_in(it, allocator))
             }
             Self::ArrayPattern(it) => {
-                BindingPatternKind::ArrayPattern(CloneIn::clone_in(it, allocator))
+                DestructureBindingPatternKind::ArrayPattern(CloneIn::clone_in(it, allocator))
             }
             Self::AssignmentPattern(it) => {
-                BindingPatternKind::AssignmentPattern(CloneIn::clone_in(it, allocator))
+                DestructureBindingPatternKind::AssignmentPattern(CloneIn::clone_in(it, allocator))
             }
         }
     }

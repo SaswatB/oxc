@@ -90,7 +90,7 @@ impl<'a> ParserImpl<'a> {
     ) -> Result<VariableDeclarator<'a>> {
         let span = self.start_span();
 
-        let mut binding_kind = self.parse_binding_pattern_kind()?;
+        let mut binding_kind = self.parse_destructure_binding_pattern_kind()?;
 
         let (id, definite) = if self.is_ts {
             // const x!: number = 1
@@ -106,11 +106,11 @@ impl<'a> ParserImpl<'a> {
             let optional = self.eat(Kind::Question); // not allowed, but checked in checker/typescript.rs
             let type_annotation = self.parse_ts_type_annotation()?;
             if let Some(type_annotation) = &type_annotation {
-                Self::extend_binding_pattern_span_end(type_annotation.span, &mut binding_kind);
+                Self::extend_destructure_binding_pattern_span_end(type_annotation.span, &mut binding_kind);
             }
-            (self.ast.binding_pattern(binding_kind, type_annotation, optional), definite)
+            (self.ast.destructure_binding_pattern(binding_kind, type_annotation, optional), definite)
         } else {
-            (self.ast.binding_pattern(binding_kind, NONE, false), false)
+            (self.ast.destructure_binding_pattern(binding_kind, NONE, false), false)
         };
         let init =
             self.eat(Kind::Eq).then(|| self.parse_assignment_expression_or_higher()).transpose()?;
@@ -123,7 +123,7 @@ impl<'a> ParserImpl<'a> {
 
     pub(crate) fn check_missing_initializer(&mut self, decl: &VariableDeclarator<'a>) {
         if decl.init.is_none() && !self.ctx.has_ambient() {
-            if !matches!(decl.id.kind, BindingPatternKind::BindingIdentifier(_)) {
+            if !matches!(decl.id.kind, DestructureBindingPatternKind::BindingIdentifier(_)) {
                 self.error(diagnostics::invalid_destrucuring_declaration(decl.id.span()));
             } else if decl.kind == VariableDeclarationKind::Const {
                 // It is a Syntax Error if Initializer is not present and IsConstantDeclaration of the LexicalDeclaration containing this LexicalBinding is true.
@@ -167,7 +167,7 @@ impl<'a> ParserImpl<'a> {
             )?;
 
             match declaration.id.kind {
-                BindingPatternKind::BindingIdentifier(_) => {}
+                DestructureBindingPatternKind::BindingIdentifier(_) => {}
                 _ => {
                     self.error(diagnostics::invalid_identifier_in_using_declaration(
                         declaration.id.span(),

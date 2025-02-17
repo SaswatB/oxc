@@ -1732,7 +1732,7 @@ impl<'a> GetChildren<'a> for VariableDeclarationList<'a> {
 impl<'a> GetChildren<'a> for VariableDeclarator<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::BindingPattern(&self.id));
+        children.push(AstKind::DestructureBindingPattern(&self.id));
         if let Some(field) = &self.init {
             children.push((*field).to_ast_kind());
         }
@@ -2240,7 +2240,7 @@ impl<'a> GetChildren<'a> for CatchClause<'a> {
 impl<'a> GetChildren<'a> for CatchParameter<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::BindingPattern(&self.pattern));
+        children.push(AstKind::DestructureBindingPattern(&self.pattern));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2263,7 +2263,7 @@ impl<'a> GetChildren<'a> for DebuggerStatement {
     }
 }
 
-impl<'a> GetChildren<'a> for BindingPattern<'a> {
+impl<'a> GetChildren<'a> for DestructureBindingPattern<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.kind).to_ast_kind());
@@ -2273,14 +2273,14 @@ impl<'a> GetChildren<'a> for BindingPattern<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::BindingPattern(self)
+        AstKind::DestructureBindingPattern(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
     }
 }
 
-impl<'a> GetChildren<'a> for BindingPatternKind<'a> {
+impl<'a> GetChildren<'a> for DestructureBindingPatternKind<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
@@ -2311,7 +2311,7 @@ impl<'a> GetChildren<'a> for BindingPatternKind<'a> {
 impl<'a> GetChildren<'a> for AssignmentPattern<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::BindingPattern(&self.left));
+        children.push(AstKind::DestructureBindingPattern(&self.left));
         children.push((*&self.right).to_ast_kind());
         children
     }
@@ -2346,7 +2346,7 @@ impl<'a> GetChildren<'a> for BindingProperty<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.key).to_ast_kind());
-        children.push(AstKind::BindingPattern(&self.value));
+        children.push(AstKind::DestructureBindingPattern(&self.value));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2362,7 +2362,7 @@ impl<'a> GetChildren<'a> for ArrayPattern<'a> {
         let mut children = Vec::new();
         for opt_item in &self.elements {
             if let Some(item) = opt_item {
-                children.push(AstKind::BindingPattern(item));
+                children.push(AstKind::DestructureBindingPattern(item));
             }
         }
         if let Some(field) = &self.rest {
@@ -2381,7 +2381,7 @@ impl<'a> GetChildren<'a> for ArrayPattern<'a> {
 impl<'a> GetChildren<'a> for BindingRestElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push(AstKind::BindingPattern(&self.argument));
+        children.push(AstKind::DestructureBindingPattern(&self.argument));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2446,7 +2446,7 @@ impl<'a> GetChildren<'a> for FormalParameter<'a> {
         for item in &self.decorators {
             children.push(AstKind::Decorator(item));
         }
-        children.push(AstKind::BindingPattern(&self.pattern));
+        children.push(AstKind::DestructureBindingPattern(&self.pattern));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {

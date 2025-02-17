@@ -83,7 +83,7 @@ pub enum AstType {
     CatchClause = 66,
     CatchParameter = 67,
     DebuggerStatement = 68,
-    BindingPattern = 69,
+    DestructureBindingPattern = 69,
     AssignmentPattern = 70,
     ObjectPattern = 71,
     BindingProperty = 72,
@@ -283,7 +283,8 @@ pub enum AstKind<'a> {
     CatchClause(&'a CatchClause<'a>) = AstType::CatchClause as u8,
     CatchParameter(&'a CatchParameter<'a>) = AstType::CatchParameter as u8,
     DebuggerStatement(&'a DebuggerStatement) = AstType::DebuggerStatement as u8,
-    BindingPattern(&'a BindingPattern<'a>) = AstType::BindingPattern as u8,
+    DestructureBindingPattern(&'a DestructureBindingPattern<'a>) =
+        AstType::DestructureBindingPattern as u8,
     AssignmentPattern(&'a AssignmentPattern<'a>) = AstType::AssignmentPattern as u8,
     ObjectPattern(&'a ObjectPattern<'a>) = AstType::ObjectPattern as u8,
     BindingProperty(&'a BindingProperty<'a>) = AstType::BindingProperty as u8,
@@ -498,7 +499,7 @@ impl GetSpan for AstKind<'_> {
             Self::CatchClause(it) => it.span(),
             Self::CatchParameter(it) => it.span(),
             Self::DebuggerStatement(it) => it.span(),
-            Self::BindingPattern(it) => it.span(),
+            Self::DestructureBindingPattern(it) => it.span(),
             Self::AssignmentPattern(it) => it.span(),
             Self::ObjectPattern(it) => it.span(),
             Self::BindingProperty(it) => it.span(),
@@ -691,7 +692,7 @@ impl<'a> AstKind<'a> {
             Self::CatchClause(it) => it.get_children(),
             Self::CatchParameter(it) => it.get_children(),
             Self::DebuggerStatement(it) => it.get_children(),
-            Self::BindingPattern(it) => it.get_children(),
+            Self::DestructureBindingPattern(it) => it.get_children(),
             Self::AssignmentPattern(it) => it.get_children(),
             Self::ObjectPattern(it) => it.get_children(),
             Self::BindingProperty(it) => it.get_children(),
@@ -881,7 +882,7 @@ impl<'a> AstKind<'a> {
             Self::CatchClause(it) => it.get_node_id(),
             Self::CatchParameter(it) => it.get_node_id(),
             Self::DebuggerStatement(it) => it.get_node_id(),
-            Self::BindingPattern(it) => it.get_node_id(),
+            Self::DestructureBindingPattern(it) => it.get_node_id(),
             Self::AssignmentPattern(it) => it.get_node_id(),
             Self::ObjectPattern(it) => it.get_node_id(),
             Self::BindingProperty(it) => it.get_node_id(),
@@ -1629,8 +1630,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_binding_pattern(self) -> Option<&'a BindingPattern<'a>> {
-        if let Self::BindingPattern(v) = self {
+    pub fn as_destructure_binding_pattern(self) -> Option<&'a DestructureBindingPattern<'a>> {
+        if let Self::DestructureBindingPattern(v) = self {
             Some(v)
         } else {
             None

@@ -123,7 +123,7 @@ fn size_asserts() {
     assert_eq!(size_of::<ast::Statement>(), 16);
     assert_eq!(size_of::<ast::Expression>(), 16);
     assert_eq!(size_of::<ast::Declaration>(), 16);
-    assert_eq!(size_of::<ast::BindingPatternKind>(), 16);
+    assert_eq!(size_of::<ast::DestructureBindingPatternKind>(), 16);
     assert_eq!(size_of::<ast::ModuleDeclaration>(), 16);
     assert_eq!(size_of::<ast::ClassElement>(), 16);
     assert_eq!(size_of::<ast::ExportDefaultDeclarationKind>(), 16);

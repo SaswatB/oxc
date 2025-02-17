@@ -18,7 +18,9 @@ fn handle_special_case(field_name: &str, field_expr: TokenStream) -> Option<Toke
         "Statement" => Some(quote! { AstKind::from_statement(#field_expr) }),
         "Declaration" => Some(quote! { AstKind::from_declaration(#field_expr) }),
         "ModuleDeclaration" => Some(quote! { AstKind::from_module_declaration(#field_expr) }),
-        "BindingPatternKind" => Some(quote! { AstKind::from_binding_pattern_kind(#field_expr) }),
+        "DestructureBindingPatternKind" => {
+            Some(quote! { AstKind::from_destructure_binding_pattern_kind(#field_expr) })
+        }
         "ChainElement" => Some(quote! { AstKind::from_chain_element(#field_expr) }),
         "ModuleExportName" => Some(quote! { AstKind::from_module_export_name(#field_expr) }),
         "AssignmentTargetMaybeDefault" => {

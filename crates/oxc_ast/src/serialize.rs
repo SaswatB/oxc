@@ -11,8 +11,8 @@ use oxc_span::{Atom, Span};
 use oxc_syntax::number::BigintBase;
 
 use crate::ast::{
-    BigIntLiteral, BindingPatternKind, BooleanLiteral, Directive, Elision, FormalParameter,
-    FormalParameterKind, FormalParameters, JSXElementName, JSXIdentifier,
+    BigIntLiteral, BooleanLiteral, DestructureBindingPatternKind, Directive, Elision,
+    FormalParameter, FormalParameterKind, FormalParameters, JSXElementName, JSXIdentifier,
     JSXMemberExpressionObject, NullLiteral, NumericLiteral, RegExpFlags, RegExpLiteral,
     RegExpPattern, SourceFile, Statement, StringLiteral, TSModuleBlock, TSTypeAnnotation,
 };
@@ -210,7 +210,7 @@ struct SerFormalParameters<'a, 'b> {
 struct SerFormalParameterRest<'a, 'b> {
     #[serde(flatten)]
     span: Span,
-    argument: &'b BindingPatternKind<'a>,
+    argument: &'b DestructureBindingPatternKind<'a>,
     type_annotation: &'b Option<Box<'a, TSTypeAnnotation<'a>>>,
     optional: bool,
 }

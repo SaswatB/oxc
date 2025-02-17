@@ -922,14 +922,14 @@ impl GetSpanMut for DebuggerStatement {
     }
 }
 
-impl GetSpanMut for BindingPattern<'_> {
+impl GetSpanMut for DestructureBindingPattern<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         GetSpanMut::span_mut(&mut self.kind)
     }
 }
 
-impl GetSpanMut for BindingPatternKind<'_> {
+impl GetSpanMut for DestructureBindingPatternKind<'_> {
     fn span_mut(&mut self) -> &mut Span {
         match self {
             Self::BindingIdentifier(it) => GetSpanMut::span_mut(&mut **it),

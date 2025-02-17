@@ -4119,7 +4119,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         kind: VariableDeclarationKind,
-        id: BindingPattern<'a>,
+        id: DestructureBindingPattern<'a>,
         init: Option<Expression<'a>>,
         definite: bool,
     ) -> VariableDeclarator<'a> {
@@ -4148,7 +4148,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         kind: VariableDeclarationKind,
-        id: BindingPattern<'a>,
+        id: DestructureBindingPattern<'a>,
         init: Option<Expression<'a>>,
         definite: bool,
     ) -> Box<'a, VariableDeclarator<'a>> {
@@ -5232,7 +5232,11 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - pattern: The bound error
     #[inline]
-    pub fn catch_parameter(self, span: Span, pattern: BindingPattern<'a>) -> CatchParameter<'a> {
+    pub fn catch_parameter(
+        self,
+        span: Span,
+        pattern: DestructureBindingPattern<'a>,
+    ) -> CatchParameter<'a> {
         CatchParameter {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
@@ -5251,7 +5255,7 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_catch_parameter(
         self,
         span: Span,
-        pattern: BindingPattern<'a>,
+        pattern: DestructureBindingPattern<'a>,
     ) -> Box<'a, CatchParameter<'a>> {
         Box::new_in(self.catch_parameter(span, pattern), self.allocator)
     }
@@ -5281,25 +5285,25 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.debugger_statement(span), self.allocator)
     }
 
-    /// Build a [`BindingPattern`].
+    /// Build a [`DestructureBindingPattern`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binding_pattern`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_destructure_binding_pattern`] instead.
     ///
     /// ## Parameters
     /// - kind
     /// - type_annotation
     /// - optional
     #[inline]
-    pub fn binding_pattern<T1>(
+    pub fn destructure_binding_pattern<T1>(
         self,
-        kind: BindingPatternKind<'a>,
+        kind: DestructureBindingPatternKind<'a>,
         type_annotation: T1,
         optional: bool,
-    ) -> BindingPattern<'a>
+    ) -> DestructureBindingPattern<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
-        BindingPattern {
+        DestructureBindingPattern {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             kind,
             type_annotation: type_annotation.into_in(self.allocator),
@@ -5307,28 +5311,31 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`BindingPattern`], and store it in the memory arena.
+    /// Build a [`DestructureBindingPattern`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binding_pattern`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::destructure_binding_pattern`] instead.
     ///
     /// ## Parameters
     /// - kind
     /// - type_annotation
     /// - optional
     #[inline]
-    pub fn alloc_binding_pattern<T1>(
+    pub fn alloc_destructure_binding_pattern<T1>(
         self,
-        kind: BindingPatternKind<'a>,
+        kind: DestructureBindingPatternKind<'a>,
         type_annotation: T1,
         optional: bool,
-    ) -> Box<'a, BindingPattern<'a>>
+    ) -> Box<'a, DestructureBindingPattern<'a>>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
-        Box::new_in(self.binding_pattern(kind, type_annotation, optional), self.allocator)
+        Box::new_in(
+            self.destructure_binding_pattern(kind, type_annotation, optional),
+            self.allocator,
+        )
     }
 
-    /// Build a [`BindingPatternKind::BindingIdentifier`]
+    /// Build a [`DestructureBindingPatternKind::BindingIdentifier`]
     ///
     /// This node contains a [`BindingIdentifier`] that will be stored in the memory arena.
     ///
@@ -5336,18 +5343,18 @@ impl<'a> AstBuilder<'a> {
     /// - span: The [`Span`] covering this node
     /// - name: The identifier name being bound.
     #[inline]
-    pub fn binding_pattern_kind_binding_identifier<A>(
+    pub fn destructure_binding_pattern_kind_binding_identifier<A>(
         self,
         span: Span,
         name: A,
-    ) -> BindingPatternKind<'a>
+    ) -> DestructureBindingPatternKind<'a>
     where
         A: IntoIn<'a, Atom<'a>>,
     {
-        BindingPatternKind::BindingIdentifier(self.alloc_binding_identifier(span, name))
+        DestructureBindingPatternKind::BindingIdentifier(self.alloc_binding_identifier(span, name))
     }
 
-    /// Build a [`BindingPatternKind::ObjectPattern`]
+    /// Build a [`DestructureBindingPatternKind::ObjectPattern`]
     ///
     /// This node contains an [`ObjectPattern`] that will be stored in the memory arena.
     ///
@@ -5356,19 +5363,21 @@ impl<'a> AstBuilder<'a> {
     /// - properties
     /// - rest
     #[inline]
-    pub fn binding_pattern_kind_object_pattern<T1>(
+    pub fn destructure_binding_pattern_kind_object_pattern<T1>(
         self,
         span: Span,
         properties: Vec<'a, BindingProperty<'a>>,
         rest: T1,
-    ) -> BindingPatternKind<'a>
+    ) -> DestructureBindingPatternKind<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        BindingPatternKind::ObjectPattern(self.alloc_object_pattern(span, properties, rest))
+        DestructureBindingPatternKind::ObjectPattern(
+            self.alloc_object_pattern(span, properties, rest),
+        )
     }
 
-    /// Build a [`BindingPatternKind::ArrayPattern`]
+    /// Build a [`DestructureBindingPatternKind::ArrayPattern`]
     ///
     /// This node contains an [`ArrayPattern`] that will be stored in the memory arena.
     ///
@@ -5377,19 +5386,19 @@ impl<'a> AstBuilder<'a> {
     /// - elements
     /// - rest
     #[inline]
-    pub fn binding_pattern_kind_array_pattern<T1>(
+    pub fn destructure_binding_pattern_kind_array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<BindingPattern<'a>>>,
+        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
         rest: T1,
-    ) -> BindingPatternKind<'a>
+    ) -> DestructureBindingPatternKind<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
-        BindingPatternKind::ArrayPattern(self.alloc_array_pattern(span, elements, rest))
+        DestructureBindingPatternKind::ArrayPattern(self.alloc_array_pattern(span, elements, rest))
     }
 
-    /// Build a [`BindingPatternKind::AssignmentPattern`]
+    /// Build a [`DestructureBindingPatternKind::AssignmentPattern`]
     ///
     /// This node contains an [`AssignmentPattern`] that will be stored in the memory arena.
     ///
@@ -5398,13 +5407,15 @@ impl<'a> AstBuilder<'a> {
     /// - left
     /// - right
     #[inline]
-    pub fn binding_pattern_kind_assignment_pattern(
+    pub fn destructure_binding_pattern_kind_assignment_pattern(
         self,
         span: Span,
-        left: BindingPattern<'a>,
+        left: DestructureBindingPattern<'a>,
         right: Expression<'a>,
-    ) -> BindingPatternKind<'a> {
-        BindingPatternKind::AssignmentPattern(self.alloc_assignment_pattern(span, left, right))
+    ) -> DestructureBindingPatternKind<'a> {
+        DestructureBindingPatternKind::AssignmentPattern(
+            self.alloc_assignment_pattern(span, left, right),
+        )
     }
 
     /// Build an [`AssignmentPattern`].
@@ -5419,7 +5430,7 @@ impl<'a> AstBuilder<'a> {
     pub fn assignment_pattern(
         self,
         span: Span,
-        left: BindingPattern<'a>,
+        left: DestructureBindingPattern<'a>,
         right: Expression<'a>,
     ) -> AssignmentPattern<'a> {
         AssignmentPattern {
@@ -5442,7 +5453,7 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_assignment_pattern(
         self,
         span: Span,
-        left: BindingPattern<'a>,
+        left: DestructureBindingPattern<'a>,
         right: Expression<'a>,
     ) -> Box<'a, AssignmentPattern<'a>> {
         Box::new_in(self.assignment_pattern(span, left, right), self.allocator)
@@ -5510,7 +5521,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         key: PropertyKey<'a>,
-        value: BindingPattern<'a>,
+        value: DestructureBindingPattern<'a>,
         shorthand: bool,
         computed: bool,
     ) -> BindingProperty<'a> {
@@ -5539,7 +5550,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         key: PropertyKey<'a>,
-        value: BindingPattern<'a>,
+        value: DestructureBindingPattern<'a>,
         shorthand: bool,
         computed: bool,
     ) -> Box<'a, BindingProperty<'a>> {
@@ -5558,7 +5569,7 @@ impl<'a> AstBuilder<'a> {
     pub fn array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<BindingPattern<'a>>>,
+        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
         rest: T1,
     ) -> ArrayPattern<'a>
     where
@@ -5584,7 +5595,7 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<BindingPattern<'a>>>,
+        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
         rest: T1,
     ) -> Box<'a, ArrayPattern<'a>>
     where
@@ -5604,7 +5615,7 @@ impl<'a> AstBuilder<'a> {
     pub fn binding_rest_element(
         self,
         span: Span,
-        argument: BindingPattern<'a>,
+        argument: DestructureBindingPattern<'a>,
     ) -> BindingRestElement<'a> {
         BindingRestElement {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
@@ -5624,7 +5635,7 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_binding_rest_element(
         self,
         span: Span,
-        argument: BindingPattern<'a>,
+        argument: DestructureBindingPattern<'a>,
     ) -> Box<'a, BindingRestElement<'a>> {
         Box::new_in(self.binding_rest_element(span, argument), self.allocator)
     }
@@ -5924,7 +5935,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         decorators: Vec<'a, Decorator<'a>>,
-        pattern: BindingPattern<'a>,
+        pattern: DestructureBindingPattern<'a>,
         accessibility: Option<TSAccessibility>,
         readonly: bool,
         r#override: bool,
@@ -5956,7 +5967,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         decorators: Vec<'a, Decorator<'a>>,
-        pattern: BindingPattern<'a>,
+        pattern: DestructureBindingPattern<'a>,
         accessibility: Option<TSAccessibility>,
         readonly: bool,
         r#override: bool,

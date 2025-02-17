@@ -1251,7 +1251,7 @@ pub struct VariableDeclarator<'a> {
     pub span: Span,
     #[estree(skip)]
     pub kind: VariableDeclarationKind,
-    pub id: BindingPattern<'a>,
+    pub id: DestructureBindingPattern<'a>,
     pub init: Option<Expression<'a>>,
     #[ts]
     pub definite: bool,
@@ -1601,7 +1601,7 @@ pub struct CatchParameter<'a> {
     pub node_id: u32,
     pub span: Span,
     /// The bound error
-    pub pattern: BindingPattern<'a>,
+    pub pattern: DestructureBindingPattern<'a>,
 }
 
 /// Debugger Statement
@@ -1622,22 +1622,22 @@ pub struct DebuggerStatement {
 }
 
 /// Destructuring Binding Patterns
-/// * <https://tc39.es/ecma262/#prod-BindingPattern>
+/// * <https://tc39.es/ecma262/#prod-DestructureBindingPattern>
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
 #[estree(no_type)]
-pub struct BindingPattern<'a> {
+pub struct DestructureBindingPattern<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
-    // estree(flatten) the attributes because estree has no `BindingPattern`
+    // estree(flatten) the attributes because estree has no `DestructureBindingPattern`
     #[estree(
         flatten,
         type = "(BindingIdentifier | ObjectPattern | ArrayPattern | AssignmentPattern)"
     )]
     #[span]
-    pub kind: BindingPatternKind<'a>,
+    pub kind: DestructureBindingPatternKind<'a>,
     #[ts]
     pub type_annotation: Option<Box<'a, TSTypeAnnotation<'a>>>,
     #[ts]
@@ -1647,7 +1647,7 @@ pub struct BindingPattern<'a> {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
-pub enum BindingPatternKind<'a> {
+pub enum DestructureBindingPatternKind<'a> {
     /// `const a = 1`
     BindingIdentifier(Box<'a, BindingIdentifier<'a>>) = 0,
     /// `const {a} = 1`
@@ -1669,7 +1669,7 @@ pub struct AssignmentPattern<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub left: BindingPattern<'a>,
+    pub left: DestructureBindingPattern<'a>,
     pub right: Expression<'a>,
 }
 
@@ -1695,7 +1695,7 @@ pub struct BindingProperty<'a> {
     pub node_id: u32,
     pub span: Span,
     pub key: PropertyKey<'a>,
-    pub value: BindingPattern<'a>,
+    pub value: DestructureBindingPattern<'a>,
     pub shorthand: bool,
     pub computed: bool,
 }
@@ -1708,7 +1708,7 @@ pub struct ArrayPattern<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub elements: Vec<'a, Option<BindingPattern<'a>>>,
+    pub elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
     #[estree(append_to = "elements")]
     pub rest: Option<Box<'a, BindingRestElement<'a>>>,
 }
@@ -1731,7 +1731,7 @@ pub struct BindingRestElement<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub argument: BindingPattern<'a>,
+    pub argument: DestructureBindingPattern<'a>,
 }
 
 /// Function Statement or Expression
@@ -1879,7 +1879,7 @@ pub struct FormalParameter<'a> {
     pub span: Span,
     #[ts]
     pub decorators: Vec<'a, Decorator<'a>>,
-    pub pattern: BindingPattern<'a>,
+    pub pattern: DestructureBindingPattern<'a>,
     #[ts]
     pub accessibility: Option<TSAccessibility>,
     #[ts]

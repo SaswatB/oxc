@@ -585,7 +585,7 @@ export type VariableDeclarationKind = 'var' | 'const' | 'let' | 'using' | 'await
 export interface VariableDeclarator extends Span {
   type: 'VariableDeclarator';
   nodeId: number;
-  id: BindingPattern;
+  id: DestructureBindingPattern;
   init: Expression | null;
   definite: boolean;
 }
@@ -778,7 +778,7 @@ export interface CatchClause extends Span {
 export interface CatchParameter extends Span {
   type: 'CatchParameter';
   nodeId: number;
-  pattern: BindingPattern;
+  pattern: DestructureBindingPattern;
 }
 
 export interface DebuggerStatement extends Span {
@@ -786,7 +786,7 @@ export interface DebuggerStatement extends Span {
   nodeId: number;
 }
 
-export type BindingPattern =
+export type DestructureBindingPattern =
   & ({
     nodeId: number;
     typeAnnotation: TSTypeAnnotation | null;
@@ -794,12 +794,12 @@ export type BindingPattern =
   })
   & (BindingIdentifier | ObjectPattern | ArrayPattern | AssignmentPattern);
 
-export type BindingPatternKind = BindingIdentifier | ObjectPattern | ArrayPattern | AssignmentPattern;
+export type DestructureBindingPatternKind = BindingIdentifier | ObjectPattern | ArrayPattern | AssignmentPattern;
 
 export interface AssignmentPattern extends Span {
   type: 'AssignmentPattern';
   nodeId: number;
-  left: BindingPattern;
+  left: DestructureBindingPattern;
   right: Expression;
 }
 
@@ -813,7 +813,7 @@ export interface BindingProperty extends Span {
   type: 'BindingProperty';
   nodeId: number;
   key: PropertyKey;
-  value: BindingPattern;
+  value: DestructureBindingPattern;
   shorthand: boolean;
   computed: boolean;
 }
@@ -821,13 +821,13 @@ export interface BindingProperty extends Span {
 export interface ArrayPattern extends Span {
   type: 'ArrayPattern';
   nodeId: number;
-  elements: Array<BindingRestElement | BindingPattern | null>;
+  elements: Array<BindingRestElement | DestructureBindingPattern | null>;
 }
 
 export interface BindingRestElement extends Span {
   type: 'RestElement';
   nodeId: number;
-  argument: BindingPattern;
+  argument: DestructureBindingPattern;
 }
 
 export interface Function extends Span {
@@ -861,7 +861,7 @@ export interface FormalParameter extends Span {
   type: 'FormalParameter';
   nodeId: number;
   decorators: Array<Decorator>;
-  pattern: BindingPattern;
+  pattern: DestructureBindingPattern;
   accessibility: TSAccessibility | null;
   readonly: boolean;
   override: boolean;
@@ -2130,7 +2130,7 @@ export interface NamedReference extends Span {
 
 export interface FormalParameterRest extends Span {
   type: 'RestElement';
-  argument: BindingPatternKind;
+  argument: DestructureBindingPatternKind;
   typeAnnotation: TSTypeAnnotation | null;
   optional: boolean;
 }

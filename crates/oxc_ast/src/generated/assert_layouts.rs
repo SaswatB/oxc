@@ -572,15 +572,15 @@ const _: () = {
     assert!(offset_of!(DebuggerStatement, node_id) == 0usize);
     assert!(offset_of!(DebuggerStatement, span) == 8usize);
 
-    assert!(size_of::<BindingPattern>() == 40usize);
-    assert!(align_of::<BindingPattern>() == 8usize);
-    assert!(offset_of!(BindingPattern, node_id) == 0usize);
-    assert!(offset_of!(BindingPattern, kind) == 8usize);
-    assert!(offset_of!(BindingPattern, type_annotation) == 24usize);
-    assert!(offset_of!(BindingPattern, optional) == 32usize);
+    assert!(size_of::<DestructureBindingPattern>() == 40usize);
+    assert!(align_of::<DestructureBindingPattern>() == 8usize);
+    assert!(offset_of!(DestructureBindingPattern, node_id) == 0usize);
+    assert!(offset_of!(DestructureBindingPattern, kind) == 8usize);
+    assert!(offset_of!(DestructureBindingPattern, type_annotation) == 24usize);
+    assert!(offset_of!(DestructureBindingPattern, optional) == 32usize);
 
-    assert!(size_of::<BindingPatternKind>() == 16usize);
-    assert!(align_of::<BindingPatternKind>() == 8usize);
+    assert!(size_of::<DestructureBindingPatternKind>() == 16usize);
+    assert!(align_of::<DestructureBindingPatternKind>() == 8usize);
 
     assert!(size_of::<AssignmentPattern>() == 72usize);
     assert!(align_of::<AssignmentPattern>() == 8usize);
@@ -2322,15 +2322,15 @@ const _: () = {
     assert!(offset_of!(DebuggerStatement, node_id) == 0usize);
     assert!(offset_of!(DebuggerStatement, span) == 4usize);
 
-    assert!(size_of::<BindingPattern>() == 20usize);
-    assert!(align_of::<BindingPattern>() == 4usize);
-    assert!(offset_of!(BindingPattern, node_id) == 0usize);
-    assert!(offset_of!(BindingPattern, kind) == 4usize);
-    assert!(offset_of!(BindingPattern, type_annotation) == 12usize);
-    assert!(offset_of!(BindingPattern, optional) == 16usize);
+    assert!(size_of::<DestructureBindingPattern>() == 20usize);
+    assert!(align_of::<DestructureBindingPattern>() == 4usize);
+    assert!(offset_of!(DestructureBindingPattern, node_id) == 0usize);
+    assert!(offset_of!(DestructureBindingPattern, kind) == 4usize);
+    assert!(offset_of!(DestructureBindingPattern, type_annotation) == 12usize);
+    assert!(offset_of!(DestructureBindingPattern, optional) == 16usize);
 
-    assert!(size_of::<BindingPatternKind>() == 8usize);
-    assert!(align_of::<BindingPatternKind>() == 4usize);
+    assert!(size_of::<DestructureBindingPatternKind>() == 8usize);
+    assert!(align_of::<DestructureBindingPatternKind>() == 4usize);
 
     assert!(size_of::<AssignmentPattern>() == 40usize);
     assert!(align_of::<AssignmentPattern>() == 4usize);

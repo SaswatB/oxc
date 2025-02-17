@@ -939,7 +939,7 @@ impl SwitchCase<'_> {
     }
 }
 
-impl<'a> BindingPattern<'a> {
+impl<'a> DestructureBindingPattern<'a> {
     #[allow(missing_docs)]
     pub fn get_identifier(&self) -> Option<Atom<'a>> {
         self.kind.get_identifier()
@@ -956,7 +956,7 @@ impl<'a> BindingPattern<'a> {
     }
 }
 
-impl<'a> BindingPatternKind<'a> {
+impl<'a> DestructureBindingPatternKind<'a> {
     #[allow(missing_docs)]
     pub fn get_identifier(&self) -> Option<Atom<'a>> {
         match self {
@@ -1111,7 +1111,7 @@ impl<'a> FormalParameters<'a> {
     }
 
     /// Iterates over all bound parameters, including rest parameters.
-    pub fn iter_bindings(&self) -> impl Iterator<Item = &BindingPattern<'a>> + '_ {
+    pub fn iter_bindings(&self) -> impl Iterator<Item = &DestructureBindingPattern<'a>> + '_ {
         self.items
             .iter()
             .map(|param| &param.pattern)
