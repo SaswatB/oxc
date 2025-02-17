@@ -349,8 +349,8 @@ impl fmt::Display for BindingIdentifier<'_> {
 
 impl ArrayExpressionElement<'_> {
     #[allow(missing_docs)]
-    pub fn is_elision(&self) -> bool {
-        matches!(self, Self::Elision(_))
+    pub fn is_omitted_expression(&self) -> bool {
+        matches!(self, Self::OmittedExpression(_))
     }
 }
 

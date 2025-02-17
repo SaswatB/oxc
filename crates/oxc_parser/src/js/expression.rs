@@ -405,9 +405,9 @@ impl<'a> ParserImpl<'a> {
 
     /// Section [Array Expression](https://tc39.es/ecma262/#prod-ArrayLiteral)
     /// `ArrayLiteral`[Yield, Await]:
-    ///     [ Elision opt ]
+    ///     [ OmittedExpression opt ]
     ///     [ `ElementList`[?Yield, ?Await] ]
-    ///     [ `ElementList`[?Yield, ?Await] , Elisionopt ]
+    ///     [ `ElementList`[?Yield, ?Await] , OmittedExpressionopt ]
     pub(crate) fn parse_array_expression(&mut self) -> Result<Expression<'a>> {
         let span = self.start_span();
         self.expect(Kind::LBrack)?;
@@ -430,17 +430,17 @@ impl<'a> ParserImpl<'a> {
 
     fn parse_array_expression_element(&mut self) -> Result<ArrayExpressionElement<'a>> {
         match self.cur_kind() {
-            Kind::Comma => Ok(self.parse_elision()),
+            Kind::Comma => Ok(self.parse_omitted_expression()),
             Kind::Dot3 => self.parse_spread_element().map(ArrayExpressionElement::SpreadElement),
             _ => self.parse_assignment_expression_or_higher().map(ArrayExpressionElement::from),
         }
     }
 
-    /// Elision :
+    /// OmittedExpression :
     ///     ,
-    ///    Elision ,
-    pub(crate) fn parse_elision(&mut self) -> ArrayExpressionElement<'a> {
-        self.ast.array_expression_element_elision(self.cur_token().span())
+    ///    OmittedExpression ,
+    pub(crate) fn parse_omitted_expression(&mut self) -> ArrayExpressionElement<'a> {
+        self.ast.array_expression_element_omitted_expression(self.cur_token().span())
     }
 
     /// Section [Template Literal](https://tc39.es/ecma262/#prod-TemplateLiteral)

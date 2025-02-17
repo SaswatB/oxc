@@ -27,7 +27,7 @@ pub enum AstType {
     LabelIdentifier = 10,
     ThisExpression = 11,
     ArrayExpression = 12,
-    Elision = 13,
+    OmittedExpression = 13,
     ObjectExpression = 14,
     ObjectProperty = 15,
     TemplateLiteral = 16,
@@ -219,7 +219,7 @@ pub enum AstKind<'a> {
     LabelIdentifier(&'a LabelIdentifier<'a>) = AstType::LabelIdentifier as u8,
     ThisExpression(&'a ThisExpression) = AstType::ThisExpression as u8,
     ArrayExpression(&'a ArrayExpression<'a>) = AstType::ArrayExpression as u8,
-    Elision(&'a Elision) = AstType::Elision as u8,
+    OmittedExpression(&'a OmittedExpression) = AstType::OmittedExpression as u8,
     ObjectExpression(&'a ObjectExpression<'a>) = AstType::ObjectExpression as u8,
     ObjectProperty(&'a ObjectProperty<'a>) = AstType::ObjectProperty as u8,
     TemplateLiteral(&'a TemplateLiteral<'a>) = AstType::TemplateLiteral as u8,
@@ -443,7 +443,7 @@ impl GetSpan for AstKind<'_> {
             Self::LabelIdentifier(it) => it.span(),
             Self::ThisExpression(it) => it.span(),
             Self::ArrayExpression(it) => it.span(),
-            Self::Elision(it) => it.span(),
+            Self::OmittedExpression(it) => it.span(),
             Self::ObjectExpression(it) => it.span(),
             Self::ObjectProperty(it) => it.span(),
             Self::TemplateLiteral(it) => it.span(),
@@ -636,7 +636,7 @@ impl<'a> AstKind<'a> {
             Self::LabelIdentifier(it) => it.get_children(),
             Self::ThisExpression(it) => it.get_children(),
             Self::ArrayExpression(it) => it.get_children(),
-            Self::Elision(it) => it.get_children(),
+            Self::OmittedExpression(it) => it.get_children(),
             Self::ObjectExpression(it) => it.get_children(),
             Self::ObjectProperty(it) => it.get_children(),
             Self::TemplateLiteral(it) => it.get_children(),
@@ -826,7 +826,7 @@ impl<'a> AstKind<'a> {
             Self::LabelIdentifier(it) => it.get_node_id(),
             Self::ThisExpression(it) => it.get_node_id(),
             Self::ArrayExpression(it) => it.get_node_id(),
-            Self::Elision(it) => it.get_node_id(),
+            Self::OmittedExpression(it) => it.get_node_id(),
             Self::ObjectExpression(it) => it.get_node_id(),
             Self::ObjectProperty(it) => it.get_node_id(),
             Self::TemplateLiteral(it) => it.get_node_id(),
@@ -1122,8 +1122,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_elision(self) -> Option<&'a Elision> {
-        if let Self::Elision(v) = self {
+    pub fn as_omitted_expression(self) -> Option<&'a OmittedExpression> {
+        if let Self::OmittedExpression(v) = self {
             Some(v)
         } else {
             None

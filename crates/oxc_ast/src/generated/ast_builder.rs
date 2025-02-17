@@ -1557,35 +1557,41 @@ impl<'a> AstBuilder<'a> {
         ArrayExpressionElement::SpreadElement(self.alloc_spread_element(span, argument))
     }
 
-    /// Build an [`ArrayExpressionElement::Elision`]
+    /// Build an [`ArrayExpressionElement::OmittedExpression`]
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn array_expression_element_elision(self, span: Span) -> ArrayExpressionElement<'a> {
-        ArrayExpressionElement::Elision(self.elision(span))
+    pub fn array_expression_element_omitted_expression(
+        self,
+        span: Span,
+    ) -> ArrayExpressionElement<'a> {
+        ArrayExpressionElement::OmittedExpression(self.omitted_expression(span))
     }
 
-    /// Build an [`Elision`].
+    /// Build an [`OmittedExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_elision`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_omitted_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn elision(self, span: Span) -> Elision {
-        Elision { node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed), span }
+    pub fn omitted_expression(self, span: Span) -> OmittedExpression {
+        OmittedExpression {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+        }
     }
 
-    /// Build an [`Elision`], and store it in the memory arena.
+    /// Build an [`OmittedExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::elision`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::omitted_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     #[inline]
-    pub fn alloc_elision(self, span: Span) -> Box<'a, Elision> {
-        Box::new_in(self.elision(span), self.allocator)
+    pub fn alloc_omitted_expression(self, span: Span) -> Box<'a, OmittedExpression> {
+        Box::new_in(self.omitted_expression(span), self.allocator)
     }
 
     /// Build an [`ObjectExpression`].

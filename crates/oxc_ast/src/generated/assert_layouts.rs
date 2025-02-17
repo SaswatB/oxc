@@ -113,10 +113,10 @@ const _: () = {
     assert!(size_of::<ArrayExpressionElement>() == 24usize);
     assert!(align_of::<ArrayExpressionElement>() == 8usize);
 
-    assert!(size_of::<Elision>() == 16usize);
-    assert!(align_of::<Elision>() == 8usize);
-    assert!(offset_of!(Elision, node_id) == 0usize);
-    assert!(offset_of!(Elision, span) == 8usize);
+    assert!(size_of::<OmittedExpression>() == 16usize);
+    assert!(align_of::<OmittedExpression>() == 8usize);
+    assert!(offset_of!(OmittedExpression, node_id) == 0usize);
+    assert!(offset_of!(OmittedExpression, span) == 8usize);
 
     assert!(size_of::<ObjectExpression>() == 64usize);
     assert!(align_of::<ObjectExpression>() == 8usize);
@@ -1863,10 +1863,10 @@ const _: () = {
     assert!(size_of::<ArrayExpressionElement>() == 16usize);
     assert!(align_of::<ArrayExpressionElement>() == 4usize);
 
-    assert!(size_of::<Elision>() == 12usize);
-    assert!(align_of::<Elision>() == 4usize);
-    assert!(offset_of!(Elision, node_id) == 0usize);
-    assert!(offset_of!(Elision, span) == 4usize);
+    assert!(size_of::<OmittedExpression>() == 12usize);
+    assert!(align_of::<OmittedExpression>() == 4usize);
+    assert!(offset_of!(OmittedExpression, node_id) == 0usize);
+    assert!(offset_of!(OmittedExpression, span) == 4usize);
 
     assert!(size_of::<ObjectExpression>() == 40usize);
     assert!(align_of::<ObjectExpression>() == 4usize);

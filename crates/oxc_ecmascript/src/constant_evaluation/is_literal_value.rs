@@ -61,7 +61,7 @@ impl<'a> IsLiteralValue<'a, '_> for ArrayExpressionElement<'a> {
         match self {
             Self::SpreadElement(element) => element.is_literal_value(include_functions),
             match_expression!(Self) => self.to_expression().is_literal_value(include_functions),
-            Self::Elision(_) => true,
+            Self::OmittedExpression(_) => true,
         }
     }
 }

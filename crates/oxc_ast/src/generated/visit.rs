@@ -207,8 +207,8 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_elision(&mut self, it: &Elision) {
-        walk_elision(self, it);
+    fn visit_omitted_expression(&mut self, it: &OmittedExpression) {
+        walk_omitted_expression(self, it);
     }
 
     #[inline]
@@ -1696,7 +1696,7 @@ pub mod walk {
     ) {
         match it {
             ArrayExpressionElement::SpreadElement(it) => visitor.visit_spread_element(it),
-            ArrayExpressionElement::Elision(it) => visitor.visit_elision(it),
+            ArrayExpressionElement::OmittedExpression(it) => visitor.visit_omitted_expression(it),
             match_expression!(ArrayExpressionElement) => {
                 visitor.visit_expression(it.to_expression())
             }
@@ -1713,8 +1713,8 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_elision<'a, V: Visit<'a>>(visitor: &mut V, it: &Elision) {
-        let kind = AstKind::Elision(visitor.alloc(it));
+    pub fn walk_omitted_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &OmittedExpression) {
+        let kind = AstKind::OmittedExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.leave_node(kind);

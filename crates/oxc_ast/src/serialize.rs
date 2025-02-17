@@ -11,10 +11,11 @@ use oxc_span::{Atom, Span};
 use oxc_syntax::number::BigintBase;
 
 use crate::ast::{
-    BigIntLiteral, BooleanLiteral, DestructureBindingPatternKind, Directive, Elision,
-    FormalParameter, FormalParameterKind, FormalParameters, JSXElementName, JSXIdentifier,
-    JSXMemberExpressionObject, NullLiteral, NumericLiteral, RegExpFlags, RegExpLiteral,
-    RegExpPattern, SourceFile, Statement, StringLiteral, TSModuleBlock, TSTypeAnnotation,
+    BigIntLiteral, BooleanLiteral, DestructureBindingPatternKind, Directive, FormalParameter,
+    FormalParameterKind, FormalParameters, JSXElementName, JSXIdentifier,
+    JSXMemberExpressionObject, NullLiteral, NumericLiteral, OmittedExpression, RegExpFlags,
+    RegExpLiteral, RegExpPattern, SourceFile, Statement, StringLiteral, TSModuleBlock,
+    TSTypeAnnotation,
 };
 
 #[derive(Serialize)]
@@ -167,8 +168,8 @@ impl Serialize for RegExpFlags {
     }
 }
 
-/// Serialize `ArrayExpressionElement::Elision` variant as `null` in JSON
-impl<'a> Serialize for Elision {
+/// Serialize `ArrayExpressionElement::OmittedExpression` variant as `null` in JSON
+impl<'a> Serialize for OmittedExpression {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,

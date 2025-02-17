@@ -200,7 +200,7 @@ impl Serialize for ArrayExpressionElement<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             ArrayExpressionElement::SpreadElement(x) => Serialize::serialize(x, serializer),
-            ArrayExpressionElement::Elision(x) => Serialize::serialize(x, serializer),
+            ArrayExpressionElement::OmittedExpression(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::BooleanLiteral(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::NullLiteral(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::NumericLiteral(x) => Serialize::serialize(x, serializer),

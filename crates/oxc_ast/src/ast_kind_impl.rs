@@ -796,7 +796,7 @@ impl AstKind<'_> {
             Self::ObjectAssignmentTarget(_) => "ObjectAssignmentTarget".into(),
             Self::AssignmentTargetWithDefault(_) => "AssignmentTargetWithDefault".into(),
             Self::SpreadElement(_) => "SpreadElement".into(),
-            Self::Elision(_) => "Elision".into(),
+            Self::OmittedExpression(_) => "OmittedExpression".into(),
             Self::BindingRestElement(_) => "BindingRestElement".into(),
 
             Self::Function(x) => format!("Function({})", or_anonymous(x.id.as_ref())).into(),

@@ -88,7 +88,7 @@ impl<'a> CoverGrammar<'a, ArrayExpression<'a>> for ArrayAssignmentTarget<'a> {
                         return Err(diagnostics::spread_last_element(elem.span));
                     }
                 }
-                ArrayExpressionElement::Elision(_) => elements.push(None),
+                ArrayExpressionElement::OmittedExpression(_) => elements.push(None),
             }
         }
 

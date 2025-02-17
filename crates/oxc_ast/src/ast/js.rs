@@ -333,7 +333,7 @@ pub enum ArrayExpressionElement<'a> {
     ///
     /// Array hole for sparse arrays
     /// <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Trailing_commas#arrays>
-    Elision(Elision) = 65,
+    OmittedExpression(OmittedExpression) = 65,
     // `Expression` variants added here by `inherit_variants!` macro
     @inherit Expression
 }
@@ -341,12 +341,12 @@ pub enum ArrayExpressionElement<'a> {
 
 /// empty slot in `const array = [1, , 2];`
 ///
-/// Array Expression Elision Element
+/// Array Expression OmittedExpression Element
 /// Serialized as `null` in JSON AST. See `serialize.rs`.
 #[ast(visit)]
 #[derive(Debug, Clone)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq)]
-pub struct Elision {
+pub struct OmittedExpression {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,

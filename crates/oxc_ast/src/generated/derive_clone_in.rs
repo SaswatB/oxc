@@ -312,7 +312,9 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayExpressionElement<'_> {
             Self::SpreadElement(it) => {
                 ArrayExpressionElement::SpreadElement(CloneIn::clone_in(it, allocator))
             }
-            Self::Elision(it) => ArrayExpressionElement::Elision(CloneIn::clone_in(it, allocator)),
+            Self::OmittedExpression(it) => {
+                ArrayExpressionElement::OmittedExpression(CloneIn::clone_in(it, allocator))
+            }
             Self::BooleanLiteral(it) => {
                 ArrayExpressionElement::BooleanLiteral(CloneIn::clone_in(it, allocator))
             }
@@ -441,10 +443,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayExpressionElement<'_> {
     }
 }
 
-impl<'alloc> CloneIn<'alloc> for Elision {
-    type Cloned = Elision;
+impl<'alloc> CloneIn<'alloc> for OmittedExpression {
+    type Cloned = OmittedExpression;
     fn clone_in(&self, allocator: &'alloc Allocator) -> Self::Cloned {
-        Elision {
+        OmittedExpression {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
         }

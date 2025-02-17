@@ -198,13 +198,13 @@ impl<'a> AstBuilder<'a> {
         mem::replace(function, empty_function)
     }
 
-    /// Move an array element out by replacing it with an [`ArrayExpressionElement::Elision`].
+    /// Move an array element out by replacing it with an [`ArrayExpressionElement::OmittedExpression`].
     pub fn move_array_expression_element(
         self,
         element: &mut ArrayExpressionElement<'a>,
     ) -> ArrayExpressionElement<'a> {
-        let elision = self.array_expression_element_elision(SPAN);
-        mem::replace(element, elision)
+        let omitted_expression = self.array_expression_element_omitted_expression(SPAN);
+        mem::replace(element, omitted_expression)
     }
 
     /// Take the contents of a arena-allocated [`Vec`], leaving an empty [`Vec`] in its place.

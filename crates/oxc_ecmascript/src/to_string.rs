@@ -34,7 +34,7 @@ impl<'a> ToJsString<'a> for ArrayExpressionElement<'a> {
     fn to_js_string(&self) -> Option<Cow<'a, str>> {
         match self {
             ArrayExpressionElement::SpreadElement(_) => None,
-            ArrayExpressionElement::Elision(_) | ArrayExpressionElement::NullLiteral(_) => {
+            ArrayExpressionElement::OmittedExpression(_) | ArrayExpressionElement::NullLiteral(_) => {
                 Some(Cow::Borrowed(""))
             }
             ArrayExpressionElement::Identifier(id) if id.name.as_str() == "undefined" => {

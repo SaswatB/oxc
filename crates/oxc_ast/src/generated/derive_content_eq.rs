@@ -150,7 +150,7 @@ impl ContentEq for ArrayExpressionElement<'_> {
         #[allow(clippy::match_same_arms)]
         match (self, other) {
             (Self::SpreadElement(a), Self::SpreadElement(b)) => a.content_eq(b),
-            (Self::Elision(a), Self::Elision(b)) => a.content_eq(b),
+            (Self::OmittedExpression(a), Self::OmittedExpression(b)) => a.content_eq(b),
             (Self::BooleanLiteral(a), Self::BooleanLiteral(b)) => a.content_eq(b),
             (Self::NullLiteral(a), Self::NullLiteral(b)) => a.content_eq(b),
             (Self::NumericLiteral(a), Self::NumericLiteral(b)) => a.content_eq(b),
@@ -204,7 +204,7 @@ impl ContentEq for ArrayExpressionElement<'_> {
     }
 }
 
-impl ContentEq for Elision {
+impl ContentEq for OmittedExpression {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
     }

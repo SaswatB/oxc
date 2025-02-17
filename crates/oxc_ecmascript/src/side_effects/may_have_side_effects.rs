@@ -82,7 +82,7 @@ pub trait MayHaveSideEffects {
             match_expression!(ArrayExpressionElement) => {
                 self.expression_may_have_side_efffects(e.to_expression())
             }
-            ArrayExpressionElement::Elision(_) => false,
+            ArrayExpressionElement::OmittedExpression(_) => false,
         }
     }
 

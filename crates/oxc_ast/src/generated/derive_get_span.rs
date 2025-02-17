@@ -157,7 +157,7 @@ impl GetSpan for ArrayExpressionElement<'_> {
     fn span(&self) -> Span {
         match self {
             Self::SpreadElement(it) => GetSpan::span(it.as_ref()),
-            Self::Elision(it) => GetSpan::span(it),
+            Self::OmittedExpression(it) => GetSpan::span(it),
             Self::BooleanLiteral(it) => GetSpan::span(it.as_ref()),
             Self::NullLiteral(it) => GetSpan::span(it.as_ref()),
             Self::NumericLiteral(it) => GetSpan::span(it.as_ref()),
@@ -204,7 +204,7 @@ impl GetSpan for ArrayExpressionElement<'_> {
     }
 }
 
-impl GetSpan for Elision {
+impl GetSpan for OmittedExpression {
     #[inline]
     fn span(&self) -> Span {
         self.span

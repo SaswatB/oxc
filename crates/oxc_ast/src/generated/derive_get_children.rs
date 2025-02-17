@@ -332,7 +332,7 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
             Self::SpreadElement(_) => vec![],
-            Self::Elision(child) => vec![AstKind::Elision(child)],
+            Self::OmittedExpression(child) => vec![AstKind::OmittedExpression(child)],
             Self::BooleanLiteral(_) => vec![],
             Self::NullLiteral(_) => vec![],
             Self::NumericLiteral(_) => vec![],
@@ -380,7 +380,7 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         match self {
             Self::SpreadElement(e) => AstKind::SpreadElement(e),
-            Self::Elision(e) => AstKind::Elision(e),
+            Self::OmittedExpression(e) => AstKind::OmittedExpression(e),
             Self::BooleanLiteral(e) => AstKind::BooleanLiteral(e),
             Self::NullLiteral(e) => AstKind::NullLiteral(e),
             Self::NumericLiteral(e) => AstKind::NumericLiteral(e),
@@ -428,7 +428,7 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
     fn get_node_id(&'a self) -> u32 {
         match self {
             Self::SpreadElement(e) => e.node_id,
-            Self::Elision(e) => e.node_id,
+            Self::OmittedExpression(e) => e.node_id,
             Self::BooleanLiteral(e) => e.node_id,
             Self::NullLiteral(e) => e.node_id,
             Self::NumericLiteral(e) => e.node_id,
@@ -475,12 +475,12 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for Elision {
+impl<'a> GetChildren<'a> for OmittedExpression {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         vec![]
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::Elision(self)
+        AstKind::OmittedExpression(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
