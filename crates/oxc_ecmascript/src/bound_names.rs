@@ -1,8 +1,8 @@
 use oxc_ast::ast::{
-    ArrayPattern, AssignmentPattern, BindingIdentifier, DestructureBindingPattern, DestructureBindingPatternKind,
-    BindingRestElement, Class, Declaration, ExportNamedDeclaration, FormalParameter,
-    FormalParameters, Function, ImportDeclaration, ImportDeclarationSpecifier, ModuleDeclaration,
-    ObjectPattern, VariableDeclarationList,
+    ArrayPattern, AssignmentPattern, BindingIdentifier, BindingRestElement, Class, Declaration,
+    DestructureBindingPattern, DestructureBindingPatternKind, ExportNamedDeclaration,
+    FormalParameter, FormalParameters, Function, ImportDeclaration, ImportDeclarationSpecifier,
+    ModuleDeclaration, ObjectPattern, VariableDeclarationList,
 };
 
 /// [`BoundName`](https://tc39.es/ecma262/#sec-static-semantics-boundnames)
@@ -20,7 +20,9 @@ impl<'a> BoundNames<'a> for DestructureBindingPattern<'a> {
             DestructureBindingPatternKind::BindingIdentifier(ident) => ident.bound_names(f),
             DestructureBindingPatternKind::ArrayPattern(array) => array.bound_names(f),
             DestructureBindingPatternKind::ObjectPattern(object) => object.bound_names(f),
-            DestructureBindingPatternKind::AssignmentPattern(assignment) => assignment.bound_names(f),
+            DestructureBindingPatternKind::AssignmentPattern(assignment) => {
+                assignment.bound_names(f)
+            }
         }
     }
 }
@@ -33,7 +35,7 @@ impl<'a> BoundNames<'a> for BindingIdentifier<'a> {
 
 impl<'a> BoundNames<'a> for ArrayPattern<'a> {
     fn bound_names<F: FnMut(&BindingIdentifier<'a>)>(&self, f: &mut F) {
-        for elem in self.elements.iter().flatten() {
+        for elem in self.elements.iter().filter_map(|e| e.element.as_ref()) {
             elem.bound_names(f);
         }
         if let Some(rest) = &self.rest {

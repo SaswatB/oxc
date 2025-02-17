@@ -968,6 +968,13 @@ impl GetSpan for ArrayPattern<'_> {
     }
 }
 
+impl GetSpan for ArrayPatternElement<'_> {
+    #[inline]
+    fn span(&self) -> Span {
+        self.span
+    }
+}
+
 impl GetSpan for BindingRestElement<'_> {
     #[inline]
     fn span(&self) -> Span {

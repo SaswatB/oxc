@@ -5395,7 +5395,7 @@ impl<'a> AstBuilder<'a> {
     pub fn destructure_binding_pattern_kind_array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
+        elements: Vec<'a, ArrayPatternElement<'a>>,
         rest: T1,
     ) -> DestructureBindingPatternKind<'a>
     where
@@ -5575,7 +5575,7 @@ impl<'a> AstBuilder<'a> {
     pub fn array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
+        elements: Vec<'a, ArrayPatternElement<'a>>,
         rest: T1,
     ) -> ArrayPattern<'a>
     where
@@ -5601,13 +5601,49 @@ impl<'a> AstBuilder<'a> {
     pub fn alloc_array_pattern<T1>(
         self,
         span: Span,
-        elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
+        elements: Vec<'a, ArrayPatternElement<'a>>,
         rest: T1,
     ) -> Box<'a, ArrayPattern<'a>>
     where
         T1: IntoIn<'a, Option<Box<'a, BindingRestElement<'a>>>>,
     {
         Box::new_in(self.array_pattern(span, elements, rest), self.allocator)
+    }
+
+    /// Build an [`ArrayPatternElement`].
+    ///
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_array_pattern_element`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - element
+    #[inline]
+    pub fn array_pattern_element(
+        self,
+        span: Span,
+        element: Option<DestructureBindingPattern<'a>>,
+    ) -> ArrayPatternElement<'a> {
+        ArrayPatternElement {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            element,
+        }
+    }
+
+    /// Build an [`ArrayPatternElement`], and store it in the memory arena.
+    ///
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::array_pattern_element`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - element
+    #[inline]
+    pub fn alloc_array_pattern_element(
+        self,
+        span: Span,
+        element: Option<DestructureBindingPattern<'a>>,
+    ) -> Box<'a, ArrayPatternElement<'a>> {
+        Box::new_in(self.array_pattern_element(span, element), self.allocator)
     }
 
     /// Build a [`BindingRestElement`].

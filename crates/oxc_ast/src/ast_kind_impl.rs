@@ -817,6 +817,7 @@ impl AstKind<'_> {
             Self::MethodDefinition(_) => "MethodDefinition".into(),
 
             Self::ArrayPattern(_) => "ArrayPattern".into(),
+            Self::ArrayPatternElement(_) => "ArrayPatternElement".into(),
             Self::ObjectPattern(_) => "ObjectPattern".into(),
             Self::AssignmentPattern(_) => "AssignmentPattern".into(),
 

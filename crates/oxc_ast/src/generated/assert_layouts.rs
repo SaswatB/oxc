@@ -612,6 +612,12 @@ const _: () = {
     assert!(offset_of!(ArrayPattern, elements) == 16usize);
     assert!(offset_of!(ArrayPattern, rest) == 48usize);
 
+    assert!(size_of::<ArrayPatternElement>() == 56usize);
+    assert!(align_of::<ArrayPatternElement>() == 8usize);
+    assert!(offset_of!(ArrayPatternElement, node_id) == 0usize);
+    assert!(offset_of!(ArrayPatternElement, span) == 8usize);
+    assert!(offset_of!(ArrayPatternElement, element) == 16usize);
+
     assert!(size_of::<BindingRestElement>() == 56usize);
     assert!(align_of::<BindingRestElement>() == 8usize);
     assert!(offset_of!(BindingRestElement, node_id) == 0usize);
@@ -2361,6 +2367,12 @@ const _: () = {
     assert!(offset_of!(ArrayPattern, span) == 4usize);
     assert!(offset_of!(ArrayPattern, elements) == 12usize);
     assert!(offset_of!(ArrayPattern, rest) == 28usize);
+
+    assert!(size_of::<ArrayPatternElement>() == 32usize);
+    assert!(align_of::<ArrayPatternElement>() == 4usize);
+    assert!(offset_of!(ArrayPatternElement, node_id) == 0usize);
+    assert!(offset_of!(ArrayPatternElement, span) == 4usize);
+    assert!(offset_of!(ArrayPatternElement, element) == 12usize);
 
     assert!(size_of::<BindingRestElement>() == 32usize);
     assert!(align_of::<BindingRestElement>() == 4usize);

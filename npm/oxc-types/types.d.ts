@@ -821,7 +821,13 @@ export interface BindingProperty extends Span {
 export interface ArrayPattern extends Span {
   type: 'ArrayPattern';
   nodeId: number;
-  elements: Array<BindingRestElement | DestructureBindingPattern | null>;
+  elements: Array<BindingRestElement | ArrayPatternElement>;
+}
+
+export interface ArrayPatternElement extends Span {
+  type: 'ArrayPatternElement';
+  nodeId: number;
+  element: DestructureBindingPattern | null;
 }
 
 export interface BindingRestElement extends Span {

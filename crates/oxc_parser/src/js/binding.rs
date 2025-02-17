@@ -8,7 +8,9 @@ impl<'a> ParserImpl<'a> {
     /// `BindingElement`
     ///     `SingleNameBinding`
     ///     `DestructureBindingPattern`[?Yield, ?Await] `Initializer`[+In, ?Yield, ?Await]opt
-    pub(super) fn parse_destructure_binding_pattern_with_initializer(&mut self) -> Result<DestructureBindingPattern<'a>> {
+    pub(super) fn parse_destructure_binding_pattern_with_initializer(
+        &mut self,
+    ) -> Result<DestructureBindingPattern<'a>> {
         let span = self.start_span();
         let pattern = self.parse_destructure_binding_pattern(true)?;
         self.context(Context::In, Context::empty(), |p| p.parse_initializer(span, pattern))
@@ -27,7 +29,9 @@ impl<'a> ParserImpl<'a> {
         Ok(self.ast.destructure_binding_pattern(kind, type_annotation, optional))
     }
 
-    pub(crate) fn parse_destructure_binding_pattern_kind(&mut self) -> Result<DestructureBindingPatternKind<'a>> {
+    pub(crate) fn parse_destructure_binding_pattern_kind(
+        &mut self,
+    ) -> Result<DestructureBindingPatternKind<'a>> {
         match self.cur_kind() {
             Kind::LCurly => self.parse_object_destructure_binding_pattern(),
             Kind::LBrack => self.parse_array_destructure_binding_pattern(),
@@ -35,13 +39,17 @@ impl<'a> ParserImpl<'a> {
         }
     }
 
-    fn parse_destructure_binding_pattern_identifier(&mut self) -> Result<DestructureBindingPatternKind<'a>> {
+    fn parse_destructure_binding_pattern_identifier(
+        &mut self,
+    ) -> Result<DestructureBindingPatternKind<'a>> {
         let ident = self.parse_binding_identifier()?;
         Ok(DestructureBindingPatternKind::BindingIdentifier(self.alloc(ident)))
     }
 
     /// Section 14.3.3 Object Binding Pattern
-    fn parse_object_destructure_binding_pattern(&mut self) -> Result<DestructureBindingPatternKind<'a>> {
+    fn parse_object_destructure_binding_pattern(
+        &mut self,
+    ) -> Result<DestructureBindingPatternKind<'a>> {
         let span = self.start_span();
         self.expect(Kind::LCurly)?;
         let (list, rest) = self.parse_delimited_list_with_rest(
@@ -63,7 +71,9 @@ impl<'a> ParserImpl<'a> {
     }
 
     /// Section 14.3.3 Array Binding Pattern
-    fn parse_array_destructure_binding_pattern(&mut self) -> Result<DestructureBindingPatternKind<'a>> {
+    fn parse_array_destructure_binding_pattern(
+        &mut self,
+    ) -> Result<DestructureBindingPatternKind<'a>> {
         let span = self.start_span();
         self.expect(Kind::LBrack)?;
         let (list, rest) = self.parse_delimited_list_with_rest(
@@ -79,11 +89,12 @@ impl<'a> ParserImpl<'a> {
         ))
     }
 
-    fn parse_array_binding_element(&mut self) -> Result<Option<DestructureBindingPattern<'a>>> {
+    fn parse_array_binding_element(&mut self) -> Result<ArrayPatternElement<'a>> {
         if self.at(Kind::Comma) {
-            Ok(None)
+            Ok(self.ast.array_pattern_element(self.cur_token().span(), None))
         } else {
-            self.parse_destructure_binding_pattern_with_initializer().map(Some)
+            self.parse_destructure_binding_pattern_with_initializer()
+                .map(|p| self.ast.array_pattern_element(p.span(), Some(p)))
         }
     }
 
@@ -142,8 +153,9 @@ impl<'a> ParserImpl<'a> {
             //       ^ BindingIdentifier
             if let PropertyKey::StaticIdentifier(ident) = &key {
                 shorthand = true;
-                let identifier =
-                    self.ast.destructure_binding_pattern_kind_binding_identifier(ident.span, ident.name);
+                let identifier = self
+                    .ast
+                    .destructure_binding_pattern_kind_binding_identifier(ident.span, ident.name);
                 let left = self.ast.destructure_binding_pattern(identifier, NONE, false);
                 self.context(Context::In, Context::empty(), |p| p.parse_initializer(span, left))?
             } else {
@@ -169,7 +181,11 @@ impl<'a> ParserImpl<'a> {
         if self.eat(Kind::Eq) {
             let expr = self.parse_assignment_expression_or_higher()?;
             Ok(self.ast.destructure_binding_pattern(
-                self.ast.destructure_binding_pattern_kind_assignment_pattern(self.end_span(span), left, expr),
+                self.ast.destructure_binding_pattern_kind_assignment_pattern(
+                    self.end_span(span),
+                    left,
+                    expr,
+                ),
                 NONE,
                 false,
             ))
@@ -178,7 +194,10 @@ impl<'a> ParserImpl<'a> {
         }
     }
 
-    pub(super) fn extend_destructure_binding_pattern_span_end(span: Span, kind: &mut DestructureBindingPatternKind<'a>) {
+    pub(super) fn extend_destructure_binding_pattern_span_end(
+        span: Span,
+        kind: &mut DestructureBindingPatternKind<'a>,
+    ) {
         let pat_span = match kind {
             DestructureBindingPatternKind::BindingIdentifier(pat) => &mut pat.span,
             DestructureBindingPatternKind::ObjectPattern(pat) => &mut pat.span,

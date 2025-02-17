@@ -1979,6 +1979,17 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayPattern<'_> {
     }
 }
 
+impl<'new_alloc> CloneIn<'new_alloc> for ArrayPatternElement<'_> {
+    type Cloned = ArrayPatternElement<'new_alloc>;
+    fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
+        ArrayPatternElement {
+            node_id: CloneIn::clone_in(&self.node_id, allocator),
+            span: CloneIn::clone_in(&self.span, allocator),
+            element: CloneIn::clone_in(&self.element, allocator),
+        }
+    }
+}
+
 impl<'new_alloc> CloneIn<'new_alloc> for BindingRestElement<'_> {
     type Cloned = BindingRestElement<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {

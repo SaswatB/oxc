@@ -2360,10 +2360,8 @@ impl<'a> GetChildren<'a> for BindingProperty<'a> {
 impl<'a> GetChildren<'a> for ArrayPattern<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        for opt_item in &self.elements {
-            if let Some(item) = opt_item {
-                children.push(AstKind::DestructureBindingPattern(item));
-            }
+        for item in &self.elements {
+            children.push(AstKind::ArrayPatternElement(item));
         }
         if let Some(field) = &self.rest {
             children.push(AstKind::BindingRestElement(field));
@@ -2372,6 +2370,22 @@ impl<'a> GetChildren<'a> for ArrayPattern<'a> {
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
         AstKind::ArrayPattern(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
+}
+
+impl<'a> GetChildren<'a> for ArrayPatternElement<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        if let Some(field) = &self.element {
+            children.push(AstKind::DestructureBindingPattern(field));
+        }
+        children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ArrayPatternElement(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id

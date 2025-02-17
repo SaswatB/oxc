@@ -968,6 +968,13 @@ impl GetSpanMut for ArrayPattern<'_> {
     }
 }
 
+impl GetSpanMut for ArrayPatternElement<'_> {
+    #[inline]
+    fn span_mut(&mut self) -> &mut Span {
+        &mut self.span
+    }
+}
+
 impl GetSpanMut for BindingRestElement<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {

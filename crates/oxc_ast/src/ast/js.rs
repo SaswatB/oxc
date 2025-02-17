@@ -1708,9 +1708,20 @@ pub struct ArrayPattern<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub elements: Vec<'a, Option<DestructureBindingPattern<'a>>>,
+    pub elements: Vec<'a, ArrayPatternElement<'a>>,
     #[estree(append_to = "elements")]
     pub rest: Option<Box<'a, BindingRestElement<'a>>>,
+}
+
+#[ast(visit)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct ArrayPatternElement<'a> {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
+    pub span: Span,
+    pub element: Option<DestructureBindingPattern<'a>>,
 }
 
 /// A `...rest` binding in an [array](ArrayPattern) or [object](ObjectPattern) destructure.

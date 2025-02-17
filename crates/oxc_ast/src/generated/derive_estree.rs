@@ -1417,6 +1417,17 @@ impl Serialize for ArrayPattern<'_> {
     }
 }
 
+impl Serialize for ArrayPatternElement<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("type", "ArrayPatternElement")?;
+        map.serialize_entry("nodeId", &self.node_id)?;
+        self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
+        map.serialize_entry("element", &self.element)?;
+        map.end()
+    }
+}
+
 impl Serialize for BindingRestElement<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;

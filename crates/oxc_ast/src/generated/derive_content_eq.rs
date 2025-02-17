@@ -1152,6 +1152,13 @@ impl ContentEq for ArrayPattern<'_> {
     }
 }
 
+impl ContentEq for ArrayPatternElement<'_> {
+    fn content_eq(&self, other: &Self) -> bool {
+        ContentEq::content_eq(&self.node_id, &other.node_id)
+            && ContentEq::content_eq(&self.element, &other.element)
+    }
+}
+
 impl ContentEq for BindingRestElement<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)

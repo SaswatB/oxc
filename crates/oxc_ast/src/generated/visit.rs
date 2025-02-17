@@ -392,6 +392,16 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
+    fn visit_array_pattern_elements(&mut self, it: &Vec<'a, ArrayPatternElement<'a>>) {
+        walk_array_pattern_elements(self, it);
+    }
+
+    #[inline]
+    fn visit_array_pattern_element(&mut self, it: &ArrayPatternElement<'a>) {
+        walk_array_pattern_element(self, it);
+    }
+
+    #[inline]
     fn visit_assignment_pattern(&mut self, it: &AssignmentPattern<'a>) {
         walk_assignment_pattern(self, it);
     }
@@ -2123,11 +2133,33 @@ pub mod walk {
         let kind = AstKind::ArrayPattern(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
-        for elements in it.elements.iter().flatten() {
-            visitor.visit_destructure_binding_pattern(elements);
-        }
+        visitor.visit_array_pattern_elements(&it.elements);
         if let Some(rest) = &it.rest {
             visitor.visit_binding_rest_element(rest);
+        }
+        visitor.leave_node(kind);
+    }
+
+    #[inline]
+    pub fn walk_array_pattern_elements<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &Vec<'a, ArrayPatternElement<'a>>,
+    ) {
+        for el in it {
+            visitor.visit_array_pattern_element(el);
+        }
+    }
+
+    #[inline]
+    pub fn walk_array_pattern_element<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &ArrayPatternElement<'a>,
+    ) {
+        let kind = AstKind::ArrayPatternElement(visitor.alloc(it));
+        visitor.enter_node(kind);
+        visitor.visit_span(&it.span);
+        if let Some(element) = &it.element {
+            visitor.visit_destructure_binding_pattern(element);
         }
         visitor.leave_node(kind);
     }

@@ -985,7 +985,7 @@ impl<'a> DestructureBindingPatternKind<'a> {
             Self::ArrayPattern(pattern) => pattern
                 .elements
                 .iter()
-                .filter_map(|item| item.as_ref())
+                .filter_map(|item| item.element.as_ref())
                 .for_each(|item| item.kind.append_binding_identifiers(idents)),
             Self::ObjectPattern(pattern) => pattern.properties.iter().for_each(|item| {
                 item.value.kind.append_binding_identifiers(idents);
