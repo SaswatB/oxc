@@ -26,8 +26,8 @@ impl eframe::App for OxcParserApp {
                 |ui| {
                     // Left side - Input with scrolling
                     let available_width = ui.available_width();
-                    let left_width = available_width * 0.485;
-                    let right_width = available_width * 0.485;
+                    let left_width = available_width * 0.35;
+                    let right_width = available_width * 0.64;
 
                     let input_response = ui.group(|ui| {
                         ui.set_width(left_width);
@@ -58,7 +58,7 @@ impl eframe::App for OxcParserApp {
 
                     // Update output whenever input changes
                     if input_response.inner.inner.changed() {
-                        let source_type = SourceType::default();
+                        let source_type = SourceType::ts();
                         let ret = Parser::new(&self.allocator, &self.input, source_type)
                             .with_options(ParseOptions {
                                 parse_regular_expression: true,
