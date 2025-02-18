@@ -113,48 +113,48 @@ impl<'a> GetChildren<'a> for Expression<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -331,50 +331,50 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::SpreadElement(_) => vec![],
-            Self::OmittedExpression(child) => vec![AstKind::OmittedExpression(child)],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::SpreadElement(n) => n.get_children(),
+            Self::OmittedExpression(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -507,8 +507,8 @@ impl<'a> GetChildren<'a> for ObjectPropertyKind<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ObjectProperty(_) => vec![],
-            Self::SpreadProperty(_) => vec![],
+            Self::ObjectProperty(n) => n.get_children(),
+            Self::SpreadProperty(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -544,50 +544,50 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::StaticIdentifier(_) => vec![],
-            Self::PrivateIdentifier(_) => vec![],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::StaticIdentifier(n) => n.get_children(),
+            Self::PrivateIdentifier(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -741,9 +741,9 @@ impl<'a> GetChildren<'a> for MemberExpression<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -880,49 +880,49 @@ impl<'a> GetChildren<'a> for Argument<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::SpreadElement(_) => vec![],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::SpreadElement(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1129,17 +1129,17 @@ impl<'a> GetChildren<'a> for AssignmentTarget<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::AssignmentTargetIdentifier(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
-            Self::ArrayAssignmentTarget(_) => vec![],
-            Self::ObjectAssignmentTarget(_) => vec![],
+            Self::AssignmentTargetIdentifier(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
+            Self::ArrayAssignmentTarget(n) => n.get_children(),
+            Self::ObjectAssignmentTarget(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1178,15 +1178,15 @@ impl<'a> GetChildren<'a> for SimpleAssignmentTarget<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::AssignmentTargetIdentifier(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::AssignmentTargetIdentifier(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1221,8 +1221,8 @@ impl<'a> GetChildren<'a> for AssignmentTargetPattern<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ArrayAssignmentTarget(_) => vec![],
-            Self::ObjectAssignmentTarget(_) => vec![],
+            Self::ArrayAssignmentTarget(n) => n.get_children(),
+            Self::ObjectAssignmentTarget(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1297,18 +1297,18 @@ impl<'a> GetChildren<'a> for AssignmentTargetMaybeDefault<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::AssignmentTargetWithDefault(_) => vec![],
-            Self::AssignmentTargetIdentifier(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
-            Self::ArrayAssignmentTarget(_) => vec![],
-            Self::ObjectAssignmentTarget(_) => vec![],
+            Self::AssignmentTargetWithDefault(n) => n.get_children(),
+            Self::AssignmentTargetIdentifier(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
+            Self::ArrayAssignmentTarget(n) => n.get_children(),
+            Self::ObjectAssignmentTarget(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1364,8 +1364,8 @@ impl<'a> GetChildren<'a> for AssignmentTargetProperty<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::AssignmentTargetPropertyIdentifier(_) => vec![],
-            Self::AssignmentTargetPropertyProperty(_) => vec![],
+            Self::AssignmentTargetPropertyIdentifier(n) => n.get_children(),
+            Self::AssignmentTargetPropertyProperty(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1478,11 +1478,11 @@ impl<'a> GetChildren<'a> for ChainElement<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::CallExpression(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::CallExpression(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1523,38 +1523,38 @@ impl<'a> GetChildren<'a> for Statement<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::BlockStatement(_) => vec![],
-            Self::BreakStatement(_) => vec![],
-            Self::ContinueStatement(_) => vec![],
-            Self::DebuggerStatement(_) => vec![],
-            Self::DoWhileStatement(_) => vec![],
-            Self::EmptyStatement(_) => vec![],
-            Self::ExpressionStatement(_) => vec![],
-            Self::ForInStatement(_) => vec![],
-            Self::ForOfStatement(_) => vec![],
-            Self::ForStatement(_) => vec![],
-            Self::IfStatement(_) => vec![],
-            Self::LabeledStatement(_) => vec![],
-            Self::ReturnStatement(_) => vec![],
-            Self::SwitchStatement(_) => vec![],
-            Self::ThrowStatement(_) => vec![],
-            Self::TryStatement(_) => vec![],
-            Self::WhileStatement(_) => vec![],
-            Self::WithStatement(_) => vec![],
-            Self::VariableDeclarationList(_) => vec![],
-            Self::FunctionDeclaration(_) => vec![],
-            Self::ClassDeclaration(_) => vec![],
-            Self::TSTypeAliasDeclaration(_) => vec![],
-            Self::TSInterfaceDeclaration(_) => vec![],
-            Self::TSEnumDeclaration(_) => vec![],
-            Self::TSModuleDeclaration(_) => vec![],
-            Self::TSImportEqualsDeclaration(_) => vec![],
-            Self::ImportDeclaration(_) => vec![],
-            Self::ExportAllDeclaration(_) => vec![],
-            Self::ExportDefaultDeclaration(_) => vec![],
-            Self::ExportNamedDeclaration(_) => vec![],
-            Self::TSExportAssignment(_) => vec![],
-            Self::TSNamespaceExportDeclaration(_) => vec![],
+            Self::BlockStatement(n) => n.get_children(),
+            Self::BreakStatement(n) => n.get_children(),
+            Self::ContinueStatement(n) => n.get_children(),
+            Self::DebuggerStatement(n) => n.get_children(),
+            Self::DoWhileStatement(n) => n.get_children(),
+            Self::EmptyStatement(n) => n.get_children(),
+            Self::ExpressionStatement(n) => n.get_children(),
+            Self::ForInStatement(n) => n.get_children(),
+            Self::ForOfStatement(n) => n.get_children(),
+            Self::ForStatement(n) => n.get_children(),
+            Self::IfStatement(n) => n.get_children(),
+            Self::LabeledStatement(n) => n.get_children(),
+            Self::ReturnStatement(n) => n.get_children(),
+            Self::SwitchStatement(n) => n.get_children(),
+            Self::ThrowStatement(n) => n.get_children(),
+            Self::TryStatement(n) => n.get_children(),
+            Self::WhileStatement(n) => n.get_children(),
+            Self::WithStatement(n) => n.get_children(),
+            Self::VariableDeclarationList(n) => n.get_children(),
+            Self::FunctionDeclaration(n) => n.get_children(),
+            Self::ClassDeclaration(n) => n.get_children(),
+            Self::TSTypeAliasDeclaration(n) => n.get_children(),
+            Self::TSInterfaceDeclaration(n) => n.get_children(),
+            Self::TSEnumDeclaration(n) => n.get_children(),
+            Self::TSModuleDeclaration(n) => n.get_children(),
+            Self::TSImportEqualsDeclaration(n) => n.get_children(),
+            Self::ImportDeclaration(n) => n.get_children(),
+            Self::ExportAllDeclaration(n) => n.get_children(),
+            Self::ExportDefaultDeclaration(n) => n.get_children(),
+            Self::ExportNamedDeclaration(n) => n.get_children(),
+            Self::TSExportAssignment(n) => n.get_children(),
+            Self::TSNamespaceExportDeclaration(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1677,14 +1677,14 @@ impl<'a> GetChildren<'a> for Declaration<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclarationList(_) => vec![],
-            Self::FunctionDeclaration(_) => vec![],
-            Self::ClassDeclaration(_) => vec![],
-            Self::TSTypeAliasDeclaration(_) => vec![],
-            Self::TSInterfaceDeclaration(_) => vec![],
-            Self::TSEnumDeclaration(_) => vec![],
-            Self::TSModuleDeclaration(_) => vec![],
-            Self::TSImportEqualsDeclaration(_) => vec![],
+            Self::VariableDeclarationList(n) => n.get_children(),
+            Self::FunctionDeclaration(n) => n.get_children(),
+            Self::ClassDeclaration(n) => n.get_children(),
+            Self::TSTypeAliasDeclaration(n) => n.get_children(),
+            Self::TSInterfaceDeclaration(n) => n.get_children(),
+            Self::TSEnumDeclaration(n) => n.get_children(),
+            Self::TSModuleDeclaration(n) => n.get_children(),
+            Self::TSImportEqualsDeclaration(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -1847,49 +1847,49 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclarationList(_) => vec![],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::VariableDeclarationList(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2008,18 +2008,18 @@ impl<'a> GetChildren<'a> for ForStatementLeft<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::VariableDeclarationList(_) => vec![],
-            Self::AssignmentTargetIdentifier(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
-            Self::ArrayAssignmentTarget(_) => vec![],
-            Self::ObjectAssignmentTarget(_) => vec![],
+            Self::VariableDeclarationList(n) => n.get_children(),
+            Self::AssignmentTargetIdentifier(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
+            Self::ArrayAssignmentTarget(n) => n.get_children(),
+            Self::ObjectAssignmentTarget(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2284,10 +2284,10 @@ impl<'a> GetChildren<'a> for DestructureBindingPatternKind<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::BindingIdentifier(_) => vec![],
-            Self::ObjectPattern(_) => vec![],
-            Self::ArrayPattern(_) => vec![],
-            Self::AssignmentPattern(_) => vec![],
+            Self::BindingIdentifier(n) => n.get_children(),
+            Self::ObjectPattern(n) => n.get_children(),
+            Self::ArrayPattern(n) => n.get_children(),
+            Self::AssignmentPattern(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2581,11 +2581,11 @@ impl<'a> GetChildren<'a> for ClassElement<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::StaticBlock(_) => vec![],
-            Self::MethodDefinition(_) => vec![],
-            Self::PropertyDefinition(_) => vec![],
-            Self::AccessorProperty(_) => vec![],
-            Self::TSIndexSignature(_) => vec![],
+            Self::StaticBlock(n) => n.get_children(),
+            Self::MethodDefinition(n) => n.get_children(),
+            Self::PropertyDefinition(n) => n.get_children(),
+            Self::AccessorProperty(n) => n.get_children(),
+            Self::TSIndexSignature(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2681,12 +2681,12 @@ impl<'a> GetChildren<'a> for ModuleDeclaration<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ImportDeclaration(_) => vec![],
-            Self::ExportAllDeclaration(_) => vec![],
-            Self::ExportDefaultDeclaration(_) => vec![],
-            Self::ExportNamedDeclaration(_) => vec![],
-            Self::TSExportAssignment(_) => vec![],
-            Self::TSNamespaceExportDeclaration(_) => vec![],
+            Self::ImportDeclaration(n) => n.get_children(),
+            Self::ExportAllDeclaration(n) => n.get_children(),
+            Self::ExportDefaultDeclaration(n) => n.get_children(),
+            Self::ExportNamedDeclaration(n) => n.get_children(),
+            Self::TSExportAssignment(n) => n.get_children(),
+            Self::TSNamespaceExportDeclaration(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2777,9 +2777,9 @@ impl<'a> GetChildren<'a> for ImportDeclarationSpecifier<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ImportSpecifier(_) => vec![],
-            Self::ImportDefaultSpecifier(_) => vec![],
-            Self::ImportNamespaceSpecifier(_) => vec![],
+            Self::ImportSpecifier(n) => n.get_children(),
+            Self::ImportDefaultSpecifier(n) => n.get_children(),
+            Self::ImportNamespaceSpecifier(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2877,8 +2877,8 @@ impl<'a> GetChildren<'a> for ImportAttributeKey<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(child) => vec![AstKind::IdentifierName(child)],
-            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+            Self::Identifier(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -2974,51 +2974,51 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::FunctionDeclaration(_) => vec![],
-            Self::ClassDeclaration(_) => vec![],
-            Self::TSInterfaceDeclaration(_) => vec![],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::FunctionDeclaration(n) => n.get_children(),
+            Self::ClassDeclaration(n) => n.get_children(),
+            Self::TSInterfaceDeclaration(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3125,9 +3125,9 @@ impl<'a> GetChildren<'a> for ModuleExportName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::IdentifierName(child) => vec![AstKind::IdentifierName(child)],
-            Self::IdentifierReference(child) => vec![AstKind::IdentifierReference(child)],
-            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+            Self::IdentifierName(n) => n.get_children(),
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3200,8 +3200,8 @@ impl<'a> GetChildren<'a> for TSEnumMemberName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(_) => vec![],
-            Self::String(_) => vec![],
+            Self::Identifier(n) => n.get_children(),
+            Self::String(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3250,14 +3250,14 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3290,44 +3290,44 @@ impl<'a> GetChildren<'a> for TSType<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::TSAnyKeyword(_) => vec![],
-            Self::TSBigIntKeyword(_) => vec![],
-            Self::TSBooleanKeyword(_) => vec![],
-            Self::TSIntrinsicKeyword(_) => vec![],
-            Self::TSNeverKeyword(_) => vec![],
-            Self::TSNullKeyword(_) => vec![],
-            Self::TSNumberKeyword(_) => vec![],
-            Self::TSObjectKeyword(_) => vec![],
-            Self::TSStringKeyword(_) => vec![],
-            Self::TSSymbolKeyword(_) => vec![],
-            Self::TSUndefinedKeyword(_) => vec![],
-            Self::TSUnknownKeyword(_) => vec![],
-            Self::TSVoidKeyword(_) => vec![],
-            Self::TSArrayType(_) => vec![],
-            Self::TSConditionalType(_) => vec![],
-            Self::TSConstructorType(_) => vec![],
-            Self::TSFunctionType(_) => vec![],
-            Self::TSImportType(_) => vec![],
-            Self::TSIndexedAccessType(_) => vec![],
-            Self::TSInferType(_) => vec![],
-            Self::TSIntersectionType(_) => vec![],
-            Self::TSLiteralType(_) => vec![],
-            Self::TSMappedType(_) => vec![],
-            Self::TSNamedTupleMember(_) => vec![],
-            Self::TSQualifiedName(_) => vec![],
-            Self::TSTemplateLiteralType(_) => vec![],
-            Self::TSThisType(_) => vec![],
-            Self::TSTupleType(_) => vec![],
-            Self::TSTypeLiteral(_) => vec![],
-            Self::TSTypeOperatorType(_) => vec![],
-            Self::TSTypePredicate(_) => vec![],
-            Self::TSTypeQuery(_) => vec![],
-            Self::TSTypeReference(_) => vec![],
-            Self::TSUnionType(_) => vec![],
-            Self::TSParenthesizedType(_) => vec![],
-            Self::JSDocNullableType(_) => vec![],
-            Self::JSDocNonNullableType(_) => vec![],
-            Self::JSDocUnknownType(_) => vec![],
+            Self::TSAnyKeyword(n) => n.get_children(),
+            Self::TSBigIntKeyword(n) => n.get_children(),
+            Self::TSBooleanKeyword(n) => n.get_children(),
+            Self::TSIntrinsicKeyword(n) => n.get_children(),
+            Self::TSNeverKeyword(n) => n.get_children(),
+            Self::TSNullKeyword(n) => n.get_children(),
+            Self::TSNumberKeyword(n) => n.get_children(),
+            Self::TSObjectKeyword(n) => n.get_children(),
+            Self::TSStringKeyword(n) => n.get_children(),
+            Self::TSSymbolKeyword(n) => n.get_children(),
+            Self::TSUndefinedKeyword(n) => n.get_children(),
+            Self::TSUnknownKeyword(n) => n.get_children(),
+            Self::TSVoidKeyword(n) => n.get_children(),
+            Self::TSArrayType(n) => n.get_children(),
+            Self::TSConditionalType(n) => n.get_children(),
+            Self::TSConstructorType(n) => n.get_children(),
+            Self::TSFunctionType(n) => n.get_children(),
+            Self::TSImportType(n) => n.get_children(),
+            Self::TSIndexedAccessType(n) => n.get_children(),
+            Self::TSInferType(n) => n.get_children(),
+            Self::TSIntersectionType(n) => n.get_children(),
+            Self::TSLiteralType(n) => n.get_children(),
+            Self::TSMappedType(n) => n.get_children(),
+            Self::TSNamedTupleMember(n) => n.get_children(),
+            Self::TSQualifiedName(n) => n.get_children(),
+            Self::TSTemplateLiteralType(n) => n.get_children(),
+            Self::TSThisType(n) => n.get_children(),
+            Self::TSTupleType(n) => n.get_children(),
+            Self::TSTypeLiteral(n) => n.get_children(),
+            Self::TSTypeOperatorType(n) => n.get_children(),
+            Self::TSTypePredicate(n) => n.get_children(),
+            Self::TSTypeQuery(n) => n.get_children(),
+            Self::TSTypeReference(n) => n.get_children(),
+            Self::TSUnionType(n) => n.get_children(),
+            Self::TSParenthesizedType(n) => n.get_children(),
+            Self::JSDocNullableType(n) => n.get_children(),
+            Self::JSDocNonNullableType(n) => n.get_children(),
+            Self::JSDocUnknownType(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3585,46 +3585,46 @@ impl<'a> GetChildren<'a> for TSTupleElement<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::TSOptionalType(_) => vec![],
-            Self::TSRestType(_) => vec![],
-            Self::TSAnyKeyword(_) => vec![],
-            Self::TSBigIntKeyword(_) => vec![],
-            Self::TSBooleanKeyword(_) => vec![],
-            Self::TSIntrinsicKeyword(_) => vec![],
-            Self::TSNeverKeyword(_) => vec![],
-            Self::TSNullKeyword(_) => vec![],
-            Self::TSNumberKeyword(_) => vec![],
-            Self::TSObjectKeyword(_) => vec![],
-            Self::TSStringKeyword(_) => vec![],
-            Self::TSSymbolKeyword(_) => vec![],
-            Self::TSUndefinedKeyword(_) => vec![],
-            Self::TSUnknownKeyword(_) => vec![],
-            Self::TSVoidKeyword(_) => vec![],
-            Self::TSArrayType(_) => vec![],
-            Self::TSConditionalType(_) => vec![],
-            Self::TSConstructorType(_) => vec![],
-            Self::TSFunctionType(_) => vec![],
-            Self::TSImportType(_) => vec![],
-            Self::TSIndexedAccessType(_) => vec![],
-            Self::TSInferType(_) => vec![],
-            Self::TSIntersectionType(_) => vec![],
-            Self::TSLiteralType(_) => vec![],
-            Self::TSMappedType(_) => vec![],
-            Self::TSNamedTupleMember(_) => vec![],
-            Self::TSQualifiedName(_) => vec![],
-            Self::TSTemplateLiteralType(_) => vec![],
-            Self::TSThisType(_) => vec![],
-            Self::TSTupleType(_) => vec![],
-            Self::TSTypeLiteral(_) => vec![],
-            Self::TSTypeOperatorType(_) => vec![],
-            Self::TSTypePredicate(_) => vec![],
-            Self::TSTypeQuery(_) => vec![],
-            Self::TSTypeReference(_) => vec![],
-            Self::TSUnionType(_) => vec![],
-            Self::TSParenthesizedType(_) => vec![],
-            Self::JSDocNullableType(_) => vec![],
-            Self::JSDocNonNullableType(_) => vec![],
-            Self::JSDocUnknownType(_) => vec![],
+            Self::TSOptionalType(n) => n.get_children(),
+            Self::TSRestType(n) => n.get_children(),
+            Self::TSAnyKeyword(n) => n.get_children(),
+            Self::TSBigIntKeyword(n) => n.get_children(),
+            Self::TSBooleanKeyword(n) => n.get_children(),
+            Self::TSIntrinsicKeyword(n) => n.get_children(),
+            Self::TSNeverKeyword(n) => n.get_children(),
+            Self::TSNullKeyword(n) => n.get_children(),
+            Self::TSNumberKeyword(n) => n.get_children(),
+            Self::TSObjectKeyword(n) => n.get_children(),
+            Self::TSStringKeyword(n) => n.get_children(),
+            Self::TSSymbolKeyword(n) => n.get_children(),
+            Self::TSUndefinedKeyword(n) => n.get_children(),
+            Self::TSUnknownKeyword(n) => n.get_children(),
+            Self::TSVoidKeyword(n) => n.get_children(),
+            Self::TSArrayType(n) => n.get_children(),
+            Self::TSConditionalType(n) => n.get_children(),
+            Self::TSConstructorType(n) => n.get_children(),
+            Self::TSFunctionType(n) => n.get_children(),
+            Self::TSImportType(n) => n.get_children(),
+            Self::TSIndexedAccessType(n) => n.get_children(),
+            Self::TSInferType(n) => n.get_children(),
+            Self::TSIntersectionType(n) => n.get_children(),
+            Self::TSLiteralType(n) => n.get_children(),
+            Self::TSMappedType(n) => n.get_children(),
+            Self::TSNamedTupleMember(n) => n.get_children(),
+            Self::TSQualifiedName(n) => n.get_children(),
+            Self::TSTemplateLiteralType(n) => n.get_children(),
+            Self::TSThisType(n) => n.get_children(),
+            Self::TSTupleType(n) => n.get_children(),
+            Self::TSTypeLiteral(n) => n.get_children(),
+            Self::TSTypeOperatorType(n) => n.get_children(),
+            Self::TSTypePredicate(n) => n.get_children(),
+            Self::TSTypeQuery(n) => n.get_children(),
+            Self::TSTypeReference(n) => n.get_children(),
+            Self::TSUnionType(n) => n.get_children(),
+            Self::TSParenthesizedType(n) => n.get_children(),
+            Self::JSDocNullableType(n) => n.get_children(),
+            Self::JSDocNonNullableType(n) => n.get_children(),
+            Self::JSDocUnknownType(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -3906,8 +3906,8 @@ impl<'a> GetChildren<'a> for TSTypeName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::IdentifierReference(_) => vec![],
-            Self::QualifiedName(_) => vec![],
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::QualifiedName(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4086,11 +4086,11 @@ impl<'a> GetChildren<'a> for TSSignature<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::TSIndexSignature(_) => vec![],
-            Self::TSPropertySignature(_) => vec![],
-            Self::TSCallSignatureDeclaration(_) => vec![],
-            Self::TSConstructSignatureDeclaration(_) => vec![],
-            Self::TSMethodSignature(_) => vec![],
+            Self::TSIndexSignature(n) => n.get_children(),
+            Self::TSPropertySignature(n) => n.get_children(),
+            Self::TSCallSignatureDeclaration(n) => n.get_children(),
+            Self::TSConstructSignatureDeclaration(n) => n.get_children(),
+            Self::TSMethodSignature(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4249,8 +4249,8 @@ impl<'a> GetChildren<'a> for TSTypePredicateName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(_) => vec![],
-            Self::This(child) => vec![AstKind::TSThisType(child)],
+            Self::Identifier(n) => n.get_children(),
+            Self::This(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4288,8 +4288,8 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(child) => vec![AstKind::BindingIdentifier(child)],
-            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+            Self::Identifier(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4310,8 +4310,8 @@ impl<'a> GetChildren<'a> for TSModuleDeclarationBody<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::TSModuleDeclaration(_) => vec![],
-            Self::TSModuleBlock(_) => vec![],
+            Self::TSModuleDeclaration(n) => n.get_children(),
+            Self::TSModuleBlock(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4398,9 +4398,9 @@ impl<'a> GetChildren<'a> for TSTypeQueryExprName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::TSImportType(_) => vec![],
-            Self::IdentifierReference(_) => vec![],
-            Self::QualifiedName(_) => vec![],
+            Self::TSImportType(n) => n.get_children(),
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::QualifiedName(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4478,8 +4478,8 @@ impl<'a> GetChildren<'a> for TSImportAttributeName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(child) => vec![AstKind::IdentifierName(child)],
-            Self::StringLiteral(child) => vec![AstKind::StringLiteral(child)],
+            Self::Identifier(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4638,9 +4638,9 @@ impl<'a> GetChildren<'a> for TSModuleReference<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::ExternalModuleReference(_) => vec![],
-            Self::IdentifierReference(_) => vec![],
-            Self::QualifiedName(_) => vec![],
+            Self::ExternalModuleReference(n) => n.get_children(),
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::QualifiedName(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4884,11 +4884,11 @@ impl<'a> GetChildren<'a> for JSXElementName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(_) => vec![],
-            Self::IdentifierReference(_) => vec![],
-            Self::NamespacedName(_) => vec![],
-            Self::MemberExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
+            Self::Identifier(n) => n.get_children(),
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::NamespacedName(n) => n.get_children(),
+            Self::MemberExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4945,9 +4945,9 @@ impl<'a> GetChildren<'a> for JSXMemberExpressionObject<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::IdentifierReference(_) => vec![],
-            Self::MemberExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
+            Self::IdentifierReference(n) => n.get_children(),
+            Self::MemberExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4984,49 +4984,49 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::EmptyExpression(child) => vec![AstKind::JSXEmptyExpression(child)],
-            Self::BooleanLiteral(_) => vec![],
-            Self::NullLiteral(_) => vec![],
-            Self::NumericLiteral(_) => vec![],
-            Self::BigIntLiteral(_) => vec![],
-            Self::RegExpLiteral(_) => vec![],
-            Self::StringLiteral(_) => vec![],
-            Self::TemplateLiteral(_) => vec![],
-            Self::Identifier(_) => vec![],
-            Self::MetaProperty(_) => vec![],
-            Self::Super(_) => vec![],
-            Self::ArrayExpression(_) => vec![],
-            Self::ArrowFunctionExpression(_) => vec![],
-            Self::AssignmentExpression(_) => vec![],
-            Self::AwaitExpression(_) => vec![],
-            Self::GeneralBinaryExpression(_) => vec![],
-            Self::CallExpression(_) => vec![],
-            Self::ChainExpression(_) => vec![],
-            Self::ClassExpression(_) => vec![],
-            Self::ConditionalExpression(_) => vec![],
-            Self::FunctionExpression(_) => vec![],
-            Self::ImportExpression(_) => vec![],
-            Self::LogicalExpression(_) => vec![],
-            Self::NewExpression(_) => vec![],
-            Self::ObjectExpression(_) => vec![],
-            Self::ParenthesizedExpression(_) => vec![],
-            Self::SequenceExpression(_) => vec![],
-            Self::TaggedTemplateExpression(_) => vec![],
-            Self::ThisExpression(_) => vec![],
-            Self::UnaryExpression(_) => vec![],
-            Self::UpdateExpression(_) => vec![],
-            Self::YieldExpression(_) => vec![],
-            Self::PrivateInExpression(_) => vec![],
-            Self::JSXElement(_) => vec![],
-            Self::JSXFragment(_) => vec![],
-            Self::TSAsExpression(_) => vec![],
-            Self::TSSatisfiesExpression(_) => vec![],
-            Self::TSTypeAssertion(_) => vec![],
-            Self::TSNonNullExpression(_) => vec![],
-            Self::TSInstantiationExpression(_) => vec![],
-            Self::ElementAccessExpression(_) => vec![],
-            Self::PropertyAccessExpression(_) => vec![],
-            Self::PrivateFieldExpression(_) => vec![],
+            Self::EmptyExpression(n) => n.get_children(),
+            Self::BooleanLiteral(n) => n.get_children(),
+            Self::NullLiteral(n) => n.get_children(),
+            Self::NumericLiteral(n) => n.get_children(),
+            Self::BigIntLiteral(n) => n.get_children(),
+            Self::RegExpLiteral(n) => n.get_children(),
+            Self::StringLiteral(n) => n.get_children(),
+            Self::TemplateLiteral(n) => n.get_children(),
+            Self::Identifier(n) => n.get_children(),
+            Self::MetaProperty(n) => n.get_children(),
+            Self::Super(n) => n.get_children(),
+            Self::ArrayExpression(n) => n.get_children(),
+            Self::ArrowFunctionExpression(n) => n.get_children(),
+            Self::AssignmentExpression(n) => n.get_children(),
+            Self::AwaitExpression(n) => n.get_children(),
+            Self::GeneralBinaryExpression(n) => n.get_children(),
+            Self::CallExpression(n) => n.get_children(),
+            Self::ChainExpression(n) => n.get_children(),
+            Self::ClassExpression(n) => n.get_children(),
+            Self::ConditionalExpression(n) => n.get_children(),
+            Self::FunctionExpression(n) => n.get_children(),
+            Self::ImportExpression(n) => n.get_children(),
+            Self::LogicalExpression(n) => n.get_children(),
+            Self::NewExpression(n) => n.get_children(),
+            Self::ObjectExpression(n) => n.get_children(),
+            Self::ParenthesizedExpression(n) => n.get_children(),
+            Self::SequenceExpression(n) => n.get_children(),
+            Self::TaggedTemplateExpression(n) => n.get_children(),
+            Self::ThisExpression(n) => n.get_children(),
+            Self::UnaryExpression(n) => n.get_children(),
+            Self::UpdateExpression(n) => n.get_children(),
+            Self::YieldExpression(n) => n.get_children(),
+            Self::PrivateInExpression(n) => n.get_children(),
+            Self::JSXElement(n) => n.get_children(),
+            Self::JSXFragment(n) => n.get_children(),
+            Self::TSAsExpression(n) => n.get_children(),
+            Self::TSSatisfiesExpression(n) => n.get_children(),
+            Self::TSTypeAssertion(n) => n.get_children(),
+            Self::TSNonNullExpression(n) => n.get_children(),
+            Self::TSInstantiationExpression(n) => n.get_children(),
+            Self::ElementAccessExpression(n) => n.get_children(),
+            Self::PropertyAccessExpression(n) => n.get_children(),
+            Self::PrivateFieldExpression(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -5141,8 +5141,8 @@ impl<'a> GetChildren<'a> for JSXAttributeItem<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Attribute(_) => vec![],
-            Self::SpreadAttribute(_) => vec![],
+            Self::Attribute(n) => n.get_children(),
+            Self::SpreadAttribute(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -5194,8 +5194,8 @@ impl<'a> GetChildren<'a> for JSXAttributeName<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Identifier(_) => vec![],
-            Self::NamespacedName(_) => vec![],
+            Self::Identifier(n) => n.get_children(),
+            Self::NamespacedName(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -5216,10 +5216,10 @@ impl<'a> GetChildren<'a> for JSXAttributeValue<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::StringLiteral(_) => vec![],
-            Self::ExpressionContainer(_) => vec![],
-            Self::Element(_) => vec![],
-            Self::Fragment(_) => vec![],
+            Self::StringLiteral(n) => n.get_children(),
+            Self::ExpressionContainer(n) => n.get_children(),
+            Self::Element(n) => n.get_children(),
+            Self::Fragment(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -5256,11 +5256,11 @@ impl<'a> GetChildren<'a> for JSXChild<'a> {
     #[allow(unused_variables, clippy::match_same_arms)]
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         match self {
-            Self::Text(_) => vec![],
-            Self::Element(_) => vec![],
-            Self::Fragment(_) => vec![],
-            Self::ExpressionContainer(_) => vec![],
-            Self::Spread(_) => vec![],
+            Self::Text(n) => n.get_children(),
+            Self::Element(n) => n.get_children(),
+            Self::Fragment(n) => n.get_children(),
+            Self::ExpressionContainer(n) => n.get_children(),
+            Self::Spread(n) => n.get_children(),
         }
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {

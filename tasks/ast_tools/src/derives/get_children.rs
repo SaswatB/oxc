@@ -11,61 +11,6 @@ use super::{define_derive, Derive};
 
 pub const BLACK_LIST: [&str; 1] = ["Span"];
 
-#[allow(dead_code)]
-fn handle_special_case(field_name: &str, field_expr: TokenStream) -> Option<TokenStream> {
-    match field_name {
-        "Expression" => Some(quote! { AstKind::from_expression(#field_expr) }),
-        "Statement" => Some(quote! { AstKind::from_statement(#field_expr) }),
-        "Declaration" => Some(quote! { AstKind::from_declaration(#field_expr) }),
-        "ModuleDeclaration" => Some(quote! { AstKind::from_module_declaration(#field_expr) }),
-        "DestructureBindingPatternKind" => {
-            Some(quote! { AstKind::from_destructure_binding_pattern_kind(#field_expr) })
-        }
-        "ChainElement" => Some(quote! { AstKind::from_chain_element(#field_expr) }),
-        "ModuleExportName" => Some(quote! { AstKind::from_module_export_name(#field_expr) }),
-        "AssignmentTargetMaybeDefault" => {
-            Some(quote! { AstKind::from_assignment_target_maybe_default(#field_expr) })
-        }
-        "AssignmentTargetProperty" => {
-            Some(quote! { AstKind::from_assignment_target_property(#field_expr) })
-        }
-        "ForStatementLeft" => Some(quote! { AstKind::from_for_statement_left(#field_expr) }),
-        "ImportAttributeKey" => Some(quote! { AstKind::from_import_attribute_key(#field_expr) }),
-        "ExportDefaultDeclarationKind" => {
-            Some(quote! { AstKind::from_export_default_declaration_kind(#field_expr) })
-        }
-        "ImportDeclarationSpecifier" => {
-            Some(quote! { AstKind::from_import_declaration_specifier(#field_expr) })
-        }
-        "ObjectPropertyKind" => Some(quote! { AstKind::from_object_property_kind(#field_expr) }),
-        "ClassElement" => Some(quote! { AstKind::from_class_element(#field_expr) }),
-        "JSXAttributeName" => Some(quote! { AstKind::from_jsx_attribute_name(#field_expr) }),
-        "JSXAttributeValue" => Some(quote! { AstKind::from_jsx_attribute_value(#field_expr) }),
-        "JSXExpression" => Some(quote! { AstKind::from_jsx_expression(#field_expr) }),
-        "JSXChild" => Some(quote! { AstKind::from_jsx_child(#field_expr) }),
-        "JSXAttributeItem" => Some(quote! { AstKind::from_jsx_attribute_item(#field_expr) }),
-        "TSType" => Some(quote! { AstKind::from_ts_type(#field_expr) }),
-        "TSImportAttributeName" => {
-            Some(quote! { AstKind::from_ts_import_attribute_name(#field_expr) })
-        }
-        "TSTypeQueryExprName" => {
-            Some(quote! { AstKind::from_ts_type_query_expr_name(#field_expr) })
-        }
-        "TSModuleDeclarationName" => {
-            Some(quote! { AstKind::from_ts_module_declaration_name(#field_expr) })
-        }
-        "TSTypePredicateName" => Some(quote! { AstKind::from_ts_type_predicate_name(#field_expr) }),
-        "TSTupleElement" => Some(quote! { AstKind::from_ts_tuple_element(#field_expr) }),
-        "TSLiteral" => Some(quote! { AstKind::from_ts_literal(#field_expr) }),
-        "TSEnumMemberName" => Some(quote! { AstKind::from_ts_enum_member_name(#field_expr) }),
-        "TSSignature" => Some(quote! { AstKind::from_ts_signature(#field_expr) }),
-        "TSModuleDeclarationBody" => {
-            Some(quote! { AstKind::from_ts_module_declaration_body(#field_expr) })
-        }
-        _ => None,
-    }
-}
-
 pub struct DeriveGetChildren;
 
 define_derive!(DeriveGetChildren);
@@ -176,7 +121,7 @@ fn generate_wrapper_conversion(
     }
 }
 
-fn generate_enum_get_children_fn(def: &EnumDef, schema: &Schema) -> TokenStream {
+fn generate_enum_get_children_fn(def: &EnumDef, _schema: &Schema) -> TokenStream {
     let target_type = if def.has_lifetime() {
         def.to_type_with_explicit_generics(parse_quote! {<'a>})
     } else {
@@ -185,28 +130,8 @@ fn generate_enum_get_children_fn(def: &EnumDef, schema: &Schema) -> TokenStream 
 
     let matches = def.all_variants().map(|variant| {
         let var_ident = variant.ident();
-        let field = variant.fields.first().expect("enum variant should have exactly one field");
-        let field_type = &field.typ;
-
-        if let Some(type_id) = field_type.type_id() {
-            if let Some(field_def) = schema.get(type_id) {
-                if field_def.is_visitable() {
-                    let field_name = field_def.name();
-                    if !BLACK_LIST.iter().any(|&x| x == field_name) {
-                        let conversion = generate_ast_kind_conversion(
-                            &field_name,
-                            quote!(child),
-                            Some(field_def),
-                        );
-                        return quote! {
-                            Self::#var_ident(child) => vec![#conversion],
-                        };
-                    }
-                }
-            }
-        }
         quote! {
-            Self::#var_ident(_) => vec![],
+            Self::#var_ident(n) => n.get_children(),
         }
     });
 
