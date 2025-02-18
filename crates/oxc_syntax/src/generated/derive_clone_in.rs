@@ -58,32 +58,32 @@ impl<'alloc> CloneIn<'alloc> for AssignmentOperator {
     }
 }
 
-impl<'alloc> CloneIn<'alloc> for BinaryOperator {
-    type Cloned = BinaryOperator;
+impl<'alloc> CloneIn<'alloc> for GeneralBinaryOperator {
+    type Cloned = GeneralBinaryOperator;
     fn clone_in(&self, _: &'alloc Allocator) -> Self::Cloned {
         match self {
-            Self::Equality => BinaryOperator::Equality,
-            Self::Inequality => BinaryOperator::Inequality,
-            Self::StrictEquality => BinaryOperator::StrictEquality,
-            Self::StrictInequality => BinaryOperator::StrictInequality,
-            Self::LessThan => BinaryOperator::LessThan,
-            Self::LessEqualThan => BinaryOperator::LessEqualThan,
-            Self::GreaterThan => BinaryOperator::GreaterThan,
-            Self::GreaterEqualThan => BinaryOperator::GreaterEqualThan,
-            Self::Addition => BinaryOperator::Addition,
-            Self::Subtraction => BinaryOperator::Subtraction,
-            Self::Multiplication => BinaryOperator::Multiplication,
-            Self::Division => BinaryOperator::Division,
-            Self::Remainder => BinaryOperator::Remainder,
-            Self::Exponential => BinaryOperator::Exponential,
-            Self::ShiftLeft => BinaryOperator::ShiftLeft,
-            Self::ShiftRight => BinaryOperator::ShiftRight,
-            Self::ShiftRightZeroFill => BinaryOperator::ShiftRightZeroFill,
-            Self::BitwiseOR => BinaryOperator::BitwiseOR,
-            Self::BitwiseXOR => BinaryOperator::BitwiseXOR,
-            Self::BitwiseAnd => BinaryOperator::BitwiseAnd,
-            Self::In => BinaryOperator::In,
-            Self::Instanceof => BinaryOperator::Instanceof,
+            Self::Equality => GeneralBinaryOperator::Equality,
+            Self::Inequality => GeneralBinaryOperator::Inequality,
+            Self::StrictEquality => GeneralBinaryOperator::StrictEquality,
+            Self::StrictInequality => GeneralBinaryOperator::StrictInequality,
+            Self::LessThan => GeneralBinaryOperator::LessThan,
+            Self::LessEqualThan => GeneralBinaryOperator::LessEqualThan,
+            Self::GreaterThan => GeneralBinaryOperator::GreaterThan,
+            Self::GreaterEqualThan => GeneralBinaryOperator::GreaterEqualThan,
+            Self::Addition => GeneralBinaryOperator::Addition,
+            Self::Subtraction => GeneralBinaryOperator::Subtraction,
+            Self::Multiplication => GeneralBinaryOperator::Multiplication,
+            Self::Division => GeneralBinaryOperator::Division,
+            Self::Remainder => GeneralBinaryOperator::Remainder,
+            Self::Exponential => GeneralBinaryOperator::Exponential,
+            Self::ShiftLeft => GeneralBinaryOperator::ShiftLeft,
+            Self::ShiftRight => GeneralBinaryOperator::ShiftRight,
+            Self::ShiftRightZeroFill => GeneralBinaryOperator::ShiftRightZeroFill,
+            Self::BitwiseOR => GeneralBinaryOperator::BitwiseOR,
+            Self::BitwiseXOR => GeneralBinaryOperator::BitwiseXOR,
+            Self::BitwiseAnd => GeneralBinaryOperator::BitwiseAnd,
+            Self::In => GeneralBinaryOperator::In,
+            Self::Instanceof => GeneralBinaryOperator::Instanceof,
         }
     }
 }

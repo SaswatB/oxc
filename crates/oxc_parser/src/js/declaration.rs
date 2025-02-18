@@ -16,7 +16,7 @@ impl<'a> ParserImpl<'a> {
         let span = self.start_span();
         let peeked = self.peek_kind();
         // let = foo, let instanceof x, let + 1
-        if peeked.is_assignment_operator() || peeked.is_binary_operator() {
+        if peeked.is_assignment_operator() || peeked.is_general_binary_operator() {
             let expr = self.parse_assignment_expression_or_higher()?;
             self.parse_expression_statement(span, expr)
         // let.a = 1, let()[a] = 1
@@ -106,9 +106,15 @@ impl<'a> ParserImpl<'a> {
             let optional = self.eat(Kind::Question); // not allowed, but checked in checker/typescript.rs
             let type_annotation = self.parse_ts_type_annotation()?;
             if let Some(type_annotation) = &type_annotation {
-                Self::extend_destructure_binding_pattern_span_end(type_annotation.span, &mut binding_kind);
+                Self::extend_destructure_binding_pattern_span_end(
+                    type_annotation.span,
+                    &mut binding_kind,
+                );
             }
-            (self.ast.destructure_binding_pattern(binding_kind, type_annotation, optional), definite)
+            (
+                self.ast.destructure_binding_pattern(binding_kind, type_annotation, optional),
+                definite,
+            )
         } else {
             (self.ast.destructure_binding_pattern(binding_kind, NONE, false), false)
         };

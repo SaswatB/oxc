@@ -144,7 +144,7 @@ impl<'a> AstKind<'a> {
             Expression::ArrowFunctionExpression(e) => Self::ArrowFunctionExpression(e),
             Expression::AssignmentExpression(e) => Self::AssignmentExpression(e),
             Expression::AwaitExpression(e) => Self::AwaitExpression(e),
-            Expression::BinaryExpression(e) => Self::BinaryExpression(e),
+            Expression::GeneralBinaryExpression(e) => Self::GeneralBinaryExpression(e),
             Expression::CallExpression(e) => Self::CallExpression(e),
             Expression::ChainExpression(e) => Self::ChainExpression(e),
             Expression::ClassExpression(e) => Self::Class(e),
@@ -361,7 +361,7 @@ impl<'a> AstKind<'a> {
             }
             ExportDefaultDeclarationKind::AssignmentExpression(e) => Self::AssignmentExpression(e),
             ExportDefaultDeclarationKind::AwaitExpression(e) => Self::AwaitExpression(e),
-            ExportDefaultDeclarationKind::BinaryExpression(e) => Self::BinaryExpression(e),
+            ExportDefaultDeclarationKind::GeneralBinaryExpression(e) => Self::GeneralBinaryExpression(e),
             ExportDefaultDeclarationKind::CallExpression(e) => Self::CallExpression(e),
             ExportDefaultDeclarationKind::ChainExpression(e) => Self::ChainExpression(e),
             ExportDefaultDeclarationKind::ClassExpression(e) => Self::Class(e),
@@ -470,7 +470,7 @@ impl<'a> AstKind<'a> {
             JSXExpression::ArrowFunctionExpression(j) => Self::ArrowFunctionExpression(j),
             JSXExpression::AssignmentExpression(j) => Self::AssignmentExpression(j),
             JSXExpression::AwaitExpression(j) => Self::AwaitExpression(j),
-            JSXExpression::BinaryExpression(j) => Self::BinaryExpression(j),
+            JSXExpression::GeneralBinaryExpression(j) => Self::GeneralBinaryExpression(j),
             JSXExpression::CallExpression(j) => Self::CallExpression(j),
             JSXExpression::ChainExpression(j) => Self::ChainExpression(j),
             JSXExpression::ClassExpression(j) => Self::Class(j),
@@ -756,8 +756,8 @@ impl AstKind<'_> {
             Self::ArrowFunctionExpression(_) => "ArrowFunctionExpression".into(),
             Self::AssignmentExpression(_) => "AssignmentExpression".into(),
             Self::AwaitExpression(_) => "AwaitExpression".into(),
-            Self::BinaryExpression(b) => {
-                format!("BinaryExpression({})", b.operator.as_str()).into()
+            Self::GeneralBinaryExpression(b) => {
+                format!("GeneralBinaryExpression({})", b.operator.as_str()).into()
             }
             Self::CallExpression(c) => {
                 format!("CallExpression({})", c.callee_name().unwrap_or(&COMPUTED)).into()

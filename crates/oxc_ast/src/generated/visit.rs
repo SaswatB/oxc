@@ -776,8 +776,8 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_binary_expression(&mut self, it: &BinaryExpression<'a>) {
-        walk_binary_expression(self, it);
+    fn visit_general_binary_expression(&mut self, it: &GeneralBinaryExpression<'a>) {
+        walk_general_binary_expression(self, it);
     }
 
     #[inline]
@@ -1527,7 +1527,7 @@ pub mod walk {
             Expression::ArrowFunctionExpression(it) => visitor.visit_arrow_function_expression(it),
             Expression::AssignmentExpression(it) => visitor.visit_assignment_expression(it),
             Expression::AwaitExpression(it) => visitor.visit_await_expression(it),
-            Expression::BinaryExpression(it) => visitor.visit_binary_expression(it),
+            Expression::GeneralBinaryExpression(it) => visitor.visit_general_binary_expression(it),
             Expression::CallExpression(it) => visitor.visit_call_expression(it),
             Expression::ChainExpression(it) => visitor.visit_chain_expression(it),
             Expression::ClassExpression(it) => visitor.visit_class(it),
@@ -3058,8 +3058,11 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_binary_expression<'a, V: Visit<'a>>(visitor: &mut V, it: &BinaryExpression<'a>) {
-        let kind = AstKind::BinaryExpression(visitor.alloc(it));
+    pub fn walk_general_binary_expression<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &GeneralBinaryExpression<'a>,
+    ) {
+        let kind = AstKind::GeneralBinaryExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.left);

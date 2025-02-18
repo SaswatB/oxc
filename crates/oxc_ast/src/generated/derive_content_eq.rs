@@ -65,7 +65,7 @@ impl ContentEq for Expression<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -165,7 +165,7 @@ impl ContentEq for ArrayExpressionElement<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -260,7 +260,7 @@ impl ContentEq for PropertyKey<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -435,7 +435,7 @@ impl ContentEq for Argument<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -491,7 +491,7 @@ impl ContentEq for UnaryExpression<'_> {
     }
 }
 
-impl ContentEq for BinaryExpression<'_> {
+impl ContentEq for GeneralBinaryExpression<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.left, &other.left)
@@ -921,7 +921,7 @@ impl ContentEq for ForStatementInit<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -1541,7 +1541,7 @@ impl ContentEq for ExportDefaultDeclarationKind<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),
@@ -2533,7 +2533,7 @@ impl ContentEq for JSXExpression<'_> {
             (Self::ArrowFunctionExpression(a), Self::ArrowFunctionExpression(b)) => a.content_eq(b),
             (Self::AssignmentExpression(a), Self::AssignmentExpression(b)) => a.content_eq(b),
             (Self::AwaitExpression(a), Self::AwaitExpression(b)) => a.content_eq(b),
-            (Self::BinaryExpression(a), Self::BinaryExpression(b)) => a.content_eq(b),
+            (Self::GeneralBinaryExpression(a), Self::GeneralBinaryExpression(b)) => a.content_eq(b),
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::ChainExpression(a), Self::ChainExpression(b)) => a.content_eq(b),
             (Self::ClassExpression(a), Self::ClassExpression(b)) => a.content_eq(b),

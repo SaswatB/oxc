@@ -248,13 +248,13 @@ const _: () = {
     assert!(offset_of!(UnaryExpression, operator) == 16usize);
     assert!(offset_of!(UnaryExpression, argument) == 24usize);
 
-    assert!(size_of::<BinaryExpression>() == 56usize);
-    assert!(align_of::<BinaryExpression>() == 8usize);
-    assert!(offset_of!(BinaryExpression, node_id) == 0usize);
-    assert!(offset_of!(BinaryExpression, span) == 8usize);
-    assert!(offset_of!(BinaryExpression, left) == 16usize);
-    assert!(offset_of!(BinaryExpression, operator) == 32usize);
-    assert!(offset_of!(BinaryExpression, right) == 40usize);
+    assert!(size_of::<GeneralBinaryExpression>() == 56usize);
+    assert!(align_of::<GeneralBinaryExpression>() == 8usize);
+    assert!(offset_of!(GeneralBinaryExpression, node_id) == 0usize);
+    assert!(offset_of!(GeneralBinaryExpression, span) == 8usize);
+    assert!(offset_of!(GeneralBinaryExpression, left) == 16usize);
+    assert!(offset_of!(GeneralBinaryExpression, operator) == 32usize);
+    assert!(offset_of!(GeneralBinaryExpression, right) == 40usize);
 
     assert!(size_of::<PrivateInExpression>() == 72usize);
     assert!(align_of::<PrivateInExpression>() == 8usize);
@@ -1595,8 +1595,8 @@ const _: () = {
     assert!(size_of::<AssignmentOperator>() == 1usize);
     assert!(align_of::<AssignmentOperator>() == 1usize);
 
-    assert!(size_of::<BinaryOperator>() == 1usize);
-    assert!(align_of::<BinaryOperator>() == 1usize);
+    assert!(size_of::<GeneralBinaryOperator>() == 1usize);
+    assert!(align_of::<GeneralBinaryOperator>() == 1usize);
 
     assert!(size_of::<LogicalOperator>() == 1usize);
     assert!(align_of::<LogicalOperator>() == 1usize);
@@ -2004,13 +2004,13 @@ const _: () = {
     assert!(offset_of!(UnaryExpression, operator) == 12usize);
     assert!(offset_of!(UnaryExpression, argument) == 16usize);
 
-    assert!(size_of::<BinaryExpression>() == 32usize);
-    assert!(align_of::<BinaryExpression>() == 4usize);
-    assert!(offset_of!(BinaryExpression, node_id) == 0usize);
-    assert!(offset_of!(BinaryExpression, span) == 4usize);
-    assert!(offset_of!(BinaryExpression, left) == 12usize);
-    assert!(offset_of!(BinaryExpression, operator) == 20usize);
-    assert!(offset_of!(BinaryExpression, right) == 24usize);
+    assert!(size_of::<GeneralBinaryExpression>() == 32usize);
+    assert!(align_of::<GeneralBinaryExpression>() == 4usize);
+    assert!(offset_of!(GeneralBinaryExpression, node_id) == 0usize);
+    assert!(offset_of!(GeneralBinaryExpression, span) == 4usize);
+    assert!(offset_of!(GeneralBinaryExpression, left) == 12usize);
+    assert!(offset_of!(GeneralBinaryExpression, operator) == 20usize);
+    assert!(offset_of!(GeneralBinaryExpression, right) == 24usize);
 
     assert!(size_of::<PrivateInExpression>() == 44usize);
     assert!(align_of::<PrivateInExpression>() == 4usize);
@@ -3351,8 +3351,8 @@ const _: () = {
     assert!(size_of::<AssignmentOperator>() == 1usize);
     assert!(align_of::<AssignmentOperator>() == 1usize);
 
-    assert!(size_of::<BinaryOperator>() == 1usize);
-    assert!(align_of::<BinaryOperator>() == 1usize);
+    assert!(size_of::<GeneralBinaryOperator>() == 1usize);
+    assert!(align_of::<GeneralBinaryOperator>() == 1usize);
 
     assert!(size_of::<LogicalOperator>() == 1usize);
     assert!(align_of::<LogicalOperator>() == 1usize);

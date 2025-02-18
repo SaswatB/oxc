@@ -155,8 +155,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for Expression<'_> {
             Self::AwaitExpression(it) => {
                 Expression::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                Expression::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                Expression::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => {
                 Expression::CallExpression(CloneIn::clone_in(it, allocator))
@@ -355,8 +355,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayExpressionElement<'_> {
             Self::AwaitExpression(it) => {
                 ArrayExpressionElement::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                ArrayExpressionElement::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                ArrayExpressionElement::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => {
                 ArrayExpressionElement::CallExpression(CloneIn::clone_in(it, allocator))
@@ -533,8 +533,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for PropertyKey<'_> {
             Self::AwaitExpression(it) => {
                 PropertyKey::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                PropertyKey::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                PropertyKey::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => {
                 PropertyKey::CallExpression(CloneIn::clone_in(it, allocator))
@@ -809,8 +809,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for Argument<'_> {
             Self::AwaitExpression(it) => {
                 Argument::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                Argument::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                Argument::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => Argument::CallExpression(CloneIn::clone_in(it, allocator)),
             Self::ChainExpression(it) => {
@@ -910,10 +910,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for UnaryExpression<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for BinaryExpression<'_> {
-    type Cloned = BinaryExpression<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for GeneralBinaryExpression<'_> {
+    type Cloned = GeneralBinaryExpression<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        BinaryExpression {
+        GeneralBinaryExpression {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             left: CloneIn::clone_in(&self.left, allocator),
@@ -1598,8 +1598,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementInit<'_> {
             Self::AwaitExpression(it) => {
                 ForStatementInit::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                ForStatementInit::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                ForStatementInit::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => {
                 ForStatementInit::CallExpression(CloneIn::clone_in(it, allocator))
@@ -2576,8 +2576,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for ExportDefaultDeclarationKind<'_> {
             Self::AwaitExpression(it) => {
                 ExportDefaultDeclarationKind::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                ExportDefaultDeclarationKind::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                ExportDefaultDeclarationKind::GeneralBinaryExpression(CloneIn::clone_in(
+                    it, allocator,
+                ))
             }
             Self::CallExpression(it) => {
                 ExportDefaultDeclarationKind::CallExpression(CloneIn::clone_in(it, allocator))
@@ -4152,8 +4154,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for JSXExpression<'_> {
             Self::AwaitExpression(it) => {
                 JSXExpression::AwaitExpression(CloneIn::clone_in(it, allocator))
             }
-            Self::BinaryExpression(it) => {
-                JSXExpression::BinaryExpression(CloneIn::clone_in(it, allocator))
+            Self::GeneralBinaryExpression(it) => {
+                JSXExpression::GeneralBinaryExpression(CloneIn::clone_in(it, allocator))
             }
             Self::CallExpression(it) => {
                 JSXExpression::CallExpression(CloneIn::clone_in(it, allocator))

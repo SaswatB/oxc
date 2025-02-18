@@ -666,9 +666,9 @@ impl<'a> AstBuilder<'a> {
         Expression::AwaitExpression(self.alloc_await_expression(span, argument))
     }
 
-    /// Build an [`Expression::BinaryExpression`]
+    /// Build an [`Expression::GeneralBinaryExpression`]
     ///
-    /// This node contains a [`BinaryExpression`] that will be stored in the memory arena.
+    /// This node contains a [`GeneralBinaryExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -676,14 +676,16 @@ impl<'a> AstBuilder<'a> {
     /// - operator
     /// - right
     #[inline]
-    pub fn expression_binary(
+    pub fn expression_general_binary(
         self,
         span: Span,
         left: Expression<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
     ) -> Expression<'a> {
-        Expression::BinaryExpression(self.alloc_binary_expression(span, left, operator, right))
+        Expression::GeneralBinaryExpression(
+            self.alloc_general_binary_expression(span, left, operator, right),
+        )
     }
 
     /// Build an [`Expression::CallExpression`]
@@ -1082,7 +1084,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         left: PrivateIdentifier<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
     ) -> Expression<'a> {
         Expression::PrivateInExpression(
@@ -2412,9 +2414,9 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.unary_expression(span, operator, argument), self.allocator)
     }
 
-    /// Build a [`BinaryExpression`].
+    /// Build a [`GeneralBinaryExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_binary_expression`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_general_binary_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2422,14 +2424,14 @@ impl<'a> AstBuilder<'a> {
     /// - operator
     /// - right
     #[inline]
-    pub fn binary_expression(
+    pub fn general_binary_expression(
         self,
         span: Span,
         left: Expression<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
-    ) -> BinaryExpression<'a> {
-        BinaryExpression {
+    ) -> GeneralBinaryExpression<'a> {
+        GeneralBinaryExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             left,
@@ -2438,9 +2440,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`BinaryExpression`], and store it in the memory arena.
+    /// Build a [`GeneralBinaryExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::binary_expression`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::general_binary_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2448,14 +2450,14 @@ impl<'a> AstBuilder<'a> {
     /// - operator
     /// - right
     #[inline]
-    pub fn alloc_binary_expression(
+    pub fn alloc_general_binary_expression(
         self,
         span: Span,
         left: Expression<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
-    ) -> Box<'a, BinaryExpression<'a>> {
-        Box::new_in(self.binary_expression(span, left, operator, right), self.allocator)
+    ) -> Box<'a, GeneralBinaryExpression<'a>> {
+        Box::new_in(self.general_binary_expression(span, left, operator, right), self.allocator)
     }
 
     /// Build a [`PrivateInExpression`].
@@ -2472,7 +2474,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         left: PrivateIdentifier<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
     ) -> PrivateInExpression<'a> {
         PrivateInExpression {
@@ -2498,7 +2500,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         left: PrivateIdentifier<'a>,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         right: Expression<'a>,
     ) -> Box<'a, PrivateInExpression<'a>> {
         Box::new_in(self.private_in_expression(span, left, operator, right), self.allocator)

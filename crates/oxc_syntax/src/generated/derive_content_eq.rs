@@ -27,7 +27,7 @@ impl ContentEq for AssignmentOperator {
     }
 }
 
-impl ContentEq for BinaryOperator {
+impl ContentEq for GeneralBinaryOperator {
     fn content_eq(&self, other: &Self) -> bool {
         self == other
     }

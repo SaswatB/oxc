@@ -108,21 +108,21 @@ impl AssignmentOperator {
         }
     }
 
-    /// Get [`BinaryOperator`] corresponding to this [`AssignmentOperator`].
-    pub fn to_binary_operator(self) -> Option<BinaryOperator> {
+    /// Get [`GeneralBinaryOperator`] corresponding to this [`AssignmentOperator`].
+    pub fn to_general_binary_operator(self) -> Option<GeneralBinaryOperator> {
         match self {
-            Self::Addition => Some(BinaryOperator::Addition),
-            Self::Subtraction => Some(BinaryOperator::Subtraction),
-            Self::Multiplication => Some(BinaryOperator::Multiplication),
-            Self::Division => Some(BinaryOperator::Division),
-            Self::Remainder => Some(BinaryOperator::Remainder),
-            Self::Exponential => Some(BinaryOperator::Exponential),
-            Self::ShiftLeft => Some(BinaryOperator::ShiftLeft),
-            Self::ShiftRight => Some(BinaryOperator::ShiftRight),
-            Self::ShiftRightZeroFill => Some(BinaryOperator::ShiftRightZeroFill),
-            Self::BitwiseOR => Some(BinaryOperator::BitwiseOR),
-            Self::BitwiseXOR => Some(BinaryOperator::BitwiseXOR),
-            Self::BitwiseAnd => Some(BinaryOperator::BitwiseAnd),
+            Self::Addition => Some(GeneralBinaryOperator::Addition),
+            Self::Subtraction => Some(GeneralBinaryOperator::Subtraction),
+            Self::Multiplication => Some(GeneralBinaryOperator::Multiplication),
+            Self::Division => Some(GeneralBinaryOperator::Division),
+            Self::Remainder => Some(GeneralBinaryOperator::Remainder),
+            Self::Exponential => Some(GeneralBinaryOperator::Exponential),
+            Self::ShiftLeft => Some(GeneralBinaryOperator::ShiftLeft),
+            Self::ShiftRight => Some(GeneralBinaryOperator::ShiftRight),
+            Self::ShiftRightZeroFill => Some(GeneralBinaryOperator::ShiftRightZeroFill),
+            Self::BitwiseOR => Some(GeneralBinaryOperator::BitwiseOR),
+            Self::BitwiseXOR => Some(GeneralBinaryOperator::BitwiseXOR),
+            Self::BitwiseAnd => Some(GeneralBinaryOperator::BitwiseAnd),
             _ => None,
         }
     }
@@ -160,7 +160,7 @@ impl AssignmentOperator {
 #[ast]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[generate_derive(CloneIn, ContentEq, ESTree)]
-pub enum BinaryOperator {
+pub enum GeneralBinaryOperator {
     /// `==`
     #[estree(rename = "==")]
     Equality = 0,
@@ -229,7 +229,7 @@ pub enum BinaryOperator {
     Instanceof = 21,
 }
 
-impl BinaryOperator {
+impl GeneralBinaryOperator {
     /// Returns `true` for inequality or inequality operarors
     #[rustfmt::skip]
     pub fn is_equality(self) -> bool {
@@ -263,12 +263,12 @@ impl BinaryOperator {
         matches!(self, Self::In | Self::Instanceof)
     }
 
-    /// Returns `true` if this is an [`In`](BinaryOperator::In) operator.
+    /// Returns `true` if this is an [`In`](GeneralBinaryOperator::In) operator.
     pub fn is_in(self) -> bool {
         self == Self::In
     }
 
-    /// Returns `true` if this is an [`In`](BinaryOperator::Instanceof) operator.
+    /// Returns `true` if this is an [`In`](GeneralBinaryOperator::Instanceof) operator.
     pub fn is_instance_of(self) -> bool {
         self == Self::Instanceof
     }
@@ -285,7 +285,7 @@ impl BinaryOperator {
     }
 
     /// Returns `true` for any numeric or string binary operator
-    pub fn is_numeric_or_string_binary_operator(self) -> bool {
+    pub fn is_numeric_or_string_general_binary_operator(self) -> bool {
         self.is_arithmetic() || self.is_bitwise()
     }
 
@@ -318,7 +318,7 @@ impl BinaryOperator {
         }
     }
 
-    /// Get [`AssignmentOperator`] corresponding to this [`BinaryOperator`].
+    /// Get [`AssignmentOperator`] corresponding to this [`GeneralBinaryOperator`].
     pub fn to_assignment_operator(self) -> Option<AssignmentOperator> {
         match self {
             Self::Addition => Some(AssignmentOperator::Addition),
@@ -366,7 +366,7 @@ impl BinaryOperator {
     }
 
     /// Get the operator that has a lower precedence than this operator by a
-    /// single level. Use [`BinaryOperator::precedence`] to get the operator
+    /// single level. Use [`GeneralBinaryOperator::precedence`] to get the operator
     /// with a higher precedence.
     pub fn lower_precedence(&self) -> Precedence {
         match self {
@@ -390,7 +390,7 @@ impl BinaryOperator {
     }
 }
 
-impl GetPrecedence for BinaryOperator {
+impl GetPrecedence for GeneralBinaryOperator {
     fn precedence(&self) -> Precedence {
         match self {
             Self::BitwiseOR => Precedence::BitwiseOr,
@@ -440,7 +440,7 @@ impl LogicalOperator {
     }
 
     /// Get the operator that has a lower precedence than this operator by a
-    /// single level. Use [`BinaryOperator::precedence`] to get the operator
+    /// single level. Use [`GeneralBinaryOperator::precedence`] to get the operator
     /// with a higher precedence.
     pub fn lower_precedence(&self) -> Precedence {
         match self {

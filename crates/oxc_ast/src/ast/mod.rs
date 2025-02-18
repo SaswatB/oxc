@@ -178,7 +178,7 @@ pub use oxc_span::{Atom, Language, LanguageVariant, ModuleKind, SourceType, Span
 pub use oxc_syntax::{
     number::{BigintBase, NumberBase},
     operator::{
-        AssignmentOperator, BinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
+        AssignmentOperator, GeneralBinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
     },
 };
 

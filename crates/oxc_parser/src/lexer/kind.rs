@@ -279,7 +279,7 @@ impl Kind {
 
     #[inline]
     pub fn is_after_await_or_yield(self) -> bool {
-        !self.is_binary_operator() && (self.is_literal() || self.is_identifier_name())
+        !self.is_general_binary_operator() && (self.is_literal() || self.is_identifier_name())
     }
 
     /// Section 13.2.6 Object Initializer
@@ -326,7 +326,7 @@ impl Kind {
 
     #[rustfmt::skip]
     #[inline]
-    pub fn is_binary_operator(self) -> bool {
+    pub fn is_general_binary_operator(self) -> bool {
         matches!(self, Eq2 | Neq | Eq3 | Neq2 | LAngle | LtEq | RAngle | GtEq | ShiftLeft | ShiftRight
             | ShiftRight3 | Plus | Minus | Star | Slash | Percent | Pipe | Caret | Amp | In
             | Instanceof | Star2)

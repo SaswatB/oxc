@@ -62,72 +62,74 @@ impl Serialize for AssignmentOperator {
     }
 }
 
-impl Serialize for BinaryOperator {
+impl Serialize for GeneralBinaryOperator {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match *self {
-            BinaryOperator::Equality => {
-                serializer.serialize_unit_variant("BinaryOperator", 0u32, "==")
+            GeneralBinaryOperator::Equality => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 0u32, "==")
             }
-            BinaryOperator::Inequality => {
-                serializer.serialize_unit_variant("BinaryOperator", 1u32, "!=")
+            GeneralBinaryOperator::Inequality => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 1u32, "!=")
             }
-            BinaryOperator::StrictEquality => {
-                serializer.serialize_unit_variant("BinaryOperator", 2u32, "===")
+            GeneralBinaryOperator::StrictEquality => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 2u32, "===")
             }
-            BinaryOperator::StrictInequality => {
-                serializer.serialize_unit_variant("BinaryOperator", 3u32, "!==")
+            GeneralBinaryOperator::StrictInequality => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 3u32, "!==")
             }
-            BinaryOperator::LessThan => {
-                serializer.serialize_unit_variant("BinaryOperator", 4u32, "<")
+            GeneralBinaryOperator::LessThan => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 4u32, "<")
             }
-            BinaryOperator::LessEqualThan => {
-                serializer.serialize_unit_variant("BinaryOperator", 5u32, "<=")
+            GeneralBinaryOperator::LessEqualThan => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 5u32, "<=")
             }
-            BinaryOperator::GreaterThan => {
-                serializer.serialize_unit_variant("BinaryOperator", 6u32, ">")
+            GeneralBinaryOperator::GreaterThan => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 6u32, ">")
             }
-            BinaryOperator::GreaterEqualThan => {
-                serializer.serialize_unit_variant("BinaryOperator", 7u32, ">=")
+            GeneralBinaryOperator::GreaterEqualThan => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 7u32, ">=")
             }
-            BinaryOperator::Addition => {
-                serializer.serialize_unit_variant("BinaryOperator", 8u32, "+")
+            GeneralBinaryOperator::Addition => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 8u32, "+")
             }
-            BinaryOperator::Subtraction => {
-                serializer.serialize_unit_variant("BinaryOperator", 9u32, "-")
+            GeneralBinaryOperator::Subtraction => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 9u32, "-")
             }
-            BinaryOperator::Multiplication => {
-                serializer.serialize_unit_variant("BinaryOperator", 10u32, "*")
+            GeneralBinaryOperator::Multiplication => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 10u32, "*")
             }
-            BinaryOperator::Division => {
-                serializer.serialize_unit_variant("BinaryOperator", 11u32, "/")
+            GeneralBinaryOperator::Division => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 11u32, "/")
             }
-            BinaryOperator::Remainder => {
-                serializer.serialize_unit_variant("BinaryOperator", 12u32, "%")
+            GeneralBinaryOperator::Remainder => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 12u32, "%")
             }
-            BinaryOperator::Exponential => {
-                serializer.serialize_unit_variant("BinaryOperator", 13u32, "**")
+            GeneralBinaryOperator::Exponential => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 13u32, "**")
             }
-            BinaryOperator::ShiftLeft => {
-                serializer.serialize_unit_variant("BinaryOperator", 14u32, "<<")
+            GeneralBinaryOperator::ShiftLeft => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 14u32, "<<")
             }
-            BinaryOperator::ShiftRight => {
-                serializer.serialize_unit_variant("BinaryOperator", 15u32, ">>")
+            GeneralBinaryOperator::ShiftRight => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 15u32, ">>")
             }
-            BinaryOperator::ShiftRightZeroFill => {
-                serializer.serialize_unit_variant("BinaryOperator", 16u32, ">>>")
+            GeneralBinaryOperator::ShiftRightZeroFill => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 16u32, ">>>")
             }
-            BinaryOperator::BitwiseOR => {
-                serializer.serialize_unit_variant("BinaryOperator", 17u32, "|")
+            GeneralBinaryOperator::BitwiseOR => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 17u32, "|")
             }
-            BinaryOperator::BitwiseXOR => {
-                serializer.serialize_unit_variant("BinaryOperator", 18u32, "^")
+            GeneralBinaryOperator::BitwiseXOR => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 18u32, "^")
             }
-            BinaryOperator::BitwiseAnd => {
-                serializer.serialize_unit_variant("BinaryOperator", 19u32, "&")
+            GeneralBinaryOperator::BitwiseAnd => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 19u32, "&")
             }
-            BinaryOperator::In => serializer.serialize_unit_variant("BinaryOperator", 20u32, "in"),
-            BinaryOperator::Instanceof => {
-                serializer.serialize_unit_variant("BinaryOperator", 21u32, "instanceof")
+            GeneralBinaryOperator::In => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 20u32, "in")
+            }
+            GeneralBinaryOperator::Instanceof => {
+                serializer.serialize_unit_variant("GeneralBinaryOperator", 21u32, "instanceof")
             }
         }
     }

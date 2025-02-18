@@ -76,7 +76,7 @@ export type Expression =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -176,7 +176,7 @@ export type PropertyKey =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -307,7 +307,7 @@ export type Argument =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -351,11 +351,11 @@ export interface UnaryExpression extends Span {
   argument: Expression;
 }
 
-export interface BinaryExpression extends Span {
-  type: 'BinaryExpression';
+export interface GeneralBinaryExpression extends Span {
+  type: 'GeneralBinaryExpression';
   nodeId: number;
   left: Expression;
-  operator: BinaryOperator;
+  operator: GeneralBinaryOperator;
   right: Expression;
 }
 
@@ -363,7 +363,7 @@ export interface PrivateInExpression extends Span {
   type: 'PrivateInExpression';
   nodeId: number;
   left: PrivateIdentifier;
-  operator: BinaryOperator;
+  operator: GeneralBinaryOperator;
   right: Expression;
 }
 
@@ -648,7 +648,7 @@ export type ForStatementInit =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -1106,7 +1106,7 @@ export type ExportDefaultDeclarationKind =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -1836,7 +1836,7 @@ export type JSXExpression =
   | ArrowFunctionExpression
   | AssignmentExpression
   | AwaitExpression
-  | BinaryExpression
+  | GeneralBinaryExpression
   | CallExpression
   | ChainExpression
   | Class
@@ -1927,7 +1927,7 @@ export type AssignmentOperator =
   | '&&='
   | '??=';
 
-export type BinaryOperator =
+export type GeneralBinaryOperator =
   | '=='
   | '!='
   | '==='

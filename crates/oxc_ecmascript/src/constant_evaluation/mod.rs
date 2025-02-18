@@ -172,7 +172,7 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
 
     fn eval_expression(&self, expr: &Expression<'a>) -> Option<ConstantValue<'a>> {
         match expr {
-            Expression::BinaryExpression(e) => self.eval_binary_expression(e),
+            Expression::GeneralBinaryExpression(e) => self.eval_general_binary_expression(e),
             Expression::LogicalExpression(e) => self.eval_logical_expression(e),
             Expression::UnaryExpression(e) => self.eval_unary_expression(e),
             Expression::Identifier(ident) => self.resolve_binding(ident),
@@ -189,18 +189,21 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
         }
     }
 
-    fn eval_binary_expression(&self, e: &BinaryExpression<'a>) -> Option<ConstantValue<'a>> {
+    fn eval_general_binary_expression(
+        &self,
+        e: &GeneralBinaryExpression<'a>,
+    ) -> Option<ConstantValue<'a>> {
         self.eval_binary_operation(e.operator, &e.left, &e.right)
     }
 
     fn eval_binary_operation(
         &self,
-        operator: BinaryOperator,
+        operator: GeneralBinaryOperator,
         left: &Expression<'a>,
         right: &Expression<'a>,
     ) -> Option<ConstantValue<'a>> {
         match operator {
-            BinaryOperator::Addition => {
+            GeneralBinaryOperator::Addition => {
                 if self.expression_may_have_side_efffects(left)
                     || self.expression_may_have_side_efffects(right)
                 {
@@ -224,55 +227,57 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
                 }
                 None
             }
-            BinaryOperator::Subtraction
-            | BinaryOperator::Division
-            | BinaryOperator::Remainder
-            | BinaryOperator::Multiplication
-            | BinaryOperator::Exponential => {
+            GeneralBinaryOperator::Subtraction
+            | GeneralBinaryOperator::Division
+            | GeneralBinaryOperator::Remainder
+            | GeneralBinaryOperator::Multiplication
+            | GeneralBinaryOperator::Exponential => {
                 let lval = self.eval_to_number(left)?;
                 let rval = self.eval_to_number(right)?;
                 let val = match operator {
-                    BinaryOperator::Subtraction => lval - rval,
-                    BinaryOperator::Division => lval / rval,
-                    BinaryOperator::Remainder => {
+                    GeneralBinaryOperator::Subtraction => lval - rval,
+                    GeneralBinaryOperator::Division => lval / rval,
+                    GeneralBinaryOperator::Remainder => {
                         if rval.is_zero() {
                             f64::NAN
                         } else {
                             lval % rval
                         }
                     }
-                    BinaryOperator::Multiplication => lval * rval,
-                    BinaryOperator::Exponential => lval.powf(rval),
+                    GeneralBinaryOperator::Multiplication => lval * rval,
+                    GeneralBinaryOperator::Exponential => lval.powf(rval),
                     _ => unreachable!(),
                 };
                 Some(ConstantValue::Number(val))
             }
             #[expect(clippy::cast_sign_loss)]
-            BinaryOperator::ShiftLeft
-            | BinaryOperator::ShiftRight
-            | BinaryOperator::ShiftRightZeroFill => {
+            GeneralBinaryOperator::ShiftLeft
+            | GeneralBinaryOperator::ShiftRight
+            | GeneralBinaryOperator::ShiftRightZeroFill => {
                 let left = self.get_side_free_number_value(left)?;
                 let right = self.get_side_free_number_value(right)?;
                 let left = left.to_int_32();
                 let right = (right.to_int_32() as u32) & 31;
                 Some(ConstantValue::Number(match operator {
-                    BinaryOperator::ShiftLeft => f64::from(left << right),
-                    BinaryOperator::ShiftRight => f64::from(left >> right),
-                    BinaryOperator::ShiftRightZeroFill => f64::from((left as u32) >> right),
+                    GeneralBinaryOperator::ShiftLeft => f64::from(left << right),
+                    GeneralBinaryOperator::ShiftRight => f64::from(left >> right),
+                    GeneralBinaryOperator::ShiftRightZeroFill => f64::from((left as u32) >> right),
                     _ => unreachable!(),
                 }))
             }
-            BinaryOperator::LessThan => self.is_less_than(left, right).map(|value| match value {
-                ConstantValue::Undefined => ConstantValue::Boolean(false),
-                _ => value,
-            }),
-            BinaryOperator::GreaterThan => {
+            GeneralBinaryOperator::LessThan => {
+                self.is_less_than(left, right).map(|value| match value {
+                    ConstantValue::Undefined => ConstantValue::Boolean(false),
+                    _ => value,
+                })
+            }
+            GeneralBinaryOperator::GreaterThan => {
                 self.is_less_than(right, left).map(|value| match value {
                     ConstantValue::Undefined => ConstantValue::Boolean(false),
                     _ => value,
                 })
             }
-            BinaryOperator::LessEqualThan => {
+            GeneralBinaryOperator::LessEqualThan => {
                 self.is_less_than(right, left).map(|value| match value {
                     ConstantValue::Boolean(true) | ConstantValue::Undefined => {
                         ConstantValue::Boolean(false)
@@ -281,7 +286,7 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
                     _ => unreachable!(),
                 })
             }
-            BinaryOperator::GreaterEqualThan => {
+            GeneralBinaryOperator::GreaterEqualThan => {
                 self.is_less_than(left, right).map(|value| match value {
                     ConstantValue::Boolean(true) | ConstantValue::Undefined => {
                         ConstantValue::Boolean(false)
@@ -290,14 +295,16 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
                     _ => unreachable!(),
                 })
             }
-            BinaryOperator::BitwiseAnd | BinaryOperator::BitwiseOR | BinaryOperator::BitwiseXOR => {
+            GeneralBinaryOperator::BitwiseAnd
+            | GeneralBinaryOperator::BitwiseOR
+            | GeneralBinaryOperator::BitwiseXOR => {
                 if left.is_big_int_literal() && right.is_big_int_literal() {
                     let left_val = self.get_side_free_bigint_value(left)?;
                     let right_val = self.get_side_free_bigint_value(right)?;
                     let result_val: BigInt = match operator {
-                        BinaryOperator::BitwiseAnd => left_val & right_val,
-                        BinaryOperator::BitwiseOR => left_val | right_val,
-                        BinaryOperator::BitwiseXOR => left_val ^ right_val,
+                        GeneralBinaryOperator::BitwiseAnd => left_val & right_val,
+                        GeneralBinaryOperator::BitwiseOR => left_val | right_val,
+                        GeneralBinaryOperator::BitwiseXOR => left_val ^ right_val,
                         _ => unreachable!(),
                     };
                     return Some(ConstantValue::BigInt(result_val));
@@ -309,16 +316,20 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
                     let right_val_int = right_val.to_int_32();
 
                     let result_val: f64 = match operator {
-                        BinaryOperator::BitwiseAnd => f64::from(left_val_int & right_val_int),
-                        BinaryOperator::BitwiseOR => f64::from(left_val_int | right_val_int),
-                        BinaryOperator::BitwiseXOR => f64::from(left_val_int ^ right_val_int),
+                        GeneralBinaryOperator::BitwiseAnd => {
+                            f64::from(left_val_int & right_val_int)
+                        }
+                        GeneralBinaryOperator::BitwiseOR => f64::from(left_val_int | right_val_int),
+                        GeneralBinaryOperator::BitwiseXOR => {
+                            f64::from(left_val_int ^ right_val_int)
+                        }
                         _ => unreachable!(),
                     };
                     return Some(ConstantValue::Number(result_val));
                 }
                 None
             }
-            BinaryOperator::Instanceof => {
+            GeneralBinaryOperator::Instanceof => {
                 if self.expression_may_have_side_efffects(left) {
                     return None;
                 }

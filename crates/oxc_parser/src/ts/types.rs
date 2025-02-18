@@ -829,7 +829,7 @@ impl<'a> ParserImpl<'a> {
             /* trailing_separator */ true,
             Self::parse_ts_type,
         )?;
-        // `a < b> = c`` is valid but `a < b >= c` is BinaryExpression
+        // `a < b> = c`` is valid but `a < b >= c` is GeneralBinaryExpression
         if matches!(self.re_lex_right_angle(), Kind::GtEq) {
             return Err(self.unexpected());
         }
@@ -849,7 +849,7 @@ impl<'a> ParserImpl<'a> {
             Kind::LAngle | Kind::RAngle | Kind::Plus | Kind::Minus => false,
             _ => {
                 self.cur_token().is_on_new_line
-                    || self.is_binary_operator()
+                    || self.is_general_binary_operator()
                     || !self.is_start_of_expression()
             }
         }
@@ -1374,11 +1374,11 @@ impl<'a> ParserImpl<'a> {
         ))
     }
 
-    fn is_binary_operator(&mut self) -> bool {
+    fn is_general_binary_operator(&mut self) -> bool {
         if self.ctx.has_in() && self.at(Kind::In) {
             return false;
         }
-        self.cur_kind().is_binary_operator()
+        self.cur_kind().is_general_binary_operator()
     }
 
     fn is_start_of_expression(&mut self) -> bool {
@@ -1389,7 +1389,7 @@ impl<'a> ParserImpl<'a> {
             kind if kind.is_unary_operator() => true,
             kind if kind.is_update_operator() => true,
             Kind::LAngle | Kind::Await | Kind::Yield | Kind::Private | Kind::At => true,
-            kind if kind.is_binary_operator() => true,
+            kind if kind.is_general_binary_operator() => true,
             kind => kind.is_identifier(),
         }
     }

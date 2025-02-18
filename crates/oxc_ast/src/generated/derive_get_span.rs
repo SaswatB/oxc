@@ -79,7 +79,7 @@ impl GetSpan for Expression<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -172,7 +172,7 @@ impl GetSpan for ArrayExpressionElement<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -253,7 +253,7 @@ impl GetSpan for PropertyKey<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -383,7 +383,7 @@ impl GetSpan for Argument<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -429,7 +429,7 @@ impl GetSpan for UnaryExpression<'_> {
     }
 }
 
-impl GetSpan for BinaryExpression<'_> {
+impl GetSpan for GeneralBinaryExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
@@ -773,7 +773,7 @@ impl GetSpan for ForStatementInit<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -1214,7 +1214,7 @@ impl GetSpan for ExportDefaultDeclarationKind<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),
@@ -2056,7 +2056,7 @@ impl GetSpan for JSXExpression<'_> {
             Self::ArrowFunctionExpression(it) => GetSpan::span(it.as_ref()),
             Self::AssignmentExpression(it) => GetSpan::span(it.as_ref()),
             Self::AwaitExpression(it) => GetSpan::span(it.as_ref()),
-            Self::BinaryExpression(it) => GetSpan::span(it.as_ref()),
+            Self::GeneralBinaryExpression(it) => GetSpan::span(it.as_ref()),
             Self::CallExpression(it) => GetSpan::span(it.as_ref()),
             Self::ChainExpression(it) => GetSpan::span(it.as_ref()),
             Self::ClassExpression(it) => GetSpan::span(it.as_ref()),

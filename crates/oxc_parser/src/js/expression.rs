@@ -6,15 +6,15 @@ use oxc_regular_expression::ast::Pattern;
 use oxc_span::{Atom, GetSpan, Span};
 use oxc_syntax::{
     number::{BigintBase, NumberBase},
-    operator::BinaryOperator,
+    operator::GeneralBinaryOperator,
     precedence::Precedence,
 };
 
 use super::{
     grammar::CoverGrammar,
     operator::{
-        kind_to_precedence, map_assignment_operator, map_binary_operator, map_logical_operator,
-        map_unary_operator, map_update_operator,
+        kind_to_precedence, map_assignment_operator, map_general_binary_operator,
+        map_logical_operator, map_unary_operator, map_update_operator,
     },
 };
 use crate::{
@@ -992,7 +992,7 @@ impl<'a> ParserImpl<'a> {
         Ok(self.ast.expression_unary(self.end_span(span), operator, argument))
     }
 
-    pub(crate) fn parse_binary_expression_or_higher(
+    pub(crate) fn parse_general_binary_expression_or_higher(
         &mut self,
         lhs_precedence: Precedence,
     ) -> Result<Expression<'a>> {
@@ -1002,16 +1002,21 @@ impl<'a> ParserImpl<'a> {
             let left = self.parse_private_identifier();
             self.expect(Kind::In)?;
             let right = self.parse_unary_expression_or_higher(lhs_span)?;
-            self.ast.expression_private_in(self.end_span(lhs_span), left, BinaryOperator::In, right)
+            self.ast.expression_private_in(
+                self.end_span(lhs_span),
+                left,
+                GeneralBinaryOperator::In,
+                right,
+            )
         } else {
             self.parse_unary_expression_or_higher(lhs_span)?
         };
 
-        self.parse_binary_expression_rest(lhs_span, lhs, lhs_precedence)
+        self.parse_general_binary_expression_rest(lhs_span, lhs, lhs_precedence)
     }
 
     /// Section 13.6 - 13.13 Binary Expression
-    fn parse_binary_expression_rest(
+    fn parse_general_binary_expression_rest(
         &mut self,
         lhs_span: Span,
         lhs: Expression<'a>,
@@ -1060,7 +1065,7 @@ impl<'a> ParserImpl<'a> {
             }
 
             self.bump_any(); // bump operator
-            let rhs = self.parse_binary_expression_or_higher(left_precedence)?;
+            let rhs = self.parse_general_binary_expression_or_higher(left_precedence)?;
 
             lhs = if kind.is_logical_operator() {
                 self.ast.expression_logical(
@@ -1069,11 +1074,11 @@ impl<'a> ParserImpl<'a> {
                     map_logical_operator(kind),
                     rhs,
                 )
-            } else if kind.is_binary_operator() {
-                self.ast.expression_binary(
+            } else if kind.is_general_binary_operator() {
+                self.ast.expression_general_binary(
                     self.end_span(lhs_span),
                     lhs,
-                    map_binary_operator(kind),
+                    map_general_binary_operator(kind),
                     rhs,
                 )
             } else {
@@ -1122,7 +1127,7 @@ impl<'a> ParserImpl<'a> {
         }
 
         let span = self.start_span();
-        let lhs = self.parse_binary_expression_or_higher(Precedence::Comma)?;
+        let lhs = self.parse_general_binary_expression_or_higher(Precedence::Comma)?;
         let kind = self.cur_kind();
 
         // `x => {}`

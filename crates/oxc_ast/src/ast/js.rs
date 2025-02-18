@@ -12,7 +12,7 @@ use oxc_estree::ESTree;
 use oxc_span::{cmp::ContentEq, Atom, GetSpan, GetSpanMut, SourceType, Span};
 use oxc_syntax::{
     operator::{
-        AssignmentOperator, BinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
+        AssignmentOperator, GeneralBinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
     },
     reference::ReferenceId,
     scope::ScopeId,
@@ -89,8 +89,8 @@ pub enum Expression<'a> {
     AssignmentExpression(Box<'a, AssignmentExpression<'a>>) = 12,
     /// See [`AwaitExpression`] for AST node details.
     AwaitExpression(Box<'a, AwaitExpression<'a>>) = 13,
-    /// See [`BinaryExpression`] for AST node details.
-    BinaryExpression(Box<'a, BinaryExpression<'a>>) = 14,
+    /// See [`GeneralBinaryExpression`] for AST node details.
+    GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 14,
     /// See [`CallExpression`] for AST node details.
     CallExpression(Box<'a, CallExpression<'a>>) = 15,
     /// See [`ChainExpression`] for AST node details.
@@ -167,7 +167,7 @@ macro_rules! match_expression {
             | $ty::ArrowFunctionExpression(_)
             | $ty::AssignmentExpression(_)
             | $ty::AwaitExpression(_)
-            | $ty::BinaryExpression(_)
+            | $ty::GeneralBinaryExpression(_)
             | $ty::CallExpression(_)
             | $ty::ChainExpression(_)
             | $ty::ClassExpression(_)
@@ -712,13 +712,13 @@ pub struct UnaryExpression<'a> {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct BinaryExpression<'a> {
+pub struct GeneralBinaryExpression<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
     pub left: Expression<'a>,
-    pub operator: BinaryOperator,
+    pub operator: GeneralBinaryOperator,
     pub right: Expression<'a>,
 }
 
@@ -734,7 +734,7 @@ pub struct PrivateInExpression<'a> {
     pub node_id: u32,
     pub span: Span,
     pub left: PrivateIdentifier<'a>,
-    pub operator: BinaryOperator, // BinaryOperator::In
+    pub operator: GeneralBinaryOperator, // GeneralBinaryOperator::In
     pub right: Expression<'a>,
 }
 

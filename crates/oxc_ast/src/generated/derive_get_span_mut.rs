@@ -79,7 +79,7 @@ impl GetSpanMut for Expression<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -172,7 +172,7 @@ impl GetSpanMut for ArrayExpressionElement<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -253,7 +253,7 @@ impl GetSpanMut for PropertyKey<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -383,7 +383,7 @@ impl GetSpanMut for Argument<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -429,7 +429,7 @@ impl GetSpanMut for UnaryExpression<'_> {
     }
 }
 
-impl GetSpanMut for BinaryExpression<'_> {
+impl GetSpanMut for GeneralBinaryExpression<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
@@ -773,7 +773,7 @@ impl GetSpanMut for ForStatementInit<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -1214,7 +1214,7 @@ impl GetSpanMut for ExportDefaultDeclarationKind<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),
@@ -2056,7 +2056,7 @@ impl GetSpanMut for JSXExpression<'_> {
             Self::ArrowFunctionExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AssignmentExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::AwaitExpression(it) => GetSpanMut::span_mut(&mut **it),
-            Self::BinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::GeneralBinaryExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::CallExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ChainExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::ClassExpression(it) => GetSpanMut::span_mut(&mut **it),

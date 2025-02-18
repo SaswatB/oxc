@@ -297,9 +297,9 @@ impl<'a> Expression<'a> {
             && matches!(self, Expression::NewExpression(_) | Expression::ImportExpression(_))
     }
 
-    /// Returns `true` if this [`Expression`] is a [`BinaryExpression`] or [`LogicalExpression`].
+    /// Returns `true` if this [`Expression`] is a [`GeneralBinaryExpression`] or [`LogicalExpression`].
     pub fn is_binaryish(&self) -> bool {
-        matches!(self, Expression::BinaryExpression(_) | Expression::LogicalExpression(_))
+        matches!(self, Expression::GeneralBinaryExpression(_) | Expression::LogicalExpression(_))
     }
 
     #[allow(missing_docs)]

@@ -1,6 +1,6 @@
 use oxc_syntax::{
     operator::{
-        AssignmentOperator, BinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
+        AssignmentOperator, GeneralBinaryOperator, LogicalOperator, UnaryOperator, UpdateOperator,
     },
     precedence::Precedence,
 };
@@ -28,30 +28,30 @@ pub fn kind_to_precedence(kind: Kind, is_typescript: bool) -> Option<Precedence>
     }
 }
 
-pub fn map_binary_operator(kind: Kind) -> BinaryOperator {
+pub fn map_general_binary_operator(kind: Kind) -> GeneralBinaryOperator {
     match kind {
-        Kind::Eq2 => BinaryOperator::Equality,
-        Kind::Neq => BinaryOperator::Inequality,
-        Kind::Eq3 => BinaryOperator::StrictEquality,
-        Kind::Neq2 => BinaryOperator::StrictInequality,
-        Kind::LAngle => BinaryOperator::LessThan,
-        Kind::LtEq => BinaryOperator::LessEqualThan,
-        Kind::RAngle => BinaryOperator::GreaterThan,
-        Kind::GtEq => BinaryOperator::GreaterEqualThan,
-        Kind::ShiftLeft => BinaryOperator::ShiftLeft,
-        Kind::ShiftRight => BinaryOperator::ShiftRight,
-        Kind::ShiftRight3 => BinaryOperator::ShiftRightZeroFill,
-        Kind::Plus => BinaryOperator::Addition,
-        Kind::Minus => BinaryOperator::Subtraction,
-        Kind::Star => BinaryOperator::Multiplication,
-        Kind::Slash => BinaryOperator::Division,
-        Kind::Percent => BinaryOperator::Remainder,
-        Kind::Pipe => BinaryOperator::BitwiseOR,
-        Kind::Caret => BinaryOperator::BitwiseXOR,
-        Kind::Amp => BinaryOperator::BitwiseAnd,
-        Kind::In => BinaryOperator::In,
-        Kind::Instanceof => BinaryOperator::Instanceof,
-        Kind::Star2 => BinaryOperator::Exponential,
+        Kind::Eq2 => GeneralBinaryOperator::Equality,
+        Kind::Neq => GeneralBinaryOperator::Inequality,
+        Kind::Eq3 => GeneralBinaryOperator::StrictEquality,
+        Kind::Neq2 => GeneralBinaryOperator::StrictInequality,
+        Kind::LAngle => GeneralBinaryOperator::LessThan,
+        Kind::LtEq => GeneralBinaryOperator::LessEqualThan,
+        Kind::RAngle => GeneralBinaryOperator::GreaterThan,
+        Kind::GtEq => GeneralBinaryOperator::GreaterEqualThan,
+        Kind::ShiftLeft => GeneralBinaryOperator::ShiftLeft,
+        Kind::ShiftRight => GeneralBinaryOperator::ShiftRight,
+        Kind::ShiftRight3 => GeneralBinaryOperator::ShiftRightZeroFill,
+        Kind::Plus => GeneralBinaryOperator::Addition,
+        Kind::Minus => GeneralBinaryOperator::Subtraction,
+        Kind::Star => GeneralBinaryOperator::Multiplication,
+        Kind::Slash => GeneralBinaryOperator::Division,
+        Kind::Percent => GeneralBinaryOperator::Remainder,
+        Kind::Pipe => GeneralBinaryOperator::BitwiseOR,
+        Kind::Caret => GeneralBinaryOperator::BitwiseXOR,
+        Kind::Amp => GeneralBinaryOperator::BitwiseAnd,
+        Kind::In => GeneralBinaryOperator::In,
+        Kind::Instanceof => GeneralBinaryOperator::Instanceof,
+        Kind::Star2 => GeneralBinaryOperator::Exponential,
         _ => unreachable!("Binary Operator: {kind:?}"),
     }
 }

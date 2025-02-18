@@ -38,7 +38,9 @@ pub trait MayHaveSideEffects {
             Expression::SequenceExpression(e) => {
                 e.expressions.iter().any(|e| self.expression_may_have_side_efffects(e))
             }
-            Expression::BinaryExpression(e) => self.binary_expression_may_have_side_effects(e),
+            Expression::GeneralBinaryExpression(e) => {
+                self.general_binary_expression_may_have_side_effects(e)
+            }
             Expression::ObjectExpression(object_expr) => object_expr
                 .properties
                 .iter()
@@ -62,9 +64,12 @@ pub trait MayHaveSideEffects {
         true
     }
 
-    fn binary_expression_may_have_side_effects(&self, e: &BinaryExpression<'_>) -> bool {
+    fn general_binary_expression_may_have_side_effects(
+        &self,
+        e: &GeneralBinaryExpression<'_>,
+    ) -> bool {
         // `instanceof` and `in` can throw `TypeError`
-        if matches!(e.operator, BinaryOperator::In | BinaryOperator::Instanceof) {
+        if matches!(e.operator, GeneralBinaryOperator::In | GeneralBinaryOperator::Instanceof) {
             return true;
         }
         self.expression_may_have_side_efffects(&e.left)

@@ -2,7 +2,7 @@
 use oxc_syntax::precedence::{GetPrecedence, Precedence};
 
 use crate::ast::{
-    match_member_expression, AssignmentExpression, AwaitExpression, BinaryExpression,
+    match_member_expression, AssignmentExpression, AwaitExpression, GeneralBinaryExpression,
     CallExpression, ChainExpression, ConditionalExpression, ElementAccessExpression, Expression,
     ImportExpression, LogicalExpression, MemberExpression, NewExpression, PrivateFieldExpression,
     PropertyAccessExpression, SequenceExpression, TSTypeAssertion, UnaryExpression,
@@ -17,7 +17,7 @@ impl GetPrecedence for Expression<'_> {
             Self::YieldExpression(expr) => expr.precedence(),
             Self::ConditionalExpression(expr) => expr.precedence(),
             Self::LogicalExpression(expr) => expr.precedence(),
-            Self::BinaryExpression(expr) => expr.precedence(),
+            Self::GeneralBinaryExpression(expr) => expr.precedence(),
             Self::UnaryExpression(expr) => expr.precedence(),
             Self::UpdateExpression(expr) => expr.precedence(),
             Self::AwaitExpression(expr) => expr.precedence(),
@@ -59,7 +59,7 @@ impl GetPrecedence for LogicalExpression<'_> {
     }
 }
 
-impl GetPrecedence for BinaryExpression<'_> {
+impl GetPrecedence for GeneralBinaryExpression<'_> {
     fn precedence(&self) -> Precedence {
         self.operator.precedence()
     }

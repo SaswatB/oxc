@@ -42,7 +42,7 @@ pub enum AstType {
     SpreadElement = 25,
     UpdateExpression = 26,
     UnaryExpression = 27,
-    BinaryExpression = 28,
+    GeneralBinaryExpression = 28,
     PrivateInExpression = 29,
     LogicalExpression = 30,
     ConditionalExpression = 31,
@@ -238,7 +238,8 @@ pub enum AstKind<'a> {
     SpreadElement(&'a SpreadElement<'a>) = AstType::SpreadElement as u8,
     UpdateExpression(&'a UpdateExpression<'a>) = AstType::UpdateExpression as u8,
     UnaryExpression(&'a UnaryExpression<'a>) = AstType::UnaryExpression as u8,
-    BinaryExpression(&'a BinaryExpression<'a>) = AstType::BinaryExpression as u8,
+    GeneralBinaryExpression(&'a GeneralBinaryExpression<'a>) =
+        AstType::GeneralBinaryExpression as u8,
     PrivateInExpression(&'a PrivateInExpression<'a>) = AstType::PrivateInExpression as u8,
     LogicalExpression(&'a LogicalExpression<'a>) = AstType::LogicalExpression as u8,
     ConditionalExpression(&'a ConditionalExpression<'a>) = AstType::ConditionalExpression as u8,
@@ -460,7 +461,7 @@ impl GetSpan for AstKind<'_> {
             Self::SpreadElement(it) => it.span(),
             Self::UpdateExpression(it) => it.span(),
             Self::UnaryExpression(it) => it.span(),
-            Self::BinaryExpression(it) => it.span(),
+            Self::GeneralBinaryExpression(it) => it.span(),
             Self::PrivateInExpression(it) => it.span(),
             Self::LogicalExpression(it) => it.span(),
             Self::ConditionalExpression(it) => it.span(),
@@ -654,7 +655,7 @@ impl<'a> AstKind<'a> {
             Self::SpreadElement(it) => it.get_children(),
             Self::UpdateExpression(it) => it.get_children(),
             Self::UnaryExpression(it) => it.get_children(),
-            Self::BinaryExpression(it) => it.get_children(),
+            Self::GeneralBinaryExpression(it) => it.get_children(),
             Self::PrivateInExpression(it) => it.get_children(),
             Self::LogicalExpression(it) => it.get_children(),
             Self::ConditionalExpression(it) => it.get_children(),
@@ -845,7 +846,7 @@ impl<'a> AstKind<'a> {
             Self::SpreadElement(it) => it.get_node_id(),
             Self::UpdateExpression(it) => it.get_node_id(),
             Self::UnaryExpression(it) => it.get_node_id(),
-            Self::BinaryExpression(it) => it.get_node_id(),
+            Self::GeneralBinaryExpression(it) => it.get_node_id(),
             Self::PrivateInExpression(it) => it.get_node_id(),
             Self::LogicalExpression(it) => it.get_node_id(),
             Self::ConditionalExpression(it) => it.get_node_id(),
@@ -1262,8 +1263,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_binary_expression(self) -> Option<&'a BinaryExpression<'a>> {
-        if let Self::BinaryExpression(v) = self {
+    pub fn as_general_binary_expression(self) -> Option<&'a GeneralBinaryExpression<'a>> {
+        if let Self::GeneralBinaryExpression(v) = self {
             Some(v)
         } else {
             None

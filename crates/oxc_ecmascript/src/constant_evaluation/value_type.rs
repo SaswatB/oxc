@@ -1,5 +1,5 @@
-use oxc_ast::ast::{BinaryExpression, Expression};
-use oxc_syntax::operator::{BinaryOperator, UnaryOperator};
+use oxc_ast::ast::{GeneralBinaryExpression, Expression};
+use oxc_syntax::operator::{GeneralBinaryOperator, UnaryOperator};
 
 /// JavaScript Language Type
 ///
@@ -89,7 +89,7 @@ impl<'a> From<&Expression<'a>> for ValueType {
                 UnaryOperator::Typeof => Self::String,
                 UnaryOperator::BitwiseNot => Self::Undetermined,
             },
-            Expression::BinaryExpression(e) => Self::from(&**e),
+            Expression::GeneralBinaryExpression(e) => Self::from(&**e),
             Expression::SequenceExpression(e) => {
                 e.expressions.last().map_or(ValueType::Undetermined, Self::from)
             }
@@ -99,10 +99,10 @@ impl<'a> From<&Expression<'a>> for ValueType {
     }
 }
 
-impl<'a> From<&BinaryExpression<'a>> for ValueType {
-    fn from(e: &BinaryExpression<'a>) -> Self {
+impl<'a> From<&GeneralBinaryExpression<'a>> for ValueType {
+    fn from(e: &GeneralBinaryExpression<'a>) -> Self {
         match e.operator {
-            BinaryOperator::Addition => {
+            GeneralBinaryOperator::Addition => {
                 let left = Self::from(&e.left);
                 let right = Self::from(&e.right);
                 if left == Self::Boolean
@@ -121,27 +121,27 @@ impl<'a> From<&BinaryExpression<'a>> for ValueType {
                 }
                 Self::Undetermined
             }
-            BinaryOperator::Subtraction
-            | BinaryOperator::Multiplication
-            | BinaryOperator::Division
-            | BinaryOperator::Remainder
-            | BinaryOperator::ShiftLeft
-            | BinaryOperator::BitwiseOR
-            | BinaryOperator::ShiftRight
-            | BinaryOperator::BitwiseXOR
-            | BinaryOperator::BitwiseAnd
-            | BinaryOperator::Exponential
-            | BinaryOperator::ShiftRightZeroFill => Self::Number,
-            BinaryOperator::Instanceof
-            | BinaryOperator::In
-            | BinaryOperator::Equality
-            | BinaryOperator::Inequality
-            | BinaryOperator::StrictEquality
-            | BinaryOperator::StrictInequality
-            | BinaryOperator::LessThan
-            | BinaryOperator::LessEqualThan
-            | BinaryOperator::GreaterThan
-            | BinaryOperator::GreaterEqualThan => Self::Boolean,
+            GeneralBinaryOperator::Subtraction
+            | GeneralBinaryOperator::Multiplication
+            | GeneralBinaryOperator::Division
+            | GeneralBinaryOperator::Remainder
+            | GeneralBinaryOperator::ShiftLeft
+            | GeneralBinaryOperator::BitwiseOR
+            | GeneralBinaryOperator::ShiftRight
+            | GeneralBinaryOperator::BitwiseXOR
+            | GeneralBinaryOperator::BitwiseAnd
+            | GeneralBinaryOperator::Exponential
+            | GeneralBinaryOperator::ShiftRightZeroFill => Self::Number,
+            GeneralBinaryOperator::Instanceof
+            | GeneralBinaryOperator::In
+            | GeneralBinaryOperator::Equality
+            | GeneralBinaryOperator::Inequality
+            | GeneralBinaryOperator::StrictEquality
+            | GeneralBinaryOperator::StrictInequality
+            | GeneralBinaryOperator::LessThan
+            | GeneralBinaryOperator::LessEqualThan
+            | GeneralBinaryOperator::GreaterThan
+            | GeneralBinaryOperator::GreaterEqualThan => Self::Boolean,
         }
     }
 }

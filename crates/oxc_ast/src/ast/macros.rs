@@ -120,7 +120,7 @@ macro_rules! inherit_variants {
                 /// Inherited from [`Expression`]
                 AwaitExpression(Box<'a, AwaitExpression<'a>>) = 13,
                 /// Inherited from [`Expression`]
-                BinaryExpression(Box<'a, BinaryExpression<'a>>) = 14,
+                GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 14,
                 /// Inherited from [`Expression`]
                 CallExpression(Box<'a, CallExpression<'a>>) = 15,
                 /// Inherited from [`Expression`]
@@ -203,7 +203,7 @@ macro_rules! inherit_variants {
                 ArrowFunctionExpression,
                 AssignmentExpression,
                 AwaitExpression,
-                BinaryExpression,
+                GeneralBinaryExpression,
                 CallExpression,
                 ChainExpression,
                 ClassExpression,

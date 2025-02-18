@@ -99,7 +99,7 @@ impl Serialize for Expression<'_> {
             Expression::ArrowFunctionExpression(x) => Serialize::serialize(x, serializer),
             Expression::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             Expression::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            Expression::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            Expression::GeneralBinaryExpression(x) => Serialize::serialize(x, serializer),
             Expression::CallExpression(x) => Serialize::serialize(x, serializer),
             Expression::ChainExpression(x) => Serialize::serialize(x, serializer),
             Expression::ClassExpression(x) => Serialize::serialize(x, serializer),
@@ -217,7 +217,9 @@ impl Serialize for ArrayExpressionElement<'_> {
             }
             ArrayExpressionElement::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            ArrayExpressionElement::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            ArrayExpressionElement::GeneralBinaryExpression(x) => {
+                Serialize::serialize(x, serializer)
+            }
             ArrayExpressionElement::CallExpression(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::ChainExpression(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::ClassExpression(x) => Serialize::serialize(x, serializer),
@@ -316,7 +318,7 @@ impl Serialize for PropertyKey<'_> {
             PropertyKey::ArrowFunctionExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            PropertyKey::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            PropertyKey::GeneralBinaryExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::CallExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::ChainExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::ClassExpression(x) => Serialize::serialize(x, serializer),
@@ -522,7 +524,7 @@ impl Serialize for Argument<'_> {
             Argument::ArrowFunctionExpression(x) => Serialize::serialize(x, serializer),
             Argument::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             Argument::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            Argument::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            Argument::GeneralBinaryExpression(x) => Serialize::serialize(x, serializer),
             Argument::CallExpression(x) => Serialize::serialize(x, serializer),
             Argument::ChainExpression(x) => Serialize::serialize(x, serializer),
             Argument::ClassExpression(x) => Serialize::serialize(x, serializer),
@@ -579,10 +581,10 @@ impl Serialize for UnaryExpression<'_> {
     }
 }
 
-impl Serialize for BinaryExpression<'_> {
+impl Serialize for GeneralBinaryExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "BinaryExpression")?;
+        map.serialize_entry("type", "GeneralBinaryExpression")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("left", &self.left)?;
@@ -1121,7 +1123,7 @@ impl Serialize for ForStatementInit<'_> {
             ForStatementInit::ArrowFunctionExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            ForStatementInit::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            ForStatementInit::GeneralBinaryExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::CallExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::ChainExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::ClassExpression(x) => Serialize::serialize(x, serializer),
@@ -1978,7 +1980,7 @@ impl Serialize for ExportDefaultDeclarationKind<'_> {
                 Serialize::serialize(x, serializer)
             }
             ExportDefaultDeclarationKind::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            ExportDefaultDeclarationKind::BinaryExpression(x) => {
+            ExportDefaultDeclarationKind::GeneralBinaryExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
             ExportDefaultDeclarationKind::CallExpression(x) => Serialize::serialize(x, serializer),
@@ -3311,7 +3313,7 @@ impl Serialize for JSXExpression<'_> {
             JSXExpression::ArrowFunctionExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::AssignmentExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::AwaitExpression(x) => Serialize::serialize(x, serializer),
-            JSXExpression::BinaryExpression(x) => Serialize::serialize(x, serializer),
+            JSXExpression::GeneralBinaryExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::CallExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::ChainExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::ClassExpression(x) => Serialize::serialize(x, serializer),
