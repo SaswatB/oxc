@@ -2996,7 +2996,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_expression(&mut it.object);
-        visitor.visit_expression(&mut it.expression);
+        visitor.visit_expression(&mut it.argument_expression);
         visitor.leave_node(kind);
     }
 

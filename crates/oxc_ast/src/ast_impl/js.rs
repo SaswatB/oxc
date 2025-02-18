@@ -502,7 +502,7 @@ impl<'a> MemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn static_property_info(&self) -> Option<(Span, &'a str)> {
         match self {
-            MemberExpression::ElementAccessExpression(expr) => match &expr.expression {
+            MemberExpression::ElementAccessExpression(expr) => match &expr.argument_expression {
                 Expression::StringLiteral(lit) => Some((lit.span, lit.value.as_str())),
                 Expression::TemplateLiteral(lit) => {
                     if lit.expressions.is_empty() && lit.quasis.len() == 1 {
@@ -547,7 +547,7 @@ impl<'a> MemberExpression<'a> {
 impl<'a> ElementAccessExpression<'a> {
     #[allow(missing_docs)]
     pub fn static_property_name(&self) -> Option<Atom<'a>> {
-        match &self.expression {
+        match &self.argument_expression {
             Expression::StringLiteral(lit) => Some(lit.value),
             Expression::TemplateLiteral(lit)
                 if lit.expressions.is_empty() && lit.quasis.len() == 1 =>

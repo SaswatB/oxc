@@ -1927,19 +1927,22 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - object
-    /// - expression
+    /// - argument_expression
     /// - optional
     #[inline]
     pub fn member_expression_element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
-        expression: Expression<'a>,
+        argument_expression: Expression<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
-        MemberExpression::ElementAccessExpression(
-            self.alloc_element_access_expression(span, object, expression, optional),
-        )
+        MemberExpression::ElementAccessExpression(self.alloc_element_access_expression(
+            span,
+            object,
+            argument_expression,
+            optional,
+        ))
     }
 
     /// Build a [`MemberExpression::PropertyAccessExpression`]
@@ -1993,21 +1996,21 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - object
-    /// - expression
+    /// - argument_expression
     /// - optional
     #[inline]
     pub fn element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
-        expression: Expression<'a>,
+        argument_expression: Expression<'a>,
         optional: bool,
     ) -> ElementAccessExpression<'a> {
         ElementAccessExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             object,
-            expression,
+            argument_expression,
             optional,
         }
     }
@@ -2019,18 +2022,18 @@ impl<'a> AstBuilder<'a> {
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - object
-    /// - expression
+    /// - argument_expression
     /// - optional
     #[inline]
     pub fn alloc_element_access_expression(
         self,
         span: Span,
         object: Expression<'a>,
-        expression: Expression<'a>,
+        argument_expression: Expression<'a>,
         optional: bool,
     ) -> Box<'a, ElementAccessExpression<'a>> {
         Box::new_in(
-            self.element_access_expression(span, object, expression, optional),
+            self.element_access_expression(span, object, argument_expression, optional),
             self.allocator,
         )
     }

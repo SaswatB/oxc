@@ -181,7 +181,7 @@ const _: () = {
     assert!(offset_of!(ElementAccessExpression, node_id) == 0usize);
     assert!(offset_of!(ElementAccessExpression, span) == 8usize);
     assert!(offset_of!(ElementAccessExpression, object) == 16usize);
-    assert!(offset_of!(ElementAccessExpression, expression) == 32usize);
+    assert!(offset_of!(ElementAccessExpression, argument_expression) == 32usize);
     assert!(offset_of!(ElementAccessExpression, optional) == 48usize);
 
     assert!(size_of::<PropertyAccessExpression>() == 72usize);
@@ -1937,7 +1937,7 @@ const _: () = {
     assert!(offset_of!(ElementAccessExpression, node_id) == 0usize);
     assert!(offset_of!(ElementAccessExpression, span) == 4usize);
     assert!(offset_of!(ElementAccessExpression, object) == 12usize);
-    assert!(offset_of!(ElementAccessExpression, expression) == 20usize);
+    assert!(offset_of!(ElementAccessExpression, argument_expression) == 20usize);
     assert!(offset_of!(ElementAccessExpression, optional) == 28usize);
 
     assert!(size_of::<PropertyAccessExpression>() == 44usize);

@@ -766,7 +766,7 @@ impl<'a> GetChildren<'a> for ElementAccessExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.object).to_ast_kind());
-        children.push((*&self.expression).to_ast_kind());
+        children.push((*&self.argument_expression).to_ast_kind());
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {

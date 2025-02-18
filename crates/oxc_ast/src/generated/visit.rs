@@ -2875,7 +2875,7 @@ pub mod walk {
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.object);
-        visitor.visit_expression(&it.expression);
+        visitor.visit_expression(&it.argument_expression);
         visitor.leave_node(kind);
     }
 

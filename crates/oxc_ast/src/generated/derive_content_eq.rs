@@ -359,7 +359,7 @@ impl ContentEq for ElementAccessExpression<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.object, &other.object)
-            && ContentEq::content_eq(&self.expression, &other.expression)
+            && ContentEq::content_eq(&self.argument_expression, &other.argument_expression)
             && ContentEq::content_eq(&self.optional, &other.optional)
     }
 }

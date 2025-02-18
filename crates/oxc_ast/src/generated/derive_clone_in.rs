@@ -698,7 +698,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for ElementAccessExpression<'_> {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             object: CloneIn::clone_in(&self.object, allocator),
-            expression: CloneIn::clone_in(&self.expression, allocator),
+            argument_expression: CloneIn::clone_in(&self.argument_expression, allocator),
             optional: CloneIn::clone_in(&self.optional, allocator),
         }
     }

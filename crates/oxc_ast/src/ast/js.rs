@@ -535,7 +535,8 @@ pub struct ElementAccessExpression<'a> {
     pub node_id: u32,
     pub span: Span,
     pub object: Expression<'a>,
-    pub expression: Expression<'a>,
+    #[estree(rename = "expression")]
+    pub argument_expression: Expression<'a>,
     pub optional: bool, // for optional chaining
 }
 

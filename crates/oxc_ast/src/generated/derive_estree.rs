@@ -424,7 +424,7 @@ impl Serialize for ElementAccessExpression<'_> {
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("object", &self.object)?;
-        map.serialize_entry("expression", &self.expression)?;
+        map.serialize_entry("expression", &self.argument_expression)?;
         map.serialize_entry("optional", &self.optional)?;
         map.end()
     }

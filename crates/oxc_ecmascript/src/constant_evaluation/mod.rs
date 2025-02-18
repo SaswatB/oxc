@@ -452,7 +452,7 @@ pub trait ConstantEvaluation<'a>: MayHaveSideEffects {
         &self,
         expr: &ElementAccessExpression<'a>,
     ) -> Option<ConstantValue<'a>> {
-        match &expr.expression {
+        match &expr.argument_expression {
             Expression::StringLiteral(s) if s.value == "length" => {
                 if let Some(ConstantValue::String(s)) = self.eval_expression(&expr.object) {
                     Some(ConstantValue::Number(s.encode_utf16().count().to_f64().unwrap()))
