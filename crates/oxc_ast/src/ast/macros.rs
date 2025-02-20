@@ -229,7 +229,7 @@ macro_rules! inherit_variants {
                 TSNonNullExpression,
                 TSInstantiationExpression,
                 ElementAccessExpression,
-                PropertyAccessExpression,
+                StaticMemberExpression,
                 PrivateFieldExpression,
             ]
         );
@@ -256,7 +256,7 @@ macro_rules! inherit_variants {
                 /// Inherited from [`MemberExpression`].
                 ///
                 /// `MemberExpression[?Yield, ?Await] . IdentifierName`
-                PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
+                StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
                 /// Inherited from [`MemberExpression`].
                 ///
                 /// `MemberExpression[?Yield, ?Await] . PrivateIdentifier`
@@ -275,7 +275,7 @@ macro_rules! inherit_variants {
             as_member_expression_mut,
             to_member_expression,
             to_member_expression_mut,
-            [ElementAccessExpression, PropertyAccessExpression, PrivateFieldExpression]
+            [ElementAccessExpression, StaticMemberExpression, PrivateFieldExpression]
         );
     };
 
@@ -312,7 +312,7 @@ macro_rules! inherit_variants {
             [
                 AssignmentTargetIdentifier,
                 ElementAccessExpression,
-                PropertyAccessExpression,
+                StaticMemberExpression,
                 PrivateFieldExpression,
                 TSAsExpression,
                 TSSatisfiesExpression,
@@ -372,7 +372,7 @@ macro_rules! inherit_variants {
             [
                 AssignmentTargetIdentifier,
                 ElementAccessExpression,
-                PropertyAccessExpression,
+                StaticMemberExpression,
                 PrivateFieldExpression,
                 TSAsExpression,
                 TSSatisfiesExpression,

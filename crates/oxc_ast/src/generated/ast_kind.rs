@@ -34,7 +34,7 @@ pub enum AstType {
     TaggedTemplateExpression = 17,
     TemplateElement = 18,
     ElementAccessExpression = 19,
-    PropertyAccessExpression = 20,
+    StaticMemberExpression = 20,
     PrivateFieldExpression = 21,
     CallExpression = 22,
     NewExpression = 23,
@@ -229,8 +229,7 @@ pub enum AstKind<'a> {
     TemplateElement(&'a TemplateElement<'a>) = AstType::TemplateElement as u8,
     ElementAccessExpression(&'a ElementAccessExpression<'a>) =
         AstType::ElementAccessExpression as u8,
-    PropertyAccessExpression(&'a PropertyAccessExpression<'a>) =
-        AstType::PropertyAccessExpression as u8,
+    StaticMemberExpression(&'a StaticMemberExpression<'a>) = AstType::StaticMemberExpression as u8,
     PrivateFieldExpression(&'a PrivateFieldExpression<'a>) = AstType::PrivateFieldExpression as u8,
     CallExpression(&'a CallExpression<'a>) = AstType::CallExpression as u8,
     NewExpression(&'a NewExpression<'a>) = AstType::NewExpression as u8,
@@ -453,7 +452,7 @@ impl GetSpan for AstKind<'_> {
             Self::TaggedTemplateExpression(it) => it.span(),
             Self::TemplateElement(it) => it.span(),
             Self::ElementAccessExpression(it) => it.span(),
-            Self::PropertyAccessExpression(it) => it.span(),
+            Self::StaticMemberExpression(it) => it.span(),
             Self::PrivateFieldExpression(it) => it.span(),
             Self::CallExpression(it) => it.span(),
             Self::NewExpression(it) => it.span(),
@@ -647,7 +646,7 @@ impl<'a> AstKind<'a> {
             Self::TaggedTemplateExpression(it) => it.get_children(),
             Self::TemplateElement(it) => it.get_children(),
             Self::ElementAccessExpression(it) => it.get_children(),
-            Self::PropertyAccessExpression(it) => it.get_children(),
+            Self::StaticMemberExpression(it) => it.get_children(),
             Self::PrivateFieldExpression(it) => it.get_children(),
             Self::CallExpression(it) => it.get_children(),
             Self::NewExpression(it) => it.get_children(),
@@ -838,7 +837,7 @@ impl<'a> AstKind<'a> {
             Self::TaggedTemplateExpression(it) => it.get_node_id(),
             Self::TemplateElement(it) => it.get_node_id(),
             Self::ElementAccessExpression(it) => it.get_node_id(),
-            Self::PropertyAccessExpression(it) => it.get_node_id(),
+            Self::StaticMemberExpression(it) => it.get_node_id(),
             Self::PrivateFieldExpression(it) => it.get_node_id(),
             Self::CallExpression(it) => it.get_node_id(),
             Self::NewExpression(it) => it.get_node_id(),
@@ -1191,8 +1190,8 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_property_access_expression(self) -> Option<&'a PropertyAccessExpression<'a>> {
-        if let Self::PropertyAccessExpression(v) = self {
+    pub fn as_static_member_expression(self) -> Option<&'a StaticMemberExpression<'a>> {
+        if let Self::StaticMemberExpression(v) = self {
             Some(v)
         } else {
             None

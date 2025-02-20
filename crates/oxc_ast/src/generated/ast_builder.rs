@@ -1945,9 +1945,9 @@ impl<'a> AstBuilder<'a> {
         ))
     }
 
-    /// Build a [`MemberExpression::PropertyAccessExpression`]
+    /// Build a [`MemberExpression::StaticMemberExpression`]
     ///
-    /// This node contains a [`PropertyAccessExpression`] that will be stored in the memory arena.
+    /// This node contains a [`StaticMemberExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -1955,15 +1955,15 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn member_expression_property_access_expression(
+    pub fn member_expression_static(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
     ) -> MemberExpression<'a> {
-        MemberExpression::PropertyAccessExpression(
-            self.alloc_property_access_expression(span, object, property, optional),
+        MemberExpression::StaticMemberExpression(
+            self.alloc_static_member_expression(span, object, property, optional),
         )
     }
 
@@ -2038,9 +2038,9 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Build a [`PropertyAccessExpression`].
+    /// Build a [`StaticMemberExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_property_access_expression`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_static_member_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2048,14 +2048,14 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn property_access_expression(
+    pub fn static_member_expression(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
-    ) -> PropertyAccessExpression<'a> {
-        PropertyAccessExpression {
+    ) -> StaticMemberExpression<'a> {
+        StaticMemberExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             object,
@@ -2064,9 +2064,9 @@ impl<'a> AstBuilder<'a> {
         }
     }
 
-    /// Build a [`PropertyAccessExpression`], and store it in the memory arena.
+    /// Build a [`StaticMemberExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::property_access_expression`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::static_member_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
@@ -2074,17 +2074,14 @@ impl<'a> AstBuilder<'a> {
     /// - property
     /// - optional
     #[inline]
-    pub fn alloc_property_access_expression(
+    pub fn alloc_static_member_expression(
         self,
         span: Span,
         object: Expression<'a>,
         property: IdentifierName<'a>,
         optional: bool,
-    ) -> Box<'a, PropertyAccessExpression<'a>> {
-        Box::new_in(
-            self.property_access_expression(span, object, property, optional),
-            self.allocator,
-        )
+    ) -> Box<'a, StaticMemberExpression<'a>> {
+        Box::new_in(self.static_member_expression(span, object, property, optional), self.allocator)
     }
 
     /// Build a [`PrivateFieldExpression`].

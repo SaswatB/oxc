@@ -748,12 +748,7 @@ impl<'a> ParserImpl<'a> {
             ))
         } else {
             let ident = self.parse_identifier_name()?;
-            Ok(self.ast.member_expression_property_access_expression(
-                self.end_span(lhs_span),
-                lhs,
-                ident,
-                optional,
-            ))
+            Ok(self.ast.member_expression_static(self.end_span(lhs_span), lhs, ident, optional))
         }
         .map(Expression::from)
     }

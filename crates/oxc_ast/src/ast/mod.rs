@@ -24,7 +24,7 @@
 //!
 //! pub enum MemberExpression<'a> {
 //!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>),
-//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>),
+//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>),
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>),
 //! }
 //! ```
@@ -45,7 +45,7 @@
 //! #[repr(C, u8)]
 //! pub enum MemberExpression<'a> {
 //!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
-//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
+//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 //! }
 //! ```
@@ -61,7 +61,7 @@
 //!
 //!     // Inherited from `MemberExpression`
 //!     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
-//!     PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
+//!     StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
 //!     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 //! }
 //!
@@ -71,7 +71,7 @@
 //!     into_member_expression,
 //!     as_member_expression, as_member_expression_mut,
 //!     to_member_expression, to_member_expression_mut,
-//!     [ElementAccessExpression, PropertyAccessExpression, PrivateFieldExpression]
+//!     [ElementAccessExpression, StaticMemberExpression, PrivateFieldExpression]
 //! )
 //! ```
 //!

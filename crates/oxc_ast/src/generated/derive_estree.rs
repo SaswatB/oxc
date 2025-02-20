@@ -125,7 +125,7 @@ impl Serialize for Expression<'_> {
             Expression::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             Expression::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             Expression::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            Expression::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            Expression::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             Expression::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -253,7 +253,7 @@ impl Serialize for ArrayExpressionElement<'_> {
             ArrayExpressionElement::ElementAccessExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
-            ArrayExpressionElement::PropertyAccessExpression(x) => {
+            ArrayExpressionElement::StaticMemberExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
             ArrayExpressionElement::PrivateFieldExpression(x) => {
@@ -344,7 +344,7 @@ impl Serialize for PropertyKey<'_> {
             PropertyKey::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            PropertyKey::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            PropertyKey::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             PropertyKey::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -411,7 +411,7 @@ impl Serialize for MemberExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
             MemberExpression::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            MemberExpression::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            MemberExpression::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             MemberExpression::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -430,10 +430,10 @@ impl Serialize for ElementAccessExpression<'_> {
     }
 }
 
-impl Serialize for PropertyAccessExpression<'_> {
+impl Serialize for StaticMemberExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "PropertyAccessExpression")?;
+        map.serialize_entry("type", "StaticMemberExpression")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("object", &self.object)?;
@@ -550,7 +550,7 @@ impl Serialize for Argument<'_> {
             Argument::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             Argument::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             Argument::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            Argument::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            Argument::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             Argument::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -656,7 +656,7 @@ impl Serialize for AssignmentTarget<'_> {
             AssignmentTarget::TSTypeAssertion(x) => Serialize::serialize(x, serializer),
             AssignmentTarget::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             AssignmentTarget::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            AssignmentTarget::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            AssignmentTarget::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             AssignmentTarget::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
             AssignmentTarget::ArrayAssignmentTarget(x) => Serialize::serialize(x, serializer),
             AssignmentTarget::ObjectAssignmentTarget(x) => Serialize::serialize(x, serializer),
@@ -680,7 +680,7 @@ impl Serialize for SimpleAssignmentTarget<'_> {
             SimpleAssignmentTarget::ElementAccessExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
-            SimpleAssignmentTarget::PropertyAccessExpression(x) => {
+            SimpleAssignmentTarget::StaticMemberExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
             SimpleAssignmentTarget::PrivateFieldExpression(x) => {
@@ -765,7 +765,7 @@ impl Serialize for AssignmentTargetMaybeDefault<'_> {
             AssignmentTargetMaybeDefault::ElementAccessExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
-            AssignmentTargetMaybeDefault::PropertyAccessExpression(x) => {
+            AssignmentTargetMaybeDefault::StaticMemberExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
             AssignmentTargetMaybeDefault::PrivateFieldExpression(x) => {
@@ -880,7 +880,7 @@ impl Serialize for ChainElement<'_> {
             ChainElement::CallExpression(x) => Serialize::serialize(x, serializer),
             ChainElement::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             ChainElement::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            ChainElement::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            ChainElement::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             ChainElement::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -1149,7 +1149,7 @@ impl Serialize for ForStatementInit<'_> {
             ForStatementInit::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            ForStatementInit::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            ForStatementInit::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             ForStatementInit::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -1179,7 +1179,7 @@ impl Serialize for ForStatementLeft<'_> {
             ForStatementLeft::TSTypeAssertion(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            ForStatementLeft::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            ForStatementLeft::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::ArrayAssignmentTarget(x) => Serialize::serialize(x, serializer),
             ForStatementLeft::ObjectAssignmentTarget(x) => Serialize::serialize(x, serializer),
@@ -2036,7 +2036,7 @@ impl Serialize for ExportDefaultDeclarationKind<'_> {
             ExportDefaultDeclarationKind::ElementAccessExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
-            ExportDefaultDeclarationKind::PropertyAccessExpression(x) => {
+            ExportDefaultDeclarationKind::StaticMemberExpression(x) => {
                 Serialize::serialize(x, serializer)
             }
             ExportDefaultDeclarationKind::PrivateFieldExpression(x) => {
@@ -3339,7 +3339,7 @@ impl Serialize for JSXExpression<'_> {
             JSXExpression::TSNonNullExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::TSInstantiationExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::ElementAccessExpression(x) => Serialize::serialize(x, serializer),
-            JSXExpression::PropertyAccessExpression(x) => Serialize::serialize(x, serializer),
+            JSXExpression::StaticMemberExpression(x) => Serialize::serialize(x, serializer),
             JSXExpression::PrivateFieldExpression(x) => Serialize::serialize(x, serializer),
         }
     }

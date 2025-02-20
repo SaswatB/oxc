@@ -193,7 +193,7 @@ macro_rules! match_expression {
             | $ty::TSNonNullExpression(_)
             | $ty::TSInstantiationExpression(_)
             | $ty::ElementAccessExpression(_)
-            | $ty::PropertyAccessExpression(_)
+            | $ty::StaticMemberExpression(_)
             | $ty::PrivateFieldExpression(_)
     };
 }
@@ -507,7 +507,7 @@ pub enum MemberExpression<'a> {
     /// `ar[0]` in `const ar = [1, 2]; ar[0];`
     ElementAccessExpression(Box<'a, ElementAccessExpression<'a>>) = 48,
     /// `console.log` in `console.log('Hello, World!');`
-    PropertyAccessExpression(Box<'a, PropertyAccessExpression<'a>>) = 49,
+    StaticMemberExpression(Box<'a, StaticMemberExpression<'a>>) = 49,
     /// `c.#a` in `class C { #a = 1; }; const c = new C(); c.#a;`
     PrivateFieldExpression(Box<'a, PrivateFieldExpression<'a>>) = 50,
 }
@@ -517,7 +517,7 @@ pub enum MemberExpression<'a> {
 macro_rules! match_member_expression {
     ($ty:ident) => {
         $ty::ElementAccessExpression(_)
-            | $ty::PropertyAccessExpression(_)
+            | $ty::StaticMemberExpression(_)
             | $ty::PrivateFieldExpression(_)
     };
 }
@@ -546,7 +546,7 @@ pub struct ElementAccessExpression<'a> {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct PropertyAccessExpression<'a> {
+pub struct StaticMemberExpression<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
@@ -833,7 +833,7 @@ macro_rules! match_assignment_target {
     ($ty:ident) => {
         $ty::AssignmentTargetIdentifier(_)
             | $ty::ElementAccessExpression(_)
-            | $ty::PropertyAccessExpression(_)
+            | $ty::StaticMemberExpression(_)
             | $ty::PrivateFieldExpression(_)
             | $ty::TSAsExpression(_)
             | $ty::TSSatisfiesExpression(_)
@@ -853,7 +853,7 @@ macro_rules! match_simple_assignment_target {
     ($ty:ident) => {
         $ty::AssignmentTargetIdentifier(_)
             | $ty::ElementAccessExpression(_)
-            | $ty::PropertyAccessExpression(_)
+            | $ty::StaticMemberExpression(_)
             | $ty::PrivateFieldExpression(_)
             | $ty::TSAsExpression(_)
             | $ty::TSSatisfiesExpression(_)

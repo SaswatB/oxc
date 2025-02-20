@@ -465,7 +465,7 @@ impl<'a> MemberExpression<'a> {
     pub fn optional(&self) -> bool {
         match self {
             MemberExpression::ElementAccessExpression(expr) => expr.optional,
-            MemberExpression::PropertyAccessExpression(expr) => expr.optional,
+            MemberExpression::StaticMemberExpression(expr) => expr.optional,
             MemberExpression::PrivateFieldExpression(expr) => expr.optional,
         }
     }
@@ -474,7 +474,7 @@ impl<'a> MemberExpression<'a> {
     pub fn object(&self) -> &Expression<'a> {
         match self {
             MemberExpression::ElementAccessExpression(expr) => &expr.object,
-            MemberExpression::PropertyAccessExpression(expr) => &expr.object,
+            MemberExpression::StaticMemberExpression(expr) => &expr.object,
             MemberExpression::PrivateFieldExpression(expr) => &expr.object,
         }
     }
@@ -483,7 +483,7 @@ impl<'a> MemberExpression<'a> {
     pub fn object_mut(&mut self) -> &mut Expression<'a> {
         match self {
             MemberExpression::ElementAccessExpression(expr) => &mut expr.object,
-            MemberExpression::PropertyAccessExpression(expr) => &mut expr.object,
+            MemberExpression::StaticMemberExpression(expr) => &mut expr.object,
             MemberExpression::PrivateFieldExpression(expr) => &mut expr.object,
         }
     }
@@ -494,7 +494,7 @@ impl<'a> MemberExpression<'a> {
             MemberExpression::ElementAccessExpression(expr) => {
                 expr.static_property_name().map(|name| name.as_str())
             }
-            MemberExpression::PropertyAccessExpression(expr) => Some(expr.property.name.as_str()),
+            MemberExpression::StaticMemberExpression(expr) => Some(expr.property.name.as_str()),
             MemberExpression::PrivateFieldExpression(_) => None,
         }
     }
@@ -513,7 +513,7 @@ impl<'a> MemberExpression<'a> {
                 }
                 _ => None,
             },
-            MemberExpression::PropertyAccessExpression(expr) => {
+            MemberExpression::StaticMemberExpression(expr) => {
                 Some((expr.property.span, expr.property.name.as_str()))
             }
             MemberExpression::PrivateFieldExpression(_) => None,
@@ -560,18 +560,18 @@ impl<'a> ElementAccessExpression<'a> {
     }
 }
 
-impl<'a> PropertyAccessExpression<'a> {
+impl<'a> StaticMemberExpression<'a> {
     #[allow(missing_docs)]
     pub fn get_first_object(&self) -> &Expression<'a> {
         let mut object = &self.object;
         loop {
             match object {
-                Expression::PropertyAccessExpression(member) => {
+                Expression::StaticMemberExpression(member) => {
                     object = &member.object;
                     continue;
                 }
                 Expression::ChainExpression(chain) => {
-                    if let ChainElement::PropertyAccessExpression(member) = &chain.expression {
+                    if let ChainElement::StaticMemberExpression(member) = &chain.expression {
                         object = &member.object;
                         continue;
                     }

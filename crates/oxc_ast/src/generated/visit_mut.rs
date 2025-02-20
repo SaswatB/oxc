@@ -700,8 +700,8 @@ pub trait VisitMut<'a>: Sized {
     }
 
     #[inline]
-    fn visit_property_access_expression(&mut self, it: &mut PropertyAccessExpression<'a>) {
-        walk_property_access_expression(self, it);
+    fn visit_static_member_expression(&mut self, it: &mut StaticMemberExpression<'a>) {
+        walk_static_member_expression(self, it);
     }
 
     #[inline]
@@ -2978,8 +2978,8 @@ pub mod walk_mut {
             MemberExpression::ElementAccessExpression(it) => {
                 visitor.visit_element_access_expression(it)
             }
-            MemberExpression::PropertyAccessExpression(it) => {
-                visitor.visit_property_access_expression(it)
+            MemberExpression::StaticMemberExpression(it) => {
+                visitor.visit_static_member_expression(it)
             }
             MemberExpression::PrivateFieldExpression(it) => {
                 visitor.visit_private_field_expression(it)
@@ -3001,11 +3001,11 @@ pub mod walk_mut {
     }
 
     #[inline]
-    pub fn walk_property_access_expression<'a, V: VisitMut<'a>>(
+    pub fn walk_static_member_expression<'a, V: VisitMut<'a>>(
         visitor: &mut V,
-        it: &mut PropertyAccessExpression<'a>,
+        it: &mut StaticMemberExpression<'a>,
     ) {
-        let kind = AstType::PropertyAccessExpression;
+        let kind = AstType::StaticMemberExpression;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_expression(&mut it.object);

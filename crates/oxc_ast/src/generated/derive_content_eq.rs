@@ -95,9 +95,7 @@ impl ContentEq for Expression<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -195,9 +193,7 @@ impl ContentEq for ArrayExpressionElement<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -290,9 +286,7 @@ impl ContentEq for PropertyKey<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -346,9 +340,7 @@ impl ContentEq for MemberExpression<'_> {
         #[allow(clippy::match_same_arms)]
         match (self, other) {
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -364,7 +356,7 @@ impl ContentEq for ElementAccessExpression<'_> {
     }
 }
 
-impl ContentEq for PropertyAccessExpression<'_> {
+impl ContentEq for StaticMemberExpression<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.object, &other.object)
@@ -465,9 +457,7 @@ impl ContentEq for Argument<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -551,9 +541,7 @@ impl ContentEq for AssignmentTarget<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             (Self::ArrayAssignmentTarget(a), Self::ArrayAssignmentTarget(b)) => a.content_eq(b),
             (Self::ObjectAssignmentTarget(a), Self::ObjectAssignmentTarget(b)) => a.content_eq(b),
@@ -577,9 +565,7 @@ impl ContentEq for SimpleAssignmentTarget<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -638,9 +624,7 @@ impl ContentEq for AssignmentTargetMaybeDefault<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             (Self::ArrayAssignmentTarget(a), Self::ArrayAssignmentTarget(b)) => a.content_eq(b),
             (Self::ObjectAssignmentTarget(a), Self::ObjectAssignmentTarget(b)) => a.content_eq(b),
@@ -725,9 +709,7 @@ impl ContentEq for ChainElement<'_> {
             (Self::CallExpression(a), Self::CallExpression(b)) => a.content_eq(b),
             (Self::TSNonNullExpression(a), Self::TSNonNullExpression(b)) => a.content_eq(b),
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -951,9 +933,7 @@ impl ContentEq for ForStatementInit<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -985,9 +965,7 @@ impl ContentEq for ForStatementLeft<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             (Self::ArrayAssignmentTarget(a), Self::ArrayAssignmentTarget(b)) => a.content_eq(b),
             (Self::ObjectAssignmentTarget(a), Self::ObjectAssignmentTarget(b)) => a.content_eq(b),
@@ -1571,9 +1549,7 @@ impl ContentEq for ExportDefaultDeclarationKind<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -2563,9 +2539,7 @@ impl ContentEq for JSXExpression<'_> {
                 a.content_eq(b)
             }
             (Self::ElementAccessExpression(a), Self::ElementAccessExpression(b)) => a.content_eq(b),
-            (Self::PropertyAccessExpression(a), Self::PropertyAccessExpression(b)) => {
-                a.content_eq(b)
-            }
+            (Self::StaticMemberExpression(a), Self::StaticMemberExpression(b)) => a.content_eq(b),
             (Self::PrivateFieldExpression(a), Self::PrivateFieldExpression(b)) => a.content_eq(b),
             _ => false,
         }

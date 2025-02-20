@@ -153,7 +153,7 @@ impl<'a> AstKind<'a> {
             Expression::ImportExpression(e) => Self::ImportExpression(e),
             Expression::LogicalExpression(e) => Self::LogicalExpression(e),
             Expression::ElementAccessExpression(e) => Self::ElementAccessExpression(e),
-            Expression::PropertyAccessExpression(e) => Self::PropertyAccessExpression(e),
+            Expression::StaticMemberExpression(e) => Self::StaticMemberExpression(e),
             Expression::PrivateFieldExpression(e) => Self::PrivateFieldExpression(e),
             Expression::NewExpression(e) => Self::NewExpression(e),
             Expression::ObjectExpression(e) => Self::ObjectExpression(e),
@@ -254,7 +254,7 @@ impl<'a> AstKind<'a> {
             ChainElement::CallExpression(c) => Self::CallExpression(c),
             ChainElement::TSNonNullExpression(c) => Self::TSNonNullExpression(c),
             ChainElement::ElementAccessExpression(c) => Self::ElementAccessExpression(c),
-            ChainElement::PropertyAccessExpression(c) => Self::PropertyAccessExpression(c),
+            ChainElement::StaticMemberExpression(c) => Self::StaticMemberExpression(c),
             ChainElement::PrivateFieldExpression(c) => Self::PrivateFieldExpression(c),
         }
     }
@@ -287,8 +287,8 @@ impl<'a> AstKind<'a> {
             AssignmentTargetMaybeDefault::ElementAccessExpression(a) => {
                 Self::ElementAccessExpression(a)
             }
-            AssignmentTargetMaybeDefault::PropertyAccessExpression(a) => {
-                Self::PropertyAccessExpression(a)
+            AssignmentTargetMaybeDefault::StaticMemberExpression(a) => {
+                Self::StaticMemberExpression(a)
             }
             AssignmentTargetMaybeDefault::PrivateFieldExpression(a) => {
                 Self::PrivateFieldExpression(a)
@@ -324,7 +324,7 @@ impl<'a> AstKind<'a> {
             ForStatementLeft::TSTypeAssertion(a) => Self::TSTypeAssertion(a),
             ForStatementLeft::TSInstantiationExpression(a) => Self::TSInstantiationExpression(a),
             ForStatementLeft::ElementAccessExpression(a) => Self::ElementAccessExpression(a),
-            ForStatementLeft::PropertyAccessExpression(a) => Self::PropertyAccessExpression(a),
+            ForStatementLeft::StaticMemberExpression(a) => Self::StaticMemberExpression(a),
             ForStatementLeft::PrivateFieldExpression(a) => Self::PrivateFieldExpression(a),
             ForStatementLeft::ArrayAssignmentTarget(a) => Self::ArrayAssignmentTarget(a),
             ForStatementLeft::ObjectAssignmentTarget(a) => Self::ObjectAssignmentTarget(a),
@@ -399,8 +399,8 @@ impl<'a> AstKind<'a> {
             ExportDefaultDeclarationKind::ElementAccessExpression(e) => {
                 Self::ElementAccessExpression(e)
             }
-            ExportDefaultDeclarationKind::PropertyAccessExpression(e) => {
-                Self::PropertyAccessExpression(e)
+            ExportDefaultDeclarationKind::StaticMemberExpression(e) => {
+                Self::StaticMemberExpression(e)
             }
             ExportDefaultDeclarationKind::PrivateFieldExpression(e) => {
                 Self::PrivateFieldExpression(e)
@@ -496,7 +496,7 @@ impl<'a> AstKind<'a> {
             JSXExpression::TSNonNullExpression(j) => Self::TSNonNullExpression(j),
             JSXExpression::TSInstantiationExpression(j) => Self::TSInstantiationExpression(j),
             JSXExpression::ElementAccessExpression(j) => Self::ElementAccessExpression(j),
-            JSXExpression::PropertyAccessExpression(j) => Self::PropertyAccessExpression(j),
+            JSXExpression::StaticMemberExpression(j) => Self::StaticMemberExpression(j),
             JSXExpression::PrivateFieldExpression(j) => Self::PrivateFieldExpression(j),
         }
     }
@@ -790,7 +790,7 @@ impl AstKind<'_> {
                 format!("ObjectProperty({})", p.key.name().unwrap_or(COMPUTED)).into()
             }
             Self::ElementAccessExpression(_) => "ElementAccessExpression".into(),
-            Self::PropertyAccessExpression(_) => "PropertyAccessExpression".into(),
+            Self::StaticMemberExpression(_) => "StaticMemberExpression".into(),
             Self::PrivateFieldExpression(_) => "PrivateFieldExpression".into(),
             Self::ArrayAssignmentTarget(_) => "ArrayAssignmentTarget".into(),
             Self::ObjectAssignmentTarget(_) => "ObjectAssignmentTarget".into(),
