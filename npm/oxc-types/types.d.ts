@@ -900,14 +900,20 @@ export interface YieldExpression extends Span {
   argument: Expression | null;
 }
 
+export interface ClassExtends extends Span {
+  type: 'ClassExtends';
+  nodeId: number;
+  expression: Expression;
+  typeParameters: TSTypeParameterInstantiation | null;
+}
+
 export interface Class extends Span {
   nodeId: number;
   type: ClassType;
   decorators: Array<Decorator>;
   id: BindingIdentifier | null;
   typeParameters: TSTypeParameterDeclarationList | null;
-  superClass: Expression | null;
-  superTypeParameters: TSTypeParameterInstantiation | null;
+  extends: ClassExtends | null;
   implements: Array<TSClassImplements> | null;
   body: ClassBody;
   abstract: boolean;

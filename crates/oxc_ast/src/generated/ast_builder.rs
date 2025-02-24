@@ -741,31 +741,28 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     #[inline]
-    pub fn expression_class<T1, T2, T3>(
+    pub fn expression_class<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
     ) -> Expression<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Expression::ClassExpression(self.alloc_class(
             span,
@@ -773,8 +770,7 @@ impl<'a> AstBuilder<'a> {
             decorators,
             id,
             type_parameters,
-            super_class,
-            super_type_parameters,
+            extends,
             implements,
             body,
             r#abstract,
@@ -3883,31 +3879,28 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     #[inline]
-    pub fn declaration_class<T1, T2, T3>(
+    pub fn declaration_class<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
     ) -> Declaration<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Declaration::ClassDeclaration(self.alloc_class(
             span,
@@ -3915,8 +3908,7 @@ impl<'a> AstBuilder<'a> {
             decorators,
             id,
             type_parameters,
-            super_class,
-            super_type_parameters,
+            extends,
             implements,
             body,
             r#abstract,
@@ -6279,6 +6271,53 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.yield_expression(span, delegate, argument), self.allocator)
     }
 
+    /// Build a [`ClassExtends`].
+    ///
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class_extends`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - expression
+    /// - type_parameters
+    #[inline]
+    pub fn class_extends<T1>(
+        self,
+        span: Span,
+        expression: Expression<'a>,
+        type_parameters: T1,
+    ) -> ClassExtends<'a>
+    where
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
+    {
+        ClassExtends {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression,
+            type_parameters: type_parameters.into_in(self.allocator),
+        }
+    }
+
+    /// Build a [`ClassExtends`], and store it in the memory arena.
+    ///
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::class_extends`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - expression
+    /// - type_parameters
+    #[inline]
+    pub fn alloc_class_extends<T1>(
+        self,
+        span: Span,
+        expression: Expression<'a>,
+        type_parameters: T1,
+    ) -> Box<'a, ClassExtends<'a>>
+    where
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
+    {
+        Box::new_in(self.class_extends(span, expression, type_parameters), self.allocator)
+    }
+
     /// Build a [`Class`].
     ///
     /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class`] instead.
@@ -6289,31 +6328,28 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     #[inline]
-    pub fn class<T1, T2, T3>(
+    pub fn class<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
     ) -> Class<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
@@ -6322,8 +6358,7 @@ impl<'a> AstBuilder<'a> {
             decorators,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
-            super_class,
-            super_type_parameters: super_type_parameters.into_in(self.allocator),
+            extends,
             implements,
             body: body.into_in(self.allocator),
             r#abstract,
@@ -6342,31 +6377,28 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     #[inline]
-    pub fn alloc_class<T1, T2, T3>(
+    pub fn alloc_class<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
     ) -> Box<'a, Class<'a>>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Box::new_in(
             self.class(
@@ -6375,8 +6407,7 @@ impl<'a> AstBuilder<'a> {
                 decorators,
                 id,
                 type_parameters,
-                super_class,
-                super_type_parameters,
+                extends,
                 implements,
                 body,
                 r#abstract,
@@ -6396,33 +6427,30 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     /// - scope_id: Id of the scope created by the [`Class`], including type parameters and
     #[inline]
-    pub fn class_with_scope_id<T1, T2, T3>(
+    pub fn class_with_scope_id<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
         scope_id: ScopeId,
     ) -> Class<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Class {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
@@ -6431,8 +6459,7 @@ impl<'a> AstBuilder<'a> {
             decorators,
             id,
             type_parameters: type_parameters.into_in(self.allocator),
-            super_class,
-            super_type_parameters: super_type_parameters.into_in(self.allocator),
+            extends,
             implements,
             body: body.into_in(self.allocator),
             r#abstract,
@@ -6451,33 +6478,30 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     /// - scope_id: Id of the scope created by the [`Class`], including type parameters and
     #[inline]
-    pub fn alloc_class_with_scope_id<T1, T2, T3>(
+    pub fn alloc_class_with_scope_id<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
         scope_id: ScopeId,
     ) -> Box<'a, Class<'a>>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         Box::new_in(
             self.class_with_scope_id(
@@ -6486,8 +6510,7 @@ impl<'a> AstBuilder<'a> {
                 decorators,
                 id,
                 type_parameters,
-                super_class,
-                super_type_parameters,
+                extends,
                 implements,
                 body,
                 r#abstract,
@@ -8001,31 +8024,28 @@ impl<'a> AstBuilder<'a> {
     /// - decorators: Decorators applied to the class.
     /// - id: Class identifier, AKA the name
     /// - type_parameters
-    /// - super_class: Super class. When present, this will usually be an [`IdentifierReference`].
-    /// - super_type_parameters: Type parameters passed to super class.
+    /// - extends
     /// - implements: Interface implementation clause for TypeScript classes.
     /// - body
     /// - r#abstract: Whether the class is abstract
     /// - declare: Whether the class was `declare`ed
     #[inline]
-    pub fn export_default_declaration_kind_class<T1, T2, T3>(
+    pub fn export_default_declaration_kind_class<T1, T2>(
         self,
         span: Span,
         r#type: ClassType,
         decorators: Vec<'a, Decorator<'a>>,
         id: Option<BindingIdentifier<'a>>,
         type_parameters: T1,
-        super_class: Option<Expression<'a>>,
-        super_type_parameters: T2,
+        extends: Option<ClassExtends<'a>>,
         implements: Option<Vec<'a, TSClassImplements<'a>>>,
-        body: T3,
+        body: T2,
         r#abstract: bool,
         declare: bool,
     ) -> ExportDefaultDeclarationKind<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
-        T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-        T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
+        T2: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
         ExportDefaultDeclarationKind::ClassDeclaration(self.alloc_class(
             span,
@@ -8033,8 +8053,7 @@ impl<'a> AstBuilder<'a> {
             decorators,
             id,
             type_parameters,
-            super_class,
-            super_type_parameters,
+            extends,
             implements,
             body,
             r#abstract,

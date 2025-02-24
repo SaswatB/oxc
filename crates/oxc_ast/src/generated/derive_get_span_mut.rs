@@ -1024,6 +1024,13 @@ impl GetSpanMut for YieldExpression<'_> {
     }
 }
 
+impl GetSpanMut for ClassExtends<'_> {
+    #[inline]
+    fn span_mut(&mut self) -> &mut Span {
+        &mut self.span
+    }
+}
+
 impl GetSpanMut for Class<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {

@@ -1559,6 +1559,18 @@ impl Serialize for YieldExpression<'_> {
     }
 }
 
+impl Serialize for ClassExtends<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("type", "ClassExtends")?;
+        map.serialize_entry("nodeId", &self.node_id)?;
+        self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
+        map.serialize_entry("expression", &self.expression)?;
+        map.serialize_entry("typeParameters", &self.type_parameters)?;
+        map.end()
+    }
+}
+
 impl Serialize for Class<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
@@ -1568,8 +1580,7 @@ impl Serialize for Class<'_> {
         map.serialize_entry("decorators", &self.decorators)?;
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("typeParameters", &self.type_parameters)?;
-        map.serialize_entry("superClass", &self.super_class)?;
-        map.serialize_entry("superTypeParameters", &self.super_type_parameters)?;
+        map.serialize_entry("extends", &self.extends)?;
         map.serialize_entry("implements", &self.implements)?;
         map.serialize_entry("body", &self.body)?;
         map.serialize_entry("abstract", &self.r#abstract)?;

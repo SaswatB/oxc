@@ -2527,6 +2527,23 @@ impl<'a> GetChildren<'a> for YieldExpression<'a> {
     }
 }
 
+impl<'a> GetChildren<'a> for ClassExtends<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push((*&self.expression).to_ast_kind());
+        if let Some(field) = &self.type_parameters {
+            children.push(AstKind::TSTypeParameterInstantiation(field));
+        }
+        children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ClassExtends(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
+}
+
 impl<'a> GetChildren<'a> for Class<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
@@ -2539,11 +2556,8 @@ impl<'a> GetChildren<'a> for Class<'a> {
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
-        if let Some(field) = &self.super_class {
-            children.push((*field).to_ast_kind());
-        }
-        if let Some(field) = &self.super_type_parameters {
-            children.push(AstKind::TSTypeParameterInstantiation(field));
+        if let Some(field) = &self.extends {
+            children.push(AstKind::ClassExtends(field));
         }
         if let Some(vec) = &self.implements {
             for item in vec {

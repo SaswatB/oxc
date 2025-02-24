@@ -1970,6 +1970,21 @@ pub struct YieldExpression<'a> {
 }
 
 /// Class Definitions
+
+/// Class extends clause
+#[ast(visit)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct ClassExtends<'a> {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
+    pub span: Span,
+    pub expression: Expression<'a>,
+    #[ts]
+    pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+}
+
 #[ast(visit)]
 #[scope(flags(ScopeFlags::StrictMode))]
 #[derive(Debug)]
@@ -1997,23 +2012,25 @@ pub struct Class<'a> {
     #[scope(enter_before)]
     #[ts]
     pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
-    /// Super class. When present, this will usually be an [`IdentifierReference`].
-    ///
-    /// ## Example
-    /// ```ts
-    /// class Foo extends Bar {}
-    /// //                ^^^
-    /// ```
-    pub super_class: Option<Expression<'a>>,
-    /// Type parameters passed to super class.
-    ///
-    /// ## Example
-    /// ```ts
-    /// class Foo<T> extends Bar<T> {}
-    /// //                       ^
-    /// ```
+    // /// Super class. When present, this will usually be an [`IdentifierReference`].
+    // ///
+    // /// ## Example
+    // /// ```ts
+    // /// class Foo extends Bar {}
+    // /// //                ^^^
+    // /// ```
+    // pub super_class: Option<Expression<'a>>,
+    // /// Type parameters passed to super class.
+    // ///
+    // /// ## Example
+    // /// ```ts
+    // /// class Foo<T> extends Bar<T> {}
+    // /// //                       ^
+    // /// ```
+    // #[ts]
+    // pub super_type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
     #[ts]
-    pub super_type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+    pub extends: Option<ClassExtends<'a>>,
     /// Interface implementation clause for TypeScript classes.
     ///
     /// ## Example

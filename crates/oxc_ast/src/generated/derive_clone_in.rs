@@ -2115,6 +2115,18 @@ impl<'new_alloc> CloneIn<'new_alloc> for YieldExpression<'_> {
     }
 }
 
+impl<'new_alloc> CloneIn<'new_alloc> for ClassExtends<'_> {
+    type Cloned = ClassExtends<'new_alloc>;
+    fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
+        ClassExtends {
+            node_id: CloneIn::clone_in(&self.node_id, allocator),
+            span: CloneIn::clone_in(&self.span, allocator),
+            expression: CloneIn::clone_in(&self.expression, allocator),
+            type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
+        }
+    }
+}
+
 impl<'new_alloc> CloneIn<'new_alloc> for Class<'_> {
     type Cloned = Class<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
@@ -2125,8 +2137,7 @@ impl<'new_alloc> CloneIn<'new_alloc> for Class<'_> {
             decorators: CloneIn::clone_in(&self.decorators, allocator),
             id: CloneIn::clone_in(&self.id, allocator),
             type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
-            super_class: CloneIn::clone_in(&self.super_class, allocator),
-            super_type_parameters: CloneIn::clone_in(&self.super_type_parameters, allocator),
+            extends: CloneIn::clone_in(&self.extends, allocator),
             implements: CloneIn::clone_in(&self.implements, allocator),
             body: CloneIn::clone_in(&self.body, allocator),
             r#abstract: CloneIn::clone_in(&self.r#abstract, allocator),

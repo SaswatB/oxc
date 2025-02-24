@@ -812,6 +812,11 @@ pub trait VisitMut<'a>: Sized {
     }
 
     #[inline]
+    fn visit_class_extends(&mut self, it: &mut ClassExtends<'a>) {
+        walk_class_extends(self, it);
+    }
+
+    #[inline]
     fn visit_ts_class_implementses(&mut self, it: &mut Vec<'a, TSClassImplements<'a>>) {
         walk_ts_class_implementses(self, it);
     }
@@ -3260,17 +3265,26 @@ pub mod walk_mut {
         if let Some(type_parameters) = &mut it.type_parameters {
             visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
-        if let Some(super_class) = &mut it.super_class {
-            visitor.visit_expression(super_class);
-        }
-        if let Some(super_type_parameters) = &mut it.super_type_parameters {
-            visitor.visit_ts_type_parameter_instantiation(super_type_parameters);
+        if let Some(extends) = &mut it.extends {
+            visitor.visit_class_extends(extends);
         }
         if let Some(implements) = &mut it.implements {
             visitor.visit_ts_class_implementses(implements);
         }
         visitor.visit_class_body(&mut it.body);
         visitor.leave_scope();
+        visitor.leave_node(kind);
+    }
+
+    #[inline]
+    pub fn walk_class_extends<'a, V: VisitMut<'a>>(visitor: &mut V, it: &mut ClassExtends<'a>) {
+        let kind = AstType::ClassExtends;
+        visitor.enter_node(kind);
+        visitor.visit_span(&mut it.span);
+        visitor.visit_expression(&mut it.expression);
+        if let Some(type_parameters) = &mut it.type_parameters {
+            visitor.visit_ts_type_parameter_instantiation(type_parameters);
+        }
         visitor.leave_node(kind);
     }
 

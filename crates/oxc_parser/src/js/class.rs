@@ -78,12 +78,14 @@ impl<'a> ParserImpl<'a> {
         let type_parameters = if self.is_ts { self.parse_ts_type_parameters()? } else { None };
         let (extends, implements) = self.parse_heritage_clause()?;
         let mut super_class = None;
-        let mut super_type_parameters = None;
         if let Some(mut extends) = extends {
             if !extends.is_empty() {
                 let first_extends = extends.remove(0);
-                super_class = Some(first_extends.0);
-                super_type_parameters = first_extends.1;
+                super_class = Some(self.ast.class_extends(
+                    self.end_span(start_span),
+                    first_extends.0,
+                    first_extends.1,
+                ));
             }
         }
         let body = self.parse_class_body()?;
@@ -101,7 +103,6 @@ impl<'a> ParserImpl<'a> {
             id,
             type_parameters,
             super_class,
-            super_type_parameters,
             implements,
             body,
             modifiers.contains_abstract(),

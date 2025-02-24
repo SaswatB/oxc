@@ -813,6 +813,7 @@ impl AstKind<'_> {
 
             Self::Class(c) => format!("Class({})", or_anonymous(c.id.as_ref())).into(),
             Self::TSClassImplements(_) => "TSClassImplements".into(),
+            Self::ClassExtends(_) => "ClassExtends".into(),
             Self::ClassBody(_) => "ClassBody".into(),
             Self::StaticBlock(_) => "StaticBlock".into(),
             Self::PropertyDefinition(_) => "PropertyDefinition".into(),
