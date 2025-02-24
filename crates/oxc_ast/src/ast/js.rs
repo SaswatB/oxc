@@ -1808,7 +1808,7 @@ pub struct Function<'a> {
     #[ts]
     pub declare: bool,
     #[ts]
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     /// Declaring `this` in a Function <https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function>
     ///
     /// The JavaScript specification states that you cannot have a parameter called `this`,
@@ -1945,7 +1945,7 @@ pub struct ArrowFunctionExpression<'a> {
     pub expression: bool,
     pub r#async: bool,
     #[ts]
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub params: Box<'a, FormalParameters<'a>>,
     #[ts]
     pub return_type: Option<Box<'a, TSTypeAnnotation<'a>>>,
@@ -1996,7 +1996,7 @@ pub struct Class<'a> {
     pub id: Option<BindingIdentifier<'a>>,
     #[scope(enter_before)]
     #[ts]
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     /// Super class. When present, this will usually be an [`IdentifierReference`].
     ///
     /// ## Example

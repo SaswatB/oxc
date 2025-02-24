@@ -1619,7 +1619,7 @@ impl GetSpan for TSTypeParameter<'_> {
     }
 }
 
-impl GetSpan for TSTypeParameterDeclaration<'_> {
+impl GetSpan for TSTypeParameterDeclarationList<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span

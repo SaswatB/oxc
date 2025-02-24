@@ -2413,7 +2413,7 @@ impl<'a> GetChildren<'a> for Function<'a> {
             children.push(AstKind::BindingIdentifier(field));
         }
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         if let Some(field) = &self.this_param {
             children.push(AstKind::TSThisParameter(field));
@@ -2494,7 +2494,7 @@ impl<'a> GetChildren<'a> for ArrowFunctionExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         children.push(AstKind::FormalParameters(&*self.params));
         if let Some(field) = &self.return_type {
@@ -2537,7 +2537,7 @@ impl<'a> GetChildren<'a> for Class<'a> {
             children.push(AstKind::BindingIdentifier(field));
         }
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         if let Some(field) = &self.super_class {
             children.push((*field).to_ast_kind());
@@ -3975,7 +3975,7 @@ impl<'a> GetChildren<'a> for TSTypeParameter<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
+impl<'a> GetChildren<'a> for TSTypeParameterDeclarationList<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.params {
@@ -3984,7 +3984,7 @@ impl<'a> GetChildren<'a> for TSTypeParameterDeclaration<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::TSTypeParameterDeclaration(self)
+        AstKind::TSTypeParameterDeclarationList(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
@@ -3996,7 +3996,7 @@ impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
         let mut children = Vec::new();
         children.push(AstKind::BindingIdentifier(&self.id));
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         children.push((*&self.type_annotation).to_ast_kind());
         children
@@ -4036,7 +4036,7 @@ impl<'a> GetChildren<'a> for TSInterfaceDeclaration<'a> {
             }
         }
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         children.push(AstKind::TSInterfaceBody(&*self.body));
         children
@@ -4134,7 +4134,7 @@ impl<'a> GetChildren<'a> for TSCallSignatureDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         if let Some(field) = &self.this_param {
             children.push(AstKind::TSThisParameter(field));
@@ -4158,7 +4158,7 @@ impl<'a> GetChildren<'a> for TSMethodSignature<'a> {
         let mut children = Vec::new();
         children.push((*&self.key).to_ast_kind());
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         if let Some(field) = &self.this_param {
             children.push(AstKind::TSThisParameter(field));
@@ -4181,7 +4181,7 @@ impl<'a> GetChildren<'a> for TSConstructSignatureDeclaration<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         children.push(AstKind::FormalParameters(&*self.params));
         if let Some(field) = &self.return_type {
@@ -4500,7 +4500,7 @@ impl<'a> GetChildren<'a> for TSFunctionType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         if let Some(field) = &self.this_param {
             children.push(AstKind::TSThisParameter(field));
@@ -4521,7 +4521,7 @@ impl<'a> GetChildren<'a> for TSConstructorType<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterDeclaration(field));
+            children.push(AstKind::TSTypeParameterDeclarationList(field));
         }
         children.push(AstKind::FormalParameters(&*self.params));
         children.push(AstKind::TSTypeAnnotation(&*self.return_type));

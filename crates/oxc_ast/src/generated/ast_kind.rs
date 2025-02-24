@@ -148,7 +148,7 @@ pub enum AstType {
     TSQualifiedName = 131,
     TSTypeParameterInstantiation = 132,
     TSTypeParameter = 133,
-    TSTypeParameterDeclaration = 134,
+    TSTypeParameterDeclarationList = 134,
     TSTypeAliasDeclaration = 135,
     TSClassImplements = 136,
     TSInterfaceDeclaration = 137,
@@ -354,8 +354,8 @@ pub enum AstKind<'a> {
     TSTypeParameterInstantiation(&'a TSTypeParameterInstantiation<'a>) =
         AstType::TSTypeParameterInstantiation as u8,
     TSTypeParameter(&'a TSTypeParameter<'a>) = AstType::TSTypeParameter as u8,
-    TSTypeParameterDeclaration(&'a TSTypeParameterDeclaration<'a>) =
-        AstType::TSTypeParameterDeclaration as u8,
+    TSTypeParameterDeclarationList(&'a TSTypeParameterDeclarationList<'a>) =
+        AstType::TSTypeParameterDeclarationList as u8,
     TSTypeAliasDeclaration(&'a TSTypeAliasDeclaration<'a>) = AstType::TSTypeAliasDeclaration as u8,
     TSClassImplements(&'a TSClassImplements<'a>) = AstType::TSClassImplements as u8,
     TSInterfaceDeclaration(&'a TSInterfaceDeclaration<'a>) = AstType::TSInterfaceDeclaration as u8,
@@ -566,7 +566,7 @@ impl GetSpan for AstKind<'_> {
             Self::TSQualifiedName(it) => it.span(),
             Self::TSTypeParameterInstantiation(it) => it.span(),
             Self::TSTypeParameter(it) => it.span(),
-            Self::TSTypeParameterDeclaration(it) => it.span(),
+            Self::TSTypeParameterDeclarationList(it) => it.span(),
             Self::TSTypeAliasDeclaration(it) => it.span(),
             Self::TSClassImplements(it) => it.span(),
             Self::TSInterfaceDeclaration(it) => it.span(),
@@ -760,7 +760,7 @@ impl<'a> AstKind<'a> {
             Self::TSQualifiedName(it) => it.get_children(),
             Self::TSTypeParameterInstantiation(it) => it.get_children(),
             Self::TSTypeParameter(it) => it.get_children(),
-            Self::TSTypeParameterDeclaration(it) => it.get_children(),
+            Self::TSTypeParameterDeclarationList(it) => it.get_children(),
             Self::TSTypeAliasDeclaration(it) => it.get_children(),
             Self::TSClassImplements(it) => it.get_children(),
             Self::TSInterfaceDeclaration(it) => it.get_children(),
@@ -951,7 +951,7 @@ impl<'a> AstKind<'a> {
             Self::TSQualifiedName(it) => it.get_node_id(),
             Self::TSTypeParameterInstantiation(it) => it.get_node_id(),
             Self::TSTypeParameter(it) => it.get_node_id(),
-            Self::TSTypeParameterDeclaration(it) => it.get_node_id(),
+            Self::TSTypeParameterDeclarationList(it) => it.get_node_id(),
             Self::TSTypeAliasDeclaration(it) => it.get_node_id(),
             Self::TSClassImplements(it) => it.get_node_id(),
             Self::TSInterfaceDeclaration(it) => it.get_node_id(),
@@ -2222,8 +2222,10 @@ impl<'a> AstKind<'a> {
     }
 
     #[inline]
-    pub fn as_ts_type_parameter_declaration(self) -> Option<&'a TSTypeParameterDeclaration<'a>> {
-        if let Self::TSTypeParameterDeclaration(v) = self {
+    pub fn as_ts_type_parameter_declaration_list(
+        self,
+    ) -> Option<&'a TSTypeParameterDeclarationList<'a>> {
+        if let Self::TSTypeParameterDeclarationList(v) = self {
             Some(v)
         } else {
             None

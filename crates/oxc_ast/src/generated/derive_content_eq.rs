@@ -1951,7 +1951,7 @@ impl ContentEq for TSTypeParameter<'_> {
     }
 }
 
-impl ContentEq for TSTypeParameterDeclaration<'_> {
+impl ContentEq for TSTypeParameterDeclarationList<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.params, &other.params)

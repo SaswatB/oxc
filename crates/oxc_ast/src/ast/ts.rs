@@ -913,7 +913,7 @@ pub struct TSTypeParameter<'a> {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct TSTypeParameterDeclaration<'a> {
+pub struct TSTypeParameterDeclarationList<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
@@ -941,7 +941,7 @@ pub struct TSTypeAliasDeclaration<'a> {
     /// Type alias's identifier, e.g. `Foo` in `type Foo = number`.
     pub id: BindingIdentifier<'a>,
     #[scope(enter_before)]
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub type_annotation: TSType<'a>,
     pub declare: bool,
     #[estree(skip)]
@@ -1010,7 +1010,7 @@ pub struct TSInterfaceDeclaration<'a> {
     #[scope(enter_before)]
     pub extends: Option<Vec<'a, TSInterfaceHeritage<'a>>>,
     /// Type parameters that get bound to the interface.
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub body: Box<'a, TSInterfaceBody<'a>>,
     /// `true` for `declare interface Foo {}`
     pub declare: bool,
@@ -1105,7 +1105,7 @@ pub struct TSCallSignatureDeclaration<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub this_param: Option<TSThisParameter<'a>>,
     pub params: Box<'a, FormalParameters<'a>>,
     pub return_type: Option<Box<'a, TSTypeAnnotation<'a>>>,
@@ -1144,7 +1144,7 @@ pub struct TSMethodSignature<'a> {
     pub computed: bool,
     pub optional: bool,
     pub kind: TSMethodSignatureKind,
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub this_param: Option<Box<'a, TSThisParameter<'a>>>,
     pub params: Box<'a, FormalParameters<'a>>,
     pub return_type: Option<Box<'a, TSTypeAnnotation<'a>>>,
@@ -1163,7 +1163,7 @@ pub struct TSConstructSignatureDeclaration<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub params: Box<'a, FormalParameters<'a>>,
     pub return_type: Option<Box<'a, TSTypeAnnotation<'a>>>,
     #[estree(skip)]
@@ -1514,7 +1514,7 @@ pub struct TSFunctionType<'a> {
     /// type T = <U>(x: U) => U;
     /// //        ^
     /// ```
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     /// `this` parameter
     ///
     /// ```ts
@@ -1541,7 +1541,7 @@ pub struct TSConstructorType<'a> {
     pub node_id: u32,
     pub span: Span,
     pub r#abstract: bool,
-    pub type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    pub type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     pub params: Box<'a, FormalParameters<'a>>,
     pub return_type: Box<'a, TSTypeAnnotation<'a>>,
 }

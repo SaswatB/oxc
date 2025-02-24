@@ -361,7 +361,9 @@ impl<'a> AstKind<'a> {
             }
             ExportDefaultDeclarationKind::AssignmentExpression(e) => Self::AssignmentExpression(e),
             ExportDefaultDeclarationKind::AwaitExpression(e) => Self::AwaitExpression(e),
-            ExportDefaultDeclarationKind::GeneralBinaryExpression(e) => Self::GeneralBinaryExpression(e),
+            ExportDefaultDeclarationKind::GeneralBinaryExpression(e) => {
+                Self::GeneralBinaryExpression(e)
+            }
             ExportDefaultDeclarationKind::CallExpression(e) => Self::CallExpression(e),
             ExportDefaultDeclarationKind::ChainExpression(e) => Self::ChainExpression(e),
             ExportDefaultDeclarationKind::ClassExpression(e) => Self::Class(e),
@@ -903,7 +905,7 @@ impl AstKind<'_> {
             Self::TSTypeAssertion(_) => "TSTypeAssertion".into(),
             Self::TSThisParameter(_) => "TSThisParameter".into(),
             Self::TSTypeParameter(t) => format!("TSTypeParameter({})", t.name).into(),
-            Self::TSTypeParameterDeclaration(_) => "TSTypeParameterDeclaration".into(),
+            Self::TSTypeParameterDeclarationList(_) => "TSTypeParameterDeclarationList".into(),
             Self::TSTypeParameterInstantiation(_) => "TSTypeParameterInstantiation".into(),
             Self::TSImportType(_) => "TSImportType".into(),
             Self::TSNamedTupleMember(_) => "TSNamedTupleMember".into(),

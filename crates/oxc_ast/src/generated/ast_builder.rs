@@ -616,7 +616,7 @@ impl<'a> AstBuilder<'a> {
         body: T4,
     ) -> Expression<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
@@ -763,7 +763,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Expression<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -836,7 +836,7 @@ impl<'a> AstBuilder<'a> {
         body: T5,
     ) -> Expression<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -3852,7 +3852,7 @@ impl<'a> AstBuilder<'a> {
         body: T5,
     ) -> Declaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -3905,7 +3905,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Declaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -3944,7 +3944,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Declaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
     {
         Declaration::TSTypeAliasDeclaration(self.alloc_ts_type_alias_declaration(
             span,
@@ -3977,7 +3977,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Declaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         Declaration::TSInterfaceDeclaration(self.alloc_ts_interface_declaration(
@@ -5716,7 +5716,7 @@ impl<'a> AstBuilder<'a> {
         body: T5,
     ) -> Function<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -5771,7 +5771,7 @@ impl<'a> AstBuilder<'a> {
         body: T5,
     ) -> Box<'a, Function<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -5829,7 +5829,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Function<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -5886,7 +5886,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, Function<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -6087,7 +6087,7 @@ impl<'a> AstBuilder<'a> {
         body: T4,
     ) -> ArrowFunctionExpression<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
@@ -6129,7 +6129,7 @@ impl<'a> AstBuilder<'a> {
         body: T4,
     ) -> Box<'a, ArrowFunctionExpression<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
@@ -6174,7 +6174,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> ArrowFunctionExpression<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
@@ -6218,7 +6218,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, ArrowFunctionExpression<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
         T4: IntoIn<'a, Box<'a, FunctionBody<'a>>>,
@@ -6311,7 +6311,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Class<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -6364,7 +6364,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Box<'a, Class<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -6420,7 +6420,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Class<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -6475,7 +6475,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, Class<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -7970,7 +7970,7 @@ impl<'a> AstBuilder<'a> {
         body: T5,
     ) -> ExportDefaultDeclarationKind<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -8023,7 +8023,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> ExportDefaultDeclarationKind<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
         T3: IntoIn<'a, Box<'a, ClassBody<'a>>>,
     {
@@ -8064,7 +8064,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> ExportDefaultDeclarationKind<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         ExportDefaultDeclarationKind::TSInterfaceDeclaration(self.alloc_ts_interface_declaration(
@@ -8778,7 +8778,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSType<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
@@ -8811,7 +8811,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> TSType<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
@@ -10291,40 +10291,40 @@ impl<'a> AstBuilder<'a> {
         )
     }
 
-    /// Build a [`TSTypeParameterDeclaration`].
+    /// Build a [`TSTypeParameterDeclarationList`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_parameter_declaration`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_ts_type_parameter_declaration_list`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
-    pub fn ts_type_parameter_declaration(
+    pub fn ts_type_parameter_declaration_list(
         self,
         span: Span,
         params: Vec<'a, TSTypeParameter<'a>>,
-    ) -> TSTypeParameterDeclaration<'a> {
-        TSTypeParameterDeclaration {
+    ) -> TSTypeParameterDeclarationList<'a> {
+        TSTypeParameterDeclarationList {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             params,
         }
     }
 
-    /// Build a [`TSTypeParameterDeclaration`], and store it in the memory arena.
+    /// Build a [`TSTypeParameterDeclarationList`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_parameter_declaration`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::ts_type_parameter_declaration_list`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - params
     #[inline]
-    pub fn alloc_ts_type_parameter_declaration(
+    pub fn alloc_ts_type_parameter_declaration_list(
         self,
         span: Span,
         params: Vec<'a, TSTypeParameter<'a>>,
-    ) -> Box<'a, TSTypeParameterDeclaration<'a>> {
-        Box::new_in(self.ts_type_parameter_declaration(span, params), self.allocator)
+    ) -> Box<'a, TSTypeParameterDeclarationList<'a>> {
+        Box::new_in(self.ts_type_parameter_declaration_list(span, params), self.allocator)
     }
 
     /// Build a [`TSTypeAliasDeclaration`].
@@ -10347,7 +10347,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSTypeAliasDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
     {
         TSTypeAliasDeclaration {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
@@ -10380,7 +10380,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Box<'a, TSTypeAliasDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
     {
         Box::new_in(
             self.ts_type_alias_declaration(span, id, type_parameters, type_annotation, declare),
@@ -10410,7 +10410,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSTypeAliasDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
     {
         TSTypeAliasDeclaration {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
@@ -10445,7 +10445,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSTypeAliasDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
     {
         Box::new_in(
             self.ts_type_alias_declaration_with_scope_id(
@@ -10529,7 +10529,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> TSInterfaceDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
@@ -10566,7 +10566,7 @@ impl<'a> AstBuilder<'a> {
         declare: bool,
     ) -> Box<'a, TSInterfaceDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         Box::new_in(
@@ -10599,7 +10599,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSInterfaceDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         TSInterfaceDeclaration {
@@ -10638,7 +10638,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSInterfaceDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, TSInterfaceBody<'a>>>,
     {
         Box::new_in(
@@ -10841,7 +10841,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSSignature<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -10872,7 +10872,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSSignature<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -10912,7 +10912,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> TSSignature<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -11010,7 +11010,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSCallSignatureDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -11044,7 +11044,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> Box<'a, TSCallSignatureDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -11088,7 +11088,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> TSMethodSignature<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -11136,7 +11136,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> Box<'a, TSMethodSignature<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -11187,7 +11187,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSMethodSignature<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -11237,7 +11237,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSMethodSignature<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
@@ -11277,7 +11277,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSConstructSignatureDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -11309,7 +11309,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> Box<'a, TSConstructSignatureDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -11339,7 +11339,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> TSConstructSignatureDeclaration<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -11373,7 +11373,7 @@ impl<'a> AstBuilder<'a> {
         scope_id: ScopeId,
     ) -> Box<'a, TSConstructSignatureDeclaration<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Option<Box<'a, TSTypeAnnotation<'a>>>>,
     {
@@ -12162,7 +12162,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> TSFunctionType<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
@@ -12197,7 +12197,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T4,
     ) -> Box<'a, TSFunctionType<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Option<Box<'a, TSThisParameter<'a>>>>,
         T3: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T4: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
@@ -12228,7 +12228,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> TSConstructorType<'a>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {
@@ -12262,7 +12262,7 @@ impl<'a> AstBuilder<'a> {
         return_type: T3,
     ) -> Box<'a, TSConstructorType<'a>>
     where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclaration<'a>>>>,
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterDeclarationList<'a>>>>,
         T2: IntoIn<'a, Box<'a, FormalParameters<'a>>>,
         T3: IntoIn<'a, Box<'a, TSTypeAnnotation<'a>>>,
     {

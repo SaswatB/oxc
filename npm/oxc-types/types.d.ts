@@ -843,7 +843,7 @@ export interface Function extends Span {
   generator: boolean;
   async: boolean;
   declare: boolean;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   thisParam: TSThisParameter | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation | null;
@@ -887,7 +887,7 @@ export interface ArrowFunctionExpression extends Span {
   nodeId: number;
   expression: boolean;
   async: boolean;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation | null;
   body: FunctionBody;
@@ -905,7 +905,7 @@ export interface Class extends Span {
   type: ClassType;
   decorators: Array<Decorator>;
   id: BindingIdentifier | null;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   superClass: Expression | null;
   superTypeParameters: TSTypeParameterInstantiation | null;
   implements: Array<TSClassImplements> | null;
@@ -1443,8 +1443,8 @@ export interface TSTypeParameter extends Span {
   const: boolean;
 }
 
-export interface TSTypeParameterDeclaration extends Span {
-  type: 'TSTypeParameterDeclaration';
+export interface TSTypeParameterDeclarationList extends Span {
+  type: 'TSTypeParameterDeclarationList';
   nodeId: number;
   params: Array<TSTypeParameter>;
 }
@@ -1453,7 +1453,7 @@ export interface TSTypeAliasDeclaration extends Span {
   type: 'TSTypeAliasDeclaration';
   nodeId: number;
   id: BindingIdentifier;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   typeAnnotation: TSType;
   declare: boolean;
 }
@@ -1472,7 +1472,7 @@ export interface TSInterfaceDeclaration extends Span {
   nodeId: number;
   id: BindingIdentifier;
   extends: Array<TSInterfaceHeritage> | null;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   body: TSInterfaceBody;
   declare: boolean;
 }
@@ -1512,7 +1512,7 @@ export interface TSIndexSignature extends Span {
 export interface TSCallSignatureDeclaration extends Span {
   type: 'TSCallSignatureDeclaration';
   nodeId: number;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   thisParam: TSThisParameter | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation | null;
@@ -1527,7 +1527,7 @@ export interface TSMethodSignature extends Span {
   computed: boolean;
   optional: boolean;
   kind: TSMethodSignatureKind;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   thisParam: TSThisParameter | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation | null;
@@ -1536,7 +1536,7 @@ export interface TSMethodSignature extends Span {
 export interface TSConstructSignatureDeclaration extends Span {
   type: 'TSConstructSignatureDeclaration';
   nodeId: number;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation | null;
 }
@@ -1636,7 +1636,7 @@ export type TSImportAttributeName = IdentifierName | StringLiteral;
 export interface TSFunctionType extends Span {
   type: 'TSFunctionType';
   nodeId: number;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   thisParam: TSThisParameter | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation;
@@ -1646,7 +1646,7 @@ export interface TSConstructorType extends Span {
   type: 'TSConstructorType';
   nodeId: number;
   abstract: boolean;
-  typeParameters: TSTypeParameterDeclaration | null;
+  typeParameters: TSTypeParameterDeclarationList | null;
   params: FormalParameters;
   returnType: TSTypeAnnotation;
 }

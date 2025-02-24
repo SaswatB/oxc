@@ -2575,10 +2575,10 @@ impl Serialize for TSTypeParameter<'_> {
     }
 }
 
-impl Serialize for TSTypeParameterDeclaration<'_> {
+impl Serialize for TSTypeParameterDeclarationList<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "TSTypeParameterDeclaration")?;
+        map.serialize_entry("type", "TSTypeParameterDeclarationList")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("params", &self.params)?;

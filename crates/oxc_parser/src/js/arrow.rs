@@ -8,7 +8,7 @@ use super::Tristate;
 use crate::{diagnostics, lexer::Kind, ParserImpl};
 
 type ArrowFunctionHead<'a> = (
-    Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+    Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
     Box<'a, FormalParameters<'a>>,
     Option<Box<'a, TSTypeAnnotation<'a>>>,
     bool,
@@ -279,7 +279,7 @@ impl<'a> ParserImpl<'a> {
     fn parse_arrow_function_body(
         &mut self,
         span: Span,
-        type_parameters: Option<Box<'a, TSTypeParameterDeclaration<'a>>>,
+        type_parameters: Option<Box<'a, TSTypeParameterDeclarationList<'a>>>,
         params: Box<'a, FormalParameters<'a>>,
         return_type: Option<Box<'a, TSTypeAnnotation<'a>>>,
         r#async: bool,

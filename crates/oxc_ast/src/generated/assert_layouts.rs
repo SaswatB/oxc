@@ -1123,11 +1123,11 @@ const _: () = {
     assert!(offset_of!(TSTypeParameter, out) == 89usize);
     assert!(offset_of!(TSTypeParameter, r#const) == 90usize);
 
-    assert!(size_of::<TSTypeParameterDeclaration>() == 48usize);
-    assert!(align_of::<TSTypeParameterDeclaration>() == 8usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, node_id) == 0usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, span) == 8usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, params) == 16usize);
+    assert!(size_of::<TSTypeParameterDeclarationList>() == 48usize);
+    assert!(align_of::<TSTypeParameterDeclarationList>() == 8usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, node_id) == 0usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, span) == 8usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, params) == 16usize);
 
     assert!(size_of::<TSTypeAliasDeclaration>() == 88usize);
     assert!(align_of::<TSTypeAliasDeclaration>() == 8usize);
@@ -2879,11 +2879,11 @@ const _: () = {
     assert!(offset_of!(TSTypeParameter, out) == 53usize);
     assert!(offset_of!(TSTypeParameter, r#const) == 54usize);
 
-    assert!(size_of::<TSTypeParameterDeclaration>() == 28usize);
-    assert!(align_of::<TSTypeParameterDeclaration>() == 4usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, node_id) == 0usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, span) == 4usize);
-    assert!(offset_of!(TSTypeParameterDeclaration, params) == 12usize);
+    assert!(size_of::<TSTypeParameterDeclarationList>() == 28usize);
+    assert!(align_of::<TSTypeParameterDeclarationList>() == 4usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, node_id) == 0usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, span) == 4usize);
+    assert!(offset_of!(TSTypeParameterDeclarationList, params) == 12usize);
 
     assert!(size_of::<TSTypeAliasDeclaration>() == 56usize);
     assert!(align_of::<TSTypeAliasDeclaration>() == 4usize);

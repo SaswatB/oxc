@@ -3319,10 +3319,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for TSTypeParameter<'_> {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for TSTypeParameterDeclaration<'_> {
-    type Cloned = TSTypeParameterDeclaration<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for TSTypeParameterDeclarationList<'_> {
+    type Cloned = TSTypeParameterDeclarationList<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        TSTypeParameterDeclaration {
+        TSTypeParameterDeclarationList {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             params: CloneIn::clone_in(&self.params, allocator),

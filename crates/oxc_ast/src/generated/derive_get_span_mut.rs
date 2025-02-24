@@ -1619,7 +1619,7 @@ impl GetSpanMut for TSTypeParameter<'_> {
     }
 }
 
-impl GetSpanMut for TSTypeParameterDeclaration<'_> {
+impl GetSpanMut for TSTypeParameterDeclarationList<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span

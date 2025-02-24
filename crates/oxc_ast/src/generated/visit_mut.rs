@@ -209,8 +209,11 @@ pub trait VisitMut<'a>: Sized {
     }
 
     #[inline]
-    fn visit_ts_type_parameter_declaration(&mut self, it: &mut TSTypeParameterDeclaration<'a>) {
-        walk_ts_type_parameter_declaration(self, it);
+    fn visit_ts_type_parameter_declaration_list(
+        &mut self,
+        it: &mut TSTypeParameterDeclarationList<'a>,
+    ) {
+        walk_ts_type_parameter_declaration_list(self, it);
     }
 
     #[inline]
@@ -1774,7 +1777,7 @@ pub mod walk_mut {
         );
         visitor.visit_span(&mut it.span);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         visitor.visit_formal_parameters(&mut it.params);
         if let Some(return_type) = &mut it.return_type {
@@ -1786,11 +1789,11 @@ pub mod walk_mut {
     }
 
     #[inline]
-    pub fn walk_ts_type_parameter_declaration<'a, V: VisitMut<'a>>(
+    pub fn walk_ts_type_parameter_declaration_list<'a, V: VisitMut<'a>>(
         visitor: &mut V,
-        it: &mut TSTypeParameterDeclaration<'a>,
+        it: &mut TSTypeParameterDeclarationList<'a>,
     ) {
-        let kind = AstType::TSTypeParameterDeclaration;
+        let kind = AstType::TSTypeParameterDeclarationList;
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         visitor.visit_ts_type_parameters(&mut it.params);
@@ -2030,7 +2033,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         visitor.visit_formal_parameters(&mut it.params);
         visitor.visit_ts_type_annotation(&mut it.return_type);
@@ -2259,7 +2262,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         if let Some(this_param) = &mut it.this_param {
             visitor.visit_ts_this_parameter(this_param);
@@ -2653,7 +2656,7 @@ pub mod walk_mut {
         visitor.enter_node(kind);
         visitor.visit_span(&mut it.span);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         if let Some(this_param) = &mut it.this_param {
             visitor.visit_ts_this_parameter(this_param);
@@ -2675,7 +2678,7 @@ pub mod walk_mut {
         visitor.enter_scope(ScopeFlags::empty(), &it.scope_id);
         visitor.visit_span(&mut it.span);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         visitor.visit_formal_parameters(&mut it.params);
         if let Some(return_type) = &mut it.return_type {
@@ -2695,7 +2698,7 @@ pub mod walk_mut {
         visitor.visit_span(&mut it.span);
         visitor.visit_property_key(&mut it.key);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         if let Some(this_param) = &mut it.this_param {
             visitor.visit_ts_this_parameter(this_param);
@@ -3255,7 +3258,7 @@ pub mod walk_mut {
         }
         visitor.enter_scope(ScopeFlags::StrictMode, &it.scope_id);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         if let Some(super_class) = &mut it.super_class {
             visitor.visit_expression(super_class);
@@ -3381,7 +3384,7 @@ pub mod walk_mut {
             visitor.visit_binding_identifier(id);
         }
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         if let Some(this_param) = &mut it.this_param {
             visitor.visit_ts_this_parameter(this_param);
@@ -4209,7 +4212,7 @@ pub mod walk_mut {
         visitor.visit_binding_identifier(&mut it.id);
         visitor.enter_scope(ScopeFlags::empty(), &it.scope_id);
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         visitor.visit_ts_type(&mut it.type_annotation);
         visitor.leave_scope();
@@ -4230,7 +4233,7 @@ pub mod walk_mut {
             visitor.visit_ts_interface_heritages(extends);
         }
         if let Some(type_parameters) = &mut it.type_parameters {
-            visitor.visit_ts_type_parameter_declaration(type_parameters);
+            visitor.visit_ts_type_parameter_declaration_list(type_parameters);
         }
         visitor.visit_ts_interface_body(&mut it.body);
         visitor.leave_scope();

@@ -139,7 +139,7 @@ impl<'a> ParserImpl<'a> {
 
     pub(crate) fn parse_ts_type_parameters(
         &mut self,
-    ) -> Result<Option<Box<'a, TSTypeParameterDeclaration<'a>>>> {
+    ) -> Result<Option<Box<'a, TSTypeParameterDeclarationList<'a>>>> {
         if !self.is_ts {
             return Ok(None);
         }
@@ -155,7 +155,7 @@ impl<'a> ParserImpl<'a> {
             Self::parse_ts_type_parameter,
         )?;
         self.expect(Kind::RAngle)?;
-        Ok(Some(self.ast.alloc_ts_type_parameter_declaration(self.end_span(span), params)))
+        Ok(Some(self.ast.alloc_ts_type_parameter_declaration_list(self.end_span(span), params)))
     }
 
     pub(crate) fn parse_ts_implements_clause(&mut self) -> Result<Vec<'a, TSClassImplements<'a>>> {
