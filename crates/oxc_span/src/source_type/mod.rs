@@ -19,7 +19,7 @@ pub struct SourceType {
     pub(super) language: Language,
 
     /// Script or Module, default Module
-    pub(super) module_kind: ModuleKind,
+    pub(super) module_kind: OxcModuleKind,
 
     /// Support JSX for JavaScript and TypeScript? default without JSX
     pub(super) variant: LanguageVariant,
@@ -45,7 +45,7 @@ pub enum Language {
 #[ast]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[generate_derive(ESTree)]
-pub enum ModuleKind {
+pub enum OxcModuleKind {
     /// Regular JS script or CommonJS file
     Script = 0,
     /// ES6 Module
@@ -119,12 +119,12 @@ impl SourceType {
     /// ```
     ///
     /// [`JavaScript`]: Language::JavaScript
-    /// [`module`]: ModuleKind::Module
+    /// [`module`]: OxcModuleKind::Module
     /// [`JSX`]: LanguageVariant::Jsx
     pub const fn cjs() -> Self {
         Self {
             language: Language::JavaScript,
-            module_kind: ModuleKind::Script,
+            module_kind: OxcModuleKind::Script,
             variant: LanguageVariant::Standard,
         }
     }
@@ -142,7 +142,7 @@ impl SourceType {
     pub const fn mjs() -> Self {
         Self {
             language: Language::JavaScript,
-            module_kind: ModuleKind::Module,
+            module_kind: OxcModuleKind::Module,
             variant: LanguageVariant::Standard,
         }
     }
@@ -150,14 +150,14 @@ impl SourceType {
     /// A [`SourceType`] that will be treated as a module if it contains ESM syntax.
     ///
     /// After a file is parsed with an `unambiguous` source type, it will have a final
-    /// [`ModuleKind`] of either [`Module`] or [`Script`].
+    /// [`OxcModuleKind`] of either [`Module`] or [`Script`].
     ///
-    /// [`Module`]: ModuleKind::Module
-    /// [`Script`]: ModuleKind::Script
+    /// [`Module`]: OxcModuleKind::Module
+    /// [`Script`]: OxcModuleKind::Script
     pub const fn unambiguous() -> Self {
         Self {
             language: Language::JavaScript,
-            module_kind: ModuleKind::Unambiguous,
+            module_kind: OxcModuleKind::Unambiguous,
             variant: LanguageVariant::Standard,
         }
     }
@@ -195,12 +195,12 @@ impl SourceType {
     /// ```
     ///
     /// [`TypeScript`]: Language::TypeScript
-    /// [`modules`]: ModuleKind::Module
+    /// [`modules`]: OxcModuleKind::Module
     /// [`JSX`]: LanguageVariant::Jsx
     pub const fn ts() -> Self {
         Self {
             language: Language::TypeScript,
-            module_kind: ModuleKind::Module,
+            module_kind: OxcModuleKind::Module,
             variant: LanguageVariant::Standard,
         }
     }
@@ -239,34 +239,34 @@ impl SourceType {
     pub const fn d_ts() -> Self {
         Self {
             language: Language::TypeScriptDefinition,
-            module_kind: ModuleKind::Module,
+            module_kind: OxcModuleKind::Module,
             variant: LanguageVariant::Standard,
         }
     }
 
     /// Mark this source type as a [script].
     ///
-    /// [script]: ModuleKind::Script
+    /// [script]: OxcModuleKind::Script
     pub fn is_script(self) -> bool {
-        self.module_kind == ModuleKind::Script
+        self.module_kind == OxcModuleKind::Script
     }
 
     /// Mark this source type as a [module].
     ///
-    /// [module]: ModuleKind::Module
+    /// [module]: OxcModuleKind::Module
     pub fn is_module(self) -> bool {
-        self.module_kind == ModuleKind::Module
+        self.module_kind == OxcModuleKind::Module
     }
 
     /// `true` if this [`SourceType`] is [unambiguous].
     ///
-    /// [unambiguous]: ModuleKind::Unambiguous
+    /// [unambiguous]: OxcModuleKind::Unambiguous
     pub fn is_unambiguous(self) -> bool {
-        self.module_kind == ModuleKind::Unambiguous
+        self.module_kind == OxcModuleKind::Unambiguous
     }
 
     /// What module system is this source type using?
-    pub fn module_kind(self) -> ModuleKind {
+    pub fn module_kind(self) -> OxcModuleKind {
         self.module_kind
     }
 
@@ -305,11 +305,11 @@ impl SourceType {
     /// Mark this [`SourceType`] as a [script] if `yes` is `true`. No change
     /// will occur if `yes` is `false`.
     ///
-    /// [script]: ModuleKind::Script
+    /// [script]: OxcModuleKind::Script
     #[must_use]
     pub const fn with_script(mut self, yes: bool) -> Self {
         if yes {
-            self.module_kind = ModuleKind::Script;
+            self.module_kind = OxcModuleKind::Script;
         }
         self
     }
@@ -317,13 +317,13 @@ impl SourceType {
     /// Mark this [`SourceType`] as a [module] if `yes` is `true`. No change
     /// will occur if `yes` is `false`.
     ///
-    /// [module]: ModuleKind::Module
+    /// [module]: OxcModuleKind::Module
     #[must_use]
     pub const fn with_module(mut self, yes: bool) -> Self {
         if yes {
-            self.module_kind = ModuleKind::Module;
+            self.module_kind = OxcModuleKind::Module;
         } else {
-            self.module_kind = ModuleKind::Script;
+            self.module_kind = OxcModuleKind::Script;
         }
         self
     }
@@ -331,11 +331,11 @@ impl SourceType {
     /// Mark this [`SourceType`] as [unambiguous] if `yes` is `true`. No change
     /// will occur if `yes` is `false`.
     ///
-    /// [unambiguous]: ModuleKind::Unambiguous
+    /// [unambiguous]: OxcModuleKind::Unambiguous
     #[must_use]
     pub const fn with_unambiguous(mut self, yes: bool) -> Self {
         if yes {
-            self.module_kind = ModuleKind::Unambiguous;
+            self.module_kind = OxcModuleKind::Unambiguous;
         }
         self
     }
@@ -439,9 +439,9 @@ impl SourceType {
     ///     "mts", "cts", "tsx". See [`VALID_EXTENSIONS`] for the list of valid
     ///     extensions.
     ///
-    /// [`script`]: ModuleKind::Script
-    /// [`scripts`]: ModuleKind::Script
-    /// [`modules`]: ModuleKind::Module
+    /// [`script`]: OxcModuleKind::Script
+    /// [`scripts`]: OxcModuleKind::Script
+    /// [`modules`]: OxcModuleKind::Module
     pub fn from_path<P: AsRef<Path>>(path: P) -> Result<Self, UnknownExtension> {
         let file_name = path
             .as_ref()
@@ -462,8 +462,8 @@ impl SourceType {
             })?;
 
         let module_kind = match extension {
-            "js" | "tsx" | "ts" | "jsx" | "mts" | "mjs" => ModuleKind::Module,
-            "cjs" | "cts" => ModuleKind::Script,
+            "js" | "tsx" | "ts" | "jsx" | "mts" | "mjs" => OxcModuleKind::Module,
+            "cjs" | "cts" => OxcModuleKind::Script,
             _ => unreachable!(),
         };
 

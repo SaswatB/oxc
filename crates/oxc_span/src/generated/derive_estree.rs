@@ -44,13 +44,17 @@ impl Serialize for Language {
     }
 }
 
-impl Serialize for ModuleKind {
+impl Serialize for OxcModuleKind {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match *self {
-            ModuleKind::Script => serializer.serialize_unit_variant("ModuleKind", 0u32, "script"),
-            ModuleKind::Module => serializer.serialize_unit_variant("ModuleKind", 1u32, "module"),
-            ModuleKind::Unambiguous => {
-                serializer.serialize_unit_variant("ModuleKind", 2u32, "unambiguous")
+            OxcModuleKind::Script => {
+                serializer.serialize_unit_variant("OxcModuleKind", 0u32, "script")
+            }
+            OxcModuleKind::Module => {
+                serializer.serialize_unit_variant("OxcModuleKind", 1u32, "module")
+            }
+            OxcModuleKind::Unambiguous => {
+                serializer.serialize_unit_variant("OxcModuleKind", 2u32, "unambiguous")
             }
         }
     }

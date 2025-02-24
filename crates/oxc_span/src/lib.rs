@@ -15,7 +15,7 @@ pub use crate::{
     atom::Atom,
     compact_str::{CompactStr, MAX_INLINE_LEN as ATOM_MAX_INLINE_LEN},
     source_type::{
-        Language, LanguageVariant, ModuleKind, SourceType, UnknownExtension, VALID_EXTENSIONS,
+        Language, LanguageVariant, OxcModuleKind, SourceType, UnknownExtension, VALID_EXTENSIONS,
     },
     span::{GetSpan, GetSpanMut, Span, SPAN},
 };

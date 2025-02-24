@@ -1964,13 +1964,13 @@ export interface Span {
 
 export interface SourceType {
   language: Language;
-  moduleKind: ModuleKind;
+  moduleKind: OxcModuleKind;
   variant: LanguageVariant;
 }
 
 export type Language = 'javascript' | 'typescript' | 'typescriptDefinition';
 
-export type ModuleKind = 'script' | 'module' | 'unambiguous';
+export type OxcModuleKind = 'script' | 'module' | 'unambiguous';
 
 export type LanguageVariant = 'standard' | 'jsx';
 

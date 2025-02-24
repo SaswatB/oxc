@@ -1618,8 +1618,8 @@ const _: () = {
     assert!(size_of::<Language>() == 1usize);
     assert!(align_of::<Language>() == 1usize);
 
-    assert!(size_of::<ModuleKind>() == 1usize);
-    assert!(align_of::<ModuleKind>() == 1usize);
+    assert!(size_of::<OxcModuleKind>() == 1usize);
+    assert!(align_of::<OxcModuleKind>() == 1usize);
 
     assert!(size_of::<LanguageVariant>() == 1usize);
     assert!(align_of::<LanguageVariant>() == 1usize);
@@ -3374,8 +3374,8 @@ const _: () = {
     assert!(size_of::<Language>() == 1usize);
     assert!(align_of::<Language>() == 1usize);
 
-    assert!(size_of::<ModuleKind>() == 1usize);
-    assert!(align_of::<ModuleKind>() == 1usize);
+    assert!(size_of::<OxcModuleKind>() == 1usize);
+    assert!(align_of::<OxcModuleKind>() == 1usize);
 
     assert!(size_of::<LanguageVariant>() == 1usize);
     assert!(align_of::<LanguageVariant>() == 1usize);
