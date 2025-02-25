@@ -332,8 +332,11 @@ impl<'a> AstBuilder<'a> {
             extends.into_iter().map(|(expression, type_parameters, span)| TSInterfaceHeritage {
                 node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
                 span,
-                expression,
-                type_parameters,
+                expression_with_type_arguments: self.expression_with_type_arguments(
+                    span,
+                    expression,
+                    type_parameters,
+                ),
             }),
             self.allocator,
         )

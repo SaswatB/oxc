@@ -811,6 +811,7 @@ impl AstKind<'_> {
             .into(),
             Self::CatchParameter(_) => "CatchParameter".into(),
 
+            Self::ExpressionWithTypeArguments(_) => "ExpressionWithTypeArguments".into(),
             Self::Class(c) => format!("Class({})", or_anonymous(c.id.as_ref())).into(),
             Self::TSClassImplements(_) => "TSClassImplements".into(),
             Self::ClassExtends(_) => "ClassExtends".into(),

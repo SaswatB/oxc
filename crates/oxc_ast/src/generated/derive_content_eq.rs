@@ -1220,11 +1220,21 @@ impl ContentEq for YieldExpression<'_> {
     }
 }
 
-impl ContentEq for ClassExtends<'_> {
+impl ContentEq for ExpressionWithTypeArguments<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.expression, &other.expression)
             && ContentEq::content_eq(&self.type_parameters, &other.type_parameters)
+    }
+}
+
+impl ContentEq for ClassExtends<'_> {
+    fn content_eq(&self, other: &Self) -> bool {
+        ContentEq::content_eq(&self.node_id, &other.node_id)
+            && ContentEq::content_eq(
+                &self.expression_with_type_arguments,
+                &other.expression_with_type_arguments,
+            )
     }
 }
 
@@ -1984,8 +1994,10 @@ impl ContentEq for TSAccessibility {
 impl ContentEq for TSClassImplements<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
-            && ContentEq::content_eq(&self.expression, &other.expression)
-            && ContentEq::content_eq(&self.type_parameters, &other.type_parameters)
+            && ContentEq::content_eq(
+                &self.expression_with_type_arguments,
+                &other.expression_with_type_arguments,
+            )
     }
 }
 
@@ -2097,8 +2109,10 @@ impl ContentEq for TSIndexSignatureName<'_> {
 impl ContentEq for TSInterfaceHeritage<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
-            && ContentEq::content_eq(&self.expression, &other.expression)
-            && ContentEq::content_eq(&self.type_parameters, &other.type_parameters)
+            && ContentEq::content_eq(
+                &self.expression_with_type_arguments,
+                &other.expression_with_type_arguments,
+            )
     }
 }
 

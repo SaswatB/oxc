@@ -6271,29 +6271,73 @@ impl<'a> AstBuilder<'a> {
         Box::new_in(self.yield_expression(span, delegate, argument), self.allocator)
     }
 
-    /// Build a [`ClassExtends`].
+    /// Build an [`ExpressionWithTypeArguments`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class_extends`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_expression_with_type_arguments`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - expression
     /// - type_parameters
     #[inline]
-    pub fn class_extends<T1>(
+    pub fn expression_with_type_arguments<T1>(
         self,
         span: Span,
         expression: Expression<'a>,
         type_parameters: T1,
-    ) -> ClassExtends<'a>
+    ) -> ExpressionWithTypeArguments<'a>
     where
         T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
     {
-        ClassExtends {
+        ExpressionWithTypeArguments {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             expression,
             type_parameters: type_parameters.into_in(self.allocator),
+        }
+    }
+
+    /// Build an [`ExpressionWithTypeArguments`], and store it in the memory arena.
+    ///
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::expression_with_type_arguments`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - expression
+    /// - type_parameters
+    #[inline]
+    pub fn alloc_expression_with_type_arguments<T1>(
+        self,
+        span: Span,
+        expression: Expression<'a>,
+        type_parameters: T1,
+    ) -> Box<'a, ExpressionWithTypeArguments<'a>>
+    where
+        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
+    {
+        Box::new_in(
+            self.expression_with_type_arguments(span, expression, type_parameters),
+            self.allocator,
+        )
+    }
+
+    /// Build a [`ClassExtends`].
+    ///
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_class_extends`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - expression_with_type_arguments
+    #[inline]
+    pub fn class_extends(
+        self,
+        span: Span,
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> ClassExtends<'a> {
+        ClassExtends {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            expression_with_type_arguments,
         }
     }
 
@@ -6303,19 +6347,14 @@ impl<'a> AstBuilder<'a> {
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
-    /// - expression
-    /// - type_parameters
+    /// - expression_with_type_arguments
     #[inline]
-    pub fn alloc_class_extends<T1>(
+    pub fn alloc_class_extends(
         self,
         span: Span,
-        expression: Expression<'a>,
-        type_parameters: T1,
-    ) -> Box<'a, ClassExtends<'a>>
-    where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-    {
-        Box::new_in(self.class_extends(span, expression, type_parameters), self.allocator)
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> Box<'a, ClassExtends<'a>> {
+        Box::new_in(self.class_extends(span, expression_with_type_arguments), self.allocator)
     }
 
     /// Build a [`Class`].
@@ -10485,23 +10524,17 @@ impl<'a> AstBuilder<'a> {
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
-    /// - expression
-    /// - type_parameters
+    /// - expression_with_type_arguments
     #[inline]
-    pub fn ts_class_implements<T1>(
+    pub fn ts_class_implements(
         self,
         span: Span,
-        expression: TSTypeName<'a>,
-        type_parameters: T1,
-    ) -> TSClassImplements<'a>
-    where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-    {
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> TSClassImplements<'a> {
         TSClassImplements {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
-            expression,
-            type_parameters: type_parameters.into_in(self.allocator),
+            expression_with_type_arguments,
         }
     }
 
@@ -10511,19 +10544,14 @@ impl<'a> AstBuilder<'a> {
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
-    /// - expression
-    /// - type_parameters
+    /// - expression_with_type_arguments
     #[inline]
-    pub fn alloc_ts_class_implements<T1>(
+    pub fn alloc_ts_class_implements(
         self,
         span: Span,
-        expression: TSTypeName<'a>,
-        type_parameters: T1,
-    ) -> Box<'a, TSClassImplements<'a>>
-    where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-    {
-        Box::new_in(self.ts_class_implements(span, expression, type_parameters), self.allocator)
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> Box<'a, TSClassImplements<'a>> {
+        Box::new_in(self.ts_class_implements(span, expression_with_type_arguments), self.allocator)
     }
 
     /// Build a [`TSInterfaceDeclaration`].
@@ -11463,23 +11491,17 @@ impl<'a> AstBuilder<'a> {
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
-    /// - expression
-    /// - type_parameters
+    /// - expression_with_type_arguments
     #[inline]
-    pub fn ts_interface_heritage<T1>(
+    pub fn ts_interface_heritage(
         self,
         span: Span,
-        expression: Expression<'a>,
-        type_parameters: T1,
-    ) -> TSInterfaceHeritage<'a>
-    where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-    {
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> TSInterfaceHeritage<'a> {
         TSInterfaceHeritage {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
-            expression,
-            type_parameters: type_parameters.into_in(self.allocator),
+            expression_with_type_arguments,
         }
     }
 
@@ -11489,19 +11511,17 @@ impl<'a> AstBuilder<'a> {
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
-    /// - expression
-    /// - type_parameters
+    /// - expression_with_type_arguments
     #[inline]
-    pub fn alloc_ts_interface_heritage<T1>(
+    pub fn alloc_ts_interface_heritage(
         self,
         span: Span,
-        expression: Expression<'a>,
-        type_parameters: T1,
-    ) -> Box<'a, TSInterfaceHeritage<'a>>
-    where
-        T1: IntoIn<'a, Option<Box<'a, TSTypeParameterInstantiation<'a>>>>,
-    {
-        Box::new_in(self.ts_interface_heritage(span, expression, type_parameters), self.allocator)
+        expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
+    ) -> Box<'a, TSInterfaceHeritage<'a>> {
+        Box::new_in(
+            self.ts_interface_heritage(span, expression_with_type_arguments),
+            self.allocator,
+        )
     }
 
     /// Build a [`TSTypePredicate`].

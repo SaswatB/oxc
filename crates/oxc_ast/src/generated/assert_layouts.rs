@@ -690,14 +690,20 @@ const _: () = {
     assert!(offset_of!(YieldExpression, delegate) == 16usize);
     assert!(offset_of!(YieldExpression, argument) == 24usize);
 
-    assert!(size_of::<ClassExtends>() == 40usize);
+    assert!(size_of::<ExpressionWithTypeArguments>() == 40usize);
+    assert!(align_of::<ExpressionWithTypeArguments>() == 8usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, node_id) == 0usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, span) == 8usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, expression) == 16usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, type_parameters) == 32usize);
+
+    assert!(size_of::<ClassExtends>() == 56usize);
     assert!(align_of::<ClassExtends>() == 8usize);
     assert!(offset_of!(ClassExtends, node_id) == 0usize);
     assert!(offset_of!(ClassExtends, span) == 8usize);
-    assert!(offset_of!(ClassExtends, expression) == 16usize);
-    assert!(offset_of!(ClassExtends, type_parameters) == 32usize);
+    assert!(offset_of!(ClassExtends, expression_with_type_arguments) == 16usize);
 
-    assert!(size_of::<Class>() == 192usize);
+    assert!(size_of::<Class>() == 208usize);
     assert!(align_of::<Class>() == 8usize);
     assert!(offset_of!(Class, node_id) == 0usize);
     assert!(offset_of!(Class, span) == 8usize);
@@ -706,11 +712,11 @@ const _: () = {
     assert!(offset_of!(Class, id) == 56usize);
     assert!(offset_of!(Class, type_parameters) == 96usize);
     assert!(offset_of!(Class, extends) == 104usize);
-    assert!(offset_of!(Class, implements) == 144usize);
-    assert!(offset_of!(Class, body) == 176usize);
-    assert!(offset_of!(Class, r#abstract) == 184usize);
-    assert!(offset_of!(Class, declare) == 185usize);
-    assert!(offset_of!(Class, scope_id) == 188usize);
+    assert!(offset_of!(Class, implements) == 160usize);
+    assert!(offset_of!(Class, body) == 192usize);
+    assert!(offset_of!(Class, r#abstract) == 200usize);
+    assert!(offset_of!(Class, declare) == 201usize);
+    assert!(offset_of!(Class, scope_id) == 204usize);
 
     assert!(size_of::<ClassType>() == 1usize);
     assert!(align_of::<ClassType>() == 1usize);
@@ -1148,12 +1154,11 @@ const _: () = {
     assert!(size_of::<TSAccessibility>() == 1usize);
     assert!(align_of::<TSAccessibility>() == 1usize);
 
-    assert!(size_of::<TSClassImplements>() == 40usize);
+    assert!(size_of::<TSClassImplements>() == 56usize);
     assert!(align_of::<TSClassImplements>() == 8usize);
     assert!(offset_of!(TSClassImplements, node_id) == 0usize);
     assert!(offset_of!(TSClassImplements, span) == 8usize);
-    assert!(offset_of!(TSClassImplements, expression) == 16usize);
-    assert!(offset_of!(TSClassImplements, type_parameters) == 32usize);
+    assert!(offset_of!(TSClassImplements, expression_with_type_arguments) == 16usize);
 
     assert!(size_of::<TSInterfaceDeclaration>() == 112usize);
     assert!(align_of::<TSInterfaceDeclaration>() == 8usize);
@@ -1236,12 +1241,11 @@ const _: () = {
     assert!(offset_of!(TSIndexSignatureName, name) == 16usize);
     assert!(offset_of!(TSIndexSignatureName, type_annotation) == 32usize);
 
-    assert!(size_of::<TSInterfaceHeritage>() == 40usize);
+    assert!(size_of::<TSInterfaceHeritage>() == 56usize);
     assert!(align_of::<TSInterfaceHeritage>() == 8usize);
     assert!(offset_of!(TSInterfaceHeritage, node_id) == 0usize);
     assert!(offset_of!(TSInterfaceHeritage, span) == 8usize);
-    assert!(offset_of!(TSInterfaceHeritage, expression) == 16usize);
-    assert!(offset_of!(TSInterfaceHeritage, type_parameters) == 32usize);
+    assert!(offset_of!(TSInterfaceHeritage, expression_with_type_arguments) == 16usize);
 
     assert!(size_of::<TSTypePredicate>() == 56usize);
     assert!(align_of::<TSTypePredicate>() == 8usize);
@@ -2452,14 +2456,20 @@ const _: () = {
     assert!(offset_of!(YieldExpression, delegate) == 12usize);
     assert!(offset_of!(YieldExpression, argument) == 16usize);
 
-    assert!(size_of::<ClassExtends>() == 24usize);
+    assert!(size_of::<ExpressionWithTypeArguments>() == 24usize);
+    assert!(align_of::<ExpressionWithTypeArguments>() == 4usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, node_id) == 0usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, span) == 4usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, expression) == 12usize);
+    assert!(offset_of!(ExpressionWithTypeArguments, type_parameters) == 20usize);
+
+    assert!(size_of::<ClassExtends>() == 36usize);
     assert!(align_of::<ClassExtends>() == 4usize);
     assert!(offset_of!(ClassExtends, node_id) == 0usize);
     assert!(offset_of!(ClassExtends, span) == 4usize);
-    assert!(offset_of!(ClassExtends, expression) == 12usize);
-    assert!(offset_of!(ClassExtends, type_parameters) == 20usize);
+    assert!(offset_of!(ClassExtends, expression_with_type_arguments) == 12usize);
 
-    assert!(size_of::<Class>() == 112usize);
+    assert!(size_of::<Class>() == 124usize);
     assert!(align_of::<Class>() == 4usize);
     assert!(offset_of!(Class, node_id) == 0usize);
     assert!(offset_of!(Class, span) == 4usize);
@@ -2468,11 +2478,11 @@ const _: () = {
     assert!(offset_of!(Class, id) == 32usize);
     assert!(offset_of!(Class, type_parameters) == 56usize);
     assert!(offset_of!(Class, extends) == 60usize);
-    assert!(offset_of!(Class, implements) == 84usize);
-    assert!(offset_of!(Class, body) == 100usize);
-    assert!(offset_of!(Class, r#abstract) == 104usize);
-    assert!(offset_of!(Class, declare) == 105usize);
-    assert!(offset_of!(Class, scope_id) == 108usize);
+    assert!(offset_of!(Class, implements) == 96usize);
+    assert!(offset_of!(Class, body) == 112usize);
+    assert!(offset_of!(Class, r#abstract) == 116usize);
+    assert!(offset_of!(Class, declare) == 117usize);
+    assert!(offset_of!(Class, scope_id) == 120usize);
 
     assert!(size_of::<ClassType>() == 1usize);
     assert!(align_of::<ClassType>() == 1usize);
@@ -2910,12 +2920,11 @@ const _: () = {
     assert!(size_of::<TSAccessibility>() == 1usize);
     assert!(align_of::<TSAccessibility>() == 1usize);
 
-    assert!(size_of::<TSClassImplements>() == 24usize);
+    assert!(size_of::<TSClassImplements>() == 36usize);
     assert!(align_of::<TSClassImplements>() == 4usize);
     assert!(offset_of!(TSClassImplements, node_id) == 0usize);
     assert!(offset_of!(TSClassImplements, span) == 4usize);
-    assert!(offset_of!(TSClassImplements, expression) == 12usize);
-    assert!(offset_of!(TSClassImplements, type_parameters) == 20usize);
+    assert!(offset_of!(TSClassImplements, expression_with_type_arguments) == 12usize);
 
     assert!(size_of::<TSInterfaceDeclaration>() == 68usize);
     assert!(align_of::<TSInterfaceDeclaration>() == 4usize);
@@ -2998,12 +3007,11 @@ const _: () = {
     assert!(offset_of!(TSIndexSignatureName, name) == 12usize);
     assert!(offset_of!(TSIndexSignatureName, type_annotation) == 20usize);
 
-    assert!(size_of::<TSInterfaceHeritage>() == 24usize);
+    assert!(size_of::<TSInterfaceHeritage>() == 36usize);
     assert!(align_of::<TSInterfaceHeritage>() == 4usize);
     assert!(offset_of!(TSInterfaceHeritage, node_id) == 0usize);
     assert!(offset_of!(TSInterfaceHeritage, span) == 4usize);
-    assert!(offset_of!(TSInterfaceHeritage, expression) == 12usize);
-    assert!(offset_of!(TSInterfaceHeritage, type_parameters) == 20usize);
+    assert!(offset_of!(TSInterfaceHeritage, expression_with_type_arguments) == 12usize);
 
     assert!(size_of::<TSTypePredicate>() == 36usize);
     assert!(align_of::<TSTypePredicate>() == 4usize);

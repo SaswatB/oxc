@@ -819,6 +819,11 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
+    fn visit_expression_with_type_arguments(&mut self, it: &ExpressionWithTypeArguments<'a>) {
+        walk_expression_with_type_arguments(self, it);
+    }
+
+    #[inline]
     fn visit_ts_class_implementses(&mut self, it: &Vec<'a, TSClassImplements<'a>>) {
         walk_ts_class_implementses(self, it);
     }
@@ -3154,6 +3159,18 @@ pub mod walk {
         let kind = AstKind::ClassExtends(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
+        visitor.visit_expression_with_type_arguments(&it.expression_with_type_arguments);
+        visitor.leave_node(kind);
+    }
+
+    #[inline]
+    pub fn walk_expression_with_type_arguments<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &ExpressionWithTypeArguments<'a>,
+    ) {
+        let kind = AstKind::ExpressionWithTypeArguments(visitor.alloc(it));
+        visitor.enter_node(kind);
+        visitor.visit_span(&it.span);
         visitor.visit_expression(&it.expression);
         if let Some(type_parameters) = &it.type_parameters {
             visitor.visit_ts_type_parameter_instantiation(type_parameters);
@@ -3176,10 +3193,7 @@ pub mod walk {
         let kind = AstKind::TSClassImplements(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
-        visitor.visit_ts_type_name(&it.expression);
-        if let Some(type_parameters) = &it.type_parameters {
-            visitor.visit_ts_type_parameter_instantiation(type_parameters);
-        }
+        visitor.visit_expression_with_type_arguments(&it.expression_with_type_arguments);
         visitor.leave_node(kind);
     }
 
@@ -4057,10 +4071,7 @@ pub mod walk {
         let kind = AstKind::TSInterfaceHeritage(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
-        visitor.visit_expression(&it.expression);
-        if let Some(type_parameters) = &it.type_parameters {
-            visitor.visit_ts_type_parameter_instantiation(type_parameters);
-        }
+        visitor.visit_expression_with_type_arguments(&it.expression_with_type_arguments);
         visitor.leave_node(kind);
     }
 

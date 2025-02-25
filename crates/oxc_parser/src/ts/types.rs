@@ -754,9 +754,12 @@ impl<'a> ParserImpl<'a> {
 
     fn parse_ts_implement_name(&mut self) -> Result<TSClassImplements<'a>> {
         let span = self.start_span();
-        let type_name = self.parse_ts_type_name()?;
+        let type_name = self.parse_ts_type_name_as_expression()?;
         let type_parameters = self.parse_type_arguments_of_type_reference()?;
-        Ok(self.ast.ts_class_implements(self.end_span(span), type_name, type_parameters))
+        Ok(self.ast.ts_class_implements(
+            self.end_span(span),
+            self.ast.expression_with_type_arguments(span, type_name, type_parameters),
+        ))
     }
 
     pub(crate) fn parse_ts_type_name(&mut self) -> Result<TSTypeName<'a>> {
@@ -767,6 +770,23 @@ impl<'a> ParserImpl<'a> {
         while self.eat(Kind::Dot) {
             let right = self.parse_identifier_name()?;
             left = self.ast.ts_type_name_qualified_name(self.end_span(span), left, right);
+        }
+        Ok(left)
+    }
+
+    pub(crate) fn parse_ts_type_name_as_expression(&mut self) -> Result<Expression<'a>> {
+        let span = self.start_span();
+        let ident = self.parse_identifier_name()?;
+        let ident = self.ast.alloc_identifier_reference(ident.span, ident.name);
+        let mut left = Expression::Identifier(ident);
+        while self.eat(Kind::Dot) {
+            let right = self.parse_identifier_name()?;
+            left = Expression::StaticMemberExpression(self.ast.alloc_static_member_expression(
+                self.end_span(span),
+                left,
+                right,
+                false,
+            ));
         }
         Ok(left)
     }

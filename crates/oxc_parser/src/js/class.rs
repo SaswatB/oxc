@@ -83,8 +83,11 @@ impl<'a> ParserImpl<'a> {
                 let first_extends = extends.remove(0);
                 super_class = Some(self.ast.class_extends(
                     self.end_span(start_span),
-                    first_extends.0,
-                    first_extends.1,
+                    self.ast.expression_with_type_arguments(
+                        first_extends.2,
+                        first_extends.0,
+                        first_extends.1,
+                    ),
                 ));
             }
         }

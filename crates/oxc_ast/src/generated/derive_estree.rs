@@ -1559,14 +1559,25 @@ impl Serialize for YieldExpression<'_> {
     }
 }
 
+impl Serialize for ExpressionWithTypeArguments<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("type", "ExpressionWithTypeArguments")?;
+        map.serialize_entry("nodeId", &self.node_id)?;
+        self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
+        map.serialize_entry("expression", &self.expression)?;
+        map.serialize_entry("typeParameters", &self.type_parameters)?;
+        map.end()
+    }
+}
+
 impl Serialize for ClassExtends<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
         map.serialize_entry("type", "ClassExtends")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
-        map.serialize_entry("expression", &self.expression)?;
-        map.serialize_entry("typeParameters", &self.type_parameters)?;
+        map.serialize_entry("expressionWithTypeArguments", &self.expression_with_type_arguments)?;
         map.end()
     }
 }
@@ -2633,8 +2644,7 @@ impl Serialize for TSClassImplements<'_> {
         map.serialize_entry("type", "TSClassImplements")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
-        map.serialize_entry("expression", &self.expression)?;
-        map.serialize_entry("typeParameters", &self.type_parameters)?;
+        map.serialize_entry("expressionWithTypeArguments", &self.expression_with_type_arguments)?;
         map.end()
     }
 }
@@ -2785,8 +2795,7 @@ impl Serialize for TSInterfaceHeritage<'_> {
         map.serialize_entry("type", "TSInterfaceHeritage")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
-        map.serialize_entry("expression", &self.expression)?;
-        map.serialize_entry("typeParameters", &self.type_parameters)?;
+        map.serialize_entry("expressionWithTypeArguments", &self.expression_with_type_arguments)?;
         map.end()
     }
 }

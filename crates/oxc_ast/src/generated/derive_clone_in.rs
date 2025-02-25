@@ -2115,14 +2115,28 @@ impl<'new_alloc> CloneIn<'new_alloc> for YieldExpression<'_> {
     }
 }
 
+impl<'new_alloc> CloneIn<'new_alloc> for ExpressionWithTypeArguments<'_> {
+    type Cloned = ExpressionWithTypeArguments<'new_alloc>;
+    fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
+        ExpressionWithTypeArguments {
+            node_id: CloneIn::clone_in(&self.node_id, allocator),
+            span: CloneIn::clone_in(&self.span, allocator),
+            expression: CloneIn::clone_in(&self.expression, allocator),
+            type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
+        }
+    }
+}
+
 impl<'new_alloc> CloneIn<'new_alloc> for ClassExtends<'_> {
     type Cloned = ClassExtends<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
         ClassExtends {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
-            expression: CloneIn::clone_in(&self.expression, allocator),
-            type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
+            expression_with_type_arguments: CloneIn::clone_in(
+                &self.expression_with_type_arguments,
+                allocator,
+            ),
         }
     }
 }
@@ -3373,8 +3387,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for TSClassImplements<'_> {
         TSClassImplements {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
-            expression: CloneIn::clone_in(&self.expression, allocator),
-            type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
+            expression_with_type_arguments: CloneIn::clone_in(
+                &self.expression_with_type_arguments,
+                allocator,
+            ),
         }
     }
 }
@@ -3534,8 +3550,10 @@ impl<'new_alloc> CloneIn<'new_alloc> for TSInterfaceHeritage<'_> {
         TSInterfaceHeritage {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
-            expression: CloneIn::clone_in(&self.expression, allocator),
-            type_parameters: CloneIn::clone_in(&self.type_parameters, allocator),
+            expression_with_type_arguments: CloneIn::clone_in(
+                &self.expression_with_type_arguments,
+                allocator,
+            ),
         }
     }
 }

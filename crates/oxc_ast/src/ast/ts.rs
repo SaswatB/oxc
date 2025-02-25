@@ -976,8 +976,7 @@ pub struct TSClassImplements<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub expression: TSTypeName<'a>,
-    pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+    pub expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
 }
 
 /// TypeScriptInterface Declaration
@@ -1192,8 +1191,7 @@ pub struct TSInterfaceHeritage<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub expression: Expression<'a>,
-    pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+    pub expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
 }
 
 /// TypeScript Type Predicate

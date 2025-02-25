@@ -1969,7 +1969,19 @@ pub struct YieldExpression<'a> {
     pub argument: Option<Expression<'a>>,
 }
 
-/// Class Definitions
+/// Expression with type arguments
+#[ast(visit)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct ExpressionWithTypeArguments<'a> {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
+    pub span: Span,
+    pub expression: Expression<'a>,
+    #[ts]
+    pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+}
 
 /// Class extends clause
 #[ast(visit)]
@@ -1980,11 +1992,10 @@ pub struct ClassExtends<'a> {
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
-    pub expression: Expression<'a>,
-    #[ts]
-    pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
+    pub expression_with_type_arguments: ExpressionWithTypeArguments<'a>,
 }
 
+/// Class Definitions
 #[ast(visit)]
 #[scope(flags(ScopeFlags::StrictMode))]
 #[derive(Debug)]

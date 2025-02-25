@@ -900,11 +900,17 @@ export interface YieldExpression extends Span {
   argument: Expression | null;
 }
 
-export interface ClassExtends extends Span {
-  type: 'ClassExtends';
+export interface ExpressionWithTypeArguments extends Span {
+  type: 'ExpressionWithTypeArguments';
   nodeId: number;
   expression: Expression;
   typeParameters: TSTypeParameterInstantiation | null;
+}
+
+export interface ClassExtends extends Span {
+  type: 'ClassExtends';
+  nodeId: number;
+  expressionWithTypeArguments: ExpressionWithTypeArguments;
 }
 
 export interface Class extends Span {
@@ -1469,8 +1475,7 @@ export type TSAccessibility = 'private' | 'protected' | 'public';
 export interface TSClassImplements extends Span {
   type: 'TSClassImplements';
   nodeId: number;
-  expression: TSTypeName;
-  typeParameters: TSTypeParameterInstantiation | null;
+  expressionWithTypeArguments: ExpressionWithTypeArguments;
 }
 
 export interface TSInterfaceDeclaration extends Span {
@@ -1557,8 +1562,7 @@ export interface TSIndexSignatureName extends Span {
 export interface TSInterfaceHeritage extends Span {
   type: 'TSInterfaceHeritage';
   nodeId: number;
-  expression: Expression;
-  typeParameters: TSTypeParameterInstantiation | null;
+  expressionWithTypeArguments: ExpressionWithTypeArguments;
 }
 
 export interface TSTypePredicate extends Span {

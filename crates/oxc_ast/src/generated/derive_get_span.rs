@@ -1024,6 +1024,13 @@ impl GetSpan for YieldExpression<'_> {
     }
 }
 
+impl GetSpan for ExpressionWithTypeArguments<'_> {
+    #[inline]
+    fn span(&self) -> Span {
+        self.span
+    }
+}
+
 impl GetSpan for ClassExtends<'_> {
     #[inline]
     fn span(&self) -> Span {

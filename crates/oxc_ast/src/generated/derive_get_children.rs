@@ -2527,13 +2527,27 @@ impl<'a> GetChildren<'a> for YieldExpression<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for ClassExtends<'a> {
+impl<'a> GetChildren<'a> for ExpressionWithTypeArguments<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.expression).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
+        children
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::ExpressionWithTypeArguments(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
+}
+
+impl<'a> GetChildren<'a> for ClassExtends<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        let mut children = Vec::new();
+        children.push(AstKind::ExpressionWithTypeArguments(&self.expression_with_type_arguments));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4026,10 +4040,7 @@ impl<'a> GetChildren<'a> for TSTypeAliasDeclaration<'a> {
 impl<'a> GetChildren<'a> for TSClassImplements<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push((*&self.expression).to_ast_kind());
-        if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterInstantiation(field));
-        }
+        children.push(AstKind::ExpressionWithTypeArguments(&self.expression_with_type_arguments));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
@@ -4228,10 +4239,7 @@ impl<'a> GetChildren<'a> for TSIndexSignatureName<'a> {
 impl<'a> GetChildren<'a> for TSInterfaceHeritage<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
-        children.push((*&self.expression).to_ast_kind());
-        if let Some(field) = &self.type_parameters {
-            children.push(AstKind::TSTypeParameterInstantiation(field));
-        }
+        children.push(AstKind::ExpressionWithTypeArguments(&self.expression_with_type_arguments));
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
