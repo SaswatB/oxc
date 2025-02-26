@@ -50,12 +50,12 @@ impl<'a> Expression<'a> {
 
     /// `true` if this [`Expression`] is a literal expression for a primitive value.
     ///
-    /// Does not include [`TemplateLiteral`]s, [`object literals`], or [`array literals`].
+    /// Does not include [`TemplateExpression`]s, [`object literals`], or [`array literals`].
     ///
     /// [`object literals`]: ObjectExpression
     /// [`array literals`]: ArrayExpression
     pub fn is_literal(&self) -> bool {
-        // Note: TemplateLiteral is not `Literal`
+        // Note: TemplateExpression is not `Literal`
         matches!(
             self,
             Self::BooleanLiteral(_)
@@ -64,17 +64,18 @@ impl<'a> Expression<'a> {
                 | Self::BigIntLiteral(_)
                 | Self::RegExpLiteral(_)
                 | Self::StringLiteral(_)
+                | Self::NoSubstitutionTemplateLiteral(_)
         )
     }
 
-    /// Returns `true` for [string](StringLiteral) and [template](TemplateLiteral) literals.
+    /// Returns `true` for [string](StringLiteral) and [template](TemplateExpression) literals.
     pub fn is_string_literal(&self) -> bool {
-        matches!(self, Self::StringLiteral(_) | Self::TemplateLiteral(_))
+        matches!(self, Self::StringLiteral(_) | Self::NoSubstitutionTemplateLiteral(_))
     }
 
     /// Return `true` if the expression is a plain template.
     pub fn is_no_substitution_template(&self) -> bool {
-        matches!(self, Expression::TemplateLiteral(e) if e.is_no_substitution_template())
+        matches!(self, Expression::NoSubstitutionTemplateLiteral(_))
     }
 
     /// Returns `true` for [numeric](NumericLiteral) and [big int](BigIntLiteral) literals.
@@ -87,12 +88,11 @@ impl<'a> Expression<'a> {
         matches!(self, Self::BigIntLiteral(_))
     }
 
-    /// Returns `true` for [string literals](StringLiteral) matching the
-    /// expected value. Note that [non-substitution template
-    /// literals](TemplateLiteral) are not considered.
+    /// Returns `true` for [string literals](StringLiteral) matching the expected value.
     pub fn is_specific_string_literal(&self, string: &str) -> bool {
         match self {
             Self::StringLiteral(s) => s.value == string,
+            Self::NoSubstitutionTemplateLiteral(s) => s.value == string,
             _ => false,
         }
     }
@@ -381,9 +381,10 @@ impl<'a> PropertyKey<'a> {
             Self::NumericLiteral(lit) => Some(Cow::Owned(lit.value.to_string())),
             Self::BigIntLiteral(lit) => Some(Cow::Borrowed(lit.raw.as_str())),
             Self::NullLiteral(_) => Some(Cow::Borrowed("null")),
-            Self::TemplateLiteral(lit) => {
+            Self::TemplateExpression(lit) => {
                 lit.expressions.is_empty().then(|| lit.quasi()).flatten().map(Into::into)
             }
+            Self::NoSubstitutionTemplateLiteral(lit) => Some(Cow::Borrowed(lit.value.as_str())),
             _ => None,
         }
     }
@@ -443,12 +444,7 @@ impl PropertyKind {
     }
 }
 
-impl<'a> TemplateLiteral<'a> {
-    #[allow(missing_docs)]
-    pub fn is_no_substitution_template(&self) -> bool {
-        self.expressions.is_empty() && self.quasis.len() == 1
-    }
-
+impl<'a> TemplateExpression<'a> {
     /// Get single quasi from `template`
     pub fn quasi(&self) -> Option<Atom<'a>> {
         self.quasis.first().and_then(|quasi| quasi.value.cooked)
@@ -504,12 +500,15 @@ impl<'a> MemberExpression<'a> {
         match self {
             MemberExpression::ElementAccessExpression(expr) => match &expr.argument_expression {
                 Expression::StringLiteral(lit) => Some((lit.span, lit.value.as_str())),
-                Expression::TemplateLiteral(lit) => {
+                Expression::TemplateExpression(lit) => {
                     if lit.expressions.is_empty() && lit.quasis.len() == 1 {
                         Some((lit.span, lit.quasis[0].value.raw.as_str()))
                     } else {
                         None
                     }
+                }
+                Expression::NoSubstitutionTemplateLiteral(lit) => {
+                    Some((lit.span, lit.value.as_str()))
                 }
                 _ => None,
             },
@@ -549,11 +548,12 @@ impl<'a> ElementAccessExpression<'a> {
     pub fn static_property_name(&self) -> Option<Atom<'a>> {
         match &self.argument_expression {
             Expression::StringLiteral(lit) => Some(lit.value),
-            Expression::TemplateLiteral(lit)
+            Expression::TemplateExpression(lit)
                 if lit.expressions.is_empty() && lit.quasis.len() == 1 =>
             {
                 Some(lit.quasis[0].value.raw)
             }
+            Expression::NoSubstitutionTemplateLiteral(lit) => Some(lit.value),
             Expression::RegExpLiteral(lit) => lit.raw,
             _ => None,
         }
@@ -620,7 +620,11 @@ impl CallExpression<'_> {
             id.name == "require"
                 && matches!(
                     self.arguments.first(),
-                    Some(Argument::StringLiteral(_) | Argument::TemplateLiteral(_)),
+                    Some(
+                        Argument::StringLiteral(_)
+                            | Argument::TemplateExpression(_)
+                            | Argument::NoSubstitutionTemplateLiteral(_)
+                    ),
                 )
         } else {
             false

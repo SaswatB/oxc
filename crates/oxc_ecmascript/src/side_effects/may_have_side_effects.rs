@@ -23,7 +23,7 @@ pub trait MayHaveSideEffects {
             | Expression::ThisExpression(_)
             | Expression::ArrowFunctionExpression(_)
             | Expression::FunctionExpression(_) => false,
-            Expression::TemplateLiteral(template) => {
+            Expression::TemplateExpression(template) => {
                 template.expressions.iter().any(|e| self.expression_may_have_side_efffects(e))
             }
             Expression::UnaryExpression(e) => self.unary_expression_may_have_side_effects(e),

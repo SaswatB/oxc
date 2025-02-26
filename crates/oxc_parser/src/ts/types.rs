@@ -990,7 +990,7 @@ impl<'a> ParserImpl<'a> {
                 Expression::BigIntLiteral(literal) => TSLiteral::BigIntLiteral(literal),
                 Expression::RegExpLiteral(literal) => TSLiteral::RegExpLiteral(literal),
                 Expression::StringLiteral(literal) => TSLiteral::StringLiteral(literal),
-                Expression::TemplateLiteral(literal) => TSLiteral::TemplateLiteral(literal),
+                Expression::TemplateExpression(literal) => TSLiteral::TemplateExpression(literal),
                 _ => return Err(self.unexpected()),
             }
         };

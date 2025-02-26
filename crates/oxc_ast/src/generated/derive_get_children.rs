@@ -119,7 +119,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -165,7 +166,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -211,7 +213,8 @@ impl<'a> GetChildren<'a> for Expression<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -339,7 +342,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -387,7 +391,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -435,7 +440,8 @@ impl<'a> GetChildren<'a> for ArrayExpressionElement<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -552,7 +558,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -600,7 +607,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -648,7 +656,8 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -688,7 +697,7 @@ impl<'a> GetChildren<'a> for PropertyKey<'a> {
     }
 }
 
-impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
+impl<'a> GetChildren<'a> for TemplateExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         for item in &self.quasis {
@@ -700,10 +709,44 @@ impl<'a> GetChildren<'a> for TemplateLiteral<'a> {
         children
     }
     fn to_ast_kind(&'a self) -> AstKind<'a> {
-        AstKind::TemplateLiteral(self)
+        AstKind::TemplateExpression(self)
     }
     fn get_node_id(&'a self) -> u32 {
         self.node_id
+    }
+}
+
+impl<'a> GetChildren<'a> for NoSubstitutionTemplateLiteral<'a> {
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        vec![]
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        AstKind::NoSubstitutionTemplateLiteral(self)
+    }
+    fn get_node_id(&'a self) -> u32 {
+        self.node_id
+    }
+}
+
+impl<'a> GetChildren<'a> for TemplateLiteralKind<'a> {
+    #[allow(unused_variables, clippy::match_same_arms)]
+    fn get_children(&'a self) -> Vec<AstKind<'a>> {
+        match self {
+            Self::Tagged(n) => n.get_children(),
+            Self::NoSubstitution(n) => n.get_children(),
+        }
+    }
+    fn to_ast_kind(&'a self) -> AstKind<'a> {
+        match self {
+            Self::Tagged(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitution(e) => AstKind::NoSubstitutionTemplateLiteral(e),
+        }
+    }
+    fn get_node_id(&'a self) -> u32 {
+        match self {
+            Self::Tagged(e) => e.node_id,
+            Self::NoSubstitution(e) => e.node_id,
+        }
     }
 }
 
@@ -711,7 +754,7 @@ impl<'a> GetChildren<'a> for TaggedTemplateExpression<'a> {
     fn get_children(&'a self) -> Vec<AstKind<'a>> {
         let mut children = Vec::new();
         children.push((*&self.tag).to_ast_kind());
-        children.push(AstKind::TemplateLiteral(&self.quasi));
+        children.push((*&self.quasi).to_ast_kind());
         if let Some(field) = &self.type_parameters {
             children.push(AstKind::TSTypeParameterInstantiation(field));
         }
@@ -887,7 +930,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -934,7 +978,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -981,7 +1026,8 @@ impl<'a> GetChildren<'a> for Argument<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -1854,7 +1900,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -1901,7 +1948,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -1948,7 +1996,8 @@ impl<'a> GetChildren<'a> for ForStatementInit<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -3011,7 +3060,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -3060,7 +3110,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -3109,7 +3160,8 @@ impl<'a> GetChildren<'a> for ExportDefaultDeclarationKind<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,
@@ -3284,7 +3336,7 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
             Self::UnaryExpression(n) => n.get_children(),
         }
     }
@@ -3296,7 +3348,7 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
             Self::UnaryExpression(e) => AstKind::UnaryExpression(e),
         }
     }
@@ -3308,7 +3360,7 @@ impl<'a> GetChildren<'a> for TSLiteral<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
             Self::UnaryExpression(e) => e.node_id,
         }
     }
@@ -5013,7 +5065,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::BigIntLiteral(n) => n.get_children(),
             Self::RegExpLiteral(n) => n.get_children(),
             Self::StringLiteral(n) => n.get_children(),
-            Self::TemplateLiteral(n) => n.get_children(),
+            Self::TemplateExpression(n) => n.get_children(),
+            Self::NoSubstitutionTemplateLiteral(n) => n.get_children(),
             Self::Identifier(n) => n.get_children(),
             Self::MetaProperty(n) => n.get_children(),
             Self::Super(n) => n.get_children(),
@@ -5060,7 +5113,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::BigIntLiteral(e) => AstKind::BigIntLiteral(e),
             Self::RegExpLiteral(e) => AstKind::RegExpLiteral(e),
             Self::StringLiteral(e) => AstKind::StringLiteral(e),
-            Self::TemplateLiteral(e) => AstKind::TemplateLiteral(e),
+            Self::TemplateExpression(e) => AstKind::TemplateExpression(e),
+            Self::NoSubstitutionTemplateLiteral(e) => AstKind::NoSubstitutionTemplateLiteral(e),
             Self::Identifier(e) => AstKind::IdentifierReference(e),
             Self::MetaProperty(e) => AstKind::MetaProperty(e),
             Self::Super(e) => AstKind::Super(e),
@@ -5107,7 +5161,8 @@ impl<'a> GetChildren<'a> for JSXExpression<'a> {
             Self::BigIntLiteral(e) => e.node_id,
             Self::RegExpLiteral(e) => e.node_id,
             Self::StringLiteral(e) => e.node_id,
-            Self::TemplateLiteral(e) => e.node_id,
+            Self::TemplateExpression(e) => e.node_id,
+            Self::NoSubstitutionTemplateLiteral(e) => e.node_id,
             Self::Identifier(e) => e.node_id,
             Self::MetaProperty(e) => e.node_id,
             Self::Super(e) => e.node_id,

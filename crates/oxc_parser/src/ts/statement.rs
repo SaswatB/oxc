@@ -68,10 +68,10 @@ impl<'a> ParserImpl<'a> {
             }
             Kind::LBrack => match self.parse_computed_property_name()? {
                 Expression::StringLiteral(literal) => Ok(TSEnumMemberName::String(literal)),
-                Expression::TemplateLiteral(template) if template.is_no_substitution_template() => {
+                Expression::NoSubstitutionTemplateLiteral(template) => {
                     Ok(self.ast.ts_enum_member_name_string_literal(
                         template.span,
-                        template.quasi().unwrap(),
+                        template.value,
                         Some(Atom::from(
                             Span::new(template.span.start + 1, template.span.end - 1)
                                 .source_text(self.source_text),

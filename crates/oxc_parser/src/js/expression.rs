@@ -152,7 +152,7 @@ impl<'a> ParserImpl<'a> {
     ///     `AsyncFunctionExpression`
     ///     `AsyncGeneratorExpression`
     ///     `RegularExpressionLiteral`
-    ///     `TemplateLiteral`[?Yield, ?Await, ~Tagged]
+    ///     `TemplateExpression`[?Yield, ?Await, ~Tagged]
     ///     `CoverParenthesizedExpressionAndArrowParameterList`[?Yield, ?Await]
     fn parse_primary_expression(&mut self) -> Result<Expression<'a>> {
         let span = self.start_span();
@@ -178,7 +178,7 @@ impl<'a> ParserImpl<'a> {
             Kind::Class => self.parse_class_expression(),
             // This
             Kind::This => Ok(self.parse_this_expression()),
-            // TemplateLiteral
+            // TemplateExpression
             Kind::NoSubstitutionTemplate | Kind::TemplateHead => {
                 self.parse_template_literal_expression(false)
             }
@@ -443,19 +443,26 @@ impl<'a> ParserImpl<'a> {
         self.ast.array_expression_element_omitted_expression(self.cur_token().span())
     }
 
-    /// Section [Template Literal](https://tc39.es/ecma262/#prod-TemplateLiteral)
-    /// `TemplateLiteral`[Yield, Await, Tagged] :
+    /// Section [Template Literal](https://tc39.es/ecma262/#prod-TemplateExpression)
+    /// `TemplateExpression`[Yield, Await, Tagged] :
     ///     `NoSubstitutionTemplate`
     ///     `SubstitutionTemplate`[?Yield, ?Await, ?Tagged]
-    pub(crate) fn parse_template_literal(&mut self, tagged: bool) -> Result<TemplateLiteral<'a>> {
+    pub(crate) fn parse_template_literal(
+        &mut self,
+        tagged: bool,
+    ) -> Result<TemplateLiteralKind<'a>> {
         let span = self.start_span();
         let mut expressions = self.ast.vec();
         let mut quasis = self.ast.vec();
-        let mut no_substitution_template = false;
         match self.cur_kind() {
             Kind::NoSubstitutionTemplate => {
-                quasis.push(self.parse_template_element(tagged));
-                no_substitution_template = true;
+                let element = self.parse_template_element(tagged);
+                Ok(TemplateLiteralKind::NoSubstitution(
+                    self.ast.alloc_no_substitution_template_literal(
+                        self.end_span(span),
+                        element.value.raw,
+                    ),
+                ))
             }
             Kind::TemplateHead => {
                 quasis.push(self.parse_template_element(tagged));
@@ -482,23 +489,27 @@ impl<'a> ParserImpl<'a> {
                         }
                     }
                 }
+                Ok(TemplateLiteralKind::Tagged(self.ast.alloc_template_expression(
+                    self.end_span(span),
+                    quasis,
+                    expressions,
+                )))
             }
+
             _ => unreachable!("parse_template_literal"),
         }
-        Ok(self.ast.template_literal(
-            self.end_span(span),
-            quasis,
-            expressions,
-            no_substitution_template,
-        ))
     }
 
     pub(crate) fn parse_template_literal_expression(
         &mut self,
         tagged: bool,
     ) -> Result<Expression<'a>> {
-        self.parse_template_literal(tagged)
-            .map(|template_literal| Expression::TemplateLiteral(self.alloc(template_literal)))
+        self.parse_template_literal(tagged).map(|template_literal| match template_literal {
+            TemplateLiteralKind::Tagged(expr) => Expression::TemplateExpression(expr),
+            TemplateLiteralKind::NoSubstitution(expr) => {
+                Expression::NoSubstitutionTemplateLiteral(expr)
+            }
+        })
     }
 
     fn parse_tagged_template(
@@ -511,12 +522,12 @@ impl<'a> ParserImpl<'a> {
         let quasi = self.parse_template_literal(true)?;
         let span = self.end_span(span);
         // OptionalChain :
-        //   ?. TemplateLiteral
-        //   OptionalChain TemplateLiteral
+        //   ?. TemplateExpression
+        //   OptionalChain TemplateExpression
         // It is a Syntax Error if any source text is matched by this production.
         // <https://tc39.es/ecma262/#sec-left-hand-side-expressions-static-semantics-early-errors>
         if in_optional_chain {
-            self.error(diagnostics::optional_chain_tagged_template(quasi.span));
+            self.error(diagnostics::optional_chain_tagged_template(quasi.span()));
         }
         Ok(self.ast.expression_tagged_template(span, lhs, quasi, type_parameters))
     }

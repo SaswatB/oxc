@@ -70,78 +70,80 @@ pub enum Expression<'a> {
     RegExpLiteral(Box<'a, RegExpLiteral<'a>>) = 4,
     /// See [`StringLiteral`] for AST node details.
     StringLiteral(Box<'a, StringLiteral<'a>>) = 5,
-    /// See [`TemplateLiteral`] for AST node details.
-    TemplateLiteral(Box<'a, TemplateLiteral<'a>>) = 6,
+    /// See [`TemplateExpression`] for AST node details.
+    TemplateExpression(Box<'a, TemplateExpression<'a>>) = 6,
+    /// See [`NoSubstitutionTemplateLiteral`] for AST node details.
+    NoSubstitutionTemplateLiteral(Box<'a, NoSubstitutionTemplateLiteral<'a>>) = 7,
 
     /// See [`IdentifierReference`] for AST node details.
-    Identifier(Box<'a, IdentifierReference<'a>>) = 7,
+    Identifier(Box<'a, IdentifierReference<'a>>) = 8,
 
     /// See [`MetaProperty`] for AST node details.
-    MetaProperty(Box<'a, MetaProperty<'a>>) = 8,
+    MetaProperty(Box<'a, MetaProperty<'a>>) = 9,
     /// See [`Super`] for AST node details.
-    Super(Box<'a, Super>) = 9,
+    Super(Box<'a, Super>) = 10,
 
     /// See [`ArrayExpression`] for AST node details.
-    ArrayExpression(Box<'a, ArrayExpression<'a>>) = 10,
+    ArrayExpression(Box<'a, ArrayExpression<'a>>) = 11,
     /// See [`ArrowFunctionExpression`] for AST node details.
-    ArrowFunctionExpression(Box<'a, ArrowFunctionExpression<'a>>) = 11,
+    ArrowFunctionExpression(Box<'a, ArrowFunctionExpression<'a>>) = 12,
     /// See [`AssignmentExpression`] for AST node details.
-    AssignmentExpression(Box<'a, AssignmentExpression<'a>>) = 12,
+    AssignmentExpression(Box<'a, AssignmentExpression<'a>>) = 13,
     /// See [`AwaitExpression`] for AST node details.
-    AwaitExpression(Box<'a, AwaitExpression<'a>>) = 13,
+    AwaitExpression(Box<'a, AwaitExpression<'a>>) = 14,
     /// See [`GeneralBinaryExpression`] for AST node details.
-    GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 14,
+    GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 15,
     /// See [`CallExpression`] for AST node details.
-    CallExpression(Box<'a, CallExpression<'a>>) = 15,
+    CallExpression(Box<'a, CallExpression<'a>>) = 16,
     /// See [`ChainExpression`] for AST node details.
-    ChainExpression(Box<'a, ChainExpression<'a>>) = 16,
+    ChainExpression(Box<'a, ChainExpression<'a>>) = 17,
     /// See [`Class`] for AST node details.
-    ClassExpression(Box<'a, Class<'a>>) = 17,
+    ClassExpression(Box<'a, Class<'a>>) = 18,
     /// See [`ConditionalExpression`] for AST node details.
-    ConditionalExpression(Box<'a, ConditionalExpression<'a>>) = 18,
+    ConditionalExpression(Box<'a, ConditionalExpression<'a>>) = 19,
     /// See [`Function`] for AST node details.
     #[visit(args(flags = ScopeFlags::Function))]
-    FunctionExpression(Box<'a, Function<'a>>) = 19,
+    FunctionExpression(Box<'a, Function<'a>>) = 20,
     /// See [`ImportExpression`] for AST node details.
-    ImportExpression(Box<'a, ImportExpression<'a>>) = 20,
+    ImportExpression(Box<'a, ImportExpression<'a>>) = 21,
     /// See [`LogicalExpression`] for AST node details.
-    LogicalExpression(Box<'a, LogicalExpression<'a>>) = 21,
+    LogicalExpression(Box<'a, LogicalExpression<'a>>) = 22,
     /// See [`NewExpression`] for AST node details.
-    NewExpression(Box<'a, NewExpression<'a>>) = 22,
+    NewExpression(Box<'a, NewExpression<'a>>) = 23,
     /// See [`ObjectExpression`] for AST node details.
-    ObjectExpression(Box<'a, ObjectExpression<'a>>) = 23,
+    ObjectExpression(Box<'a, ObjectExpression<'a>>) = 24,
     /// See [`ParenthesizedExpression`] for AST node details.
-    ParenthesizedExpression(Box<'a, ParenthesizedExpression<'a>>) = 24,
+    ParenthesizedExpression(Box<'a, ParenthesizedExpression<'a>>) = 25,
     /// See [`SequenceExpression`] for AST node details.
-    SequenceExpression(Box<'a, SequenceExpression<'a>>) = 25,
+    SequenceExpression(Box<'a, SequenceExpression<'a>>) = 26,
     /// See [`TaggedTemplateExpression`] for AST node details.
-    TaggedTemplateExpression(Box<'a, TaggedTemplateExpression<'a>>) = 26,
+    TaggedTemplateExpression(Box<'a, TaggedTemplateExpression<'a>>) = 27,
     /// See [`ThisExpression`] for AST node details.
-    ThisExpression(Box<'a, ThisExpression>) = 27,
+    ThisExpression(Box<'a, ThisExpression>) = 28,
     /// See [`UnaryExpression`] for AST node details.
-    UnaryExpression(Box<'a, UnaryExpression<'a>>) = 28,
+    UnaryExpression(Box<'a, UnaryExpression<'a>>) = 29,
     /// See [`UpdateExpression`] for AST node details.
-    UpdateExpression(Box<'a, UpdateExpression<'a>>) = 29,
+    UpdateExpression(Box<'a, UpdateExpression<'a>>) = 30,
     /// See [`YieldExpression`] for AST node details.
-    YieldExpression(Box<'a, YieldExpression<'a>>) = 30,
+    YieldExpression(Box<'a, YieldExpression<'a>>) = 31,
     /// See [`PrivateInExpression`] for AST node details.
-    PrivateInExpression(Box<'a, PrivateInExpression<'a>>) = 31,
+    PrivateInExpression(Box<'a, PrivateInExpression<'a>>) = 32,
 
     /// See [`JSXElement`] for AST node details.
-    JSXElement(Box<'a, JSXElement<'a>>) = 32,
+    JSXElement(Box<'a, JSXElement<'a>>) = 33,
     /// See [`JSXFragment`] for AST node details.
-    JSXFragment(Box<'a, JSXFragment<'a>>) = 33,
+    JSXFragment(Box<'a, JSXFragment<'a>>) = 34,
 
     /// See [`TSAsExpression`] for AST node details.
-    TSAsExpression(Box<'a, TSAsExpression<'a>>) = 34,
+    TSAsExpression(Box<'a, TSAsExpression<'a>>) = 35,
     /// See [`TSSatisfiesExpression`] for AST node details.
-    TSSatisfiesExpression(Box<'a, TSSatisfiesExpression<'a>>) = 35,
+    TSSatisfiesExpression(Box<'a, TSSatisfiesExpression<'a>>) = 36,
     /// See [`TSTypeAssertion`] for AST node details.
-    TSTypeAssertion(Box<'a, TSTypeAssertion<'a>>) = 36,
+    TSTypeAssertion(Box<'a, TSTypeAssertion<'a>>) = 37,
     /// See [`TSNonNullExpression`] for AST node details.
-    TSNonNullExpression(Box<'a, TSNonNullExpression<'a>>) = 37,
+    TSNonNullExpression(Box<'a, TSNonNullExpression<'a>>) = 38,
     /// See [`TSInstantiationExpression`] for AST node details.
-    TSInstantiationExpression(Box<'a, TSInstantiationExpression<'a>>) = 38,
+    TSInstantiationExpression(Box<'a, TSInstantiationExpression<'a>>) = 39,
 
     // `MemberExpression` variants added here by `inherit_variants!` macro
     @inherit MemberExpression
@@ -159,7 +161,8 @@ macro_rules! match_expression {
             | $ty::BigIntLiteral(_)
             | $ty::RegExpLiteral(_)
             | $ty::StringLiteral(_)
-            | $ty::TemplateLiteral(_)
+            | $ty::TemplateExpression(_)
+            | $ty::NoSubstitutionTemplateLiteral(_)
             | $ty::Identifier(_)
             | $ty::MetaProperty(_)
             | $ty::Super(_)
@@ -438,14 +441,38 @@ pub enum PropertyKind {
 #[ast(visit)]
 #[derive(Debug)]
 #[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
-pub struct TemplateLiteral<'a> {
+pub struct TemplateExpression<'a> {
     /// Unique node id
     #[atomic()]
     pub node_id: u32,
     pub span: Span,
     pub quasis: Vec<'a, TemplateElement<'a>>,
     pub expressions: Vec<'a, Expression<'a>>,
-    pub no_substitution_template: bool,
+}
+
+/// `` `Hello` `` in `` const foo = `Hello` ``
+///
+/// Represents a template literal without any expression elements.
+#[ast(visit)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, ContentEq, ESTree)]
+pub struct NoSubstitutionTemplateLiteral<'a> {
+    /// Unique node id
+    #[atomic()]
+    pub node_id: u32,
+    pub span: Span,
+    pub value: Atom<'a>,
+}
+
+/// Represents the kind of template literal.
+#[ast(visit)]
+#[derive(Debug)]
+#[generate_derive(CloneIn, GetChildren, GetSpan, GetSpanMut, GetAddress, ContentEq, ESTree)]
+pub enum TemplateLiteralKind<'a> {
+    /// `` foo`Hello, ${name}` `` in `` const foo = foo`Hello, ${name}` ``
+    Tagged(Box<'a, TemplateExpression<'a>>) = 0,
+    /// `` `Hello, ${name}` `` in `` const foo = `Hello, ${name}` ``
+    NoSubstitution(Box<'a, NoSubstitutionTemplateLiteral<'a>>) = 1,
 }
 
 /// `` foo`Hello, ${name}` `` in `` const foo = foo`Hello, ${name}` ``
@@ -460,7 +487,7 @@ pub struct TaggedTemplateExpression<'a> {
     pub node_id: u32,
     pub span: Span,
     pub tag: Expression<'a>,
-    pub quasi: TemplateLiteral<'a>,
+    pub quasi: TemplateLiteralKind<'a>,
     #[ts]
     pub type_parameters: Option<Box<'a, TSTypeParameterInstantiation<'a>>>,
 }

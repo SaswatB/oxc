@@ -22,8 +22,8 @@ pub fn is_immutable_value(expr: &Expression<'_>) -> bool {
         | Expression::NullLiteral(_)
         | Expression::NumericLiteral(_)
         | Expression::RegExpLiteral(_)
-        | Expression::StringLiteral(_) => true,
-        Expression::TemplateLiteral(lit) if lit.is_no_substitution_template() => true,
+        | Expression::StringLiteral(_)
+        | Expression::NoSubstitutionTemplateLiteral(_) => true,
         Expression::Identifier(ident) => {
             matches!(ident.name.as_str(), "undefined" | "Infinity" | "NaN")
         }

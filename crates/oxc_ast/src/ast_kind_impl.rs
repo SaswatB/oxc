@@ -59,7 +59,7 @@ impl<'a> AstKind<'a> {
                 | Self::NullLiteral(_)
                 | Self::BigIntLiteral(_)
                 | Self::RegExpLiteral(_)
-                | Self::TemplateLiteral(_)
+                | Self::NoSubstitutionTemplateLiteral(_)
         )
     }
 
@@ -136,7 +136,8 @@ impl<'a> AstKind<'a> {
             Expression::BigIntLiteral(e) => Self::BigIntLiteral(e),
             Expression::RegExpLiteral(e) => Self::RegExpLiteral(e),
             Expression::StringLiteral(e) => Self::StringLiteral(e),
-            Expression::TemplateLiteral(e) => Self::TemplateLiteral(e),
+            Expression::TemplateExpression(e) => Self::TemplateExpression(e),
+            Expression::NoSubstitutionTemplateLiteral(e) => Self::NoSubstitutionTemplateLiteral(e),
             Expression::Identifier(e) => Self::IdentifierReference(e),
             Expression::MetaProperty(e) => Self::MetaProperty(e),
             Expression::Super(e) => Self::Super(e),
@@ -351,7 +352,10 @@ impl<'a> AstKind<'a> {
             ExportDefaultDeclarationKind::BigIntLiteral(e) => Self::BigIntLiteral(e),
             ExportDefaultDeclarationKind::RegExpLiteral(e) => Self::RegExpLiteral(e),
             ExportDefaultDeclarationKind::StringLiteral(e) => Self::StringLiteral(e),
-            ExportDefaultDeclarationKind::TemplateLiteral(e) => Self::TemplateLiteral(e),
+            ExportDefaultDeclarationKind::TemplateExpression(e) => Self::TemplateExpression(e),
+            ExportDefaultDeclarationKind::NoSubstitutionTemplateLiteral(e) => {
+                Self::NoSubstitutionTemplateLiteral(e)
+            }
             ExportDefaultDeclarationKind::Identifier(e) => Self::IdentifierReference(e),
             ExportDefaultDeclarationKind::MetaProperty(e) => Self::MetaProperty(e),
             ExportDefaultDeclarationKind::Super(e) => Self::Super(e),
@@ -464,7 +468,10 @@ impl<'a> AstKind<'a> {
             JSXExpression::BigIntLiteral(j) => Self::BigIntLiteral(j),
             JSXExpression::RegExpLiteral(j) => Self::RegExpLiteral(j),
             JSXExpression::StringLiteral(j) => Self::StringLiteral(j),
-            JSXExpression::TemplateLiteral(j) => Self::TemplateLiteral(j),
+            JSXExpression::TemplateExpression(j) => Self::TemplateExpression(j),
+            JSXExpression::NoSubstitutionTemplateLiteral(j) => {
+                Self::NoSubstitutionTemplateLiteral(j)
+            }
             JSXExpression::Identifier(j) => Self::IdentifierReference(j),
             JSXExpression::MetaProperty(j) => Self::MetaProperty(j),
             JSXExpression::Super(j) => Self::Super(j),
@@ -645,7 +652,7 @@ impl<'a> AstKind<'a> {
             TSLiteral::BigIntLiteral(t) => Self::BigIntLiteral(t),
             TSLiteral::RegExpLiteral(t) => Self::RegExpLiteral(t),
             TSLiteral::StringLiteral(t) => Self::StringLiteral(t),
-            TSLiteral::TemplateLiteral(t) => Self::TemplateLiteral(t),
+            TSLiteral::TemplateExpression(t) => Self::TemplateExpression(t),
             TSLiteral::UnaryExpression(t) => Self::UnaryExpression(t),
         }
     }
@@ -745,11 +752,14 @@ impl AstKind<'_> {
             Self::NullLiteral(_) => "NullLiteral".into(),
             Self::BigIntLiteral(b) => format!("BigIntLiteral({})", b.raw).into(),
             Self::RegExpLiteral(r) => format!("RegExpLiteral({})", r.regex).into(),
-            Self::TemplateLiteral(t) => format!(
-                "TemplateLiteral({})",
+            Self::TemplateExpression(t) => format!(
+                "TemplateExpression({})",
                 t.quasi().map_or_else(|| "None".into(), |q| format!("Some({q})"))
             )
             .into(),
+            Self::NoSubstitutionTemplateLiteral(n) => {
+                format!("NoSubstitutionTemplateLiteral({})", n.value).into()
+            }
 
             Self::MetaProperty(_) => "MetaProperty".into(),
             Self::Super(_) => "Super".into(),

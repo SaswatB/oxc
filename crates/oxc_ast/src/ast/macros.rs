@@ -101,76 +101,78 @@ macro_rules! inherit_variants {
                 /// Inherited from [`Expression`]
                 StringLiteral(Box<'a, StringLiteral<'a>>) = 5,
                 /// Inherited from [`Expression`]
-                TemplateLiteral(Box<'a, TemplateLiteral<'a>>) = 6,
+                TemplateExpression(Box<'a, TemplateExpression<'a>>) = 6,
+                /// Inherited from [`Expression`]
+                NoSubstitutionTemplateLiteral(Box<'a, NoSubstitutionTemplateLiteral<'a>>) = 7,
 
                 /// Inherited from [`Expression`]
-                Identifier(Box<'a, IdentifierReference<'a>>) = 7,
+                Identifier(Box<'a, IdentifierReference<'a>>) = 8,
 
                 /// Inherited from [`Expression`]
-                MetaProperty(Box<'a, MetaProperty<'a>>) = 8,
+                MetaProperty(Box<'a, MetaProperty<'a>>) = 9,
                 /// Inherited from [`Expression`]
-                Super(Box<'a, Super>) = 9,
+                Super(Box<'a, Super>) = 10,
 
                 /// Inherited from [`Expression`]
-                ArrayExpression(Box<'a, ArrayExpression<'a>>) = 10,
+                ArrayExpression(Box<'a, ArrayExpression<'a>>) = 11,
                 /// Inherited from [`Expression`]
-                ArrowFunctionExpression(Box<'a, ArrowFunctionExpression<'a>>) = 11,
+                ArrowFunctionExpression(Box<'a, ArrowFunctionExpression<'a>>) = 12,
                 /// Inherited from [`Expression`]
-                AssignmentExpression(Box<'a, AssignmentExpression<'a>>) = 12,
+                AssignmentExpression(Box<'a, AssignmentExpression<'a>>) = 13,
                 /// Inherited from [`Expression`]
-                AwaitExpression(Box<'a, AwaitExpression<'a>>) = 13,
+                AwaitExpression(Box<'a, AwaitExpression<'a>>) = 14,
                 /// Inherited from [`Expression`]
-                GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 14,
+                GeneralBinaryExpression(Box<'a, GeneralBinaryExpression<'a>>) = 15,
                 /// Inherited from [`Expression`]
-                CallExpression(Box<'a, CallExpression<'a>>) = 15,
+                CallExpression(Box<'a, CallExpression<'a>>) = 16,
                 /// Inherited from [`Expression`]
-                ChainExpression(Box<'a, ChainExpression<'a>>) = 16,
+                ChainExpression(Box<'a, ChainExpression<'a>>) = 17,
                 /// Inherited from [`Expression`]
-                ClassExpression(Box<'a, Class<'a>>) = 17,
+                ClassExpression(Box<'a, Class<'a>>) = 18,
                 /// Inherited from [`Expression`]
-                ConditionalExpression(Box<'a, ConditionalExpression<'a>>) = 18,
+                ConditionalExpression(Box<'a, ConditionalExpression<'a>>) = 19,
                 /// Inherited from [`Expression`]
-                FunctionExpression(Box<'a, Function<'a>>) = 19,
+                FunctionExpression(Box<'a, Function<'a>>) = 20,
                 /// Inherited from [`Expression`]
-                ImportExpression(Box<'a, ImportExpression<'a>>) = 20,
+                ImportExpression(Box<'a, ImportExpression<'a>>) = 21,
                 /// Inherited from [`Expression`]
-                LogicalExpression(Box<'a, LogicalExpression<'a>>) = 21,
+                LogicalExpression(Box<'a, LogicalExpression<'a>>) = 22,
                 /// Inherited from [`Expression`]
-                NewExpression(Box<'a, NewExpression<'a>>) = 22,
+                NewExpression(Box<'a, NewExpression<'a>>) = 23,
                 /// Inherited from [`Expression`]
-                ObjectExpression(Box<'a, ObjectExpression<'a>>) = 23,
+                ObjectExpression(Box<'a, ObjectExpression<'a>>) = 24,
                 /// Inherited from [`Expression`]
-                ParenthesizedExpression(Box<'a, ParenthesizedExpression<'a>>) = 24,
+                ParenthesizedExpression(Box<'a, ParenthesizedExpression<'a>>) = 25,
                 /// Inherited from [`Expression`]
-                SequenceExpression(Box<'a, SequenceExpression<'a>>) = 25,
+                SequenceExpression(Box<'a, SequenceExpression<'a>>) = 26,
                 /// Inherited from [`Expression`]
-                TaggedTemplateExpression(Box<'a, TaggedTemplateExpression<'a>>) = 26,
+                TaggedTemplateExpression(Box<'a, TaggedTemplateExpression<'a>>) = 27,
                 /// Inherited from [`Expression`]
-                ThisExpression(Box<'a, ThisExpression>) = 27,
+                ThisExpression(Box<'a, ThisExpression>) = 28,
                 /// Inherited from [`Expression`]
-                UnaryExpression(Box<'a, UnaryExpression<'a>>) = 28,
+                UnaryExpression(Box<'a, UnaryExpression<'a>>) = 29,
                 /// Inherited from [`Expression`]
-                UpdateExpression(Box<'a, UpdateExpression<'a>>) = 29,
+                UpdateExpression(Box<'a, UpdateExpression<'a>>) = 30,
                 /// Inherited from [`Expression`]
-                YieldExpression(Box<'a, YieldExpression<'a>>) = 30,
+                YieldExpression(Box<'a, YieldExpression<'a>>) = 31,
                 /// Inherited from [`Expression`]
-                PrivateInExpression(Box<'a, PrivateInExpression<'a>>) = 31,
+                PrivateInExpression(Box<'a, PrivateInExpression<'a>>) = 32,
 
                 /// Inherited from [`Expression`]
-                JSXElement(Box<'a, JSXElement<'a>>) = 32,
+                JSXElement(Box<'a, JSXElement<'a>>) = 33,
                 /// Inherited from [`Expression`]
-                JSXFragment(Box<'a, JSXFragment<'a>>) = 33,
+                JSXFragment(Box<'a, JSXFragment<'a>>) = 34,
 
                 /// Inherited from [`Expression`]
-                TSAsExpression(Box<'a, TSAsExpression<'a>>) = 34,
+                TSAsExpression(Box<'a, TSAsExpression<'a>>) = 35,
                 /// Inherited from [`Expression`]
-                TSSatisfiesExpression(Box<'a, TSSatisfiesExpression<'a>>) = 35,
+                TSSatisfiesExpression(Box<'a, TSSatisfiesExpression<'a>>) = 36,
                 /// Inherited from [`Expression`]
-                TSTypeAssertion(Box<'a, TSTypeAssertion<'a>>) = 36,
+                TSTypeAssertion(Box<'a, TSTypeAssertion<'a>>) = 37,
                 /// Inherited from [`Expression`]
-                TSNonNullExpression(Box<'a, TSNonNullExpression<'a>>) = 37,
+                TSNonNullExpression(Box<'a, TSNonNullExpression<'a>>) = 38,
                 /// Inherited from [`Expression`]
-                TSInstantiationExpression(Box<'a, TSInstantiationExpression<'a>>) = 38,
+                TSInstantiationExpression(Box<'a, TSInstantiationExpression<'a>>) = 39,
 
                 // Inherited from `MemberExpression`
                 @inherit MemberExpression
@@ -195,7 +197,8 @@ macro_rules! inherit_variants {
                 BigIntLiteral,
                 RegExpLiteral,
                 StringLiteral,
-                TemplateLiteral,
+                TemplateExpression,
+                NoSubstitutionTemplateLiteral,
                 Identifier,
                 MetaProperty,
                 Super,

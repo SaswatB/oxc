@@ -37,7 +37,7 @@ impl<'a> ToBoolean<'a> for Expression<'a> {
             }),
             Expression::BigIntLiteral(big_int_literal) => Some(!big_int_literal.is_zero()),
             Expression::StringLiteral(string_literal) => Some(!string_literal.value.is_empty()),
-            Expression::TemplateLiteral(template_literal) => {
+            Expression::TemplateExpression(template_literal) => {
                 // only for ``
                 template_literal
                     .quasis

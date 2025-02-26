@@ -147,8 +147,8 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
-    fn visit_template_literal(&mut self, it: &TemplateLiteral<'a>) {
-        walk_template_literal(self, it);
+    fn visit_template_expression(&mut self, it: &TemplateExpression<'a>) {
+        walk_template_expression(self, it);
     }
 
     #[inline]
@@ -164,6 +164,11 @@ pub trait Visit<'a>: Sized {
     #[inline]
     fn visit_expressions(&mut self, it: &Vec<'a, Expression<'a>>) {
         walk_expressions(self, it);
+    }
+
+    #[inline]
+    fn visit_no_substitution_template_literal(&mut self, it: &NoSubstitutionTemplateLiteral<'a>) {
+        walk_no_substitution_template_literal(self, it);
     }
 
     #[inline]
@@ -929,6 +934,11 @@ pub trait Visit<'a>: Sized {
     }
 
     #[inline]
+    fn visit_template_literal_kind(&mut self, it: &TemplateLiteralKind<'a>) {
+        walk_template_literal_kind(self, it);
+    }
+
+    #[inline]
     fn visit_this_expression(&mut self, it: &ThisExpression) {
         walk_this_expression(self, it);
     }
@@ -1532,7 +1542,10 @@ pub mod walk {
             Expression::BigIntLiteral(it) => visitor.visit_big_int_literal(it),
             Expression::RegExpLiteral(it) => visitor.visit_reg_exp_literal(it),
             Expression::StringLiteral(it) => visitor.visit_string_literal(it),
-            Expression::TemplateLiteral(it) => visitor.visit_template_literal(it),
+            Expression::TemplateExpression(it) => visitor.visit_template_expression(it),
+            Expression::NoSubstitutionTemplateLiteral(it) => {
+                visitor.visit_no_substitution_template_literal(it)
+            }
             Expression::Identifier(it) => visitor.visit_identifier_reference(it),
             Expression::MetaProperty(it) => visitor.visit_meta_property(it),
             Expression::Super(it) => visitor.visit_super(it),
@@ -1619,8 +1632,11 @@ pub mod walk {
     }
 
     #[inline]
-    pub fn walk_template_literal<'a, V: Visit<'a>>(visitor: &mut V, it: &TemplateLiteral<'a>) {
-        let kind = AstKind::TemplateLiteral(visitor.alloc(it));
+    pub fn walk_template_expression<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &TemplateExpression<'a>,
+    ) {
+        let kind = AstKind::TemplateExpression(visitor.alloc(it));
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_template_elements(&it.quasis);
@@ -1651,6 +1667,17 @@ pub mod walk {
         for el in it {
             visitor.visit_expression(el);
         }
+    }
+
+    #[inline]
+    pub fn walk_no_substitution_template_literal<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &NoSubstitutionTemplateLiteral<'a>,
+    ) {
+        let kind = AstKind::NoSubstitutionTemplateLiteral(visitor.alloc(it));
+        visitor.enter_node(kind);
+        visitor.visit_span(&it.span);
+        visitor.leave_node(kind);
     }
 
     #[inline]
@@ -2374,7 +2401,7 @@ pub mod walk {
             TSLiteral::BigIntLiteral(it) => visitor.visit_big_int_literal(it),
             TSLiteral::RegExpLiteral(it) => visitor.visit_reg_exp_literal(it),
             TSLiteral::StringLiteral(it) => visitor.visit_string_literal(it),
-            TSLiteral::TemplateLiteral(it) => visitor.visit_template_literal(it),
+            TSLiteral::TemplateExpression(it) => visitor.visit_template_expression(it),
             TSLiteral::UnaryExpression(it) => visitor.visit_unary_expression(it),
         }
     }
@@ -3446,11 +3473,24 @@ pub mod walk {
         visitor.enter_node(kind);
         visitor.visit_span(&it.span);
         visitor.visit_expression(&it.tag);
-        visitor.visit_template_literal(&it.quasi);
+        visitor.visit_template_literal_kind(&it.quasi);
         if let Some(type_parameters) = &it.type_parameters {
             visitor.visit_ts_type_parameter_instantiation(type_parameters);
         }
         visitor.leave_node(kind);
+    }
+
+    #[inline]
+    pub fn walk_template_literal_kind<'a, V: Visit<'a>>(
+        visitor: &mut V,
+        it: &TemplateLiteralKind<'a>,
+    ) {
+        match it {
+            TemplateLiteralKind::Tagged(it) => visitor.visit_template_expression(it),
+            TemplateLiteralKind::NoSubstitution(it) => {
+                visitor.visit_no_substitution_template_literal(it)
+            }
+        }
     }
 
     #[inline]

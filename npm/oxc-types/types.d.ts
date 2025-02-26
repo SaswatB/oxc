@@ -68,7 +68,8 @@ export type Expression =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super
@@ -168,7 +169,8 @@ export type PropertyKey =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super
@@ -207,19 +209,26 @@ export type PropertyKey =
 
 export type PropertyKind = 'init' | 'get' | 'set';
 
-export interface TemplateLiteral extends Span {
-  type: 'TemplateLiteral';
+export interface TemplateExpression extends Span {
+  type: 'TemplateExpression';
   nodeId: number;
   quasis: Array<TemplateElement>;
   expressions: Array<Expression>;
-  noSubstitutionTemplate: boolean;
 }
+
+export interface NoSubstitutionTemplateLiteral extends Span {
+  type: 'NoSubstitutionTemplateLiteral';
+  nodeId: number;
+  value: string;
+}
+
+export type TemplateLiteralKind = TemplateExpression | NoSubstitutionTemplateLiteral;
 
 export interface TaggedTemplateExpression extends Span {
   type: 'TaggedTemplateExpression';
   nodeId: number;
   tag: Expression;
-  quasi: TemplateLiteral;
+  quasi: TemplateLiteralKind;
   typeParameters: TSTypeParameterInstantiation | null;
 }
 
@@ -299,7 +308,8 @@ export type Argument =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super
@@ -640,7 +650,8 @@ export type ForStatementInit =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super
@@ -1110,7 +1121,8 @@ export type ExportDefaultDeclarationKind =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super
@@ -1192,7 +1204,7 @@ export type TSLiteral =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
   | UnaryExpression;
 
 export type TSType =
@@ -1838,7 +1850,8 @@ export type JSXExpression =
   | BigIntLiteral
   | RegExpLiteral
   | StringLiteral
-  | TemplateLiteral
+  | TemplateExpression
+  | NoSubstitutionTemplateLiteral
   | IdentifierReference
   | MetaProperty
   | Super

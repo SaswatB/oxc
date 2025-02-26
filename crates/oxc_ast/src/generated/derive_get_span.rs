@@ -71,7 +71,8 @@ impl GetSpan for Expression<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -164,7 +165,8 @@ impl GetSpan for ArrayExpressionElement<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -245,7 +247,8 @@ impl GetSpan for PropertyKey<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -285,10 +288,26 @@ impl GetSpan for PropertyKey<'_> {
     }
 }
 
-impl GetSpan for TemplateLiteral<'_> {
+impl GetSpan for TemplateExpression<'_> {
     #[inline]
     fn span(&self) -> Span {
         self.span
+    }
+}
+
+impl GetSpan for NoSubstitutionTemplateLiteral<'_> {
+    #[inline]
+    fn span(&self) -> Span {
+        self.span
+    }
+}
+
+impl GetSpan for TemplateLiteralKind<'_> {
+    fn span(&self) -> Span {
+        match self {
+            Self::Tagged(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitution(it) => GetSpan::span(it.as_ref()),
+        }
     }
 }
 
@@ -375,7 +394,8 @@ impl GetSpan for Argument<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -765,7 +785,8 @@ impl GetSpan for ForStatementInit<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -1220,7 +1241,8 @@ impl GetSpan for ExportDefaultDeclarationKind<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),
@@ -1323,7 +1345,7 @@ impl GetSpan for TSLiteral<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
             Self::UnaryExpression(it) => GetSpan::span(it.as_ref()),
         }
     }
@@ -2062,7 +2084,8 @@ impl GetSpan for JSXExpression<'_> {
             Self::BigIntLiteral(it) => GetSpan::span(it.as_ref()),
             Self::RegExpLiteral(it) => GetSpan::span(it.as_ref()),
             Self::StringLiteral(it) => GetSpan::span(it.as_ref()),
-            Self::TemplateLiteral(it) => GetSpan::span(it.as_ref()),
+            Self::TemplateExpression(it) => GetSpan::span(it.as_ref()),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpan::span(it.as_ref()),
             Self::Identifier(it) => GetSpan::span(it.as_ref()),
             Self::MetaProperty(it) => GetSpan::span(it.as_ref()),
             Self::Super(it) => GetSpan::span(it.as_ref()),

@@ -57,7 +57,10 @@ impl ContentEq for Expression<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -155,7 +158,10 @@ impl ContentEq for ArrayExpressionElement<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -248,7 +254,10 @@ impl ContentEq for PropertyKey<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -299,15 +308,29 @@ impl ContentEq for PropertyKind {
     }
 }
 
-impl ContentEq for TemplateLiteral<'_> {
+impl ContentEq for TemplateExpression<'_> {
     fn content_eq(&self, other: &Self) -> bool {
         ContentEq::content_eq(&self.node_id, &other.node_id)
             && ContentEq::content_eq(&self.quasis, &other.quasis)
             && ContentEq::content_eq(&self.expressions, &other.expressions)
-            && ContentEq::content_eq(
-                &self.no_substitution_template,
-                &other.no_substitution_template,
-            )
+    }
+}
+
+impl ContentEq for NoSubstitutionTemplateLiteral<'_> {
+    fn content_eq(&self, other: &Self) -> bool {
+        ContentEq::content_eq(&self.node_id, &other.node_id)
+            && ContentEq::content_eq(&self.value, &other.value)
+    }
+}
+
+impl ContentEq for TemplateLiteralKind<'_> {
+    fn content_eq(&self, other: &Self) -> bool {
+        #[allow(clippy::match_same_arms)]
+        match (self, other) {
+            (Self::Tagged(a), Self::Tagged(b)) => a.content_eq(b),
+            (Self::NoSubstitution(a), Self::NoSubstitution(b)) => a.content_eq(b),
+            _ => false,
+        }
     }
 }
 
@@ -419,7 +442,10 @@ impl ContentEq for Argument<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -895,7 +921,10 @@ impl ContentEq for ForStatementInit<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -1528,7 +1557,10 @@ impl ContentEq for ExportDefaultDeclarationKind<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),
@@ -1645,7 +1677,7 @@ impl ContentEq for TSLiteral<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
             (Self::UnaryExpression(a), Self::UnaryExpression(b)) => a.content_eq(b),
             _ => false,
         }
@@ -2522,7 +2554,10 @@ impl ContentEq for JSXExpression<'_> {
             (Self::BigIntLiteral(a), Self::BigIntLiteral(b)) => a.content_eq(b),
             (Self::RegExpLiteral(a), Self::RegExpLiteral(b)) => a.content_eq(b),
             (Self::StringLiteral(a), Self::StringLiteral(b)) => a.content_eq(b),
-            (Self::TemplateLiteral(a), Self::TemplateLiteral(b)) => a.content_eq(b),
+            (Self::TemplateExpression(a), Self::TemplateExpression(b)) => a.content_eq(b),
+            (Self::NoSubstitutionTemplateLiteral(a), Self::NoSubstitutionTemplateLiteral(b)) => {
+                a.content_eq(b)
+            }
             (Self::Identifier(a), Self::Identifier(b)) => a.content_eq(b),
             (Self::MetaProperty(a), Self::MetaProperty(b)) => a.content_eq(b),
             (Self::Super(a), Self::Super(b)) => a.content_eq(b),

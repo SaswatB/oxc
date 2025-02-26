@@ -71,7 +71,8 @@ impl GetSpanMut for Expression<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -164,7 +165,8 @@ impl GetSpanMut for ArrayExpressionElement<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -245,7 +247,8 @@ impl GetSpanMut for PropertyKey<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -285,10 +288,26 @@ impl GetSpanMut for PropertyKey<'_> {
     }
 }
 
-impl GetSpanMut for TemplateLiteral<'_> {
+impl GetSpanMut for TemplateExpression<'_> {
     #[inline]
     fn span_mut(&mut self) -> &mut Span {
         &mut self.span
+    }
+}
+
+impl GetSpanMut for NoSubstitutionTemplateLiteral<'_> {
+    #[inline]
+    fn span_mut(&mut self) -> &mut Span {
+        &mut self.span
+    }
+}
+
+impl GetSpanMut for TemplateLiteralKind<'_> {
+    fn span_mut(&mut self) -> &mut Span {
+        match self {
+            Self::Tagged(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitution(it) => GetSpanMut::span_mut(&mut **it),
+        }
     }
 }
 
@@ -375,7 +394,8 @@ impl GetSpanMut for Argument<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -765,7 +785,8 @@ impl GetSpanMut for ForStatementInit<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -1220,7 +1241,8 @@ impl GetSpanMut for ExportDefaultDeclarationKind<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),
@@ -1323,7 +1345,7 @@ impl GetSpanMut for TSLiteral<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
             Self::UnaryExpression(it) => GetSpanMut::span_mut(&mut **it),
         }
     }
@@ -2062,7 +2084,8 @@ impl GetSpanMut for JSXExpression<'_> {
             Self::BigIntLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::RegExpLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::StringLiteral(it) => GetSpanMut::span_mut(&mut **it),
-            Self::TemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
+            Self::TemplateExpression(it) => GetSpanMut::span_mut(&mut **it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetSpanMut::span_mut(&mut **it),
             Self::Identifier(it) => GetSpanMut::span_mut(&mut **it),
             Self::MetaProperty(it) => GetSpanMut::span_mut(&mut **it),
             Self::Super(it) => GetSpanMut::span_mut(&mut **it),

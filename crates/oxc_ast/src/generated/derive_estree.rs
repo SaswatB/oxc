@@ -91,7 +91,8 @@ impl Serialize for Expression<'_> {
             Expression::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             Expression::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             Expression::StringLiteral(x) => Serialize::serialize(x, serializer),
-            Expression::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            Expression::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            Expression::NoSubstitutionTemplateLiteral(x) => Serialize::serialize(x, serializer),
             Expression::Identifier(x) => Serialize::serialize(x, serializer),
             Expression::MetaProperty(x) => Serialize::serialize(x, serializer),
             Expression::Super(x) => Serialize::serialize(x, serializer),
@@ -207,7 +208,10 @@ impl Serialize for ArrayExpressionElement<'_> {
             ArrayExpressionElement::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::StringLiteral(x) => Serialize::serialize(x, serializer),
-            ArrayExpressionElement::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            ArrayExpressionElement::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            ArrayExpressionElement::NoSubstitutionTemplateLiteral(x) => {
+                Serialize::serialize(x, serializer)
+            }
             ArrayExpressionElement::Identifier(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::MetaProperty(x) => Serialize::serialize(x, serializer),
             ArrayExpressionElement::Super(x) => Serialize::serialize(x, serializer),
@@ -310,7 +314,8 @@ impl Serialize for PropertyKey<'_> {
             PropertyKey::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             PropertyKey::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             PropertyKey::StringLiteral(x) => Serialize::serialize(x, serializer),
-            PropertyKey::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            PropertyKey::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            PropertyKey::NoSubstitutionTemplateLiteral(x) => Serialize::serialize(x, serializer),
             PropertyKey::Identifier(x) => Serialize::serialize(x, serializer),
             PropertyKey::MetaProperty(x) => Serialize::serialize(x, serializer),
             PropertyKey::Super(x) => Serialize::serialize(x, serializer),
@@ -360,16 +365,35 @@ impl Serialize for PropertyKind {
     }
 }
 
-impl Serialize for TemplateLiteral<'_> {
+impl Serialize for TemplateExpression<'_> {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         let mut map = serializer.serialize_map(None)?;
-        map.serialize_entry("type", "TemplateLiteral")?;
+        map.serialize_entry("type", "TemplateExpression")?;
         map.serialize_entry("nodeId", &self.node_id)?;
         self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
         map.serialize_entry("quasis", &self.quasis)?;
         map.serialize_entry("expressions", &self.expressions)?;
-        map.serialize_entry("noSubstitutionTemplate", &self.no_substitution_template)?;
         map.end()
+    }
+}
+
+impl Serialize for NoSubstitutionTemplateLiteral<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut map = serializer.serialize_map(None)?;
+        map.serialize_entry("type", "NoSubstitutionTemplateLiteral")?;
+        map.serialize_entry("nodeId", &self.node_id)?;
+        self.span.serialize(serde::__private::ser::FlatMapSerializer(&mut map))?;
+        map.serialize_entry("value", &self.value)?;
+        map.end()
+    }
+}
+
+impl Serialize for TemplateLiteralKind<'_> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        match self {
+            TemplateLiteralKind::Tagged(x) => Serialize::serialize(x, serializer),
+            TemplateLiteralKind::NoSubstitution(x) => Serialize::serialize(x, serializer),
+        }
     }
 }
 
@@ -516,7 +540,8 @@ impl Serialize for Argument<'_> {
             Argument::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             Argument::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             Argument::StringLiteral(x) => Serialize::serialize(x, serializer),
-            Argument::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            Argument::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            Argument::NoSubstitutionTemplateLiteral(x) => Serialize::serialize(x, serializer),
             Argument::Identifier(x) => Serialize::serialize(x, serializer),
             Argument::MetaProperty(x) => Serialize::serialize(x, serializer),
             Argument::Super(x) => Serialize::serialize(x, serializer),
@@ -1115,7 +1140,10 @@ impl Serialize for ForStatementInit<'_> {
             ForStatementInit::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             ForStatementInit::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             ForStatementInit::StringLiteral(x) => Serialize::serialize(x, serializer),
-            ForStatementInit::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            ForStatementInit::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            ForStatementInit::NoSubstitutionTemplateLiteral(x) => {
+                Serialize::serialize(x, serializer)
+            }
             ForStatementInit::Identifier(x) => Serialize::serialize(x, serializer),
             ForStatementInit::MetaProperty(x) => Serialize::serialize(x, serializer),
             ForStatementInit::Super(x) => Serialize::serialize(x, serializer),
@@ -1990,7 +2018,12 @@ impl Serialize for ExportDefaultDeclarationKind<'_> {
             ExportDefaultDeclarationKind::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             ExportDefaultDeclarationKind::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             ExportDefaultDeclarationKind::StringLiteral(x) => Serialize::serialize(x, serializer),
-            ExportDefaultDeclarationKind::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            ExportDefaultDeclarationKind::TemplateExpression(x) => {
+                Serialize::serialize(x, serializer)
+            }
+            ExportDefaultDeclarationKind::NoSubstitutionTemplateLiteral(x) => {
+                Serialize::serialize(x, serializer)
+            }
             ExportDefaultDeclarationKind::Identifier(x) => Serialize::serialize(x, serializer),
             ExportDefaultDeclarationKind::MetaProperty(x) => Serialize::serialize(x, serializer),
             ExportDefaultDeclarationKind::Super(x) => Serialize::serialize(x, serializer),
@@ -2155,7 +2188,7 @@ impl Serialize for TSLiteral<'_> {
             TSLiteral::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             TSLiteral::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             TSLiteral::StringLiteral(x) => Serialize::serialize(x, serializer),
-            TSLiteral::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            TSLiteral::TemplateExpression(x) => Serialize::serialize(x, serializer),
             TSLiteral::UnaryExpression(x) => Serialize::serialize(x, serializer),
         }
     }
@@ -3325,7 +3358,8 @@ impl Serialize for JSXExpression<'_> {
             JSXExpression::BigIntLiteral(x) => Serialize::serialize(x, serializer),
             JSXExpression::RegExpLiteral(x) => Serialize::serialize(x, serializer),
             JSXExpression::StringLiteral(x) => Serialize::serialize(x, serializer),
-            JSXExpression::TemplateLiteral(x) => Serialize::serialize(x, serializer),
+            JSXExpression::TemplateExpression(x) => Serialize::serialize(x, serializer),
+            JSXExpression::NoSubstitutionTemplateLiteral(x) => Serialize::serialize(x, serializer),
             JSXExpression::Identifier(x) => Serialize::serialize(x, serializer),
             JSXExpression::MetaProperty(x) => Serialize::serialize(x, serializer),
             JSXExpression::Super(x) => Serialize::serialize(x, serializer),

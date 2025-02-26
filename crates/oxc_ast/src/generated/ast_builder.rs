@@ -505,29 +505,43 @@ impl<'a> AstBuilder<'a> {
         Expression::StringLiteral(self.alloc_string_literal(span, value, raw))
     }
 
-    /// Build an [`Expression::TemplateLiteral`]
+    /// Build an [`Expression::TemplateExpression`]
     ///
-    /// This node contains a [`TemplateLiteral`] that will be stored in the memory arena.
+    /// This node contains a [`TemplateExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
-    /// - no_substitution_template
     #[inline]
-    pub fn expression_template_literal(
+    pub fn expression_template(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
-        no_substitution_template: bool,
     ) -> Expression<'a> {
-        Expression::TemplateLiteral(self.alloc_template_literal(
-            span,
-            quasis,
-            expressions,
-            no_substitution_template,
-        ))
+        Expression::TemplateExpression(self.alloc_template_expression(span, quasis, expressions))
+    }
+
+    /// Build an [`Expression::NoSubstitutionTemplateLiteral`]
+    ///
+    /// This node contains a [`NoSubstitutionTemplateLiteral`] that will be stored in the memory arena.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - value
+    #[inline]
+    pub fn expression_no_substitution_template_literal<A>(
+        self,
+        span: Span,
+        value: A,
+    ) -> Expression<'a>
+    where
+        A: IntoIn<'a, Atom<'a>>,
+    {
+        Expression::NoSubstitutionTemplateLiteral(
+            self.alloc_no_substitution_template_literal(span, value),
+        )
     }
 
     /// Build an [`Expression::Identifier`]
@@ -985,7 +999,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         tag: Expression<'a>,
-        quasi: TemplateLiteral<'a>,
+        quasi: TemplateLiteralKind<'a>,
         type_parameters: T1,
     ) -> Expression<'a>
     where
@@ -1771,52 +1785,125 @@ impl<'a> AstBuilder<'a> {
         PropertyKey::PrivateIdentifier(self.alloc_private_identifier(span, name))
     }
 
-    /// Build a [`TemplateLiteral`].
+    /// Build a [`TemplateExpression`].
     ///
-    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_template_literal`] instead.
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_template_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
-    /// - no_substitution_template
     #[inline]
-    pub fn template_literal(
+    pub fn template_expression(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
-        no_substitution_template: bool,
-    ) -> TemplateLiteral<'a> {
-        TemplateLiteral {
+    ) -> TemplateExpression<'a> {
+        TemplateExpression {
             node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
             span,
             quasis,
             expressions,
-            no_substitution_template,
         }
     }
 
-    /// Build a [`TemplateLiteral`], and store it in the memory arena.
+    /// Build a [`TemplateExpression`], and store it in the memory arena.
     ///
-    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::template_literal`] instead.
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::template_expression`] instead.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
-    /// - no_substitution_template
     #[inline]
-    pub fn alloc_template_literal(
+    pub fn alloc_template_expression(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
-        no_substitution_template: bool,
-    ) -> Box<'a, TemplateLiteral<'a>> {
-        Box::new_in(
-            self.template_literal(span, quasis, expressions, no_substitution_template),
-            self.allocator,
+    ) -> Box<'a, TemplateExpression<'a>> {
+        Box::new_in(self.template_expression(span, quasis, expressions), self.allocator)
+    }
+
+    /// Build a [`NoSubstitutionTemplateLiteral`].
+    ///
+    /// If you want the built node to be allocated in the memory arena, use [`AstBuilder::alloc_no_substitution_template_literal`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - value
+    #[inline]
+    pub fn no_substitution_template_literal<A>(
+        self,
+        span: Span,
+        value: A,
+    ) -> NoSubstitutionTemplateLiteral<'a>
+    where
+        A: IntoIn<'a, Atom<'a>>,
+    {
+        NoSubstitutionTemplateLiteral {
+            node_id: COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+            span,
+            value: value.into_in(self.allocator),
+        }
+    }
+
+    /// Build a [`NoSubstitutionTemplateLiteral`], and store it in the memory arena.
+    ///
+    /// Returns a [`Box`] containing the newly-allocated node. If you want a stack-allocated node, use [`AstBuilder::no_substitution_template_literal`] instead.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - value
+    #[inline]
+    pub fn alloc_no_substitution_template_literal<A>(
+        self,
+        span: Span,
+        value: A,
+    ) -> Box<'a, NoSubstitutionTemplateLiteral<'a>>
+    where
+        A: IntoIn<'a, Atom<'a>>,
+    {
+        Box::new_in(self.no_substitution_template_literal(span, value), self.allocator)
+    }
+
+    /// Build a [`TemplateLiteralKind::Tagged`]
+    ///
+    /// This node contains a [`TemplateExpression`] that will be stored in the memory arena.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - quasis
+    /// - expressions
+    #[inline]
+    pub fn template_literal_kind_template_expression(
+        self,
+        span: Span,
+        quasis: Vec<'a, TemplateElement<'a>>,
+        expressions: Vec<'a, Expression<'a>>,
+    ) -> TemplateLiteralKind<'a> {
+        TemplateLiteralKind::Tagged(self.alloc_template_expression(span, quasis, expressions))
+    }
+
+    /// Build a [`TemplateLiteralKind::NoSubstitution`]
+    ///
+    /// This node contains a [`NoSubstitutionTemplateLiteral`] that will be stored in the memory arena.
+    ///
+    /// ## Parameters
+    /// - span: The [`Span`] covering this node
+    /// - value
+    #[inline]
+    pub fn template_literal_kind_no_substitution_template_literal<A>(
+        self,
+        span: Span,
+        value: A,
+    ) -> TemplateLiteralKind<'a>
+    where
+        A: IntoIn<'a, Atom<'a>>,
+    {
+        TemplateLiteralKind::NoSubstitution(
+            self.alloc_no_substitution_template_literal(span, value),
         )
     }
 
@@ -1834,7 +1921,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         tag: Expression<'a>,
-        quasi: TemplateLiteral<'a>,
+        quasi: TemplateLiteralKind<'a>,
         type_parameters: T1,
     ) -> TaggedTemplateExpression<'a>
     where
@@ -1863,7 +1950,7 @@ impl<'a> AstBuilder<'a> {
         self,
         span: Span,
         tag: Expression<'a>,
-        quasi: TemplateLiteral<'a>,
+        quasi: TemplateLiteralKind<'a>,
         type_parameters: T1,
     ) -> Box<'a, TaggedTemplateExpression<'a>>
     where
@@ -8590,29 +8677,22 @@ impl<'a> AstBuilder<'a> {
         TSLiteral::StringLiteral(self.alloc_string_literal(span, value, raw))
     }
 
-    /// Build a [`TSLiteral::TemplateLiteral`]
+    /// Build a [`TSLiteral::TemplateExpression`]
     ///
-    /// This node contains a [`TemplateLiteral`] that will be stored in the memory arena.
+    /// This node contains a [`TemplateExpression`] that will be stored in the memory arena.
     ///
     /// ## Parameters
     /// - span: The [`Span`] covering this node
     /// - quasis
     /// - expressions
-    /// - no_substitution_template
     #[inline]
-    pub fn ts_literal_template_literal(
+    pub fn ts_literal_template_expression(
         self,
         span: Span,
         quasis: Vec<'a, TemplateElement<'a>>,
         expressions: Vec<'a, Expression<'a>>,
-        no_substitution_template: bool,
     ) -> TSLiteral<'a> {
-        TSLiteral::TemplateLiteral(self.alloc_template_literal(
-            span,
-            quasis,
-            expressions,
-            no_substitution_template,
-        ))
+        TSLiteral::TemplateExpression(self.alloc_template_expression(span, quasis, expressions))
     }
 
     /// Build a [`TSLiteral::UnaryExpression`]

@@ -16,7 +16,7 @@ impl<'a> ToJsString<'a> for Expression<'a> {
     fn to_js_string(&self) -> Option<Cow<'a, str>> {
         match self {
             Expression::StringLiteral(lit) => lit.to_js_string(),
-            Expression::TemplateLiteral(lit) => lit.to_js_string(),
+            Expression::TemplateExpression(lit) => lit.to_js_string(),
             Expression::Identifier(ident) => ident.to_js_string(),
             Expression::NumericLiteral(lit) => lit.to_js_string(),
             Expression::BigIntLiteral(lit) => lit.to_js_string(),
@@ -53,7 +53,7 @@ impl<'a> ToJsString<'a> for StringLiteral<'a> {
     }
 }
 
-impl<'a> ToJsString<'a> for TemplateLiteral<'a> {
+impl<'a> ToJsString<'a> for TemplateExpression<'a> {
     fn to_js_string(&self) -> Option<Cow<'a, str>> {
         let mut str = String::new();
         for (i, quasi) in self.quasis.iter().enumerate() {

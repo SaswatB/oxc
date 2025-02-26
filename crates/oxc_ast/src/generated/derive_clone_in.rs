@@ -137,8 +137,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for Expression<'_> {
             Self::BigIntLiteral(it) => Expression::BigIntLiteral(CloneIn::clone_in(it, allocator)),
             Self::RegExpLiteral(it) => Expression::RegExpLiteral(CloneIn::clone_in(it, allocator)),
             Self::StringLiteral(it) => Expression::StringLiteral(CloneIn::clone_in(it, allocator)),
-            Self::TemplateLiteral(it) => {
-                Expression::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                Expression::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                Expression::NoSubstitutionTemplateLiteral(CloneIn::clone_in(it, allocator))
             }
             Self::Identifier(it) => Expression::Identifier(CloneIn::clone_in(it, allocator)),
             Self::MetaProperty(it) => Expression::MetaProperty(CloneIn::clone_in(it, allocator)),
@@ -333,8 +336,13 @@ impl<'new_alloc> CloneIn<'new_alloc> for ArrayExpressionElement<'_> {
             Self::StringLiteral(it) => {
                 ArrayExpressionElement::StringLiteral(CloneIn::clone_in(it, allocator))
             }
-            Self::TemplateLiteral(it) => {
-                ArrayExpressionElement::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                ArrayExpressionElement::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                ArrayExpressionElement::NoSubstitutionTemplateLiteral(CloneIn::clone_in(
+                    it, allocator,
+                ))
             }
             Self::Identifier(it) => {
                 ArrayExpressionElement::Identifier(CloneIn::clone_in(it, allocator))
@@ -515,8 +523,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for PropertyKey<'_> {
             Self::BigIntLiteral(it) => PropertyKey::BigIntLiteral(CloneIn::clone_in(it, allocator)),
             Self::RegExpLiteral(it) => PropertyKey::RegExpLiteral(CloneIn::clone_in(it, allocator)),
             Self::StringLiteral(it) => PropertyKey::StringLiteral(CloneIn::clone_in(it, allocator)),
-            Self::TemplateLiteral(it) => {
-                PropertyKey::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                PropertyKey::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                PropertyKey::NoSubstitutionTemplateLiteral(CloneIn::clone_in(it, allocator))
             }
             Self::Identifier(it) => PropertyKey::Identifier(CloneIn::clone_in(it, allocator)),
             Self::MetaProperty(it) => PropertyKey::MetaProperty(CloneIn::clone_in(it, allocator)),
@@ -626,15 +637,37 @@ impl<'alloc> CloneIn<'alloc> for PropertyKind {
     }
 }
 
-impl<'new_alloc> CloneIn<'new_alloc> for TemplateLiteral<'_> {
-    type Cloned = TemplateLiteral<'new_alloc>;
+impl<'new_alloc> CloneIn<'new_alloc> for TemplateExpression<'_> {
+    type Cloned = TemplateExpression<'new_alloc>;
     fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
-        TemplateLiteral {
+        TemplateExpression {
             node_id: CloneIn::clone_in(&self.node_id, allocator),
             span: CloneIn::clone_in(&self.span, allocator),
             quasis: CloneIn::clone_in(&self.quasis, allocator),
             expressions: CloneIn::clone_in(&self.expressions, allocator),
-            no_substitution_template: CloneIn::clone_in(&self.no_substitution_template, allocator),
+        }
+    }
+}
+
+impl<'new_alloc> CloneIn<'new_alloc> for NoSubstitutionTemplateLiteral<'_> {
+    type Cloned = NoSubstitutionTemplateLiteral<'new_alloc>;
+    fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
+        NoSubstitutionTemplateLiteral {
+            node_id: CloneIn::clone_in(&self.node_id, allocator),
+            span: CloneIn::clone_in(&self.span, allocator),
+            value: CloneIn::clone_in(&self.value, allocator),
+        }
+    }
+}
+
+impl<'new_alloc> CloneIn<'new_alloc> for TemplateLiteralKind<'_> {
+    type Cloned = TemplateLiteralKind<'new_alloc>;
+    fn clone_in(&self, allocator: &'new_alloc Allocator) -> Self::Cloned {
+        match self {
+            Self::Tagged(it) => TemplateLiteralKind::Tagged(CloneIn::clone_in(it, allocator)),
+            Self::NoSubstitution(it) => {
+                TemplateLiteralKind::NoSubstitution(CloneIn::clone_in(it, allocator))
+            }
         }
     }
 }
@@ -791,8 +824,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for Argument<'_> {
             Self::BigIntLiteral(it) => Argument::BigIntLiteral(CloneIn::clone_in(it, allocator)),
             Self::RegExpLiteral(it) => Argument::RegExpLiteral(CloneIn::clone_in(it, allocator)),
             Self::StringLiteral(it) => Argument::StringLiteral(CloneIn::clone_in(it, allocator)),
-            Self::TemplateLiteral(it) => {
-                Argument::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                Argument::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                Argument::NoSubstitutionTemplateLiteral(CloneIn::clone_in(it, allocator))
             }
             Self::Identifier(it) => Argument::Identifier(CloneIn::clone_in(it, allocator)),
             Self::MetaProperty(it) => Argument::MetaProperty(CloneIn::clone_in(it, allocator)),
@@ -1578,8 +1614,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for ForStatementInit<'_> {
             Self::StringLiteral(it) => {
                 ForStatementInit::StringLiteral(CloneIn::clone_in(it, allocator))
             }
-            Self::TemplateLiteral(it) => {
-                ForStatementInit::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                ForStatementInit::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                ForStatementInit::NoSubstitutionTemplateLiteral(CloneIn::clone_in(it, allocator))
             }
             Self::Identifier(it) => ForStatementInit::Identifier(CloneIn::clone_in(it, allocator)),
             Self::MetaProperty(it) => {
@@ -2575,8 +2614,13 @@ impl<'new_alloc> CloneIn<'new_alloc> for ExportDefaultDeclarationKind<'_> {
             Self::StringLiteral(it) => {
                 ExportDefaultDeclarationKind::StringLiteral(CloneIn::clone_in(it, allocator))
             }
-            Self::TemplateLiteral(it) => {
-                ExportDefaultDeclarationKind::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                ExportDefaultDeclarationKind::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                ExportDefaultDeclarationKind::NoSubstitutionTemplateLiteral(CloneIn::clone_in(
+                    it, allocator,
+                ))
             }
             Self::Identifier(it) => {
                 ExportDefaultDeclarationKind::Identifier(CloneIn::clone_in(it, allocator))
@@ -2801,8 +2845,8 @@ impl<'new_alloc> CloneIn<'new_alloc> for TSLiteral<'_> {
             Self::BigIntLiteral(it) => TSLiteral::BigIntLiteral(CloneIn::clone_in(it, allocator)),
             Self::RegExpLiteral(it) => TSLiteral::RegExpLiteral(CloneIn::clone_in(it, allocator)),
             Self::StringLiteral(it) => TSLiteral::StringLiteral(CloneIn::clone_in(it, allocator)),
-            Self::TemplateLiteral(it) => {
-                TSLiteral::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                TSLiteral::TemplateExpression(CloneIn::clone_in(it, allocator))
             }
             Self::UnaryExpression(it) => {
                 TSLiteral::UnaryExpression(CloneIn::clone_in(it, allocator))
@@ -4165,8 +4209,11 @@ impl<'new_alloc> CloneIn<'new_alloc> for JSXExpression<'_> {
             Self::StringLiteral(it) => {
                 JSXExpression::StringLiteral(CloneIn::clone_in(it, allocator))
             }
-            Self::TemplateLiteral(it) => {
-                JSXExpression::TemplateLiteral(CloneIn::clone_in(it, allocator))
+            Self::TemplateExpression(it) => {
+                JSXExpression::TemplateExpression(CloneIn::clone_in(it, allocator))
+            }
+            Self::NoSubstitutionTemplateLiteral(it) => {
+                JSXExpression::NoSubstitutionTemplateLiteral(CloneIn::clone_in(it, allocator))
             }
             Self::Identifier(it) => JSXExpression::Identifier(CloneIn::clone_in(it, allocator)),
             Self::MetaProperty(it) => JSXExpression::MetaProperty(CloneIn::clone_in(it, allocator)),

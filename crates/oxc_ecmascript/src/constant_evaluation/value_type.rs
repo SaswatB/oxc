@@ -1,4 +1,4 @@
-use oxc_ast::ast::{GeneralBinaryExpression, Expression};
+use oxc_ast::ast::{Expression, GeneralBinaryExpression};
 use oxc_syntax::operator::{GeneralBinaryOperator, UnaryOperator};
 
 /// JavaScript Language Type
@@ -65,7 +65,7 @@ impl<'a> From<&Expression<'a>> for ValueType {
             Expression::BooleanLiteral(_) => Self::Boolean,
             Expression::NullLiteral(_) => Self::Null,
             Expression::NumericLiteral(_) => Self::Number,
-            Expression::StringLiteral(_) | Expression::TemplateLiteral(_) => Self::String,
+            Expression::StringLiteral(_) | Expression::TemplateExpression(_) => Self::String,
             Expression::ObjectExpression(_)
             | Expression::ArrayExpression(_)
             | Expression::RegExpLiteral(_)

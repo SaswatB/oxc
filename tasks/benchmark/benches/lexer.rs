@@ -69,7 +69,7 @@ criterion_main!(lexer);
 ///
 /// So replace these syntaxes with strings so that lexer can complete without error:
 /// * `RegExpLiteral`
-/// * `TemplateLiteral`
+/// * `TemplateExpression`
 /// * `JSXText`
 struct SourceCleaner {
     source_text: String,
@@ -124,7 +124,7 @@ impl<'a> Visit<'a> for SourceCleaner {
         self.replace(span, text);
     }
 
-    fn visit_template_literal(&mut self, lit: &TemplateLiteral<'a>) {
+    fn visit_template_expression(&mut self, lit: &TemplateExpression<'a>) {
         let span = lit.span;
         let text = span.shrink(1).source_text(&self.source_text);
         let text = convert_to_string(text).replace('\n', " ");

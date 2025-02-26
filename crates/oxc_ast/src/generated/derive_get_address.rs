@@ -22,7 +22,8 @@ impl GetAddress for Expression<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetAddress::address(it),
             Self::Identifier(it) => GetAddress::address(it),
             Self::MetaProperty(it) => GetAddress::address(it),
             Self::Super(it) => GetAddress::address(it),
@@ -86,7 +87,8 @@ impl GetAddress for PropertyKey<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetAddress::address(it),
             Self::Identifier(it) => GetAddress::address(it),
             Self::MetaProperty(it) => GetAddress::address(it),
             Self::Super(it) => GetAddress::address(it),
@@ -126,6 +128,17 @@ impl GetAddress for PropertyKey<'_> {
     }
 }
 
+impl GetAddress for TemplateLiteralKind<'_> {
+    // `#[inline]` because compiler should boil this down to a single assembly instruction
+    #[inline]
+    fn address(&self) -> Address {
+        match self {
+            Self::Tagged(it) => GetAddress::address(it),
+            Self::NoSubstitution(it) => GetAddress::address(it),
+        }
+    }
+}
+
 impl GetAddress for MemberExpression<'_> {
     // `#[inline]` because compiler should boil this down to a single assembly instruction
     #[inline]
@@ -150,7 +163,8 @@ impl GetAddress for Argument<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetAddress::address(it),
             Self::Identifier(it) => GetAddress::address(it),
             Self::MetaProperty(it) => GetAddress::address(it),
             Self::Super(it) => GetAddress::address(it),
@@ -355,7 +369,8 @@ impl GetAddress for ForStatementInit<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetAddress::address(it),
             Self::Identifier(it) => GetAddress::address(it),
             Self::MetaProperty(it) => GetAddress::address(it),
             Self::Super(it) => GetAddress::address(it),
@@ -484,7 +499,8 @@ impl GetAddress for ExportDefaultDeclarationKind<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
+            Self::NoSubstitutionTemplateLiteral(it) => GetAddress::address(it),
             Self::Identifier(it) => GetAddress::address(it),
             Self::MetaProperty(it) => GetAddress::address(it),
             Self::Super(it) => GetAddress::address(it),
@@ -546,7 +562,7 @@ impl GetAddress for TSLiteral<'_> {
             Self::BigIntLiteral(it) => GetAddress::address(it),
             Self::RegExpLiteral(it) => GetAddress::address(it),
             Self::StringLiteral(it) => GetAddress::address(it),
-            Self::TemplateLiteral(it) => GetAddress::address(it),
+            Self::TemplateExpression(it) => GetAddress::address(it),
             Self::UnaryExpression(it) => GetAddress::address(it),
         }
     }
